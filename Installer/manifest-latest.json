@@ -1,0 +1,15 @@
+{
+  "name": "Poor Man's Throttle",
+  "version": "latest",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.bootloader.bin", "offset": 4096 },
+        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.partitions.bin", "offset": 32768 },
+        { "path": "/PoorMansThrottle-DIY/firmware/latest/boot_app0.bin", "offset": 57344 },
+        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.bin", "offset": 65536 }
+      ]
+    }
+  ]
+}
