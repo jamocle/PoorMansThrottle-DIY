@@ -9,5 +9,4 @@ When requesting help, please include:
 - Firmware version
 - Full error message or serial output
 
-Open a GitHub Issue for support.
-'@ | Set-Content -Encoding UTF8 SUPPORT.md
+Contact us as DasFaddelRailroad on Facebook
