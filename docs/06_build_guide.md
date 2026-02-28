@@ -342,7 +342,7 @@ You have completed the basic hardware build.
 Next document:
 
 ```
-06_installation_options.md
+07_installation_options.md
 ```
 
 This section explains different ways to install the system inside locomotives.

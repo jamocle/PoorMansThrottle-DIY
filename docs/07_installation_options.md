@@ -249,7 +249,7 @@ Recommended practices:
 Continue to:
 
 ```
-07_first_power_test.md
+08_first_power_test.md
 ```
 
 This document explains how to safely power the system for the first time.

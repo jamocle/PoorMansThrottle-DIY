@@ -81,7 +81,7 @@ If the connection works, the firmware installation is complete.
 Continue to:
 
 ```
-appendix_wiring_reference.md
+06_build_guide.md
 ```
 
 This appendix contains the full wiring reference tables.

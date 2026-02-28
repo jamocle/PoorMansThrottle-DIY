@@ -113,7 +113,7 @@ Troubleshooting steps are covered in the next document.
 Continue to:
 
 ```
-08_troubleshooting.md
+09_troubleshooting.md
 ```
 
 This document explains how to diagnose common problems.

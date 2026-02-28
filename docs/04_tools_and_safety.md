@@ -172,7 +172,7 @@ Careful assembly leads to reliable operation.
 Continue to:
 
 ```
-05_build_guide.md
+05_firmware_installation.md
 ```
 
 This document provides the step-by-step hardware assembly instructions.
