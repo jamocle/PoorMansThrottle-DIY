@@ -1,109 +1,210 @@
 # Poor Man's Throttle
 
+![Build Difficulty](https://img.shields.io/badge/build-difficulty%3A%20beginner-green)
+![Platform](https://img.shields.io/badge/platform-ESP32-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+
 A low-cost **Bluetooth wireless throttle system** for model trains.
 
-The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an ESP32 controller.
+The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an **ESP32 controller** and an **IBT-2 motor driver**.
 
 The system is designed primarily for **G-scale dead-rail battery locomotives**, but it can also be used with **traditional DC model railroad transformers**.
 
+The goal of the project is to provide a **simple, inexpensive wireless throttle system** that hobbyists can build with commonly available parts.
+
 ---
 
-# Quick Overview
+# Project Status
 
-The smartphone connects to the locomotive over Bluetooth.  
-The ESP32 controller receives throttle commands and controls a motor driver that powers the locomotive motor.
+The Poor Man's Throttle project is actively being developed.
+
+Current status:
+
+* Core hardware architecture completed
+* ESP32 control system implemented
+* ESP32 PWM firmware completed
+* Documentation completed
+* iPhone App completed in TestFlight
+
+Planned improvements:
+
+* Android throttle application
+* Multiple locomotive control
+* Locomotive consisting
+* Expanded troubleshooting guides
+* Peripheral control via app
+
+Community testing and feedback are welcome.
+
+---
+
+# Demo
+
+Example of the Poor Man's Throttle in action. **Coming Soon**
 
 ```
-Smartphone App
-       │
-   Bluetooth
-       │
-   ESP32 Controller
-       │
-Motor Control Signals
-       │
-IBT-2 Motor Driver
-       │
- Locomotive Motor
+[Photo: Smartphone controlling locomotive]
+
+[Photo: ESP32 + motor driver installed in locomotive]
+
+[Video or GIF of locomotive moving]
 ```
+
+Example video:
+
+```
+https://youtube.com/your-demo-video
+```
+
+Hardware projects benefit greatly from visual demonstrations. Photos and videos will be added as the project evolves.
+
+---
+
+# System Overview
+
+```
+           Smartphone App
+                 │
+             Bluetooth
+                 │
+                 ▼
+           ESP32 Controller
+                 │
+        Motor Control Signals
+                 │
+                 ▼
+         IBT-2 Motor Driver
+                 │
+                 ▼
+           Locomotive Motor
+```
+
+The ESP32 receives commands from the smartphone and converts them into motor control signals that drive the locomotive.
+
+---
+
+# How It Works in 30 Seconds
+
+1. The **smartphone app** sends throttle commands over Bluetooth.
+
+2. The **ESP32 controller** receives those commands.
+
+3. The ESP32 sends control signals to the **IBT-2 motor driver**.
+
+4. The motor driver adjusts the **power going to the locomotive motor**.
+
+5. The locomotive moves **forward, reverse, faster, or slower, etc** based on throttle input or other controls.
+
+All control is wireless so operators can walk around the layout while running trains.
 
 ---
 
 # Key Features
 
-• Wireless throttle control from a smartphone  
-• Works with battery-powered **dead-rail locomotives**  
-• Works with **traditional DC transformers**  
-• Uses inexpensive, widely available components  
-• Simple wiring and beginner-friendly documentation  
-• Supports multiple locomotives  
+• Bluetooth wireless control from a smartphone  
+• Works with **battery-powered locomotives (dead-rail-no power on tracks)**  
+• Works with **traditional DC model railroad transformers**  
+• Uses inexpensive off-the-shelf electronics  
+• Beginner-friendly wiring  
+• Expandable for multiple locomotives  
+• Future support planned for **consisting**  
 
 ---
 
 # Estimated Build Cost
 
-Typical cost per locomotive:
+Typical hardware cost per locomotive:
 
-| Component | Approx Cost |
-|----------|-------------|
-| ESP32 Development Board | $6 |
-| IBT-2 Motor Driver | $10 |
-| 5V Power Module | $5 |
+| Component               | Approx Cost |
+| ----------------------- | ----------- |
+| ESP32 development board | $6          |
+| IBT-2 motor driver      | $10         |
+| 5V power module         | $5          |
 
 Typical total:
 
-**$21**
+**~$21 per locomotive**
 
-Optional parts such as buck converters or capacitors may add a few dollars.
+Optional components may add a few dollars.
+
+| Optional Component | Purpose                                   |
+| ------------------ | ----------------------------------------- |
+| Buck converter     | Reduce motor voltage for battery installs down to your individual locomotiove needs |
+| Capacitors         | Reduce electrical noise                   |
+| Ferrite core       | Reduce motor interference                 |
 
 ---
 
-# Power Options
+# Hardware Compatibility
 
-The system supports **two power configurations**.
+The Poor Man's Throttle works with ALL **DC model locomotives**.
 
-## Battery Installation (Dead-Rail)
+Typical compatible scales:
+
+• G scale
+• Large scale garden railways
+• Custom battery conversions
+
+Motor requirements:
+
+• Brushed DC motor
+• Typical voltage range: **6V – 24V**
+
+The **IBT-2 motor driver** supports high current loads (47 amps) and works well with most G-scale locomotives.
+
+### Not Compatible With
+
+This system does **not directly support**:
+
+• DCC decoder locomotives
+• AC motors
+• Digital command control systems
+
+Those systems require different control hardware.
+
+---
+
+# Power Architecture
+
+The system separates **motor power** and **logic power**.
+
+Separating these supplies improves reliability and reduces electrical noise affecting the controller.
+
+---
+
+## Motor Power
+
+Battery or DC supply powers the motor driver.
 
 ```
-Battery Adapter
-       │
+Battery Adapter or DC Transformer
+           │
 (Optional) Buck Converter
-       │
-      Fuse
-       │
- IBT-2 Motor Driver
-       │
-      Motor
+           │
+          Fuse
+           │
+     IBT-2 Motor Driver
+           │
+           Motor
 ```
 
-Common battery brands:
+The buck converter is **optional** and mainly used when battery voltage is higher than desired motor voltage.
+
+Common battery brands used by builders:
 
 • DeWalt  
 • Milwaukee  
 • Ryobi  
-• Ridgid  
+• Rigid  
+• other compatible tool batteries  
+• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline) 
 
-A compatible **battery adapter** is required.
-
----
-
-## DC Transformer Installation
-
-```
-DC Transformer
-      │
-     Fuse
-      │
- IBT-2 Motor Driver
-      │
-      Motor
-```
-
-No battery adapter or buck converter is required.
+A compatible **battery adapter** is required for battery installations.
 
 ---
 
-# Controller Power
+## Logic Power (Controller Power)
 
 The ESP32 controller is powered by a dedicated 5V module.
 
@@ -115,32 +216,169 @@ Battery / DC Rail
      ESP32 USB-C
 ```
 
-Separating motor power and controller power improves reliability.
+Separating motor power and controller power helps keep the ESP32 stable and protected from motor noise.
+
+---
+
+# Quick Start
+
+The fastest way to try the Poor Man's Throttle.
+
+### 1. Gather Parts
+
+Minimum hardware:
+
+• ESP32 development board  
+• IBT-2 motor driver  
+• 5V power module  
+• Fuse  
+• Power source (battery or DC transformer)  
+
+Full parts list:
+
+👉 **docs/03_bill_of_materials.md**
+
+---
+
+### 2. Install Firmware
+
+Upload firmware to the ESP32.
+
+Instructions:
+
+👉 **docs/09_firmware_installation.md**
+
+---
+
+### 3. Wire the System
+
+Follow the wiring diagrams in:
+
+👉 **docs/05_build_guide.md**
+
+---
+
+### 4. First Power Test
+
+Run the safe power-up procedure:
+
+👉 **docs/07_first_power_test.md**
+
+You should now be able to control the locomotive from the smartphone app.
+
+---
+
+# Control Features
+
+The smartphone app provides simple locomotive controls.
+
+Available controls:
+
+• Throttle speed  
+• Forward direction  
+• Reverse direction  
+• Stop  
+• Other controls  
+
+
+Multiple locomotives can be controlled individually.
+
+Future versions will support **consisting**, allowing multiple locomotives to move together.
+
+---
+
+# Example Installation Options
+
+Electronics can be installed in several locations depending on the locomotive.
+
+Common options:
+
+• Inside the locomotive body  
+• Inside a tender  
+• Inside a battery car  
+• Inside a small electronics enclosure  
+
+The system is flexible so builders can adapt it to their locomotives.
+
+---
+
+# Example Hardware Configurations
+
+The Poor Man's Throttle supports **two common power configurations**.
+
+---
+
+## Battery Installation (Dead-Rail)
+
+Used for **battery-powered locomotives**.
+
+| Component                      | Description                      |
+| ------------------------------ | -------------------------------- |
+| ESP32-WROOM-32 USB-C dev board | Main controller                  |
+| IBT-2 BTS7960 motor driver     | High current motor driver        |
+| 5V power module                | Powers the ESP32                 |
+| Battery adapter                | Connects cordless tool batteries |
+
+Optional components:
+
+• Adjustable buck converter  
+• Noise suppression capacitors  
+• Ferrite core  
+
+---
+
+## DC Transformer Installation
+
+Used for **traditional DC model railroad layouts**.
+
+| Component                      | Description               |
+| ------------------------------ | ------------------------- |
+| ESP32-WROOM-32 USB-C dev board | Main controller           |
+| IBT-2 BTS7960 motor driver     | High current motor driver |
+| 5V power module                | Powers the ESP32          |
+| DC model railroad transformer  | Layout power source       |
+
+Optional components:
+
+• Noise suppression capacitors  
+• Ferrite core  
+
+Battery adapters and buck converters are **not required** for DC installations.
+
+---
+
+# Getting Started
+
+If this is your first build:
+
+1. Read **Quick Overview**
+2. Review **Tools and Safety**
+3. Follow the **Build Guide**
+
+Start here:
+
+👉 **docs/01_quick_overview.md**
 
 ---
 
 # Documentation
 
-Full build documentation is located in the **/docs** folder.
-
-Start here:
-
-👉 **[Quick Overview](docs/01_quick_overview.md)**
+Full documentation is located in the **/docs** folder.
 
 ### Documentation Index
 
-| Document | Description |
-|--------|-------------|
-| [01_quick_overview.md](docs/01_quick_overview.md) | Introduction to the system |
-| [02_system_architecture.md](docs/02_system_architecture.md) | System diagrams and power flow |
-| [03_bill_of_materials.md](docs/03_bill_of_materials.md) | Parts list |
-| [04_tools_and_safety.md](docs/04_tools_and_safety.md) | Tools and safety guidelines |
-| [05_build_guide.md](docs/05_build_guide.md) | Step-by-step hardware assembly |
-| [06_installation_options.md](docs/06_installation_options.md) | Installation methods |
-| [07_first_power_test.md](docs/07_first_power_test.md) | Safe first power-up |
-| [08_troubleshooting.md](docs/08_troubleshooting.md) | Diagnosing common issues |
-| [09_firmware_installation.md](docs/09_firmware_installation.md) | Installing firmware |
-| [appendix_wiring_reference.md](docs/appendix_wiring_reference.md) | Complete wiring tables |
+| Document                     | Description                    |
+| ---------------------------- | ------------------------------ |
+| 01_quick_overview.md         | Introduction to the system     |
+| 02_system_architecture.md    | System diagrams and power flow |
+| 03_bill_of_materials.md      | Parts list                     |
+| 04_tools_and_safety.md       | Tools and safety guidance      |
+| 05_build_guide.md            | Step-by-step hardware assembly |
+| 06_installation_options.md   | Installation methods           |
+| 07_first_power_test.md       | Safe first power-up            |
+| 08_troubleshooting.md        | Common issues                  |
+| 09_firmware_installation.md  | Installing firmware            |
+| appendix_wiring_reference.md | Complete wiring tables         |
 
 ---
 
@@ -178,33 +416,50 @@ LICENSE
 
 # Builder Skill Level
 
-The project supports two builder styles.
+The project supports two types of builders.
 
 ### Beginner Builders
 
 • jumper wires  
-• screw terminals  
-• minimal electronics experience  
+• breadboard-style connections  
+• minimal soldering  
 
 ### Advanced Builders
-
+  
 • soldered wiring  
 • heat shrink  
-• permanent installations  
+• perfboard mounting  
+• enclosure installs  
 
 ---
 
 # Safety Reminder
 
-Always follow these safety practices when building the system.
+Always follow these safety guidelines when building the system.
 
-• Always install a fuse  
-• Verify polarity before applying power  
-• Disconnect power before changing wiring  
-• Adjust buck converters before connecting electronics  
-• Avoid short circuits  
+• Always use a fuse
+• Verify polarity before connecting power
+• Disconnect power before changing wiring
+• Adjust buck converters before connecting electronics
+• Avoid short circuits
 
-See **[Tools and Safety](docs/04_tools_and_safety.md)** for full details.
+Full safety guidance is available in:
+
+👉 **docs/04_tools_and_safety.md**
+
+---
+
+# Photo Placeholders
+
+**Coming Soon**
+
+```
+[Photo: ESP32 Wiring]
+
+[Photo: Buck Converter Adjustment]
+
+[Photo: Motor Driver Wiring]
+```
 
 ---
 
@@ -218,14 +473,15 @@ See **SUPPORT.md** for support information.
 
 # License
 
-This project is released under the license included in the repository.
+This project is released under the **MIT License**.
 
-Licensed under the MIT License. See **LICENSE** for details.
+See **LICENSE** for full details.
 
 ---
 
 # Contributing
 
-Community improvements and feedback are welcome.
+Community improvements and documentation corrections are welcome.
 
-Bug reports, documentation improvements, and hardware testing feedback all help improve the project for other hobbyists.
+Pull requests, issue reports, and build feedback help improve the project for other hobbyists.
+

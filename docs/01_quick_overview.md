@@ -61,7 +61,9 @@ Examples:
 • DeWalt  
 • Milwaukee  
 • Ryobi  
-• Ridgid  
+• Rigid   
+• other compatible tool batteries  
+• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline)  
 
 Battery adapters allow these batteries to power the locomotive electronics.
 
