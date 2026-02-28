@@ -5,10 +5,10 @@
     {
       "chipFamily": "ESP32",
       "parts": [
-        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.bootloader.bin", "offset": 4096 },
-        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.partitions.bin", "offset": 32768 },
-        { "path": "/PoorMansThrottle-DIY/firmware/latest/boot_app0.bin", "offset": 57344 },
-        { "path": "/PoorMansThrottle-DIY/firmware/latest/PoorMansThrottle.ino.bin", "offset": 65536 }
+         { "path": "/PoorMansThrottle-DIY/firmware/1.6.2/PoorMansThrottle.ino.bootloader.bin", "offset": 4096 },
+        { "path": "/PoorMansThrottle-DIY/firmware/1.6.2/PoorMansThrottle.ino.partitions.bin", "offset": 32768 },
+        { "path": "/PoorMansThrottle-DIY/firmware/1.6.2/boot_app0.bin", "offset": 57344 },
+        { "path": "/PoorMansThrottle-DIY/firmware/1.6.2/PoorMansThrottle.ino.bin", "offset": 65536 }
       ]
     }
   ]
