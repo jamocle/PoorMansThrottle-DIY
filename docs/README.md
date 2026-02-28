@@ -41,7 +41,7 @@ The ESP32 receives commands from the smartphone and converts them into motor con
 
 3. The ESP32 sends control signals to the **IBT-2 motor driver**.
 
-4. The motor driver adjusts the **power going to the locomotive motor**.
+4. The IBT-2 motor driver adjusts the **power going to the locomotive motor**.
 
 5. The locomotive moves **forward, reverse, faster, or slower** based on the throttle input.
 
@@ -91,7 +91,7 @@ The system separates **motor power** and **logic power**.
 Motor power drives the locomotive motor, while logic power runs the ESP32 controller.
 ## Motor Power
 
-Battery or DC supply powers the motor driver.
+Battery or DC supply powers the IBT-2 motor driver.
 
 An optional buck converter may be used with battery systems to reduce voltage.
 
