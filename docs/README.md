@@ -1,5 +1,7 @@
 # Poor Man's Throttle
 
+![Build Difficulty](https://img.shields.io/badge/build-difficulty%3A%20beginner-green)
+
 Low-cost Bluetooth wireless throttle for battery-powered and DC model locomotives.
 
 The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using a simple hardware setup built around an ESP32 controller and an IBT-2 motor driver.
@@ -7,6 +9,43 @@ The **Poor Man's Throttle** allows a smartphone to control a locomotive motor us
 The system is designed for **G-scale model trains**, especially **dead-rail battery conversions**, but it can also be used with traditional **DC model railroad transformers**.
 
 The goal of the project is to provide a **simple, inexpensive wireless throttle system** that hobbyists can build with commonly available parts.
+---
+
+# Hero System Diagram
+
+```
+           Smartphone App
+                 │
+                 │ Bluetooth
+                 ▼
+           ESP32 Controller
+                 │
+          Motor Control Signal
+                 │
+                 ▼
+         IBT-2 Motor Driver
+                 │
+                 ▼
+           Locomotive Motor
+```
+
+The ESP32 receives commands from the smartphone and converts them into motor control signals that drive the locomotive.
+
+---
+
+# How It Works in 30 Seconds
+
+1. Your **smartphone app** sends throttle commands over Bluetooth.
+
+2. The **ESP32 controller** receives those commands.
+
+3. The ESP32 sends control signals to the **IBT-2 motor driver**.
+
+4. The motor driver adjusts the **power going to the locomotive motor**.
+
+5. The locomotive moves **forward, reverse, faster, or slower** based on the throttle input.
+
+All control is wireless, so you can walk around the layout while operating the train.
 
 ---
 
@@ -21,25 +60,27 @@ The goal of the project is to provide a **simple, inexpensive wireless throttle 
 
 ---
 
-# System Overview
+# Estimated Build Cost
 
-The smartphone app communicates with the locomotive using Bluetooth.
+Typical total hardware cost:
 
-The ESP32 controller converts throttle commands into motor control signals that drive the locomotive motor.
+| Component | Approx Cost |
+|----------|-------------|
+| ESP32 development board | $6 |
+| IBT-2 motor driver | $10 |
+| 5V power module | $5 |
 
-```
-Smartphone App
-       │
-Bluetooth Low Energy
-       │
-ESP32 Controller
-       │
-PWM Motor Control
-       │
-IBT-2 Motor Driver
-       │
-Train Motor
-```
+Typical total:
+
+**$21 per locomotive**
+
+Optional components may add a few dollars.
+
+| Optional Component | Purpose |
+|--------------------|--------|
+| Buck converter | Reduce motor voltage for battery installs |
+| Capacitors | Reduce electrical noise |
+| Ferrite core | Reduce motor interference |
 
 ---
 
@@ -48,8 +89,7 @@ Train Motor
 The system separates **motor power** and **logic power**.
 
 Motor power drives the locomotive motor, while logic power runs the ESP32 controller.
-
-## Motor Power Flow
+## Motor Power
 
 Battery or DC supply powers the motor driver.
 
@@ -71,9 +111,7 @@ The buck converter is **optional** and mainly used to limit voltage when using h
 
 ---
 
-## Logic Power Flow
-
-The ESP32 is powered by a separate 5V power module.
+## Logic Power
 
 ```
 Battery / DC Rail
@@ -106,7 +144,9 @@ Future versions will support **consisting**, allowing multiple locomotives to mo
 
 # Example Installation
 
-The electronics can be installed in several ways:
+Electronics can be installed in several locations depending on the locomotive.
+
+Common options:
 
 • inside the locomotive body  
 • inside a tender  
@@ -117,24 +157,6 @@ The system is flexible so builders can adapt it to their locomotives.
 
 ---
 
-# Documentation
-
-Full documentation is located in the **/docs** folder.
-
-| Document | Description |
-|--------|-------------|
-| 01_quick_overview.md | Quick introduction to the system |
-| 02_system_architecture.md | System diagrams and power flow |
-| 03_bill_of_materials.md | Parts list and component descriptions |
-| 04_tools_and_safety.md | Required tools and safety guidance |
-| 05_build_guide.md | Step-by-step hardware build instructions |
-| 06_installation_options.md | Different ways to install the system |
-| 07_first_power_test.md | Safe first power-up procedure |
-| 08_troubleshooting.md | Common issues and solutions |
-| 09_firmware_installation.md | Installing firmware on the ESP32 |
-| appendix_wiring_reference.md | Complete wiring reference tables |
-
----
 
 # Getting Started
 
@@ -168,7 +190,6 @@ Used for **dead-rail battery powered locomotives**.
 | IBT-2 BTS7960 motor driver | High current motor driver |
 | 5V power module | Powers the ESP32 |
 | Battery adapter | Connects cordless tool batteries |
-| ATC fuse holder | Protects wiring and electronics |
 
 Optional components:
 
@@ -187,15 +208,48 @@ Used for **traditional DC model railroad layouts**.
 | ESP32-WROOM-32 USB-C dev board | Main controller |
 | IBT-2 BTS7960 motor driver | High current motor driver |
 | 5V power module | Powers the ESP32 |
-| ATC fuse holder | Protects wiring and electronics |
 | DC model railroad transformer | Layout power source |
 
 Optional components:
 
 • noise suppression capacitors  
 • ferrite core  
+Battery adapters and buck converters are **not required** for DC installations.
 
-A battery adapter and buck converter are **not required** for DC installations.
+---
+
+# Documentation
+
+Full documentation is located in the **/docs** folder.
+
+| Document | Description |
+|--------|-------------|
+| 01_quick_overview.md | Quick introduction |
+| 02_system_architecture.md | System diagrams and power flow |
+| 03_bill_of_materials.md | Parts list |
+| 04_tools_and_safety.md | Tools and safety guidance |
+| 05_build_guide.md | Step-by-step build instructions |
+| 06_installation_options.md | Installation methods |
+| 07_first_power_test.md | Safe first power-up |
+| 08_troubleshooting.md | Common issues |
+| 09_firmware_installation.md | Installing firmware |
+| appendix_wiring_reference.md | Complete wiring tables |
+
+---
+
+# Getting Started
+
+If this is your first build:
+
+1. Read **Quick Overview**
+2. Review **Tools and Safety**
+3. Follow the **Build Guide**
+
+Start here:
+
+```
+docs/01_quick_overview.md
+```
 
 ---
 
@@ -228,7 +282,7 @@ Always follow these safety guidelines when building the system:
 • Adjust buck converters before connecting electronics  
 • Avoid short circuits
 
-More safety information is provided in:
+More safety information is available in:
 
 ```
 docs/04_tools_and_safety.md
@@ -238,7 +292,7 @@ docs/04_tools_and_safety.md
 
 # Photo Placeholders
 
-The documentation will include build photos in future revisions.
+Future documentation will include build photos.
 
 ```
 [Photo: ESP32 Wiring]
