@@ -5,6 +5,31 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
 
+**Poor Man's Throttle is a $21 DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
+
+It works for both **dead-rail battery locomotives** and **traditional DC transformer layouts**.  
+For DC layouts, it acts as a **PWM motor controller**, allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
+
+This eliminates the **low-speed hum and weak torque** common with inexpensive DC transformers and allows **smooth creeping speeds with strong pulling power** — while adding **wireless smartphone control** at the same time.
+
+---
+
+## Why This Project Exists
+
+Many hobbyists want wireless control for their trains, but most commercial systems are expensive and complicated.
+
+Poor Man's Throttle was created to provide a simple alternative:
+
+• **Affordable** — about $21 in hardware  
+• **Simple** — built from common off-the-shelf parts  
+• **Flexible** — works with battery or DC layouts  
+• **Powerful** — PWM motor control for smooth low-speed operation  
+• **Wireless** — control your trains from a smartphone  
+
+The goal is simple:
+
+> **Make wireless model train control accessible to anyone who wants to build it.**
+
 A low-cost **Bluetooth wireless throttle system** for model trains.
 
 The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an **ESP32 controller** and an **IBT-2 motor driver**.
@@ -343,7 +368,7 @@ Optional components:
 • Noise suppression capacitors  
 • Ferrite core  
 
-Battery adapters and buck converters are **not required** for DC installations.
+Battery adapters and buck converters are **Unnecessary** for DC installations.
 
 ---
 
@@ -357,7 +382,7 @@ If this is your first build:
 
 Start here:
 
-👉 **docs/01_quick_overview.md**
+👉 **docs/00_Why_Poor_Mans_Throttle.md**
 
 ---
 
@@ -369,6 +394,7 @@ Full documentation is located in the **/docs** folder.
 
 | Document                     | Description                    |
 | ---------------------------- | ------------------------------ |
+| 00_Why_Poor_Mans_Throttle.md | Elevatror Pitch                |
 | 01_quick_overview.md         | Introduction to the system     |
 | 02_system_architecture.md    | System diagrams and power flow |
 | 03_bill_of_materials.md      | Parts list                     |
@@ -386,6 +412,7 @@ Full documentation is located in the **/docs** folder.
 
 ```
 /docs
+    00_Why_Poor_Mans_Throttle.md
     01_quick_overview.md
     02_system_architecture.md
     03_bill_of_materials.md

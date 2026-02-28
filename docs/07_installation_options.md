@@ -236,6 +236,8 @@ Recommended practices:
 
 # Photo Placeholders
 
+**Coming Soon**
+
 ```
 [Photo: ESP32 Wiring]
 
