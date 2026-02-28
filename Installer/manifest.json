@@ -1,0 +1,15 @@
+{
+  "name": "Poor Man's Throttle",
+  "version": "1.6.1",
+  "builds": [
+    {
+      "chipFamily": "ESP32",
+      "parts": [
+        {
+          "path": "../firmware/1.6.1/PoorMansThrottle-v1.6.1-esp32-merged.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}
