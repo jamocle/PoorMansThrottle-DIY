@@ -154,7 +154,13 @@ docs/01_quick_overview.md
 
 # Example Hardware
 
-Main hardware used in this project:
+The Poor Man's Throttle supports **two common power configurations**.
+
+---
+
+## Battery Installation Example
+
+Used for **dead-rail battery powered locomotives**.
 
 | Component | Description |
 |----------|-------------|
@@ -169,6 +175,27 @@ Optional components:
 • adjustable buck converter  
 • noise suppression capacitors  
 • ferrite core  
+
+---
+
+## DC Transformer Installation Example
+
+Used for **traditional DC model railroad layouts**.
+
+| Component | Description |
+|----------|-------------|
+| ESP32-WROOM-32 USB-C dev board | Main controller |
+| IBT-2 BTS7960 motor driver | High current motor driver |
+| 5V power module | Powers the ESP32 |
+| ATC fuse holder | Protects wiring and electronics |
+| DC model railroad transformer | Layout power source |
+
+Optional components:
+
+• noise suppression capacitors  
+• ferrite core  
+
+A battery adapter and buck converter are **not required** for DC installations.
 
 ---
 
