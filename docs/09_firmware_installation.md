@@ -20,15 +20,15 @@ This process only needs to be done once unless the firmware is updated.
 
 # Firmware File
 
-The firmware file will be provided in the project repository.
+The firmware can be installed from the following location
 
 Example file:
 
 ```
-firmware.bin
+https://jamocle.github.io/PoorMansThrottle-DIY/Installer/
 ```
 
-Download the file before continuing.
+Read the entire installation screen befor continuing.
 
 ---
 
@@ -41,16 +41,23 @@ The computer should recognize the ESP32 as a serial device.  (Note the COM port.
 
 ---
 
-# Upload the Firmware
+# Use the installation screen to install the firmware
 
-Use a standard ESP32 flashing tool.
+https://jamocle.github.io/PoorMansThrottle-DIY/Installer/
 
-Typical process:
+## Install the Latest Firmware:
 
-1. Open the flashing tool.
-2. Select the ESP32 device.
-3. Choose the firmware file.
-4. Start the upload process.
+1. **Typically** you should install the latest firmware.
+2. Press the **Connect** button under the Recommended: Install Latest section.
+3. Follow the on screen prompts.
+
+Wait for the upload to complete.
+
+## Install an older version of the firmware:
+
+1. Choose the Firmware version in the drop down Version field.
+2. Press the **Connect** button.
+3. Follow the on screen prompts.
 
 Wait for the upload to complete.
 
@@ -62,18 +69,10 @@ After installation:
 
 1. Disconnect and reconnect the ESP32.
 2. Power the system.
-3. Confirm the smartphone app can connect.
+3. You should see both a Solid Red LED and a Blinking Blue LED 
+4. Confirm the smartphone app can connect.
 
 If the connection works, the firmware installation is complete.
-
----
-
-# Updating Firmware
-
-If new firmware versions are released:
-
-1. Download the updated firmware file.
-2. Repeat the installation process.
 
 ---
 
