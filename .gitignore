@@ -1,0 +1,12 @@
+@'
+# OS
+Thumbs.db
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+
+# Logs
+*.log
+'@ | Set-Content -Encoding UTF8 .gitignore

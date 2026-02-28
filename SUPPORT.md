@@ -1,0 +1,13 @@
+@'
+# Support — PoorMansThrottle DIY
+
+When requesting help, please include:
+
+- Your ESP32 board model (exact WROOM variant)
+- Your operating system
+- Flashing method used
+- Firmware version
+- Full error message or serial output
+
+Open a GitHub Issue for support.
+'@ | Set-Content -Encoding UTF8 SUPPORT.md
