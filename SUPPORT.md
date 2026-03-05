@@ -9,4 +9,4 @@ When requesting help, please include:
 - Firmware version
 - Full error message or serial output
 
-Contact us as DasFaddelRailroad on Facebook
+Contact us as DasFasselRailroad on Facebook
