@@ -19,7 +19,7 @@ Beginner and advanced builders can follow the same steps.
 # System Wiring Overview
 
 ```
-Tool(DeWalt) Battery Adapter or DC Transformer
+Tool (e.g. DeWalt) Battery Adapter or DC Transformer
            │
       (Optional for Battery (Not necessary for DC))
     Buck Converter
@@ -55,7 +55,7 @@ Power sources supported:
 ## Battery Power Setup
 
 ```
-Tool(DeWalt) Battery Adapter
+Tool Battery Adapter
        │
   (Optional)
 Buck Converter
@@ -81,7 +81,7 @@ DC Transformer
 Track Connector
 ```
 
-No Tool(DeWalt) battery adapter is required for DC installations.
+No Tool battery adapter is required for DC installations.
 
 ---
 
@@ -92,15 +92,15 @@ No Tool(DeWalt) battery adapter is required for DC installations.
 #### No Buck Converter
 | From | To | Purpose |
 |-----|----|--------|
-| Tool(DeWalt) Battery Adapter + | Fuse Input | Overcurrent protection |
+| Tool Battery Adapter + | Fuse Input | Overcurrent protection |
 | Fuse Output | IBT-2 Motor Driver B+ | Motor power |
-| Tool(DeWalt) Battery Adapter - | IBT-2 Motor Driver B- | Ground connection |
+| Tool Battery Adapter - | IBT-2 Motor Driver B- | Ground connection |
 
 #### With OPTIONAL Buck Converter
 | From | To | Purpose |
 |-----|----|--------|
-| Tool(DeWalt) Battery Adapter + | Buck Converter Input + | 20V->15V |
-| Tool(DeWalt) Battery Adapter - | Buck Converter Input - | Ground |
+| Tool Battery Adapter + | Buck Converter Input + | 20V->15V |
+| Tool Battery Adapter - | Buck Converter Input - | Ground |
 | Buck Converter Output + | Fuse Input | Overcurrent protection |
 | Fuse Output | IBT-2 Motor Driver B+ | Motor power |
 | Buck Converter Output - | IBT-2 Motor Driver B- | Ground connection |
@@ -130,7 +130,7 @@ Example:
 
 ## Adjusting the Buck Converter
 
-1. Connect the buck converter to the Tool(DeWalt) battery adapter.
+1. Connect the buck converter to the battery adapter.
 2. Measure the output voltage using a multimeter.
 3. Turn the adjustment screw until the desired voltage is reached.
 
@@ -329,7 +329,7 @@ Then power the system.
 
 ## Expected Result
 
-• ESP32 powers on (Red Light turns on.  If Firmware is Loaded the Blue light will blink)  
+• ESP32 powers on (Red Light turns on.  If Firmware is Loaded the Blue light will blink as well)  
 
 **NOTE**: Firmware installation instructions are in 09_firmware_installation.md
 

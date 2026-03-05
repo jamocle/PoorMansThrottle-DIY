@@ -23,7 +23,7 @@ These issues occur because inexpensive DC transformers reduce voltage instead of
 
 **Poor Man's Throttle** is a low-cost wireless throttle system that lets a smartphone control a model locomotive.
 
-Using a simple ESP32 controller and an inexpensive motor driver, the system converts Bluetooth commands from a phone into **PWM motor control** signals.
+Using a simple ESP32 controller and an inexpensive motor driver, the system converts Bluetooth commands from a phone into **PWM motor control** (Pulse Width Modulation) signals.
 
 This provides smooth and powerful motor control while allowing wireless operation from a smartphone.
 
@@ -37,6 +37,8 @@ Poor Man's Throttle allows a smartphone to control:
 • forward direction  
 • reverse direction  
 • stop  
+• other commands  
+
 
 All control is wireless, allowing the operator to walk around the layout while controlling the train.
 
@@ -94,7 +96,7 @@ It works with common cordless tool batteries such as:
 • Ryobi  
 • Rigid    
 • other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline) 
+• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 This allows hobbyists to reuse inexpensive and widely available batteries.
 

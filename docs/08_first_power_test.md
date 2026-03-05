@@ -54,7 +54,7 @@ Observe the ESP32.
 
 Expected result:
 
-• ESP32 powers on Red LED turns on (if the firmware is installed the Blue LED blinks)
+• ESP32 powers on, Red LED turns on (if the firmware is installed the Blue LED blinks as well)
 
 ---
 

@@ -176,7 +176,7 @@ Motor requirements:
 • Brushed DC motor
 • Typical voltage range: **6V – 24V**
 
-The **IBT-2 motor driver** supports high current loads (47 amps) and works well with most G-scale locomotives.
+The **IBT-2 motor driver** supports high current loads (48 amps) and works well with most G-scale locomotives.
 
 ### Not Compatible With
 
@@ -223,7 +223,7 @@ Common battery brands used by builders:
 • Ryobi  
 • Rigid  
 • other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline) 
+• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 A compatible **battery adapter** is required for battery installations.
 

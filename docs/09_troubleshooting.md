@@ -64,7 +64,7 @@ Work through the checks slowly and carefully.
 ### Possible Causes
 
 • control wiring error  
-• enable signals not connected
+• enable pins not connected
 
 ### Checks
 

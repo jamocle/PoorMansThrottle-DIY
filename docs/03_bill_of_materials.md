@@ -35,7 +35,7 @@ Supported battery brands include:
 • Ryobi  
 • Rigid  
 • other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline) 
+• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 Builders must select a battery adapter that matches their battery brand.
 
@@ -55,7 +55,7 @@ A battery adapter is **Unnecessary** for this installation type.
 
 # Optional Components
 
-These parts are needed for every installation.
+These parts optional for your installation and **NOT** required.
 
 | Component | Description | Possible Buy Location |
 |----------|-------------|-----------------------|

@@ -8,7 +8,7 @@
 **Poor Man's Throttle is a $21 DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
 
 It works for both **dead-rail battery locomotives** and **traditional DC transformer layouts**.  
-For DC layouts, it acts as a **PWM motor controller**, allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
+For DC layouts, it acts as a **PWM motor controller** (Pulse Width Modulation), allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
 
 This eliminates the **low-speed hum and weak torque** common with inexpensive DC transformers and allows **smooth creeping speeds with strong pulling power** — while adding **wireless smartphone control** at the same time.
 
@@ -56,7 +56,7 @@ Planned improvements:
 
 * Android throttle application
 * Multiple locomotive control
-* Locomotive consisting
+* Locomotive consisting (tying multiple locomotives to a single throttle)
 * Expanded troubleshooting guides
 * Peripheral control via app
 
@@ -176,7 +176,7 @@ Motor requirements:
 • Brushed DC motor
 • Typical voltage range: **6V – 24V**
 
-The **IBT-2 motor driver** supports high current loads (47 amps) and works well with most G-scale locomotives.
+The **IBT-2 motor driver** supports high current loads (48 amps) and works well with most G-scale locomotives.
 
 ### Not Compatible With
 
@@ -223,7 +223,7 @@ Common battery brands used by builders:
 • Ryobi  
 • Rigid  
 • other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline) 
+• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 A compatible **battery adapter** is required for battery installations.
 
@@ -256,7 +256,6 @@ Minimum hardware:
 • ESP32 development board  
 • IBT-2 motor driver  
 • 5V power module  
-• Fuse  
 • Power source (battery or DC transformer)  
 
 Full parts list:
@@ -368,7 +367,7 @@ Optional components:
 • Noise suppression capacitors  
 • Ferrite core  
 
-Battery adapters and buck converters are **Unnecessary** for DC installations.
+Battery adapters and buck converters are **Unnecessary** for DC Transformer installations.
 
 ---
 
@@ -399,11 +398,11 @@ Full documentation is located in the **/docs** folder.
 | 02_system_architecture.md    | System diagrams and power flow |
 | 03_bill_of_materials.md      | Parts list                     |
 | 04_tools_and_safety.md       | Tools and safety guidance      |
-| 05_build_guide.md            | Step-by-step hardware assembly |
-| 06_installation_options.md   | Installation methods           |
-| 07_first_power_test.md       | Safe first power-up            |
-| 08_troubleshooting.md        | Common issues                  |
-| 09_firmware_installation.md  | Installing firmware            |
+| 05_firmware_installation.md  | Installing firmware            |
+| 06_build_guide.md            | Step-by-step hardware assembly |
+| 07_installation_options.md   | Installation methods           |
+| 08_first_power_test.md       | Safe first power-up            |
+| 09_troubleshooting.md        | Common issues                  |
 | appendix_wiring_reference.md | Complete wiring tables         |
 
 ---
@@ -417,11 +416,11 @@ Full documentation is located in the **/docs** folder.
     02_system_architecture.md
     03_bill_of_materials.md
     04_tools_and_safety.md
-    05_build_guide.md
-    06_installation_options.md
-    07_first_power_test.md
-    08_troubleshooting.md
-    09_firmware_installation.md
+    05_firmware_installation.md
+    06_build_guide.md
+    07_installation_options.md
+    08_first_power_test.md
+    09_troubleshooting.md
     appendix_wiring_reference.md
 
 /firmware

@@ -50,7 +50,7 @@ The smartphone controls the locomotive wirelessly.
 
 # Supported Power Sources
 
-The Poor Man's Throttle can use two power sources.
+The Poor Man's Throttle can use two types of power sources.
 
 ## Battery Powered (Dead-Rail)
 
@@ -63,7 +63,7 @@ Examples:
 • Ryobi  
 • Rigid   
 • other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim, NiMH, Lead Acid, Alkaline)  
+• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline)  
 
 Battery adapters allow these batteries to power the locomotive electronics.
 

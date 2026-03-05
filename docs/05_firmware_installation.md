@@ -28,7 +28,7 @@ Example file:
 https://jamocle.github.io/PoorMansThrottle-DIY/Installer/
 ```
 
-Read the entire installation screen befor continuing.
+Read the entire installation screen before continuing.
 
 ---
 
