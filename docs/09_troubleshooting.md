@@ -34,9 +34,9 @@ Work through the checks slowly and carefully.
 
 ### Checks
 
-| Check | Action |
-|-----|-------|
-| 5V module input | Verify power source connected |
+| Check            | Action                            |
+|------------------|-----------------------------------|
+| 5V module input  | Verify power source connected     |
 | USB-C connection | Confirm cable or connector secure |
 
 ---

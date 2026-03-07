@@ -111,10 +111,10 @@ A basic build typically costs around:
 Example parts:
 
 | Component | Typical Cost |
-|----------|--------------|
-| ESP32 Development Board | ~$6 |
-| IBT-2 Motor Driver | ~$10 |
-| 5V Power Module | ~$5 |
+|---------------------------------------|------|
+| ESP32 Development Board               | ~$6  |
+| IBT-2 Motor Driver                    | ~$10 |
+| 5V ESP32 Logic Processor Power Module | ~$5  |
 
 Total: **about $21**
 

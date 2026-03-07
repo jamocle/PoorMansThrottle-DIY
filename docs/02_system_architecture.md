@@ -74,7 +74,7 @@ The buck converter reduces voltage from high-voltage batteries.
 
 Example:
 
-20V battery → reduced to about 15V.
+20V battery → reduced to about 15V. (for a 15V motor spec)
 
 This can help protect smaller locomotive motors.
 

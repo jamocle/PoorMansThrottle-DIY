@@ -141,11 +141,11 @@ All control is wireless so operators can walk around the layout while running tr
 
 Typical hardware cost per locomotive:
 
-| Component               | Approx Cost |
-| ----------------------- | ----------- |
-| ESP32 development board | $6          |
-| IBT-2 motor driver      | $10         |
-| 5V power module         | $5          |
+| Component                       | Approx Cost |
+| ------------------------------- | ----------- |
+| ESP32 development board         | $6          |
+| IBT-2 motor driver              | $10         |
+| 5V Logic Processor power module | $5          |
 
 Typical total:
 
@@ -255,7 +255,7 @@ Minimum hardware:
 
 • ESP32 development board  
 • IBT-2 motor driver  
-• 5V power module  
+• 5V power module for the ESP32 Logic Processor
 • Fuse  
 • Power source (battery or DC transformer)  
 

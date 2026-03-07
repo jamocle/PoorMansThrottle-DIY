@@ -141,11 +141,11 @@ All control is wireless so operators can walk around the layout while running tr
 
 Typical hardware cost per locomotive:
 
-| Component               | Approx Cost |
-| ----------------------- | ----------- |
-| ESP32 development board | $6          |
-| IBT-2 motor driver      | $10         |
-| 5V power module         | $5          |
+| Component               | Approx Cost | Purpose                                     |
+| ----------------------- | ----------- |---------------------------------------------|
+| ESP32 development board | $6          |Logic processor                              |
+| IBT-2 motor driver      | $10         | H-Bridge Motor Driver                       |
+| 5V power module         | $5          | Powers the ESP32 **(not the motor driver)** |
 
 Typical total:
 
@@ -153,11 +153,11 @@ Typical total:
 
 Optional components may add a few dollars.
 
-| Optional Component | Purpose                                   |
-| ------------------ | ----------------------------------------- |
+| Optional Component | Purpose                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------- |
 | Buck converter     | Reduce motor voltage for battery installs down to your individual locomotiove needs |
-| Capacitors         | Reduce electrical noise                   |
-| Ferrite core       | Reduce motor interference                 |
+| Capacitors         | Reduce electrical noise                                                             |
+| Ferrite core       | Reduce motor interference                                                           |
 
 ---
 
@@ -231,7 +231,7 @@ A compatible **battery adapter** is required for battery installations.
 
 ## Logic Power (Controller Power)
 
-The ESP32 controller is powered by a dedicated 5V module.
+The ESP32 controller (logic processor) is powered by a dedicated 5V module.
 
 ```
 Battery / DC Rail
@@ -255,8 +255,8 @@ Minimum hardware:
 
 • ESP32 development board  
 • IBT-2 motor driver  
-• 5V power module  
-• Power source (battery or DC transformer)  
+• 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
+• Power source ((Tool/ LIon) battery or DC transformer)  
 
 Full parts list:
 
@@ -336,12 +336,12 @@ The Poor Man's Throttle supports **two common power configurations**.
 
 Used for **battery-powered locomotives**.
 
-| Component                      | Description                      |
-| ------------------------------ | -------------------------------- |
-| ESP32-WROOM-32 USB-C dev board | Main controller                  |
-| IBT-2 BTS7960 motor driver     | High current motor driver        |
-| 5V power module                | Powers the ESP32                 |
-| Battery adapter                | Connects cordless tool batteries |
+| Component                      | Description                        |
+| ------------------------------ | -----------------------------------|
+| ESP32-WROOM-32 USB-C dev board | Main controller                    |
+| IBT-2 BTS7960 motor driver     | High current motor driver          |
+| 5V power module                | Powers the ESP32 (Logic processor) |
+| Battery adapter                | Connects cordless tool batteries   |
 
 Optional components:
 

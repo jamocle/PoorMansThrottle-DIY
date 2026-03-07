@@ -34,7 +34,7 @@ Tool (e.g. DeWalt) Battery Adapter or DC Transformer
 
 Battery / DC Rail
         │
-   5V Power Module
+   5V Power Module for Logic Processor
         │
      ESP32 USB-C
 ```
@@ -166,7 +166,7 @@ From this point the Power source will be simply referred to as Power + and -.  T
 ```
       Power
         │
-   5V Power Module
+   5V Power Module for the logic processor
         │
      ESP32 USB-C
 ```
@@ -176,38 +176,38 @@ From this point the Power source will be simply referred to as Power + and -.  T
 ## 5V Power Module, ESP32, and IBT-2 Motor Driver Wiring
 
 | 5V Power Module Wire | IBT-2 Motor Driver Connection |
-|----------|------------------|
-| Red | B+ |
-| Black | B- |
-| USB-C Male | ESP32 USB-C Female |
+|----------------------|-------------------------------|
+| Red                  | B+                            |
+| Black                | B-                            |
+| USB-C Male           | ESP32 USB-C Female            |
 
 ---
 
 ## ESP32 Control Connections
 
 | ESP32 Pin | IBT-2 Motor Driver Pin |
-|----------|------------------|
-| GPIO25 | RPWM |
-| GPIO26 | LPWM |
-| GPIO27 | R_EN |
-| GPIO33 | L_EN |
-| 5V / VIN | VCC |
-| GND | GND |
+|-----------|------------------------|
+| GPIO25    | RPWM                   |
+| GPIO26    | LPWM                   |
+| GPIO27    | R_EN                   |
+| GPIO33    | L_EN                   |
+| 5V / VIN  | VCC                    |
+| GND       | GND                    |
 
 ---
 
 ## Step 3 Wiring Table
 
-| From | To | Purpose |
-|-----|----|--------|
-| 5V Power Module Red Wire | IBT-2 B+ | 5V Power Module Source Power + |
-| 5V Power Module Black Wire | IBT-2 B- | 5V Power Module Source Power - |
-| 5V Power Module Output | ESP32 USB-C | Controller power |
-| ESP32 GPIO25 | IBT-2 RPWM | Motor control |
-| ESP32 GPIO26 | IBT-2 LPWM | Motor control |
-| ESP32 GPIO27 | IBT-2 R_EN | Enable signal |
-| ESP32 GPIO33 | IBT-2 L_EN | Enable signal |
-| ESP32 GND | IBT-2 GND | Shared ground |
+| From                       | To            | Purpose                        |
+|----------------------------|---------------|--------------------------------|
+| 5V Power Module Red Wire   | IBT-2 B+      | 5V Power Module Source Power + |
+| 5V Power Module Black Wire | IBT-2 B-      | 5V Power Module Source Power - |
+| 5V Power Module Output     | ESP32 USB-C   | Controller power               |
+| ESP32 GPIO25 | IBT-2 RPWM  | Motor control |
+| ESP32 GPIO26 | IBT-2 LPWM  | Motor control |
+| ESP32 GPIO27 | IBT-2 R_EN  | Enable signal |
+| ESP32 GPIO33 | IBT-2 L_EN  | Enable signal |
+| ESP32 GND                  | IBT-2 GND     | Shared ground                  |
 
 ---
 
@@ -235,25 +235,25 @@ IBT-2 Motor Driver
 
 ## IBT-2 Motor Driver Power Connections
 
-| IBT-2 Motor Driver Terminal | Connection |
-|----------------------|-----------|
-| B+ | Power input |
-| B- | Ground |
-| M+ | Motor lead **OR** Track Power Lead |
-| M- | Motor lead **OR** Track Power Lead |
+| IBT-2 Motor Driver Terminal | Connection                                  |
+|-----------------------------|---------------------------------------------|
+| B+                          | Power input (Battery or tansformer Power)   |
+| B-                          | Ground                                      |
+| M+                          | Motor lead **OR** Track Power Lead          |
+| M-                          | Motor lead **OR** Track Power Lead          |
 
 ---
 
 ## Step 4 Wiring Table
 
-| From | To | Purpose |
-|-----|----|--------|
-| Fuse Output | IBT-2 Motor Driver B+ | Motor power |
-| Power Ground | IBT-2 Motor Driver B- | Ground |
-| IBT-2 Motor Driver B+ | 5V Power Module Red | + Power source to the 5V Power Module |
-| IBT-2 Motor Driver B- | 5V Power Module Black | - Power source to the 5V Power Module |
-| IBT-2 Motor Driver M+ | Motor lead **OR** Track Power Lead | Motor output |
-| IBT-2 Motor Driver M- | Motor lead **OR** Track Power Lead | Motor output |
+| From                  | To                                     |  Purpose                              |
+|-----------------------|----------------------------------------|---------------------------------------|
+| Fuse Output           | IBT-2 Motor Driver B+                  | Motor power                           |
+| Power Ground          | IBT-2 Motor Driver B-                  | Ground                                |
+| IBT-2 Motor Driver B+ | 5V Power Module Red                    | + Power source to the 5V Power Module |
+| IBT-2 Motor Driver B- | 5V Power Module Black                  | - Power source to the 5V Power Module |
+| IBT-2 Motor Driver M+ | Motor lead **OR** Track Power Lead     | Motor output                          |
+| IBT-2 Motor Driver M- | Motor lead **OR** Track Power Lead     | Motor output                          |
 
 ---
 
@@ -277,11 +277,11 @@ Optional components:
 
 ## Optional Installation
 
-| Component | Installation |
-|----------|-------------|
+| Component       | Installation                          |
+|-----------------|---------------------------------------|
 | 470µF capacitor | Across IBT-2 motor driver power input |
-| 220µF capacitor | Across 5V supply near ESP32 |
-| Ferrite core | Around motor wires |
+| 220µF capacitor | Across 5V supply near ESP32           |
+| Ferrite core    | Around motor wires                    |
 
 These components are **optional but recommended**.
 
