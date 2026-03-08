@@ -76,11 +76,6 @@ Example of the Poor Man's Throttle in action. **Coming Soon**
 [Video or GIF of locomotive moving]
 ```
 
-Example video:
-
-```
-https://youtube.com/your-demo-video
-```
 
 Hardware projects benefit greatly from visual demonstrations. Photos and videos will be added as the project evolves.
 
@@ -111,7 +106,7 @@ The ESP32 receives commands from the smartphone and converts them into motor con
 
 # How It Works in 30 Seconds
 
-1. The **smartphone app** sends throttle commands over Bluetooth.
+1. The [**smartphone app**](https://testflight.apple.com/join/VQwjRQUk) sends throttle commands over Bluetooth.
 
 2. The **ESP32 controller** receives those commands.
 
@@ -167,7 +162,11 @@ The Poor Man's Throttle works with ALL **DC model locomotives**.
 
 Typical compatible scales:
 
-• G scale
+• G scale  
+• O scale  
+• S scale  
+• HO scale  
+• N scale  
 • Large scale garden railways
 • Custom battery conversions
 
@@ -375,9 +374,9 @@ Battery adapters and buck converters are **Unnecessary** for DC Transformer inst
 
 If this is your first build:
 
-1. Read **Quick Overview**
-2. Review **Tools and Safety**
-3. Follow the **Build Guide**
+1. Read [**Quick Overview**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)
+2. Review [**Tools and Safety**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
+3. Follow the [**Build Guide**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
 
 Start here:
 
@@ -393,7 +392,7 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
 
 | Document                     | Description                    |
 | ---------------------------- | ------------------------------ |
-| 00_Why_Poor_Mans_Throttle.md | Elevatror Pitch                |
+| [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md) | Elevatror Pitch                |
 | 01_quick_overview.md         | Introduction to the system     |
 | 02_system_architecture.md    | System diagrams and power flow |
 | 03_bill_of_materials.md      | Parts list                     |
