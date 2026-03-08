@@ -150,8 +150,6 @@ Common installations include:
 
 Continue to:
 
-```
-03_bill_of_materials.md
-```
-
 This document lists the parts required to build the system.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md

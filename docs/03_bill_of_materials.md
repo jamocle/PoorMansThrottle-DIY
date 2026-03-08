@@ -118,8 +118,6 @@ These parts vary depending on the installation style.
 
 Continue to:
 
-```
-04_tools_and_safety.md
-```
-
 This document describes the tools needed and important safety guidelines.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md

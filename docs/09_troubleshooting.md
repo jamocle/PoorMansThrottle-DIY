@@ -121,6 +121,9 @@ Carefully re-inspect the wiring.
 
 Compare your wiring to the reference tables in:
 
-```
-appendix_wiring_reference.md
-```
+# Next Steps
+
+View the Appendices
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md

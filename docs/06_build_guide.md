@@ -341,8 +341,6 @@ You have completed the basic hardware build.
 
 Next document:
 
-```
-07_installation_options.md
-```
-
 This section explains different ways to install the system inside locomotives.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md

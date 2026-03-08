@@ -157,8 +157,6 @@ Advanced builders.
 
 Continue to:
 
-```
-02_system_architecture.md
-```
-
 This document explains how the system components work together.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md

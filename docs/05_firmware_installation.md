@@ -80,8 +80,6 @@ If the connection works, the firmware installation is complete.
 
 Continue to:
 
-```
-06_build_guide.md
-```
+This appendix contains the step by step build guidance.
 
-This appendix contains the full wiring reference tables.
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md

@@ -112,8 +112,6 @@ Troubleshooting steps are covered in the next document.
 
 Continue to:
 
-```
-09_troubleshooting.md
-```
-
 This document explains how to diagnose common problems.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md

@@ -156,8 +156,6 @@ Just a simple, open, affordable throttle.
 
 Continue to:
 
-```
-01_quick_overview.md
-```
-
 This document performs a quick overview of Poor Man's Throttle.
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md

@@ -89,7 +89,3 @@ Battery / DC Rail
 
 [Photo: IBT-2 Motor Driver Wiring]
 ```
-
----
-
-# End of Documentation

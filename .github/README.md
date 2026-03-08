@@ -260,7 +260,7 @@ Minimum hardware:
 
 Full parts list:
 
-👉 **docs/03_bill_of_materials.md**
+👉 [**docs/03_bill_of_materials.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)
 
 ---
 
@@ -270,7 +270,7 @@ Upload firmware to the ESP32.
 
 Instructions:
 
-👉 **docs/09_firmware_installation.md**
+👉 [**docs/09_firmware_installation.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
 
 ---
 
@@ -278,7 +278,7 @@ Instructions:
 
 Follow the wiring diagrams in:
 
-👉 **docs/05_build_guide.md**
+👉 [**docs/05_build_guide.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
 
 ---
 
@@ -286,7 +286,7 @@ Follow the wiring diagrams in:
 
 Run the safe power-up procedure:
 
-👉 **docs/07_first_power_test.md**
+👉 [**docs/07_first_power_test.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
 
 You should now be able to control the locomotive from the smartphone app.
 
@@ -381,13 +381,13 @@ If this is your first build:
 
 Start here:
 
-👉 **docs/00_Why_Poor_Mans_Throttle.md**
+👉 [**docs/00_Why_Poor_Mans_Throttle.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md)
 
 ---
 
 # Documentation
 
-Full documentation is located in the **/docs** folder.
+Full documentation is located in the [**/docs**](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs) folder.
 
 ### Documentation Index
 
@@ -471,7 +471,7 @@ Always follow these safety guidelines when building the system.
 
 Full safety guidance is available in:
 
-👉 **docs/04_tools_and_safety.md**
+👉 [**docs/04_tools_and_safety.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
 
 ---
 
@@ -493,7 +493,7 @@ Full safety guidance is available in:
 
 If you need help:
 
-See **SUPPORT.md** for support information.
+See [**SUPPORT.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/SUPPORT.md) for support information.
 
 ---
 
@@ -501,7 +501,7 @@ See **SUPPORT.md** for support information.
 
 This project is released under the **MIT License**.
 
-See **LICENSE** for full details.
+See [**LICENSE**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE) for full details.
 
 ---
 

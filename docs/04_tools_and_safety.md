@@ -171,8 +171,6 @@ Careful assembly leads to reliable operation.
 
 Continue to:
 
-```
-05_firmware_installation.md
-```
+This document provides the step-by-step firmware installation.
 
-This document provides the step-by-step hardware assembly instructions.
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md
