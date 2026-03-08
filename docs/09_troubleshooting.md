@@ -127,3 +127,8 @@ View the Appendices
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md
 
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

@@ -115,3 +115,8 @@ Continue to:
 This document explains how to diagnose common problems.
 
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

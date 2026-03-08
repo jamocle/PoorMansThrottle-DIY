@@ -289,3 +289,9 @@ Modern wireless control.
 High-torque PWM performance.**
 
 Run your transformer at full power — and let PMT do the rest.
+
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

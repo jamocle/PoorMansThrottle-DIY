@@ -393,23 +393,24 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
 | Document                     | Description                    |
 | ---------------------------- | ------------------------------ |
 | [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md) | Elevatror Pitch                |
-| 01_quick_overview.md         | Introduction to the system     |
-| 02_system_architecture.md    | System diagrams and power flow |
-| 03_bill_of_materials.md      | Parts list                     |
-| 04_tools_and_safety.md       | Tools and safety guidance      |
-| 05_firmware_installation.md  | Installing firmware            |
-| 06_build_guide.md            | Step-by-step hardware assembly |
-| 07_installation_options.md   | Installation methods           |
-| 08_first_power_test.md       | Safe first power-up            |
-| 09_troubleshooting.md        | Common issues                  |
-| appendix_wiring_reference.md | Complete wiring tables         |
+| [01_quick_overview.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)         | Introduction to the system     |
+| [02_system_architecture.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md)    | System diagrams and power flow |
+| [03_bill_of_materials.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)      | Parts list                     |
+| [04_tools_and_safety.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)       | Tools and safety guidance      |
+| [05_firmware_installation.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)  | Installing firmware            |
+| [06_build_guide.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)            | Step-by-step hardware assembly |
+| [07_installation_options.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md)   | Installation methods           |
+| [08_first_power_test.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)       | Safe first power-up            |
+| [09_troubleshooting.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md)        | Common issues                  |
+| [appendix_traditional_transformer_layout_benefits.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md) | Why Poor Man’s Throttle is Better for Traditional DC Layouts         |
+| [appendix_wiring_reference.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md) | Complete wiring tables         |
 
 ---
 
 # Repository Structure
 
 ```
-/docs
+[/docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
     00_Why_Poor_Mans_Throttle.md
     01_quick_overview.md
     02_system_architecture.md
@@ -422,19 +423,21 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
     09_troubleshooting.md
     appendix_wiring_reference.md
 
-/firmware
+[/firmware](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/firmware)
     (ESP32 firmware)
 
-/Installer
+[/Installer](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/Installer)
     (app or firmware installer)
 
 /.github
     (repository configuration)
 
 README.md
-SUPPORT.md
-CHANGELOG.md
-LICENSE
+[ROADMAP.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/ROADMAP.md)
+[SUPPORT.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/SUPPORT.md)
+[CHANGELOG_App.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md)
+[CHANGELOG_Firmware.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
+[LICENSE](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE)
 ```
 
 ---
@@ -514,3 +517,8 @@ Pull requests, issue reports, and build feedback help improve the project for ot
 # Next Step
 
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

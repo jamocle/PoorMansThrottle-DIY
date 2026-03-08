@@ -159,3 +159,8 @@ Continue to:
 This document performs a quick overview of Poor Man's Throttle.
 
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

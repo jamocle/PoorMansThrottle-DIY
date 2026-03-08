@@ -344,3 +344,8 @@ Next document:
 This section explains different ways to install the system inside locomotives.
 
 https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
