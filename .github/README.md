@@ -8,7 +8,7 @@
 **Poor Man's Throttle is a $21 DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
 
 It works for both **dead-rail battery locomotives** and **traditional DC transformer layouts**.  
-For DC layouts, it acts as a **PWM motor controller**, allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
+For DC layouts, it acts as a **PWM motor controller** (Pulse Width Modulation), allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
 
 This eliminates the **low-speed hum and weak torque** common with inexpensive DC transformers and allows **smooth creeping speeds with strong pulling power** — while adding **wireless smartphone control** at the same time.
 
@@ -56,7 +56,7 @@ Planned improvements:
 
 * Android throttle application
 * Multiple locomotive control
-* Locomotive consisting
+* Locomotive consisting (tying multiple locomotives to a single throttle)
 * Expanded troubleshooting guides
 * Peripheral control via app
 
@@ -141,11 +141,11 @@ All control is wireless so operators can walk around the layout while running tr
 
 Typical hardware cost per locomotive:
 
-| Component                       | Approx Cost |
-| ------------------------------- | ----------- |
-| ESP32 development board         | $6          |
-| IBT-2 motor driver              | $10         |
-| 5V Logic Processor power module | $5          |
+| Component               | Approx Cost | Purpose                                     |
+| ----------------------- | ----------- |---------------------------------------------|
+| ESP32 development board | $6          |Logic processor                              |
+| IBT-2 motor driver      | $10         | H-Bridge Motor Driver                       |
+| 5V power module         | $5          | Powers the ESP32 **(not the motor driver)** |
 
 Typical total:
 
@@ -153,11 +153,11 @@ Typical total:
 
 Optional components may add a few dollars.
 
-| Optional Component | Purpose                                   |
-| ------------------ | ----------------------------------------- |
+| Optional Component | Purpose                                                                             |
+| ------------------ | ----------------------------------------------------------------------------------- |
 | Buck converter     | Reduce motor voltage for battery installs down to your individual locomotiove needs |
-| Capacitors         | Reduce electrical noise                   |
-| Ferrite core       | Reduce motor interference                 |
+| Capacitors         | Reduce electrical noise                                                             |
+| Ferrite core       | Reduce motor interference                                                           |
 
 ---
 
@@ -231,7 +231,7 @@ A compatible **battery adapter** is required for battery installations.
 
 ## Logic Power (Controller Power)
 
-The ESP32 controller is powered by a dedicated 5V module.
+The ESP32 controller (logic processor) is powered by a dedicated 5V module.
 
 ```
 Battery / DC Rail
@@ -255,9 +255,8 @@ Minimum hardware:
 
 • ESP32 development board  
 • IBT-2 motor driver  
-• 5V power module for the ESP32 Logic Processor
-• Fuse  
-• Power source (battery or DC transformer)  
+• 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
+• Power source ((Tool/ LIon) battery or DC transformer)  
 
 Full parts list:
 
@@ -337,12 +336,12 @@ The Poor Man's Throttle supports **two common power configurations**.
 
 Used for **battery-powered locomotives**.
 
-| Component                      | Description                      |
-| ------------------------------ | -------------------------------- |
-| ESP32-WROOM-32 USB-C dev board | Main controller                  |
-| IBT-2 BTS7960 motor driver     | High current motor driver        |
-| 5V power module                | Powers the ESP32                 |
-| Battery adapter                | Connects cordless tool batteries |
+| Component                      | Description                        |
+| ------------------------------ | -----------------------------------|
+| ESP32-WROOM-32 USB-C dev board | Main controller                    |
+| IBT-2 BTS7960 motor driver     | High current motor driver          |
+| 5V power module                | Powers the ESP32 (Logic processor) |
+| Battery adapter                | Connects cordless tool batteries   |
 
 Optional components:
 
@@ -368,7 +367,7 @@ Optional components:
 • Noise suppression capacitors  
 • Ferrite core  
 
-Battery adapters and buck converters are **Unnecessary** for DC installations.
+Battery adapters and buck converters are **Unnecessary** for DC Transformer installations.
 
 ---
 
@@ -399,11 +398,11 @@ Full documentation is located in the **/docs** folder.
 | 02_system_architecture.md    | System diagrams and power flow |
 | 03_bill_of_materials.md      | Parts list                     |
 | 04_tools_and_safety.md       | Tools and safety guidance      |
-| 05_build_guide.md            | Step-by-step hardware assembly |
-| 06_installation_options.md   | Installation methods           |
-| 07_first_power_test.md       | Safe first power-up            |
-| 08_troubleshooting.md        | Common issues                  |
-| 09_firmware_installation.md  | Installing firmware            |
+| 05_firmware_installation.md  | Installing firmware            |
+| 06_build_guide.md            | Step-by-step hardware assembly |
+| 07_installation_options.md   | Installation methods           |
+| 08_first_power_test.md       | Safe first power-up            |
+| 09_troubleshooting.md        | Common issues                  |
 | appendix_wiring_reference.md | Complete wiring tables         |
 
 ---
@@ -417,11 +416,11 @@ Full documentation is located in the **/docs** folder.
     02_system_architecture.md
     03_bill_of_materials.md
     04_tools_and_safety.md
-    05_build_guide.md
-    06_installation_options.md
-    07_first_power_test.md
-    08_troubleshooting.md
-    09_firmware_installation.md
+    05_firmware_installation.md
+    06_build_guide.md
+    07_installation_options.md
+    08_first_power_test.md
+    09_troubleshooting.md
     appendix_wiring_reference.md
 
 /firmware
@@ -512,8 +511,11 @@ Community improvements and documentation corrections are welcome.
 
 Pull requests, issue reports, and build feedback help improve the project for other hobbyists.
 
+
 # Next Step
 
 ```
 00_Why_Poor_Mans_Throttle.md
+
+https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md
 ```
