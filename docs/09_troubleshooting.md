@@ -123,7 +123,7 @@ Compare your wiring to the reference tables in:
 
 # Next Steps
 
-View the Appendices
+View the Appendices  
 
 [**appendix_traditional_transformer_layout_benefits.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md)
 

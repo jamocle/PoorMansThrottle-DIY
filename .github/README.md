@@ -409,7 +409,7 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
 
 # Repository Structure
 
-```
+
 [/docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
     00_Why_Poor_Mans_Throttle.md
     01_quick_overview.md
@@ -438,7 +438,7 @@ README.md
 [CHANGELOG_App.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md)
 [CHANGELOG_Firmware.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
 [LICENSE](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE)
-```
+
 
 ---
 
