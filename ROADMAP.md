@@ -410,18 +410,18 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
 # Repository Structure
 
 
-[/docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
-    00_Why_Poor_Mans_Throttle.md
-    01_quick_overview.md
-    02_system_architecture.md
-    03_bill_of_materials.md
-    04_tools_and_safety.md
-    05_firmware_installation.md
-    06_build_guide.md
-    07_installation_options.md
-    08_first_power_test.md
-    09_troubleshooting.md
-    appendix_wiring_reference.md
+[/docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)  
+    00_Why_Poor_Mans_Throttle.md  
+    01_quick_overview.md  
+    02_system_architecture.md  
+    03_bill_of_materials.md  
+    04_tools_and_safety.md  
+    05_firmware_installation.md  
+    06_build_guide.md  
+    07_installation_options.md  
+    08_first_power_test.md  
+    09_troubleshooting.md  
+    appendix_wiring_reference.md  
 
 [/firmware](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/firmware)
     (ESP32 firmware)
