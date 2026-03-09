@@ -516,7 +516,7 @@ Pull requests, issue reports, and build feedback help improve the project for ot
 
 # Next Step
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md
+[**00_Why_Poor_Mans_Throttle.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/)00_Why_Poor_Mans_Throttle.md
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

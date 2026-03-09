@@ -120,7 +120,7 @@ Continue to:
 
 This document describes the tools needed and important safety guidelines.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md
+[**04_tools_and_safety.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

@@ -90,8 +90,6 @@ Battery / DC Rail
 [Photo: IBT-2 Motor Driver Wiring]
 ```
 
-
-
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
 
 [<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

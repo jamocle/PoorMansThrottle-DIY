@@ -82,7 +82,7 @@ Continue to:
 
 This appendix contains the step by step build guidance.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md
+[**06_build_guide.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

@@ -159,7 +159,7 @@ Continue to:
 
 This document explains how the system components work together.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md
+[**01_quick_overview.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

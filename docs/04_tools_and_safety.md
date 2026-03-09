@@ -173,7 +173,7 @@ Continue to:
 
 This document provides the step-by-step firmware installation.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md
+[**05_firmware_installation.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

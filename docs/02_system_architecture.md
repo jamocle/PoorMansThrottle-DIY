@@ -152,7 +152,7 @@ Continue to:
 
 This document lists the parts required to build the system.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md
+[**03_bill_of_materials.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)

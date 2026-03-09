@@ -252,7 +252,7 @@ Continue to:
 
 This document explains how to safely power the system for the first time.
 
-https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md
+[**08_first_power_test.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
 
 
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
