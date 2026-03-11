@@ -269,7 +269,7 @@ Upload firmware to the ESP32.
 
 Instructions:
 
-👉 [**docs/09_firmware_installation.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
+👉 [**docs/05_firmware_installation.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
 
 ---
 
@@ -277,7 +277,7 @@ Instructions:
 
 Follow the wiring diagrams in:
 
-👉 [**docs/05_build_guide.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
+👉 [**docs/06_build_guide.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
 
 ---
 
@@ -285,7 +285,7 @@ Follow the wiring diagrams in:
 
 Run the safe power-up procedure:
 
-👉 [**docs/07_first_power_test.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
+👉 [**docs/08_first_power_test.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
 
 You should now be able to control the locomotive from the smartphone app.
 
