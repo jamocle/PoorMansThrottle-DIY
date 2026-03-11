@@ -66,18 +66,27 @@
     </div>
   </div>
 
-  <script>
-    const sel = document.getElementById("fwSel");
-    const btn = document.getElementById("olderBtn");
+<script>
+const sel = document.getElementById("fwSel");
+const container = document.querySelector(".row");
 
-    function updateManifest() {
-      btn.setAttribute("manifest", sel.value + "?v=1");
-    }
+function createButton(manifest) {
+  const oldBtn = document.getElementById("olderBtn");
+  if (oldBtn) oldBtn.remove();
 
-    sel.addEventListener("change", updateManifest);
+  const btn = document.createElement("esp-web-install-button");
+  btn.id = "olderBtn";
+  btn.setAttribute("manifest", manifest + "?v=" + Date.now());
 
-    // run once on page load
-    updateManifest();
-  </script>
+  container.appendChild(btn);
+}
+
+sel.addEventListener("change", () => {
+  createButton(sel.value);
+});
+
+// create button on page load
+createButton(sel.value);
+</script>
 </body>
 </html>
