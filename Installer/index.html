@@ -67,12 +67,17 @@
   </div>
 
   <script>
-    // Make the "older firmware" button follow the dropdown
     const sel = document.getElementById("fwSel");
     const btn = document.getElementById("olderBtn");
-    sel.addEventListener("change", () => {
+
+    function updateManifest() {
       btn.setAttribute("manifest", sel.value + "?v=1");
-    });
+    }
+
+    sel.addEventListener("change", updateManifest);
+
+    // run once on page load
+    updateManifest();
   </script>
 </body>
 </html>
