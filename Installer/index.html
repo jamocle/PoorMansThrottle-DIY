@@ -68,25 +68,17 @@
 
 <script>
 const sel = document.getElementById("fwSel");
-const container = document.querySelector(".row");
+const btn = document.getElementById("olderBtn");
 
-function createButton(manifest) {
-  const oldBtn = document.getElementById("olderBtn");
-  if (oldBtn) oldBtn.remove();
-
-  const btn = document.createElement("esp-web-install-button");
-  btn.id = "olderBtn";
-  btn.setAttribute("manifest", manifest + "?v=" + Date.now());
-
-  container.appendChild(btn);
+function updateManifest() {
+  const cacheBust = Math.floor(Math.random() * 1000000000);
+  btn.setAttribute("manifest", sel.value + "?v=" + cacheBust);
 }
 
-sel.addEventListener("change", () => {
-  createButton(sel.value);
-});
+sel.addEventListener("change", updateManifest);
 
-// create button on page load
-createButton(sel.value);
+// run once on page load
+updateManifest();
 </script>
 </body>
 </html>
