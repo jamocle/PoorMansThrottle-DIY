@@ -47,8 +47,8 @@ The power system supplies electricity to the IBT-2 motor driver and ESP32.
 
 Power sources supported:
 
-• cordless tool battery  
-• DC model railroad transformer
+* cordless tool battery  
+* DC model railroad transformer
 
 ---
 
@@ -269,9 +269,9 @@ Noise suppression components can improve reliability.
 
 Optional components:
 
-• 470µF capacitor  
-• 220µF capacitor  
-• ferrite core
+* 470µF capacitor  
+* 220µF capacitor  
+* ferrite core
 
 ---
 
@@ -318,10 +318,10 @@ Before applying power:
 
 Check the following:
 
-• wiring is secure  
-• fuse installed  
-• polarity correct  
-• no exposed wires touching
+* wiring is secure  
+* fuse installed  
+* polarity correct  
+* no exposed wires touching
 
 Then power the system.
 
@@ -329,7 +329,7 @@ Then power the system.
 
 ## Expected Result
 
-• ESP32 powers on (Red Light turns on.  If Firmware is Loaded the Blue light will blink as well)  
+* ESP32 powers on (Red Light turns on.  If Firmware is Loaded the Blue light will blink as well)  
 
 **NOTE**: Firmware installation instructions are in 09_firmware_installation.md
 

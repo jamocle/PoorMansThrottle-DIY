@@ -10,9 +10,9 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• fuse not installed in holder or broken
-• power supply disconnected  
-• incorrect polarity
+* fuse not installed in holder or broken
+* power supply disconnected  
+* incorrect polarity
 
 ### Checks
 
@@ -28,9 +28,9 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• 5V power module USB-C not connected  
-• wiring error  
-• faulty USB-C cable or connector
+* 5V power module USB-C not connected  
+* wiring error  
+* faulty USB-C cable or connector
 
 ### Checks
 
@@ -45,9 +45,9 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• motor wiring incorrect  
-• motor driver not powered  
-• loose wiring
+* motor wiring incorrect  
+* motor driver not powered  
+* loose wiring
 
 ### Checks
 
@@ -63,8 +63,8 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• control wiring error  
-• enable pins not connected
+* control wiring error  
+* enable pins not connected
 
 ### Checks
 
@@ -79,8 +79,8 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• incorrect control wiring  
-• enable pins not connected correctly
+* incorrect control wiring  
+* enable pins not connected correctly
 
 Turn off power and verify control wiring.
 
@@ -90,14 +90,14 @@ Turn off power and verify control wiring.
 
 ### Possible Causes
 
-• unstable power supply  
-• electrical noise
+* unstable power supply  
+* electrical noise
 
 ### Possible Fixes
 
-• install optional capacitors  
-• add ferrite core to motor wires  
-• verify wiring connections
+* install optional capacitors  
+* add ferrite core to motor wires  
+* verify wiring connections
 
 ---
 
@@ -105,13 +105,13 @@ Turn off power and verify control wiring.
 
 ### Possible Causes
 
-• short circuit  
-• motor stall condition
+* short circuit  
+* motor stall condition
 
 ### Checks
 
-• inspect wiring  
-• check motor for mechanical blockage
+* inspect wiring  
+* check motor for mechanical blockage
 
 ---
 

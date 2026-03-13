@@ -10,8 +10,8 @@ Builders may choose a **beginner build style** or an **advanced build style** de
 
 Two tool sets are described:
 
-• Basic Tools (no soldering required)  
-• Advanced Tools (for permanent installations)
+* Basic Tools (no soldering required)  
+* Advanced Tools (for permanent installations)
 
 You may use either approach.
 
@@ -76,9 +76,9 @@ The fuse prevents damage if a short circuit occurs.
 
 Before connecting power:
 
-• Verify positive and negative wires  
-• Check polarity using a multimeter  
-• Double check connections
+* Verify positive and negative wires  
+* Check polarity using a multimeter  
+* Double check connections
 
 Reversed polarity can damage electronics.
 
@@ -88,9 +88,9 @@ Reversed polarity can damage electronics.
 
 Always disconnect the battery or power supply before:
 
-• changing wiring  
-• adjusting components  
-• installing electronics
+* changing wiring  
+* adjusting components  
+* installing electronics
 
 Never modify wiring while power is connected.
 
@@ -116,10 +116,10 @@ Short circuits can damage electronics and wiring.
 
 To prevent shorts:
 
-• keep wires insulated  
-• avoid exposed conductors  
-• secure loose wires  
-• use heat shrink when possible
+* keep wires insulated  
+* avoid exposed conductors  
+* secure loose wires  
+* use heat shrink when possible
 
 ---
 
@@ -159,9 +159,9 @@ These components are **optional but recommended**.
 
 Take your time when building the system.
 
-• verify each connection  
-• test components step by step  
-• keep wiring organized
+* verify each connection  
+* test components step by step  
+* keep wiring organized
 
 Careful assembly leads to reliable operation.
 

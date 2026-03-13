@@ -11,9 +11,9 @@ At the same time, hobbyists using **traditional DC transformers** often experien
 
 Typical problems include:
 
-• locomotive hum at low speeds  
-• weak torque when starting  
-• jerky slow-speed operation  
+* locomotive hum at low speeds  
+* weak torque when starting  
+* jerky slow-speed operation  
 
 These issues occur because inexpensive DC transformers reduce voltage instead of properly controlling motor power.
 
@@ -33,11 +33,11 @@ This provides smooth and powerful motor control while allowing wireless operatio
 
 Poor Man's Throttle allows a smartphone to control:
 
-• locomotive speed  
-• forward direction  
-• reverse direction  
-• stop  
-• other commands  
+* locomotive speed  
+* forward direction  
+* reverse direction  
+* stop  
+* other commands  
 
 
 All control is wireless, allowing the operator to walk around the layout while controlling the train.
@@ -91,12 +91,12 @@ The system is also ideal for **dead-rail locomotives** powered by onboard batter
 
 It works with common cordless tool batteries such as:
 
-• DeWalt  
-• Milwaukee  
-• Ryobi  
-• Rigid    
-• other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* DeWalt  
+* Milwaukee  
+* Ryobi  
+* Rigid    
+* other compatible tool batteries  
+* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 This allows hobbyists to reuse inexpensive and widely available batteries.
 
@@ -126,11 +126,11 @@ Many hobbyists already have some of these components available.
 
 This project is designed for:
 
-• model railroad hobbyists  
-• dead-rail builders  
-• traditional DC layout operators  
-• DIY electronics enthusiasts  
-• makers and tinkerers  
+* model railroad hobbyists  
+* dead-rail builders  
+* traditional DC layout operators  
+* DIY electronics enthusiasts  
+* makers and tinkerers  
 
 It supports both:
 

@@ -44,8 +44,8 @@ Locomotive Motor
 
 The system uses **two separate power paths**.
 
-• Motor Power  
-• Logic Power
+* Motor Power  
+* Logic Power
 
 Separating these improves reliability and reduces electrical noise.
 
@@ -139,10 +139,10 @@ The electronics can be installed in different locations.
 
 Common installations include:
 
-• inside the locomotive  
-• inside a tender  
-• inside a battery car  
-• inside a small electronics enclosure
+* inside the locomotive  
+* inside a tender  
+* inside a battery car  
+* inside a small electronics enclosure
 
 ---
 

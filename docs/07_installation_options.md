@@ -10,10 +10,10 @@ This document describes common installation methods used by hobbyists.
 
 A good installation should:
 
-• keep electronics secure  
-• prevent wires from moving or rubbing  
-• allow easy battery or power access  
-• avoid contact with moving parts
+* keep electronics secure  
+* prevent wires from moving or rubbing  
+* allow easy battery or power access  
+* avoid contact with moving parts
 
 ---
 
@@ -21,10 +21,10 @@ A good installation should:
 
 Typical locations inside a locomotive include:
 
-• locomotive body  
-• tender  
-• battery car  
-• external enclosure (required for DC Transformer installations)
+* locomotive body  
+* tender  
+* battery car  
+* external enclosure (required for DC Transformer installations)
 
 Each option has advantages depending on the locomotive design.
 
@@ -44,13 +44,13 @@ Locomotive Body
 
 ### Advantages
 
-• fully self-contained  
-• no external cars required
+* fully self-contained  
+* no external cars required
 
 ### Disadvantages
 
-• limited space  
-• heat buildup may occur
+* limited space  
+* heat buildup may occur
 
 ---
 
@@ -68,12 +68,12 @@ Tender
 
 ### Advantages
 
-• more installation space  
-• easier maintenance
+* more installation space  
+* easier maintenance
 
 ### Disadvantages
 
-• requires wiring between tender and locomotive
+* requires wiring between tender and locomotive
 
 ---
 
@@ -91,13 +91,13 @@ Battery Car
 
 ### Advantages
 
-• very easy installation  
-• plenty of room for components
+* very easy installation  
+* plenty of room for components
 
 ### Disadvantages
 
-• requires an extra car in the train  
-• requires wiring between extra car and locomotive
+* requires an extra car in the train  
+* requires wiring between extra car and locomotive
 
 ---
 
@@ -115,12 +115,12 @@ Electronics Box
 
 ### Advantages
 
-• protects electronics  
-• organized wiring
+* protects electronics  
+* organized wiring
 
 ### Disadvantages
 
-• may require mounting brackets
+* may require mounting brackets
 
 ---
 
@@ -173,10 +173,10 @@ The ESP32 inside the controller box receives throttle commands from the smartpho
 
 ## Advantages
 
-• works with existing DC layouts  
-• no locomotive modifications required  
-• easy to install and remove  
-• can control any locomotive on the track
+* works with existing DC layouts  
+* no locomotive modifications required  
+* easy to install and remove  
+* can control any locomotive on the track
 
 ---
 
@@ -186,10 +186,10 @@ A small plastic project box works well.
 
 Inside the enclosure you may mount:
 
-• ESP32 controller  
-• motor driver  
-• fuse holder  
-• wiring terminals
+* ESP32 controller  
+* motor driver  
+* fuse holder  
+* wiring terminals
 
 Terminal blocks or binding posts can make connecting the transformer and track wires easier.
 
@@ -199,15 +199,15 @@ Terminal blocks or binding posts can make connecting the transformer and track w
 
 To keep electronics secure:
 
-• use double-sided foam tape  
-• use small screws or brackets  
-• avoid loose components
+* use double-sided foam tape  
+* use small screws or brackets  
+* avoid loose components
 
 Keep wiring away from:
 
-• gears  
-• wheels  
-• drive shafts
+* gears  
+* wheels  
+* drive shafts
 
 ---
 
@@ -227,10 +227,10 @@ Good wiring improves reliability.
 
 Recommended practices:
 
-• keep wires short  
-• bundle wires together  
-• label connectors if possible  
-• secure wires with zip ties
+* keep wires short  
+* bundle wires together  
+* label connectors if possible  
+* secure wires with zip ties
 
 ---
 

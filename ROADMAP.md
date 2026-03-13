@@ -86,9 +86,9 @@ Some future capabilities may require additional hardware or expansion modules.
 
 Examples include:
 
-• additional output drivers  
-• accessory control boards  
-• layout control interfaces  
+* additional output drivers  
+* accessory control boards  
+* layout control interfaces  
 
 These expansions would allow the system to grow while keeping the base throttle simple and inexpensive.
 

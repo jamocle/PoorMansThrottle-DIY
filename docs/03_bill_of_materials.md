@@ -30,12 +30,12 @@ These components are used when installing the system in a battery-powered locomo
 
 Supported battery brands include:
 
-• DeWalt  
-• Milwaukee  
-• Ryobi  
-• Rigid  
-• other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* DeWalt  
+* Milwaukee  
+* Ryobi  
+* Rigid  
+* other compatible tool batteries  
+* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 Builders must select a battery adapter that matches their battery brand.
 
@@ -91,10 +91,10 @@ Builders may also need small hardware items.
 
 Examples:
 
-• screw terminals  
-• crimp connectors  
-• heat shrink tubing  
-• mounting hardware
+* screw terminals  
+* crimp connectors  
+* heat shrink tubing  
+* mounting hardware
 
 These parts vary depending on the installation style.
 

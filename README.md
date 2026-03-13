@@ -20,11 +20,11 @@ Many hobbyists want wireless control for their trains, but most commercial syste
 
 Poor Man's Throttle was created to provide a simple alternative:
 
-• **Affordable** — about $21 in hardware  
-• **Simple** — built from common off-the-shelf parts  
-• **Flexible** — works with battery or DC layouts  
-• **Powerful** — PWM motor control for smooth low-speed operation  
-• **Wireless** — control your trains from a smartphone  
+* **Affordable** — about $21 in hardware  
+* **Simple** — built from common off-the-shelf parts  
+* **Flexible** — works with battery or DC layouts  
+* **Powerful** — PWM motor control for smooth low-speed operation  
+* **Wireless** — control your trains from a smartphone  
 
 The goal is simple:
 
@@ -122,13 +122,13 @@ All control is wireless so operators can walk around the layout while running tr
 
 # Key Features
 
-• Bluetooth wireless control from a smartphone  
-• Works with **battery-powered locomotives (dead-rail-no power on tracks)**  
-• Works with **traditional DC model railroad transformers**  
-• Uses inexpensive off-the-shelf electronics  
-• Beginner-friendly wiring  
-• Expandable for multiple locomotives  
-• Future support planned for **consisting**  
+* Bluetooth wireless control from a smartphone  
+* Works with **battery-powered locomotives (dead-rail-no power on tracks)**  
+* Works with **traditional DC model railroad transformers**  
+* Uses inexpensive off-the-shelf electronics  
+* Beginner-friendly wiring  
+* Expandable for multiple locomotives  
+* Future support planned for **consisting**  
 
 ---
 
@@ -162,18 +162,18 @@ The Poor Man's Throttle works with ALL **DC model locomotives**.
 
 Typical compatible scales:
 
-• G scale  
-• O scale  
-• S scale  
-• HO scale  
-• N scale  
-• Large scale garden railways
-• Custom battery conversions
+* G scale  
+* O scale  
+* S scale  
+* HO scale  
+* N scale  
+* Large scale garden railways
+* Custom battery conversions
 
 Motor requirements:
 
-• Brushed DC motor
-• Typical voltage range: **6V – 24V**
+* Brushed DC motor
+* Typical voltage range: **6V – 24V**
 
 The **IBT-2 motor driver** supports high current loads (48 amps) and works well with most G-scale locomotives.
 
@@ -181,9 +181,9 @@ The **IBT-2 motor driver** supports high current loads (48 amps) and works well 
 
 This system does **not directly support**:
 
-• DCC decoder locomotives
-• AC motors
-• Digital command control systems
+* DCC decoder locomotives
+* AC motors
+* Digital command control systems
 
 Those systems require different control hardware.
 
@@ -217,12 +217,12 @@ The buck converter is **optional** and mainly used when battery voltage is highe
 
 Common battery brands used by builders:
 
-• DeWalt  
-• Milwaukee  
-• Ryobi  
-• Rigid  
-• other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* DeWalt  
+* Milwaukee  
+* Ryobi  
+* Rigid  
+* other compatible tool batteries  
+* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 A compatible **battery adapter** is required for battery installations.
 
@@ -252,10 +252,10 @@ The fastest way to try the Poor Man's Throttle.
 
 Minimum hardware:
 
-• ESP32 development board  
-• IBT-2 motor driver  
-• 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
-• Power source ((Tool/ LIon) battery or DC transformer)  
+* ESP32 development board  
+* IBT-2 motor driver  
+* 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
+* Power source ((Tool/ LIon) battery or DC transformer)  
 
 Full parts list:
 
@@ -297,11 +297,11 @@ The smartphone app provides simple locomotive controls.
 
 Available controls:
 
-• Throttle speed  
-• Forward direction  
-• Reverse direction  
-• Stop  
-• Other controls  
+* Throttle speed  
+* Forward direction  
+* Reverse direction  
+* Stop  
+* Other controls  
 
 
 Multiple locomotives can be controlled individually.
@@ -316,10 +316,10 @@ Electronics can be installed in several locations depending on the locomotive.
 
 Common options:
 
-• Inside the locomotive body  
-• Inside a tender  
-• Inside a battery car  
-• Inside a small electronics enclosure  
+* Inside the locomotive body  
+* Inside a tender  
+* Inside a battery car  
+* Inside a small electronics enclosure  
 
 The system is flexible so builders can adapt it to their locomotives.
 
@@ -344,9 +344,9 @@ Used for **battery-powered locomotives**.
 
 Optional components:
 
-• Adjustable buck converter  
-• Noise suppression capacitors  
-• Ferrite core  
+* Adjustable buck converter  
+* Noise suppression capacitors  
+* Ferrite core  
 
 ---
 
@@ -363,8 +363,8 @@ Used for **traditional DC model railroad layouts**.
 
 Optional components:
 
-• Noise suppression capacitors  
-• Ferrite core  
+* Noise suppression capacitors  
+* Ferrite core  
 
 Battery adapters and buck converters are **Unnecessary** for DC Transformer installations.
 
@@ -439,16 +439,16 @@ The project supports two types of builders.
 
 ### Beginner Builders
 
-• jumper wires  
-• breadboard-style connections  
-• minimal soldering  
+* jumper wires  
+* breadboard-style connections  
+* minimal soldering  
 
 ### Advanced Builders
   
-• soldered wiring  
-• heat shrink  
-• perfboard mounting  
-• enclosure installs  
+* soldered wiring  
+* heat shrink  
+* perfboard mounting  
+* enclosure installs  
 
 ---
 
@@ -456,11 +456,11 @@ The project supports two types of builders.
 
 Always follow these safety guidelines when building the system.
 
-• Always use a fuse
-• Verify polarity before connecting power
-• Disconnect power before changing wiring
-• Adjust buck converters before connecting electronics
-• Avoid short circuits
+* Always use a fuse
+* Verify polarity before connecting power
+* Disconnect power before changing wiring
+* Adjust buck converters before connecting electronics
+* Avoid short circuits
 
 Full safety guidance is available in:
 

@@ -25,9 +25,9 @@ Carefully inspect the wiring.
 
 Check for:
 
-• exposed wires touching metal  
-• reversed connections  
-• loose connectors
+* exposed wires touching metal  
+* reversed connections  
+* loose connectors
 
 Correct any issues before continuing.
 
@@ -43,8 +43,8 @@ Connect the power source.
 
 Examples:
 
-• battery adapter  
-• DC transformer
+* battery adapter  
+* DC transformer
 
 ---
 
@@ -54,7 +54,7 @@ Observe the ESP32.
 
 Expected result:
 
-• ESP32 powers on, Red LED turns on (if the firmware is installed the Blue LED blinks as well)
+* ESP32 powers on, Red LED turns on (if the firmware is installed the Blue LED blinks as well)
 
 ---
 
@@ -80,7 +80,7 @@ Slowly increase the throttle.
 
 Expected behavior:
 
-• locomotive motor begins to rotate
+* locomotive motor begins to rotate
 
 ---
 
@@ -100,9 +100,9 @@ Turn off power immediately.
 
 Check:
 
-• fuse  
-• wiring connections  
-• ESP32 power module
+* fuse  
+* wiring connections  
+* ESP32 power module
 
 Troubleshooting steps are covered in the next document.
 
