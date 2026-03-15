@@ -6,6 +6,12 @@ Work through the checks slowly and carefully.
 
 ---
 
+# AI Troubleshooter
+
+The AI has all the acces to the code for the app and firmware and it is knowledgable of the hardware used for Poor Man's Throttle.  Try this out and ask it questions
+
+[AI Troubleshooter - **Check it out**](https://chatgpt.com/gpts/editor/g-69b6b9e2de288191b93ca08de865a365)
+
 # System Does Not Power On
 
 ### Possible Causes
