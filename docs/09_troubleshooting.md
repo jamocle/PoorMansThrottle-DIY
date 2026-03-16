@@ -6,13 +6,19 @@ Work through the checks slowly and carefully.
 
 ---
 
+# AI Troubleshooter
+
+The AI has all the acces to the code for the app and firmware and it is knowledgable of the hardware used for Poor Man's Throttle.  Try this out and ask it questions
+
+[AI Troubleshooter - **Check it out**](https://chatgpt.com/gpts/editor/g-69b6b9e2de288191b93ca08de865a365)
+
 # System Does Not Power On
 
 ### Possible Causes
 
-• fuse not installed in holder or broken
-• power supply disconnected  
-• incorrect polarity
+* fuse not installed in holder or broken
+* power supply disconnected  
+* incorrect polarity
 
 ### Checks
 
@@ -28,15 +34,15 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• 5V power module USB-C not connected  
-• wiring error  
-• faulty USB-C cable or connector
+* 5V power module USB-C not connected  
+* wiring error  
+* faulty USB-C cable or connector
 
 ### Checks
 
-| Check | Action |
-|-----|-------|
-| 5V module input | Verify power source connected |
+| Check            | Action                            |
+|------------------|-----------------------------------|
+| 5V module input  | Verify power source connected     |
 | USB-C connection | Confirm cable or connector secure |
 
 ---
@@ -45,9 +51,9 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• motor wiring incorrect  
-• motor driver not powered  
-• loose wiring
+* motor wiring incorrect  
+* motor driver not powered  
+* loose wiring
 
 ### Checks
 
@@ -63,8 +69,8 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• control wiring error  
-• enable pins not connected
+* control wiring error  
+* enable pins not connected
 
 ### Checks
 
@@ -79,8 +85,8 @@ Work through the checks slowly and carefully.
 
 ### Possible Causes
 
-• incorrect control wiring  
-• enable pins not connected correctly
+* incorrect control wiring  
+* enable pins not connected correctly
 
 Turn off power and verify control wiring.
 
@@ -90,14 +96,14 @@ Turn off power and verify control wiring.
 
 ### Possible Causes
 
-• unstable power supply  
-• electrical noise
+* unstable power supply  
+* electrical noise
 
 ### Possible Fixes
 
-• install optional capacitors  
-• add ferrite core to motor wires  
-• verify wiring connections
+* install optional capacitors  
+* add ferrite core to motor wires  
+* verify wiring connections
 
 ---
 
@@ -105,13 +111,13 @@ Turn off power and verify control wiring.
 
 ### Possible Causes
 
-• short circuit  
-• motor stall condition
+* short circuit  
+* motor stall condition
 
 ### Checks
 
-• inspect wiring  
-• check motor for mechanical blockage
+* inspect wiring  
+* check motor for mechanical blockage
 
 ---
 
@@ -121,6 +127,20 @@ Carefully re-inspect the wiring.
 
 Compare your wiring to the reference tables in:
 
-```
-appendix_wiring_reference.md
-```
+# Next Steps
+
+View the Appendices  
+
+[appendix_Configuration_Variables.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Configuration_Variables.md)
+
+[appendix_Command_Protocol_Reference.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Command_Protocol_Reference.md)
+
+[appendix_traditional_transformer_layout_benefits.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md)
+
+[appendix_wiring_reference.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md)
+
+---
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

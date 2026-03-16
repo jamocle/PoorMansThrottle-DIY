@@ -7,8 +7,8 @@ The smartphone app controls the locomotive speed and direction.
 
 This system works with:
 
-• battery-powered locomotives (dead-rail)  
-• traditional DC model railroad transformers
+* battery-powered locomotives (dead-rail)  
+* traditional DC model railroad transformers
 
 ---
 
@@ -58,12 +58,12 @@ Cordless tool batteries are commonly used.
 
 Examples:
 
-• DeWalt  
-• Milwaukee  
-• Ryobi  
-• Rigid   
-• other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline)  
+* DeWalt  
+* Milwaukee  
+* Ryobi  
+* Rigid   
+* other compatible tool batteries  
+* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline)  
 
 Battery adapters allow these batteries to power the locomotive electronics.
 
@@ -95,9 +95,9 @@ Typical hardware used in the system:
 
 Optional components:
 
-• adjustable buck converter  
-• capacitors for noise reduction  
-• ferrite core for motor wires
+* adjustable buck converter  
+* capacitors for noise reduction  
+* ferrite core for motor wires
 
 ---
 
@@ -140,10 +140,10 @@ Battery / DC Rail
 
 This project is designed for hobbyists who want:
 
-• wireless locomotive control  
-• inexpensive electronics  
-• simple installation  
-• flexible battery options
+* wireless locomotive control  
+* inexpensive electronics  
+* simple installation  
+* flexible battery options
 
 The documentation supports both:
 
@@ -157,8 +157,11 @@ Advanced builders.
 
 Continue to:
 
-```
-02_system_architecture.md
-```
-
 This document explains how the system components work together.
+
+[**02_system_architecture.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md)
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

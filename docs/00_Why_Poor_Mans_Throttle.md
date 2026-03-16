@@ -11,9 +11,9 @@ At the same time, hobbyists using **traditional DC transformers** often experien
 
 Typical problems include:
 
-• locomotive hum at low speeds  
-• weak torque when starting  
-• jerky slow-speed operation  
+* locomotive hum at low speeds  
+* weak torque when starting  
+* jerky slow-speed operation  
 
 These issues occur because inexpensive DC transformers reduce voltage instead of properly controlling motor power.
 
@@ -33,11 +33,11 @@ This provides smooth and powerful motor control while allowing wireless operatio
 
 Poor Man's Throttle allows a smartphone to control:
 
-• locomotive speed  
-• forward direction  
-• reverse direction  
-• stop  
-• other commands  
+* locomotive speed  
+* forward direction  
+* reverse direction  
+* stop  
+* other commands  
 
 
 All control is wireless, allowing the operator to walk around the layout while controlling the train.
@@ -91,12 +91,12 @@ The system is also ideal for **dead-rail locomotives** powered by onboard batter
 
 It works with common cordless tool batteries such as:
 
-• DeWalt  
-• Milwaukee  
-• Ryobi  
-• Rigid    
-• other compatible tool batteries  
-• other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* DeWalt  
+* Milwaukee  
+* Ryobi  
+* Rigid    
+* other compatible tool batteries  
+* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
 
 This allows hobbyists to reuse inexpensive and widely available batteries.
 
@@ -111,10 +111,10 @@ A basic build typically costs around:
 Example parts:
 
 | Component | Typical Cost |
-|----------|--------------|
-| ESP32 Development Board | ~$6 |
-| IBT-2 Motor Driver | ~$10 |
-| 5V Power Module | ~$5 |
+|---------------------------------------|------|
+| ESP32 Development Board               | ~$6  |
+| IBT-2 Motor Driver                    | ~$10 |
+| 5V ESP32 Logic Processor Power Module | ~$5  |
 
 Total: **about $21**
 
@@ -126,11 +126,11 @@ Many hobbyists already have some of these components available.
 
 This project is designed for:
 
-• model railroad hobbyists  
-• dead-rail builders  
-• traditional DC layout operators  
-• DIY electronics enthusiasts  
-• makers and tinkerers  
+* model railroad hobbyists  
+* dead-rail builders  
+* traditional DC layout operators  
+* DIY electronics enthusiasts  
+* makers and tinkerers  
 
 It supports both:
 
@@ -156,8 +156,11 @@ Just a simple, open, affordable throttle.
 
 Continue to:
 
-```
-01_quick_overview.md
-```
-
 This document performs a quick overview of Poor Man's Throttle.
+
+[**01_quick_overview.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

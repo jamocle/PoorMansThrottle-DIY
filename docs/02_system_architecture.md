@@ -44,8 +44,8 @@ Locomotive Motor
 
 The system uses **two separate power paths**.
 
-• Motor Power  
-• Logic Power
+* Motor Power  
+* Logic Power
 
 Separating these improves reliability and reduces electrical noise.
 
@@ -74,7 +74,7 @@ The buck converter reduces voltage from high-voltage batteries.
 
 Example:
 
-20V battery → reduced to about 15V.
+20V battery → reduced to about 15V. (for a 15V motor spec)
 
 This can help protect smaller locomotive motors.
 
@@ -139,10 +139,10 @@ The electronics can be installed in different locations.
 
 Common installations include:
 
-• inside the locomotive  
-• inside a tender  
-• inside a battery car  
-• inside a small electronics enclosure
+* inside the locomotive  
+* inside a tender  
+* inside a battery car  
+* inside a small electronics enclosure
 
 ---
 
@@ -150,8 +150,11 @@ Common installations include:
 
 Continue to:
 
-```
-03_bill_of_materials.md
-```
-
 This document lists the parts required to build the system.
+
+[**03_bill_of_materials.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)
+
+
+[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+
+[<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

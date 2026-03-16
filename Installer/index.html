@@ -43,12 +43,13 @@
       <div class="row">
         <label class="note" for="fwSel">Version:</label>
         <select id="fwSel">
-          <option value="manifest-1.6.1.json">v1.6.1</option>
           <option value="manifest-1.6.2.json">v1.6.2</option>
+          <option value="manifest-1.6.1.json">v1.6.1</option>
+          <option value="manifest-1.7.1.json">v1.7.1 Beta</option>
           <!-- add more options as you publish versions -->
         </select>
 
-        <esp-web-install-button id="olderBtn" manifest="manifest-1.6.1.json?v=1"></esp-web-install-button>
+        <esp-web-install-button id="olderBtn" manifest="manifest-1.6.2.json?v=1"></esp-web-install-button>
       </div>
       <p class="note">
         Useful if you want to roll back after testing a new release.
@@ -65,13 +66,19 @@
     </div>
   </div>
 
-  <script>
-    // Make the "older firmware" button follow the dropdown
-    const sel = document.getElementById("fwSel");
-    const btn = document.getElementById("olderBtn");
-    sel.addEventListener("change", () => {
-      btn.setAttribute("manifest", sel.value + "?v=1");
-    });
-  </script>
+<script>
+const sel = document.getElementById("fwSel");
+const btn = document.getElementById("olderBtn");
+
+function updateManifest() {
+  const cacheBust = Math.floor(Math.random() * 1000000000);
+  btn.setAttribute("manifest", sel.value + "?v=" + cacheBust);
+}
+
+sel.addEventListener("change", updateManifest);
+
+// run once on page load
+updateManifest();
+</script>
 </body>
 </html>
