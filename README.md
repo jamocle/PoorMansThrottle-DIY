@@ -5,7 +5,7 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
 
-**Poor Man's Throttle is a FREE (~$21 in parts off the shelf parts) DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
+**Poor Man's Throttle is a FREE (~$21 in off the shelf parts) DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
 
 It works for both **dead-rail battery locomotives** and **traditional DC transformer layouts**.  
 For DC layouts, it acts as a **PWM motor controller** (Pulse Width Modulation), allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
