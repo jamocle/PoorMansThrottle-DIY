@@ -31,7 +31,7 @@
       </p>
 
       <!-- Latest -->
-      <esp-web-install-button manifest="manifest-latest.json?v=1"></esp-web-install-button>
+      <esp-web-install-button id="latestBtn" manifest="manifest-latest.json"></esp-web-install-button>
 
       <p class="note warn">
         If it connects but doesn’t start flashing: hold <b>BOOT</b>, click Install, select the port, then release BOOT once “Erasing/Writing” begins.
@@ -46,10 +46,11 @@
           <option value="manifest-1.6.2.json">v1.6.2</option>
           <option value="manifest-1.6.1.json">v1.6.1</option>
           <option value="manifest-1.7.1.json">v1.7.1 Beta</option>
+          <option value="manifest-1.8.0.json">v1.8.0 Beta</option>
           <!-- add more options as you publish versions -->
         </select>
 
-        <esp-web-install-button id="olderBtn" manifest="manifest-1.6.2.json?v=1"></esp-web-install-button>
+        <esp-web-install-button id="olderBtn" manifest="manifest-1.6.2.json"></esp-web-install-button>
       </div>
       <p class="note">
         Useful if you want to roll back after testing a new release.
@@ -68,17 +69,26 @@
 
 <script>
 const sel = document.getElementById("fwSel");
-const btn = document.getElementById("olderBtn");
+const olderBtn = document.getElementById("olderBtn");
+const latestBtn = document.getElementById("latestBtn");
 
-function updateManifest() {
-  const cacheBust = Math.floor(Math.random() * 1000000000);
-  btn.setAttribute("manifest", sel.value + "?v=" + cacheBust);
+function getDateTimeCacheBust() {
+  return new Date().toISOString();
 }
 
-sel.addEventListener("change", updateManifest);
+function updateLatestManifest() {
+  latestBtn.setAttribute("manifest", "manifest-latest.json?v=" + encodeURIComponent(getDateTimeCacheBust()));
+}
+
+function updateOlderManifest() {
+  olderBtn.setAttribute("manifest", sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust()));
+}
+
+sel.addEventListener("change", updateOlderManifest);
 
 // run once on page load
-updateManifest();
+updateLatestManifest();
+updateOlderManifest();
 </script>
 </body>
 </html>
