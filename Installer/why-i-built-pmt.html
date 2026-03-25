@@ -71,7 +71,7 @@
     .donation-callout {
       margin: 40px auto 0;
       max-width: 760px;
-      padding: 24px 28px;
+      padding: 28px;
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: 20px;
@@ -83,14 +83,30 @@
       color: var(--text);
     }
 
-    .venmo {
-      display: inline-block;
+    .venmo-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .venmo-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .venmo-caption {
       margin-top: 14px;
-      font-size: 1.35rem;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .venmo-handle-inline {
       font-weight: 600;
-      color: var(--accent);
-      text-decoration: none;
-      letter-spacing: -0.01em;
+      color: var(--text);
     }
 
     .content {
@@ -197,6 +213,10 @@
       .donation-callout {
         padding: 20px;
       }
+
+      .venmo-qr {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -216,7 +236,13 @@
           If Poor Man’s Throttle has helped you, inspired you, saved you money, or made this hobby more accessible,
           I would sincerely appreciate your support.
         </p>
-        <span class="venmo">@Jamocle</span>
+
+        <div class="venmo-qr-wrap">
+          <img src="jamocle.jpeg" alt="Venmo QR code for @Jamocle" class="venmo-qr" />
+          <div class="venmo-caption">
+            Donate on Venmo: <span class="venmo-handle-inline">@Jamocle</span>
+          </div>
+        </div>
       </div>
     </section>
 
