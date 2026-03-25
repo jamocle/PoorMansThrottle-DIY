@@ -1,73 +1,528 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Why I Built PMT</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --bg-accent: #171b22;
+      --panel: rgba(255, 255, 255, 0.06);
+      --panel-strong: rgba(255, 255, 255, 0.1);
+      --text: #f5f7fb;
+      --muted: #c3cad7;
+      --soft: #96a0b2;
+      --line: rgba(255, 255, 255, 0.12);
+      --gold: #f4c96b;
+      --gold-strong: #ffd978;
+      --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      --max: 940px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(244, 201, 107, 0.14), transparent 28%),
+        linear-gradient(180deg, #13161c 0%, #0f1115 100%);
+      line-height: 1.75;
+    }
+
+    .page {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 42px 0 72px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 48px 36px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+        linear-gradient(135deg, rgba(244, 201, 107, 0.08), rgba(255, 255, 255, 0.02));
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(244, 201, 107, 0.35);
+      background: rgba(244, 201, 107, 0.12);
+      color: var(--gold-strong);
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(2.2rem, 5vw, 4rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .subhead {
+      max-width: 760px;
+      margin: 0;
+      font-size: 1.18rem;
+      color: var(--muted);
+    }
+
+    .donation-card {
+      margin: 26px 0 10px;
+      padding: 22px 22px 20px;
+      border-radius: 18px;
+      background: rgba(12, 14, 18, 0.48);
+      border: 1px solid rgba(244, 201, 107, 0.26);
+    }
+
+    .donation-card p {
+      margin: 0 0 12px;
+      font-size: 1.04rem;
+    }
+
+    .venmo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .venmo-label {
+      font-size: 0.95rem;
+      color: var(--soft);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .venmo-handle {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(244, 201, 107, 0.18), rgba(244, 201, 107, 0.12));
+      border: 1px solid rgba(244, 201, 107, 0.4);
+      color: var(--gold-strong);
+      font-size: 1.35rem;
+      font-weight: bold;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+    }
+
+    .content {
+      display: grid;
+      gap: 22px;
+    }
+
+    .section {
+      padding: 30px 30px 26px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 1.55rem;
+      line-height: 1.2;
+      color: var(--gold-strong);
+    }
+
+    p {
+      margin: 0 0 18px;
+      font-size: 1.06rem;
+      color: var(--text);
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .statement {
+      font-size: 1.3rem;
+      line-height: 1.45;
+      color: #fff8e7;
+      font-style: italic;
+    }
+
+    .me {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: var(--gold-strong);
+    }
+
+    .emphasis {
+      color: var(--gold-strong);
+      font-weight: bold;
+    }
+
+    .pull-quote {
+      margin: 24px 0;
+      padding: 22px 22px 18px;
+      border-left: 4px solid var(--gold);
+      border-radius: 0 16px 16px 0;
+      background: rgba(244, 201, 107, 0.08);
+    }
+
+    .pull-quote p {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #fff8e7;
+    }
+
+    .list {
+      margin: 18px 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .list li {
+      position: relative;
+      padding-left: 20px;
+      color: var(--muted);
+    }
+
+    .list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: var(--gold-strong);
+      font-weight: bold;
+    }
+
+    .support-box {
+      padding: 28px;
+      border-radius: 22px;
+      border: 1px solid rgba(244, 201, 107, 0.32);
+      background:
+        linear-gradient(180deg, rgba(244, 201, 107, 0.1), rgba(255, 255, 255, 0.04)),
+        rgba(255, 255, 255, 0.04);
+      box-shadow: var(--shadow);
+    }
+
+    .support-box h2 {
+      margin-bottom: 12px;
+    }
+
+    .closing {
+      font-size: 1.12rem;
+      color: #fff8e7;
+    }
+
+    footer {
+      margin-top: 26px;
+      text-align: center;
+      color: var(--soft);
+      font-size: 0.96rem;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(var(--max), calc(100% - 20px));
+        padding-top: 20px;
+        padding-bottom: 36px;
+      }
+
+      .hero,
+      .section,
+      .support-box {
+        padding: 24px 20px;
+      }
+
+      .venmo-handle {
+        font-size: 1.15rem;
+        width: 100%;
+        text-align: center;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <h1>Why I Built PMT</h1>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">One Builder. One Mission.</div>
+      <h1>Why I Built PMT</h1>
+      <p class="subhead">
+        Poor Man’s Throttle was built to make wireless model train control more affordable, more approachable,
+        and more open for the people who love this hobby but do not want to be priced out of it.
+      </p>
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <div class="donation-card">
+        <p>
+          If Poor Man’s Throttle has helped you, inspired you, saved you money, or made this hobby more accessible,
+          I would sincerely appreciate your support.
+        </p>
+        <div class="venmo-row">
+          <span class="venmo-label">Please consider donating to my Venmo</span>
+          <span class="venmo-handle">@Jamocle</span>
+        </div>
+      </div>
+    </section>
 
-  <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <div class="content">
+      <section class="section">
+        <p class="statement">
+          “Poor Man’s Throttle was never built by a company, a funded startup, or a team with a budget.
+          It was built by one person who saw a problem in the model train community and decided to do something about
+          it.”
+        </p>
+        <div class="me">Me.</div>
+      </section>
 
-  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas.</p>
+      <section class="section">
+        <h2>This is a Team of One</h2>
+        <p>
+          This project is a true team of one. Every part of it comes from me: the firmware, the app code,
+          the engineering, the design decisions, the documentation, the testing, the troubleshooting, the
+          videos, the updates, the support, and all of the behind-the-scenes effort it takes to make
+          something like this real, usable, and worth sharing.
+        </p>
+        <p>
+          I created Poor Man’s Throttle because I know how expensive this hobby can be. I know how quickly
+          costs stack up. I know what it feels like to want something better for a layout or a locomotive,
+          only to find that the commercial answer comes with a price tag that makes you stop in your tracks.
+          For many people, branded throttles and proprietary wireless systems are simply too expensive to justify.
+          And for a hobby built on creativity, building, problem-solving, and passion, that kind of barrier can
+          feel especially discouraging.
+        </p>
+        <p>
+          <span class="emphasis">That never sat well with me.</span>
+        </p>
+      </section>
 
-  <p>Sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora.</p>
+      <section class="section">
+        <h2>Why This Exists</h2>
+        <p>
+          I believed there should be another path. A practical path. An affordable path. A path for the hobbyist
+          who is willing to build, learn, experiment, and create, but should not have to spend a small fortune
+          just to get smooth wireless control. I believed there should be a way to take accessible hardware,
+          solid engineering, and careful design and turn them into something the average person could actually use.
+        </p>
+        <p>
+          That belief became <span class="emphasis">Poor Man’s Throttle</span>.
+        </p>
+        <p>
+          At a glance, it may seem simple: smartphone control, an ESP32, an inexpensive motor driver, and a low-cost
+          way to wirelessly run a model locomotive. But anyone who has ever built something meaningful knows the truth —
+          what looks simple on the surface is often the result of a tremendous amount of unseen work underneath.
+          Simple is expensive in hours. Simple is earned through trial and error. Simple is what happens after someone
+          chooses to wrestle with the hard parts long enough to spare everyone else from them.
+        </p>
 
-  <p>Incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit.</p>
+        <div class="pull-quote">
+          <p>I did this so you would not have to.</p>
+        </div>
+      </section>
 
-  <p>Esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur? Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</p>
+      <section class="section">
+        <h2>The Work You Do Not See</h2>
+        <p>
+          Poor Man’s Throttle did not appear overnight. It was not the product of a quick weekend experiment that
+          accidentally worked out. It came from a long, ongoing investment of time, energy, persistence, and care.
+          It took engineering. It took testing. It took false starts, wrong turns, revisions, rethinking, and
+          rebuilding.
+          It took time to make the hardware approach practical. It took time to make the control experience useful.
+          It took time to make the documentation understandable. It took time to make the project approachable for
+          hobbyists with different levels of experience.
+        </p>
+        <p>
+          And all of that time came from one person.
+        </p>
+        <p>
+          When people see a project page, a set of instructions, a working app, a firmware build, or a video
+          demonstration, they often see the finished result. What they do not always see is the mountain of effort
+          behind it. They do not see the late nights spent debugging one stubborn issue after another. They do not
+          see the hours spent testing behavior, rewriting explanations, refining code, improving reliability, or trying
+          to make the next version better than the last. They do not see how much work it takes to make something feel
+          clear and approachable to someone encountering it for the first time.
+        </p>
+        <p>
+          But that invisible work is real. In fact, it is where most of the labor lives.
+        </p>
+      </section>
 
-  <p>Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt.</p>
+      <section class="section">
+        <h2>What I Took On So Others Wouldn’t Have To</h2>
+        <p>
+          Poor Man’s Throttle exists because I chose to carry that labor myself.
+        </p>
+        <ul class="list">
+          <li>I built the firmware so others would not have to start from scratch.</li>
+          <li>I worked on the app so others could have a usable interface instead of just an idea.</li>
+          <li>I developed the engineering approach so others could follow a path that had already been thought through.
+          </li>
+          <li>I wrote the documentation so others would not have to guess their way forward.</li>
+          <li>I created videos and supporting material so the project would be easier to understand.</li>
+          <li>I answered questions and offered support because a project is only truly useful when people can actually
+            succeed with it.</li>
+        </ul>
+        <p>
+          I did this because I wanted to give something back to the model train community.
+        </p>
+      </section>
 
-  <p>Mollit anim id est laborum. Curabitur pretium tincidunt lacus. Nulla gravida orci a odio. Nullam varius, turpis et commodo pharetra, est eros bibendum elit, nec luctus magna felis sollicitudin mauris. Integer in mauris eu nibh euismod gravida.</p>
+      <section class="section">
+        <h2>Why It Matters</h2>
+        <p>
+          This hobby has always been full of resourceful people — builders, tinkerers, makers, problem-solvers,
+          and people who simply love trains enough to keep learning. But even the most passionate hobbyist has limits,
+          and one of the biggest limits for many people is cost. Commercial systems can be excellent, but they are not
+          always accessible. For some hobbyists, they are out of reach entirely. For others, they are hard to justify
+          when there are locomotives to maintain, track to buy, batteries to source, tools to replace, and a hundred
+          other expenses already competing for attention.
+        </p>
+        <p>
+          That is why this project matters to me.
+        </p>
+        <p>
+          Poor Man’s Throttle is not just about saving money, though saving money matters. It is about making capability
+          more accessible. It is about proving that you should not need an expensive proprietary ecosystem just to enjoy
+          smoother low-speed control, wireless operation, and a more modern experience. It is about opening a door for
+          the hobbyist who wants a better solution but needs one that is grounded in affordability and practicality.
+        </p>
+        <p>
+          For dead-rail builders, this project offers a low-cost wireless control path that works with accessible
+          components and common battery options. For traditional DC users, it provides a powerful improvement by
+          allowing
+          the transformer to stay at full power while the throttle hardware uses PWM motor control for smoother
+          operation,
+          better starting torque, and improved low-speed performance. For the broader DIY model train community, it
+          represents something even bigger: a way forward that is understandable, flexible, and not locked behind
+          premium pricing.
+        </p>
+      </section>
 
-  <p>Duis ac tellus et risus vulputate vehicula. Donec lobortis risus a elit. Etiam tempor. Ut ullamcorper, ligula eu tempor congue, eros est euismod turpis, id tincidunt sapien risus a quam. Maecenas fermentum consequat mi. Donec fermentum.</p>
+      <section class="support-box">
+        <h2>Please Support the Work Behind PMT</h2>
+        <p>
+          But a project like this does not sustain itself.
+        </p>
+        <p>
+          Every improvement takes more time. Every clarification takes more effort. Every update takes more testing.
+          Every question answered, every bug fixed, every guide improved, every video made, every line of code refined —
+          it all comes from the same place.
+        </p>
+        <p class="closing">
+          <strong>Me.</strong>
+        </p>
+        <p>
+          That is why I am asking for your support.
+        </p>
+        <p>
+          If Poor Man’s Throttle has helped you, if it has saved you money, if it has made your own project possible,
+          if it has taught you something, if it has inspired you, or even if you simply appreciate what it stands for,
+          I would greatly appreciate a donation to my Venmo: <strong>@Jamocle</strong>.
+        </p>
+        <p>
+          Your donation is more than a tip. It is recognition. It is encouragement. It is fuel for continued
+          development.
+          It is support for the hours already invested and the hours still ahead.
+        </p>
+        <p>
+          It helps support continued work on the firmware. It helps support continued work on the app. It helps support
+          better documentation, more testing, more videos, and better user support. It helps keep this project alive,
+          improving, and available to the people who need it.
+        </p>
+        <p>
+          Most of all, it helps sustain a one-man effort that was built for the benefit of others.
+        </p>
+      </section>
 
-  <p>Pellentesque malesuada nulla a mi. Duis sapien sem, aliquet nec, commodo eget, consequat quis, neque. Aliquam faucibus, elit ut dictum aliquet, felis nisl adipiscing sapien, sed malesuada diam lacus eget erat. Cras mollis scelerisque nunc.</p>
+      <section class="section">
+        <h2>A Plain and Honest Ask</h2>
+        <p>
+          I took on the complexity so you could start from something proven. I spent the hours learning, testing,
+          failing, refining, documenting, and rebuilding so you could have a clearer path. I pushed through the
+          engineering challenges so others could focus more on building and enjoying and less on reinventing the wheel.
+          I built this because I believed the community deserved an affordable option — not someday, not if a company
+          decided there was enough profit in it, but now, because someone cared enough to make it happen.
+        </p>
+        <p>
+          That is what Poor Man’s Throttle really represents.
+        </p>
+        <p>
+          It is not just a throttle. It is not just firmware. It is not just an app. It is a labor of love built out
+          of conviction — conviction that this hobby should have room for affordable, independent, community-minded
+          solutions.
+        </p>
+        <p>
+          And while I have been glad to do the work, the truth is still simple:
+        </p>
+        <p class="statement">
+          This is labor. Real labor. Skilled labor. Time-consuming labor. And it has all come from one person.
+        </p>
+        <p>
+          So I am asking plainly and sincerely: if this project has value to you, please consider supporting it with a
+          donation to <strong>@Jamocle</strong> on Venmo.
+        </p>
+        <ul class="list">
+          <li>If it saved you from having to buy an expensive branded system, please consider supporting it.</li>
+          <li>If it saved you hours of research, troubleshooting, and engineering, please consider supporting it.</li>
+          <li>If it helped you believe your project was actually within reach, please consider supporting it.</li>
+          <li>If you believe the model train community benefits from independent builders creating tools like this,
+            please consider supporting it.</li>
+        </ul>
+      </section>
 
-  <p>Nullam arcu. Aliquam consequat. Curabitur augue lorem, dapibus quis, laoreet et, pretium ac, nisi. Aenean magna nisl, mollis quis, molestie eu, feugiat in, orci. In hac habitasse platea dictumst. Fusce convallis, mauris imperdiet gravida bibendum.</p>
+      <section class="section">
+        <h2>Thank You</h2>
+        <p>
+          Every contribution matters. Every show of support means something. And every donation helps me continue
+          building,
+          improving, documenting, and supporting this work.
+        </p>
+        <p>
+          Poor Man’s Throttle was built to make this hobby more accessible. It was built to lower barriers. It was built
+          to offer another option. It was built to help people. And it was built by one person who simply decided the
+          work
+          was worth doing.
+        </p>
+        <p>
+          If you believe that work is worth supporting, I would be deeply grateful for your help.
+        </p>
+        <p class="closing">
+          Please consider donating to my Venmo: <strong>@Jamocle</strong>.
+        </p>
+        <p>
+          Thank you for being here. Thank you for caring about the hobby. Thank you for valuing affordable, open,
+          independent solutions. And thank you, truly, for helping support the work of a one-man team trying to give
+          something meaningful back to the model train community.
+        </p>
+      </section>
+    </div>
 
-  <p>Nisl turpis suscipit mauris, sed placerat ipsum urna sed risus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent nec nisl a purus blandit viverra. Praesent ut ligula non mi varius sagittis.</p>
-
-  <p>Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem.</p>
-
-  <p>Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.</p>
-
-  <p>Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, metus. Nullam accumsan lorem in dui.</p>
-
-  <p>Cras ultricies mi eu turpis hendrerit fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; In ac dui quis mi consectetuer lacinia. Nam pretium turpis et arcu. Duis arcu tortor, suscipit eget.</p>
-
-  <p>Imperdiet nec, imperdiet iaculis, ipsum. Sed aliquam ultrices mauris. Integer ante arcu, accumsan a, consectetuer eget, posuere ut, mauris. Praesent adipiscing. Phasellus ullamcorper ipsum rutrum nunc. Nunc nonummy metus. Vestibulum volutpat pretium libero.</p>
-
-  <p>Cras id dui. Aenean ut eros et nisl sagittis vestibulum. Nullam nulla eros, ultricies sit amet, nonummy id, imperdiet feugiat, pede. Sed lectus. Donec mollis hendrerit risus. Phasellus nec sem in justo pellentesque facilisis. Etiam imperdiet imperdiet orci.</p>
-
-  <p>Nunc nec neque. Phasellus leo dolor, tempus non, auctor et, hendrerit quis, nisi. Curabitur ligula sapien, tincidunt non, euismod vitae, posuere imperdiet, leo. Maecenas malesuada. Praesent congue erat at massa. Sed cursus turpis vitae tortor.</p>
-
-  <p>Donec posuere vulputate arcu. Phasellus accumsan cursus velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci.</p>
-
-  <p>Phasellus consectetuer vestibulum elit. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Vestibulum fringilla pede sit amet augue. In turpis. Pellentesque posuere. Praesent turpis. Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc.</p>
-
-  <p>Eu sollicitudin urna dolor sagittis lacus. Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. Nullam sagittis. Suspendisse pulvinar, augue ac venenatis condimentum, sem libero volutpat nibh, nec pellentesque velit pede quis nunc.</p>
-
-  <p>Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce id purus. Ut varius tincidunt libero. Phasellus dolor. Maecenas vestibulum mollis diam. Pellentesque ut neque. Pellentesque habitant morbi tristique senectus et netus et malesuada.</p>
-
-  <p>Fames ac turpis egestas. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. In ac felis quis tortor malesuada pretium. Pellentesque auctor neque nec urna. Proin sapien ipsum, porta a, auctor quis, euismod ut, mi.</p>
-
-  <p>Aenean viverra rhoncus pede. Phasellus gravida semper nisi. Nullam vel sem. Pellentesque libero tortor, tincidunt et, tincidunt eget, semper nec, quam. Sed hendrerit. Morbi ac felis. Nunc egestas, augue at pellentesque laoreet, felis eros vehicula leo.</p>
-
-  <p>At malesuada velit leo quis pede. Donec interdum, metus et hendrerit aliquet, dolor diam sagittis ligula, eget egestas libero turpis vel mi. Nunc nulla. Fusce risus nisl, viverra et, tempor et, pretium in, sapien. Donec venenatis vulputate lorem.</p>
-
-  <p>Morbi nec metus. Phasellus blandit leo ut odio. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Fusce vel dui. Sed in libero ut nibh placerat accumsan. Proin faucibus arcu quis ante.</p>
-
-  <p>In consectetuer turpis ut velit. Nulla sit amet est. Praesent metus tellus, elementum eu, semper a, adipiscing nec, purus. Cras risus ipsum, faucibus ut, ullamcorper id, varius ac, leo. Suspendisse feugiat. Suspendisse enim turpis, dictum sed.</p>
-
-  <p>Iaculis a, condimentum nec, nisi. Praesent congue erat at massa. Sed cursus turpis vitae tortor. Donec posuere vulputate arcu. Phasellus accumsan cursus velit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
-
-  <p>Sed aliquam, nisi quis porttitor congue, elit erat euismod orci, ac placerat dolor lectus quis orci. Phasellus consectetuer vestibulum elit. Aenean tellus metus, bibendum sed, posuere ac, mattis non, nunc. Vestibulum fringilla pede sit amet augue.</p>
-
-  <p>In turpis. Pellentesque posuere. Praesent turpis. Aenean posuere, tortor sed cursus feugiat, nunc augue blandit nunc, eu sollicitudin urna dolor sagittis lacus. Donec elit libero, sodales nec, volutpat a, suscipit non, turpis. Nullam sagittis.</p>
+    <footer>
+      Poor Man’s Throttle — built to make wireless model train control more accessible.
+    </footer>
+  </main>
 </body>
+
 </html>
