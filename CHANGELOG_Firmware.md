@@ -2,6 +2,28 @@
 
 ## Firmware:
 
+### Version 1.8.0
+
+* **Wi-Fi and WebSocket control support** added as a secondary communication path alongside BLE for controller access and state updates.
+* **Wi-Fi configuration options** added, including enable/disable control, stored SSID, stored password, and configurable WebSocket port settings.
+* **Support for multiple motor driver types** added, including both dual-PWM drivers and PWM-plus-direction drivers for broader hardware compatibility.
+* **Configurable motor control pin mapping** added to support different driver boards and wiring layouts.
+* **Direction inversion option** added to simplify setup when motor wiring produces reversed movement.
+* **Custom train-name BLE advertising** added, allowing the controller to broadcast a user-defined train name instead of only the default device name.
+* **Improved BLE advertising recovery** added, including restart handling and watchdog-based recovery when advertising does not resume correctly after disconnect.
+* **Expanded disconnect grace-period handling** added so brief connection interruptions can be tolerated before stop behavior is forced.
+* **Enhanced status LED behavior** added to indicate disconnected search mode, grace mode, active connection, and RX/TX activity.
+* **MTU-aware BLE notification chunking** added for more reliable delivery of longer responses and status messages.
+* **Asynchronous state notification scheduling** added with separate update timing for steady-state and changing-state conditions.
+* **State reporting over both BLE and WebSocket** added so live controller updates can be delivered across either connection path.
+* **Dual state reporting** added to show both commanded throttle values and hardware-level throttle values.
+* **Hardware readback and mismatch diagnostics** added for monitoring actual PWM output, direction state, enable-pin behavior, and expected-versus-actual motor operation.
+* **Start-assist / kick-start tuning controls** added, including configurable kick throttle, duration, ramp-down behavior, and maximum apply limits.
+* **Variable braking support** added with dedicated runtime brake-state handling and controlled stop behavior.
+* **Improved stop and reverse sequencing** added for cleaner direction changes, safer transition timing, and more controlled recovery from braking or stop states.
+* **Expanded persistent configuration storage** added to save motor, Wi-Fi, train-name, kick-start, braking, and timing settings in non-volatile memory.
+  
+  
 ### Version 1.7.0
 
 Version **1.7.0** introduces major flexibility improvements to the firmware, including support for multiple motor driver architectures, configurable GPIO assignments, direction inversion, and expanded CV-based configuration. These changes allow the same firmware image to support a wide range of motor driver boards without recompilation.
