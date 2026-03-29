@@ -48,6 +48,7 @@ async function updateFirmwareInstaller() {
     const olderBtn = document.getElementById("olderBtn");
     const latestBtn = document.getElementById("latestBtn");
     const androidGuideLink = document.getElementById("androidGuideLink");
+    const androidApkLink = document.getElementById("androidApkLink");
 
     if (latestBtn) {
         latestBtn.setAttribute(
@@ -88,6 +89,13 @@ async function updateFirmwareInstaller() {
         androidGuideLink.setAttribute(
             "href",
             "android-guide.html?v=" + encodeURIComponent(getRandomCacheBust())
+        );
+    }
+
+    if (androidApkLink) {
+        androidApkLink.setAttribute(
+            "href",
+            "downloads/poor-mans-throttle-latest.apk?v=" + encodeURIComponent(getRandomCacheBust())
         );
     }
 }
