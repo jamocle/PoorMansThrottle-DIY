@@ -40,17 +40,22 @@ body {
     overflow: hidden;
 }
 
-.section summary {
+.section summary,
+.subsection summary {
     cursor: pointer;
     list-style: none;
-    font-size: 20px;
-    font-weight: 700;
-    padding: 16px 18px;
     user-select: none;
     position: relative;
 }
 
-.section summary::-webkit-details-marker {
+.section summary {
+    font-size: 20px;
+    font-weight: 700;
+    padding: 16px 18px;
+}
+
+.section summary::-webkit-details-marker,
+.subsection summary::-webkit-details-marker {
     display: none;
 }
 
@@ -86,6 +91,75 @@ body {
 
 .section-content {
     padding: 0 16px 16px 16px;
+}
+
+.subsection {
+    background: #ffffff;
+    border: 1px solid #e6e8ee;
+    border-radius: 14px;
+    margin: 14px 0;
+    overflow: hidden;
+}
+
+.subsection summary {
+    font-size: 18px;
+    font-weight: 700;
+    padding: 14px 16px;
+    background: #ffffff;
+}
+
+.subsection summary::after {
+    content: "+";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 22px;
+    line-height: 1;
+    color: #555;
+}
+
+.subsection[open] summary::after {
+    content: "−";
+}
+
+.subsection-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    flex-shrink: 0;
+    display: block;
+}
+
+.subsection-content {
+    padding: 0 16px 16px 16px;
+}
+
+.platform-layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.platform-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.platform-visual {
+    flex: 0 0 140px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 14px;
+}
+
+.platform-large-icon {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    display: block;
 }
 
 .card {
@@ -139,4 +213,22 @@ code {
 .app-link:hover,
 .app-link:focus {
     text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+    .platform-layout {
+        flex-direction: column;
+    }
+
+    .platform-visual {
+        flex: 0 0 auto;
+        width: 100%;
+        justify-content: center;
+        padding-top: 0;
+    }
+
+    .platform-large-icon {
+        width: 88px;
+        height: 88px;
+    }
 }
