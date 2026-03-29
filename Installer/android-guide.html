@@ -44,17 +44,31 @@
 
         async function loadGuide() {
             const target = document.getElementById("guideContent");
+            const pathBase = window.location.pathname.includes("/PoorMansThrottle-DIY/")
+                ? "/PoorMansThrottle-DIY"
+                : "";
+
+            const guideUrl = pathBase + "/docs/10_mobile_device_installation_instructions.md?v=" + encodeURIComponent(Date.now());
 
             try {
-                const response = await fetch("docs/10_mobile_device_installation_instructions.md?v=" + encodeURIComponent(Date.now()));
+                const response = await fetch(guideUrl, { cache: "no-store" });
+
                 if (!response.ok) {
-                    throw new Error("Failed to load markdown file.");
+                    throw new Error("HTTP " + response.status + " while loading " + guideUrl);
                 }
 
                 const markdown = await response.text();
+
+                if (!markdown.trim()) {
+                    target.innerHTML = "<p class=\"note warn\">The Markdown file loaded, but it appears to be empty.</p>";
+                    return;
+                }
+
                 target.innerHTML = marked.parse(markdown);
             } catch (error) {
-                target.innerHTML = "<p class=\"note warn\">Unable to load the Android installation instructions right now.</p>";
+                target.innerHTML =
+                    "<p class=\"note warn\">Unable to load the Android installation instructions.</p>" +
+                    "<p class=\"note\">Details: " + String(error.message) + "</p>";
                 console.error(error);
             }
         }
