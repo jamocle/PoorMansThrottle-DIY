@@ -129,6 +129,10 @@ Compare your wiring to the reference tables in:
 
 # Next Steps
 
+Open Mobile Installation Instructions
+
+[10_mobile_device_installation_instructions.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/10_mobile_device_installation_instructions.md)
+
 View the Appendices  
 
 [appendix_Configuration_Variables.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Configuration_Variables.md)
