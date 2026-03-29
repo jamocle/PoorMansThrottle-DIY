@@ -5,7 +5,14 @@
   <meta charset="utf-8" />
   <title>Poor Man's Throttle Firmware Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
+
+  <script>
+    const cssLink = document.createElement("link");
+    cssLink.rel = "stylesheet";
+    cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
+    document.head.appendChild(cssLink);
+  </script>
+
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
 </head>
 
