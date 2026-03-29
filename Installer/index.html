@@ -7,10 +7,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <script>
-    const cssLink = document.createElement("link");
-    cssLink.rel = "stylesheet";
-    cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
-    document.head.appendChild(cssLink);
+    (function () {
+      const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "styles.css?v=" + cacheBust;
+      document.head.appendChild(cssLink);
+
+      const appScript = document.createElement("script");
+      appScript.type = "module";
+      appScript.src = "app.js?v=" + cacheBust;
+      document.head.appendChild(appScript);
+    })();
   </script>
 
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
@@ -153,39 +162,6 @@
       </div>
     </details>
   </div>
-
-  <script>
-    const sel = document.getElementById("fwSel");
-    const olderBtn = document.getElementById("olderBtn");
-    const latestBtn = document.getElementById("latestBtn");
-    const androidGuideLink = document.getElementById("androidGuideLink");
-
-    function getDateTimeCacheBust() {
-      return new Date().toISOString();
-    }
-
-    function getRandomCacheBust() {
-      return Date.now() + "-" + Math.random();
-    }
-
-    function updateLatestManifest() {
-      latestBtn.setAttribute("manifest", "manifest-latest.json?v=" + encodeURIComponent(getDateTimeCacheBust()));
-    }
-
-    function updateOlderManifest() {
-      olderBtn.setAttribute("manifest", sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust()));
-    }
-
-    function updateAndroidGuideLink() {
-      androidGuideLink.setAttribute("href", "android-guide.html?v=" + encodeURIComponent(getRandomCacheBust()));
-    }
-
-    sel.addEventListener("change", updateOlderManifest);
-
-    updateLatestManifest();
-    updateOlderManifest();
-    updateAndroidGuideLink();
-  </script>
 </body>
 
 </html>

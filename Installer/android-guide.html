@@ -7,10 +7,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <script>
-        const cssLink = document.createElement("link");
-        cssLink.rel = "stylesheet";
-        cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
-        document.head.appendChild(cssLink);
+        (function () {
+            const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+
+            const cssLink = document.createElement("link");
+            cssLink.rel = "stylesheet";
+            cssLink.href = "styles.css?v=" + cacheBust;
+            document.head.appendChild(cssLink);
+
+            const appScript = document.createElement("script");
+            appScript.type = "module";
+            appScript.src = "app.js?v=" + cacheBust;
+            document.head.appendChild(appScript);
+        })();
     </script>
 </head>
 
@@ -38,44 +47,6 @@
             </div>
         </div>
     </div>
-
-    <script type="module">
-        import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
-
-        async function loadGuide() {
-            const target = document.getElementById("guideContent");
-            const pathBase = window.location.pathname.includes("/PoorMansThrottle-DIY/")
-                ? "/PoorMansThrottle-DIY"
-                : "";
-
-            const markdownCacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
-            const guideUrl = pathBase + "/docs/10_mobile_device_installation_instructions.md?v=" + markdownCacheBust;
-
-            try {
-                const response = await fetch(guideUrl, { cache: "no-store" });
-
-                if (!response.ok) {
-                    throw new Error("HTTP " + response.status + " while loading " + guideUrl);
-                }
-
-                const markdown = await response.text();
-
-                if (!markdown.trim()) {
-                    target.innerHTML = "<p class=\"note warn\">The Markdown file loaded, but it appears to be empty.</p>";
-                    return;
-                }
-
-                target.innerHTML = marked.parse(markdown);
-            } catch (error) {
-                target.innerHTML =
-                    "<p class=\"note warn\">Unable to load the Android installation instructions.</p>" +
-                    "<p class=\"note\">Details: " + String(error.message) + "</p>";
-                console.error(error);
-            }
-        }
-
-        loadGuide();
-    </script>
 </body>
 
 </html>
