@@ -98,7 +98,7 @@
                 <div class="card">
                   <h3>Install on Android</h3>
                   <div class="action-buttons">
-                    <a class="app-link" href="android-guide.html">
+                    <a class="app-link" id="androidGuideLink" href="android-guide.html">
                       Android Installation Instructions
                     </a>
 
@@ -158,9 +158,14 @@
     const sel = document.getElementById("fwSel");
     const olderBtn = document.getElementById("olderBtn");
     const latestBtn = document.getElementById("latestBtn");
+    const androidGuideLink = document.getElementById("androidGuideLink");
 
     function getDateTimeCacheBust() {
       return new Date().toISOString();
+    }
+
+    function getRandomCacheBust() {
+      return Date.now() + "-" + Math.random();
     }
 
     function updateLatestManifest() {
@@ -171,10 +176,15 @@
       olderBtn.setAttribute("manifest", sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust()));
     }
 
+    function updateAndroidGuideLink() {
+      androidGuideLink.setAttribute("href", "android-guide.html?v=" + encodeURIComponent(getRandomCacheBust()));
+    }
+
     sel.addEventListener("change", updateOlderManifest);
 
     updateLatestManifest();
     updateOlderManifest();
+    updateAndroidGuideLink();
   </script>
 </body>
 

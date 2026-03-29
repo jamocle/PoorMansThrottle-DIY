@@ -48,7 +48,8 @@
                 ? "/PoorMansThrottle-DIY"
                 : "";
 
-            const guideUrl = pathBase + "/docs/10_mobile_device_installation_instructions.md?v=" + encodeURIComponent(Date.now());
+            const markdownCacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+            const guideUrl = pathBase + "/docs/10_mobile_device_installation_instructions.md?v=" + markdownCacheBust;
 
             try {
                 const response = await fetch(guideUrl, { cache: "no-store" });
