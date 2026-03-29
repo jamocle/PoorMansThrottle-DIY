@@ -8,7 +8,42 @@ function getRandomCacheBust() {
     return Date.now() + "-" + Math.random();
 }
 
-function updateFirmwareInstaller() {
+async function loadFirmwareVersions() {
+    const versionsUrl = "@firmware-versions.json?v=" + encodeURIComponent(getRandomCacheBust());
+    const response = await fetch(versionsUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+        throw new Error("HTTP " + response.status + " while loading " + versionsUrl);
+    }
+
+    const versions = await response.json();
+
+    if (!Array.isArray(versions) || versions.length === 0) {
+        throw new Error("Firmware versions JSON is empty or invalid.");
+    }
+
+    return versions;
+}
+
+function populateFirmwareSelect(sel, versions) {
+    sel.innerHTML = "";
+
+    for (const version of versions) {
+        const option = document.createElement("option");
+        option.value = version.manifest;
+        option.textContent = version.label;
+        sel.appendChild(option);
+    }
+
+    const preferredVersion = versions.find((version) => version.selected === true);
+    if (preferredVersion) {
+        sel.value = preferredVersion.manifest;
+    } else {
+        sel.selectedIndex = 0;
+    }
+}
+
+async function updateFirmwareInstaller() {
     const sel = document.getElementById("fwSel");
     const olderBtn = document.getElementById("olderBtn");
     const latestBtn = document.getElementById("latestBtn");
@@ -22,15 +57,31 @@ function updateFirmwareInstaller() {
     }
 
     if (sel && olderBtn) {
-        const updateOlderManifest = () => {
-            olderBtn.setAttribute(
-                "manifest",
-                sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust())
-            );
-        };
+        try {
+            const versions = await loadFirmwareVersions();
+            populateFirmwareSelect(sel, versions);
 
-        sel.addEventListener("change", updateOlderManifest);
-        updateOlderManifest();
+            const updateOlderManifest = () => {
+                olderBtn.setAttribute(
+                    "manifest",
+                    sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust())
+                );
+            };
+
+            sel.addEventListener("change", updateOlderManifest);
+            updateOlderManifest();
+        } catch (error) {
+            console.error(error);
+
+            sel.innerHTML = "";
+            const option = document.createElement("option");
+            option.textContent = "Unable to load versions";
+            option.value = "";
+            sel.appendChild(option);
+            sel.disabled = true;
+
+            olderBtn.setAttribute("manifest", "");
+        }
     }
 
     if (androidGuideLink) {
