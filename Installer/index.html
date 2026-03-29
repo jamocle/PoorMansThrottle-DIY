@@ -1,21 +1,12 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8" />
   <title>Poor Man's Throttle Firmware Installer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
-  <style>
-    body { font-family: Arial, sans-serif; background:#f6f7fb; margin:0; }
-    .wrap { max-width: 760px; margin: 40px auto; background:#fff; border-radius: 16px; padding: 28px; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
-    h1 { margin: 0 0 6px 0; }
-    .sub { color:#555; margin: 0 0 18px 0; }
-    .card { background:#f8fafc; border:1px solid #e6e8ee; border-radius: 14px; padding: 16px; margin: 14px 0; }
-    .row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
-    select { padding:10px; border-radius:10px; border:1px solid #cfd6e4; font-size: 16px; }
-    .note { font-size: 14px; color:#444; line-height:1.4; }
-    code { background:#eef2ff; padding:2px 6px; border-radius:6px; }
-    .warn { color:#8a4b00; }
-  </style>
 </head>
 
 <body>
@@ -23,72 +14,96 @@
     <h1>Poor Man’s Throttle</h1>
     <p class="sub">ESP32 Firmware Installer (Windows + macOS)</p>
 
-    <div class="card">
-      <h3>Recommended: Install Latest</h3>
-      <p class="note">
-        Use <b>Chrome</b> or <b>Edge</b> (Safari/Firefox won’t work for flashing).
-        Use a <b>data-capable USB cable</b>.
-      </p>
+    <details class="section" open>
+      <summary>Firmware Installation</summary>
 
-      <!-- Latest -->
-      <esp-web-install-button id="latestBtn" manifest="manifest-latest.json"></esp-web-install-button>
+      <div class="section-content">
+        <div class="card">
+          <h3>Recommended: Install Latest</h3>
+          <p class="note">
+            Use <b>Chrome</b> or <b>Edge</b> (Safari/Firefox won’t work for flashing).
+            Use a <b>data-capable USB cable</b>.
+          </p>
 
-      <p class="note warn">
-        If it connects but doesn’t start flashing: hold <b>BOOT</b>, click Install, select the port, then release BOOT once “Erasing/Writing” begins.
-      </p>
-    </div>
+          <esp-web-install-button id="latestBtn" manifest="manifest-latest.json"></esp-web-install-button>
 
-    <div class="card">
-      <h3>Install an older firmware (optional)</h3>
-      <div class="row">
-        <label class="note" for="fwSel">Version:</label>
-        <select id="fwSel">
-          <option value="manifest-1.8.0.json">v1.8.0</option>
-          <option value="manifest-1.6.2.json">v1.6.2</option>
-          <option value="manifest-1.6.1.json">v1.6.1</option>
-          <option value="manifest-1.7.1.json">v1.7.1 Beta</option>
-          <!-- add more options as you publish versions -->
-        </select>
+          <p class="note warn">
+            If it connects but doesn’t start flashing: hold <b>BOOT</b>, click Install, select the port, then release
+            BOOT once “Erasing/Writing” begins.
+          </p>
+        </div>
 
-        <esp-web-install-button id="olderBtn" manifest="manifest-1.6.2.json"></esp-web-install-button>
+        <div class="card">
+          <h3>Install an older firmware (optional)</h3>
+          <div class="row">
+            <label class="note" for="fwSel">Version:</label>
+            <select id="fwSel">
+              <option value="manifest-1.8.0.json">v1.8.0</option>
+              <option value="manifest-1.6.2.json">v1.6.2</option>
+              <option value="manifest-1.6.1.json">v1.6.1</option>
+              <option value="manifest-1.7.1.json">v1.7.1 Beta</option>
+            </select>
+
+            <esp-web-install-button id="olderBtn" manifest="manifest-1.6.2.json"></esp-web-install-button>
+          </div>
+          <p class="note">
+            Useful if you want to roll back after testing a new release.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Troubleshooting</h3>
+          <ul class="note">
+            <li>Close Arduino Serial Monitor or anything else using the COM port.</li>
+            <li>Windows: CP2102 usually works automatically; if not, install Silicon Labs CP210x driver.</li>
+            <li>If you see endless resets, re-flash using “Latest” again.</li>
+          </ul>
+        </div>
       </div>
-      <p class="note">
-        Useful if you want to roll back after testing a new release.
-      </p>
-    </div>
+    </details>
 
-    <div class="card">
-      <h3>Troubleshooting</h3>
-      <ul class="note">
-        <li>Close Arduino Serial Monitor or anything else using the COM port.</li>
-        <li>Windows: CP2102 usually works automatically; if not, install Silicon Labs CP210x driver.</li>
-        <li>If you see endless resets, re-flash using “Latest” again.</li>
-      </ul>
-    </div>
+    <details class="section">
+      <summary>App Installation</summary>
+
+      <div class="section-content">
+        <div class="card">
+          <h3>Install on iPhone or iPad</h3>
+          <p class="note">
+            Download the Poor Man’s Throttle app from the Apple App Store:
+          </p>
+          <p class="note">
+            <a class="app-link" href="https://apps.apple.com/us/app/poor-mans-throttle/id6760155416" target="_blank"
+              rel="noopener noreferrer">
+              Open App Store for iPhone / iPad
+            </a>
+          </p>
+        </div>
+      </div>
+    </details>
   </div>
 
-<script>
-const sel = document.getElementById("fwSel");
-const olderBtn = document.getElementById("olderBtn");
-const latestBtn = document.getElementById("latestBtn");
+  <script>
+    const sel = document.getElementById("fwSel");
+    const olderBtn = document.getElementById("olderBtn");
+    const latestBtn = document.getElementById("latestBtn");
 
-function getDateTimeCacheBust() {
-  return new Date().toISOString();
-}
+    function getDateTimeCacheBust() {
+      return new Date().toISOString();
+    }
 
-function updateLatestManifest() {
-  latestBtn.setAttribute("manifest", "manifest-latest.json?v=" + encodeURIComponent(getDateTimeCacheBust()));
-}
+    function updateLatestManifest() {
+      latestBtn.setAttribute("manifest", "manifest-latest.json?v=" + encodeURIComponent(getDateTimeCacheBust()));
+    }
 
-function updateOlderManifest() {
-  olderBtn.setAttribute("manifest", sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust()));
-}
+    function updateOlderManifest() {
+      olderBtn.setAttribute("manifest", sel.value + "?v=" + encodeURIComponent(getDateTimeCacheBust()));
+    }
 
-sel.addEventListener("change", updateOlderManifest);
+    sel.addEventListener("change", updateOlderManifest);
 
-// run once on page load
-updateLatestManifest();
-updateOlderManifest();
-</script>
+    updateLatestManifest();
+    updateOlderManifest();
+  </script>
 </body>
+
 </html>
