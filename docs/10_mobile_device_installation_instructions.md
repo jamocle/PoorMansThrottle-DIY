@@ -1,7 +1,3 @@
-<p>
-  <img src="android.png" alt="Android" width="160">
-</p>
-
 # Android Mobile App Installation
 
 This page shows you exactly how to install the **Poor Man’s Throttle** Android app on your phone or tablet.
