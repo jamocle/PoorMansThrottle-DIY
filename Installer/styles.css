@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     background: #f6f7fb;
@@ -5,7 +9,7 @@ body {
 }
 
 .wrap {
-    max-width: 760px;
+    max-width: 920px;
     margin: 40px auto;
     background: #fff;
     border-radius: 16px;
@@ -14,12 +18,16 @@ body {
 }
 
 .page-header {
-    margin: 0 0 18px 0;
+    margin: 0 0 20px 0;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 14px;
 }
 
 .header-image {
     display: block;
     width: 100%;
+    max-width: 100%;
     height: auto;
     border-radius: 14px;
 }
