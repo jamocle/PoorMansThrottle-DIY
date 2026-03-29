@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Android Installation Guide - Poor Man's Throttle</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script>
+        const cssLink = document.createElement("link");
+        cssLink.rel = "stylesheet";
+        cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
+        document.head.appendChild(cssLink);
+    </script>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="page-header">
+            <img src="header.png" alt="Poor Man's Throttle header" class="header-image" />
+        </div>
+
+        <div class="guide-toolbar">
+            <a href="index.html" class="back-link">← Back</a>
+        </div>
+
+        <div class="card guide-card">
+            <div class="guide-title-row">
+                <div>
+                    <h2 class="guide-title">Android Installation Instructions</h2>
+                    <p class="note">Rendered from the Markdown source file.</p>
+                </div>
+                <img src="android.png" alt="Android" class="guide-platform-icon" />
+            </div>
+
+            <div id="guideContent" class="markdown-content">
+                <p class="note">Loading instructions...</p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+
+        async function loadGuide() {
+            const target = document.getElementById("guideContent");
+
+            try {
+                const response = await fetch("docs/10_mobile_device_installation_instructions.md?v=" + encodeURIComponent(Date.now()));
+                if (!response.ok) {
+                    throw new Error("Failed to load markdown file.");
+                }
+
+                const markdown = await response.text();
+                target.innerHTML = marked.parse(markdown);
+            } catch (error) {
+                target.innerHTML = "<p class=\"note warn\">Unable to load the Android installation instructions right now.</p>";
+                console.error(error);
+            }
+        }
+
+        loadGuide();
+    </script>
+</body>
+
+</html>
