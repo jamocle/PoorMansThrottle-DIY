@@ -236,6 +236,16 @@ code {
     text-decoration: none;
 }
 
+.doc-link {
+    color: #1d4ed8;
+    text-decoration: none;
+}
+
+.doc-link:hover,
+.doc-link:focus {
+    text-decoration: underline;
+}
+
 .guide-toolbar {
     margin: 0 0 14px 0;
 }
