@@ -63,7 +63,7 @@ Features that allow the throttle to control additional locomotive functions.
    Allow the controller to operate locomotive lighting such as headlights, cab lights, or marker lights using dedicated output pins.
 
 7. **Sound Trigger Outputs**  
-   Provide output triggers that can activate external sound boards or audio modules. These triggers could support common locomotive sounds such as horns, bells, or whistles.
+   Provide output triggers that can activate external sound boards or audio modules (e.g. DFMini sound board). These triggers could support common locomotive sounds such as horns, bells, or whistles.
 
 These outputs allow the throttle system to expand beyond motor control.
 
