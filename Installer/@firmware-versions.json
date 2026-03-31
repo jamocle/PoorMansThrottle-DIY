@@ -1,13 +1,18 @@
 [
     {
+        "label": "v1.9.0",
+        "manifest": "manifest-1.9.0.json",
+        "selected": false
+    },
+    {
         "label": "v1.8.0",
         "manifest": "manifest-1.8.0.json",
-        "selected": false
+        "selected": true
     },
     {
         "label": "v1.6.2",
         "manifest": "manifest-1.6.2.json",
-        "selected": true
+        "selected": false
     },
     {
         "label": "v1.6.1",
