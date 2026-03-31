@@ -1,19 +1,6 @@
-Below is the **complete updated documentation** reflecting the **actual behavior and capabilities of firmware v1.7.2** from the code you provided, including:
-
-* correct firmware version
-* all implemented CVs
-* WiFi / WebSocket configuration
-* BLE priority behavior
-* IP discovery via `IP?`
-* handshake requirement
-* CV behavior exceptions
-* floor/ceiling throttle mapping
-
----
-
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.7.2
+**Firmware Version:** 1.9.0  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -26,7 +13,7 @@ CVs are **read and modified using commands entered into the Terminal inside the 
 
 These settings are **persisted in ESP32 NVS storage**, meaning they remain saved even after power loss.
 
-**Exception:**
+**Exception:**  
 CV8 is a reset trigger and is **not persisted**.
 
 ---
@@ -54,19 +41,19 @@ The throttle will respond with the current value or confirmation.
 
 To read a CV value:
 
-```
+```text
 CV<number>?
-```
+````
 
 Example:
 
-```
+```text
 CV2?
 ```
 
 Response:
 
-```
+```text
 A:CV2=0
 ```
 
@@ -76,19 +63,19 @@ A:CV2=0
 
 To modify a CV:
 
-```
+```text
 CV<number>=<value>
 ```
 
 Example:
 
-```
+```text
 CV2=25
 ```
 
 Response:
 
-```
+```text
 A:CV2=25
 ```
 
@@ -99,14 +86,13 @@ A:CV2=25
 * All CV commands require a **successful handshake (`I,<token>`)**
 * Invalid values return:
 
-```
+```text
 ERR:<command>
 ```
 
 * Most CV changes are **saved automatically to non-volatile storage after a short delay**
 
 * **CV8 is not stored** and only triggers a reset action
-
 * Some CV changes **restart internal services** (WiFi or WebSocket)
 
 * CV commands can be sent over **BLE or WebSocket**
@@ -117,7 +103,7 @@ ERR:<command>
 
 | CV        | Purpose                  | Possible Values (Default)                                       | Description                                                                               |
 | --------- | ------------------------ | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| **CV1**   | Motor Driver Mode        | `DUAL_PWM`, `PWM_DIR` (**Default: DUAL_PWM**)                   | Selects motor driver interface type.                                                      |
+| **CV1**   | Motor Driver Mode        | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR` (**Default: DUAL_PWM**)      | Selects motor driver interface type.                                                      |
 | **CV2**   | Minimum Start (Floor)    | `0 – 100` (**Default: 0**)                                      | Minimum hardware throttle output when non-zero throttle is commanded.                     |
 | **CV3**   | Maximum Output (Ceiling) | `0 – 100` (**Default: 100**)                                    | Caps the maximum motor output. `0` behaves the same as `100`.                             |
 | **CV4**   | Train Name               | Alphanumeric + spaces                                           | Sets the BLE advertised device name.                                                      |
@@ -132,10 +118,13 @@ ERR:<command>
 | **CV13**  | WebSocket Port           | `1 – 65535` (**Default: 81**)                                   | WebSocket server port.                                                                    |
 | **CV100** | Dual PWM Forward Pin     | `0 – 39` (**Default: 25**)                                      | Forward PWM pin for `DUAL_PWM` mode.                                                      |
 | **CV101** | Dual PWM Reverse Pin     | `0 – 39` (**Default: 26**)                                      | Reverse PWM pin for `DUAL_PWM` mode.                                                      |
-| **CV102** | Dual PWM Enable A        | `0 – 39` (**Default: 27**)                                      | Enable pin A.                                                                             |
-| **CV103** | Dual PWM Enable B        | `0 – 39` (**Default: 33**)                                      | Enable pin B.                                                                             |
+| **CV102** | Dual PWM Enable A        | `0 – 39` (**Default: 27**)                                      | Enable pin A for `DUAL_PWM` mode.                                                         |
+| **CV103** | Dual PWM Enable B        | `0 – 39` (**Default: 33**)                                      | Enable pin B for `DUAL_PWM` mode.                                                         |
 | **CV104** | PWM_DIR PWM Pin          | `0 – 39` (**Default: 25**)                                      | PWM pin used in `PWM_DIR` mode.                                                           |
 | **CV105** | PWM_DIR Direction Pin    | `0 – 39` (**Default: 26**)                                      | Direction pin used in `PWM_DIR` mode.                                                     |
+| **CV106** | PWM_BIDIR PWM/Enable Pin | `0 – 39` (**Default: 25**)                                      | PWM/enable pin used in `PWM_BIDIR` mode.                                                  |
+| **CV107** | PWM_BIDIR Forward Pin    | `0 – 39` (**Default: 26**)                                      | Forward logic pin used in `PWM_BIDIR` mode.                                               |
+| **CV108** | PWM_BIDIR Reverse Pin    | `0 – 39` (**Default: 27**)                                      | Reverse logic pin used in `PWM_BIDIR` mode.                                               |
 
 ---
 
@@ -180,7 +169,7 @@ WiFi is configured using:
 
 Example:
 
-```
+```text
 CV10=1
 CV11=MyNetwork
 CV12=MyPassword
@@ -194,19 +183,19 @@ After WiFi connects, the throttle obtains an IP address from the network.
 
 You can retrieve it using:
 
-```
+```text
 IP?
 ```
 
 Response:
 
-```
+```text
 IP:<address>
 ```
 
 Example:
 
-```
+```text
 IP:192.168.1.50
 ```
 
@@ -214,7 +203,7 @@ This address can be used to connect to the WebSocket server.
 
 Example:
 
-```
+```text
 ws://192.168.1.50:81
 ```
 
@@ -232,7 +221,9 @@ ws://192.168.1.50:81
 
 # Supported Motor Driver Boards
 
-The firmware supports **two motor driver control interfaces**.
+The firmware supports **three motor driver control interfaces**.
+
+**Important:** Select the driver mode based on the board's control pins, not just the board family name.
 
 ---
 
@@ -240,7 +231,7 @@ The firmware supports **two motor driver control interfaces**.
 
 Typical control pins:
 
-```
+```text
 RPWM
 LPWM
 R_EN
@@ -252,7 +243,8 @@ Common compatible boards:
 * IBT-2
 * IBT-20
 * BTS7960 modules
-* BTN7960 modules
+* BTS7960B modules
+* BTN7960 / BTS7960 style dual-PWM drivers
 * Cytron MDD series
     * Cytron MDD10A
     * Cytron MDD20A
@@ -271,7 +263,7 @@ These are typically used for **high-current model train motors**.
 
 Typical control pins:
 
-```
+```text
 PWM
 DIR
 ```
@@ -282,6 +274,23 @@ Compatible boards include:
 * Cytron MD13S
 * Cytron MD30C
 * Cytron MDS40A
+
+These drivers use a **single PWM speed input plus a dedicated direction pin**.
+
+---
+
+# PWM_BIDIR Motor Drivers
+
+Typical control pins:
+
+```text
+EN / PWM
+IN1
+IN2
+```
+
+Compatible boards include:
+
 * L298N
 * L293D
 * TB6612FNG
@@ -291,7 +300,17 @@ Compatible boards include:
 * MX1508
 * SN754410
 
-These drivers are commonly used in **robotics or smaller motors**.
+These drivers use **one PWM/enable pin plus separate forward/reverse logic pins**.
+
+---
+
+# Wiring Summary
+
+Choose the motor driver mode based on the board's control interface:
+
+* `DUAL_PWM` = separate forward and reverse PWM inputs
+* `PWM_DIR` = one PWM pin and one direction pin
+* `PWM_BIDIR` = one PWM/enable pin and separate forward/reverse logic pins
 
 ---
 
@@ -303,7 +322,7 @@ The firmware converts these into **actual hardware output** using CV2 and CV3.
 
 Example configuration:
 
-```
+```text
 CV2 = 20
 CV3 = 70
 ```
@@ -325,7 +344,7 @@ Benefits:
 
 # Resetting Configuration
 
-```
+```text
 CV8=8
 ```
 
