@@ -1,5 +1,15 @@
 # Quick Overview
 
+## Before You start test your IBT-2 Motor Driver
+
+The IBT-2 motor driver that comes from China has notoriously bad quality assurance.  Use the link below to test your IBT-2 Board before starting
+
+We have had 100% success when using good IBT-2 boards and wiring the project correctly.  If the project controls one direction but not the other or doesnt work, FIRST check your assumptions.  Check the wiriong AND check to make sure you have a bad IBT-2 Board.
+
+[Check Your IBT-2 Board Before You Start](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md)
+
+
+# What is this for?
 The **Poor Man's Throttle** is a low-cost wireless throttle system for model locomotives.
 
 A smartphone connects to the locomotive using Bluetooth.  

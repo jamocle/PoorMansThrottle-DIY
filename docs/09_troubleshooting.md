@@ -6,9 +6,18 @@ Work through the checks slowly and carefully.
 
 ---
 
+## Before You start test your IBT-2 Motor Driver
+
+The IBT-2 motor driver that comes from China has notoriously bad quality assurance.  Use the link below to test your IBT-2 Board before starting
+
+We have had 100% success when using good IBT-2 boards and wiring the project correctly.  If the project controls one direction but not the other or doesnt work, FIRST check your assumptions.  Check the wiriong AND check to make sure you have a bad IBT-2 Board.
+
+[Check Your IBT-2 Board Before You Start](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md)
+
+
 # AI Troubleshooter
 
-The AI has all the acces to the code for the app and firmware and it is knowledgable of the hardware used for Poor Man's Throttle.  Try this out and ask it questions
+The AI has all the access to the code for the app and firmware and it is knowledgable of the hardware used for Poor Man's Throttle.  Try this out and ask it questions
 
 [AI Troubleshooter - **Check it out**](https://chatgpt.com/gpts/editor/g-69b6b9e2de288191b93ca08de865a365)
 
