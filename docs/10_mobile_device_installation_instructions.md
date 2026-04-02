@@ -1,7 +1,3 @@
-# Apple Mobile App Installation
-
-[Download from the Apple App Store]()
-
 # Android Mobile App Installation
 
 This page shows you exactly how to install the **Poor Man’s Throttle** Android app on your phone or tablet.
@@ -9,6 +5,10 @@ This page shows you exactly how to install the **Poor Man’s Throttle** Android
 <p>
   <a class="app-link" id="androidApkInlineLink" href="downloads/poor-mans-throttle-latest.apk">Download Here</a>
 </p>
+
+### If you meant Apple go here...
+
+[Download from the Apple App Store](https://apps.apple.com/us/app/poor-mans-throttle/id6760155416)
 
 ## What you are downloading
 
