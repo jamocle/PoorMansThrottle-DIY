@@ -16,13 +16,18 @@ async function loadFirmwareVersions() {
         throw new Error("HTTP " + response.status + " while loading " + versionsUrl);
     }
 
-    const versions = await response.json();
+    const firmwareData = await response.json();
 
-    if (!Array.isArray(versions) || versions.length === 0) {
+    if (
+        !firmwareData ||
+        typeof firmwareData !== "object" ||
+        !Array.isArray(firmwareData.versions) ||
+        firmwareData.versions.length === 0
+    ) {
         throw new Error("Firmware versions JSON is empty or invalid.");
     }
 
-    return versions;
+    return firmwareData;
 }
 
 function populateFirmwareSelect(sel, versions) {
@@ -47,19 +52,27 @@ async function updateFirmwareInstaller() {
     const sel = document.getElementById("fwSel");
     const olderBtn = document.getElementById("olderBtn");
     const latestBtn = document.getElementById("latestBtn");
+    const latestVersionLabel = document.getElementById("latestVersionLabel");
     const androidGuideLink = document.getElementById("androidGuideLink");
     const androidApkLink = document.getElementById("androidApkLink");
 
-    if (latestBtn) {
-        latestBtn.setAttribute(
-            "manifest",
-            "manifest-latest.json?v=" + encodeURIComponent(getDateTimeCacheBust())
-        );
-    }
+    try {
+        const firmwareData = await loadFirmwareVersions();
+        const versions = firmwareData.versions;
+        const latestVersion = firmwareData.latest;
 
-    if (sel && olderBtn) {
-        try {
-            const versions = await loadFirmwareVersions();
+        if (latestBtn && latestVersion) {
+            latestBtn.setAttribute(
+                "manifest",
+                "manifest-" + latestVersion + ".json?v=" + encodeURIComponent(getDateTimeCacheBust())
+            );
+        }
+
+        if (latestVersionLabel) {
+            latestVersionLabel.textContent = latestVersion ? "v" + latestVersion : "";
+        }
+
+        if (sel && olderBtn) {
             populateFirmwareSelect(sel, versions);
 
             const updateOlderManifest = () => {
@@ -71,17 +84,29 @@ async function updateFirmwareInstaller() {
 
             sel.addEventListener("change", updateOlderManifest);
             updateOlderManifest();
-        } catch (error) {
-            console.error(error);
+        }
+    } catch (error) {
+        console.error(error);
 
+        if (latestVersionLabel) {
+            latestVersionLabel.textContent = "";
+        }
+
+        if (sel) {
             sel.innerHTML = "";
             const option = document.createElement("option");
             option.textContent = "Unable to load versions";
             option.value = "";
             sel.appendChild(option);
             sel.disabled = true;
+        }
 
+        if (olderBtn) {
             olderBtn.setAttribute("manifest", "");
+        }
+
+        if (latestBtn) {
+            latestBtn.setAttribute("manifest", "");
         }
     }
 

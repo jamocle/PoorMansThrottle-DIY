@@ -47,7 +47,10 @@
             Use a <b>data-capable USB cable</b>.
           </p>
 
-          <esp-web-install-button id="latestBtn" manifest="manifest-latest.json"></esp-web-install-button>
+          <div class="row">
+            <esp-web-install-button id="latestBtn" manifest=""></esp-web-install-button>
+            <span id="latestVersionLabel" class="note"></span>
+          </div>
 
           <p class="note warn">
             If it connects but doesn’t start flashing: hold <b>BOOT</b>, click Install, select the port, then release
