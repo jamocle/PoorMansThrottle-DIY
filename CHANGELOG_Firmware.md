@@ -2,6 +2,19 @@
 
 ## Firmware:
 
+### Version 1.9.6
+
+* **PWM_BIDIR motor driver support** added, expanding compatibility to include single-PWM plus separate forward/reverse logic driver boards in addition to the previously supported dual-PWM and PWM-plus-direction modes. 
+* **Additional motor-driver pin configuration options** added for PWM_BIDIR operation, including configurable PWM, forward, and reverse control pins. 
+* **Runtime pin validation** added so unsupported GPIO assignments are rejected instead of being applied, helping prevent invalid motor-control configurations. 
+* **Safer live pin remapping behavior** added by forcing a motor stop, placing outputs in a safe state, and reinitializing PWM/output pins before applying a new pin configuration. 
+* **Stored pin configuration sanitizing** added during startup so invalid saved pin assignments automatically fall back to safe default pins instead of being used as-is. 
+* **Expanded hardware-state readback support** added for the new PWM_BIDIR driver mode, improving internal verification of actual direction and throttle output across supported driver types. 
+* **Variable-brake resume handling** appears to be improved with added logic for releasing variable brake and replaying the remembered motion target, which should make recovery from braking behavior more consistent. 
+
+* **Major speed and efficiency enhancements** Better memory management
+
+
 ### Version 1.8.0
 
 * **Wi-Fi and WebSocket control support** added as a secondary communication path alongside BLE for controller access and state updates.
