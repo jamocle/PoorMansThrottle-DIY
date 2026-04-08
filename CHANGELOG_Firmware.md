@@ -2,6 +2,17 @@
 
 ## Firmware:
 
+### Version 1.10.4
+
+* **Configurable function-output / lighting support** added, introducing twelve configurable function slots with default roles such as `Headlight`, `ReverseLgt`, and additional `FX` outputs for accessory lighting or other switched outputs.
+* **Per-function configuration persistence** added so each function can store its own name, assigned GPIO pin, output pattern, and direction behavior in non-volatile memory and restore those settings at startup.
+* **Multiple LED output patterns** added for function outputs, including `SOLID`, `DBL_BLNK`, `FRED`, `BLINK+`, and `BLINK-`, expanding the available lighting effects beyond simple on/off behavior.
+* **Direction-aware function gating** added so configured outputs can be limited to forward-only, reverse-only, or both directions, allowing headlight and reverse-light style behavior to follow train direction automatically.
+* **Runtime subscribed LED-output management** added, allowing configured outputs to be activated, deactivated, tracked by pin, and safely forced off when needed.
+* **Blink timing configuration** added through stored settings for phase period and on-time, allowing the `BLINK+` and `BLINK-` lighting modes to be tuned at runtime instead of using only fixed timing.
+* **Startup function-safe initialization** added so all configured function outputs are explicitly forced off during boot before normal operation begins, improving output safety during startup and configuration restore.
+* **Onboard status LED mode cleanup** appears to be improved by refactoring the built-in LED behavior to use the same named base-pattern concepts (`Solid`, `Double_Blink`, and `FRED`) now used by the new function-lighting system, which should make status-light behavior more consistent internally.
+
 ### Version 1.9.6
 
 * **PWM_BIDIR motor driver support** added, expanding compatibility to include single-PWM plus separate forward/reverse logic driver boards in addition to the previously supported dual-PWM and PWM-plus-direction modes. 
