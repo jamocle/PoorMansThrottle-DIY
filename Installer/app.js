@@ -30,6 +30,23 @@ async function loadFirmwareVersions() {
     return firmwareData;
 }
 
+async function loadAndroidVersion() {
+    const versionUrl = "downloads/version.txt?v=" + encodeURIComponent(getRandomCacheBust());
+    const response = await fetch(versionUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+        throw new Error("HTTP " + response.status + " while loading " + versionUrl);
+    }
+
+    const version = (await response.text()).trim();
+
+    if (!version) {
+        throw new Error("Android version text file is empty.");
+    }
+
+    return version;
+}
+
 function populateFirmwareSelect(sel, versions) {
     sel.innerHTML = "";
 
@@ -122,6 +139,14 @@ async function updateFirmwareInstaller() {
             "href",
             "downloads/poor-mans-throttle-latest.apk?v=" + encodeURIComponent(getRandomCacheBust())
         );
+
+        try {
+            const androidVersion = await loadAndroidVersion();
+            androidApkLink.textContent = "Download Android version " + androidVersion;
+        } catch (error) {
+            console.error(error);
+            androidApkLink.textContent = "Download LatestAndroid version";
+        }
     }
 }
 

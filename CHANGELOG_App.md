@@ -3,6 +3,7 @@
 ## Smartphone App:
 
 ### Version 1.9.1
+* **Added more Permission granting for Android version** The App now notifies of more permissions required to perform BLE scans to better support some Android users.
 * **Lighting configuration support** The configuration page now supports setup for lighting-related command behavior, including linked function selections and momentary options.
 * **Lighting control slideout** Standard and Pro throttle pages now include a slideout for lighting control while operating the throttle.
 * **Improved BLE device discovery metadata** Mock BLE devices now advertise service UUIDs and include advertisement metadata to better simulate real device discovery behavior.
