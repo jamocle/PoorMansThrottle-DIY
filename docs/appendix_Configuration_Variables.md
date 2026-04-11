@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.10.4  
+**Firmware Version:** 1.10.5  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -145,28 +145,28 @@ If a pin value outside the allowed list is written to a pin CV, the firmware ret
 
 # Function Output CVs (CV150+)
 
-The firmware now supports **12 function outputs** with per-function configuration.
+The firmware supports **12 function outputs** with per-function configuration.
 
-Each function occupies a **7-CV block**, but only the first four CVs in each block are currently implemented:
+Each function occupies a **7-CV block**. In firmware **1.10.5**, the first **five** CVs in each block are implemented:
 
-| Function | Name CV | Pin CV | Pattern CV | Direction CV |
-| -------- | ------- | ------ | ---------- | ------------ |
-| **FX1**  | CV150   | CV151  | CV152      | CV153        |
-| **FX2**  | CV157   | CV158  | CV159      | CV160        |
-| **FX3**  | CV164   | CV165  | CV166      | CV167        |
-| **FX4**  | CV171   | CV172  | CV173      | CV174        |
-| **FX5**  | CV178   | CV179  | CV180      | CV181        |
-| **FX6**  | CV185   | CV186  | CV187      | CV188        |
-| **FX7**  | CV192   | CV193  | CV194      | CV195        |
-| **FX8**  | CV199   | CV200  | CV201      | CV202        |
-| **FX9**  | CV206   | CV207  | CV208      | CV209        |
-| **FX10** | CV213   | CV214  | CV215      | CV216        |
-| **FX11** | CV220   | CV221  | CV222      | CV223        |
-| **FX12** | CV227   | CV228  | CV229      | CV230        |
+| Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
+| -------- | ------- | ------ | ---------- | ------------ | ----------- |
+| **FX1**  | CV150   | CV151  | CV152      | CV153        | CV154       |
+| **FX2**  | CV157   | CV158  | CV159      | CV160        | CV161       |
+| **FX3**  | CV164   | CV165  | CV166      | CV167        | CV168       |
+| **FX4**  | CV171   | CV172  | CV173      | CV174        | CV175       |
+| **FX5**  | CV178   | CV179  | CV180      | CV181        | CV182       |
+| **FX6**  | CV185   | CV186  | CV187      | CV188        | CV189       |
+| **FX7**  | CV192   | CV193  | CV194      | CV195        | CV196       |
+| **FX8**  | CV199   | CV200  | CV201      | CV202        | CV203       |
+| **FX9**  | CV206   | CV207  | CV208      | CV209        | CV210       |
+| **FX10** | CV213   | CV214  | CV215      | CV216        | CV217       |
+| **FX11** | CV220   | CV221  | CV222      | CV223        | CV224       |
+| **FX12** | CV227   | CV228  | CV229      | CV230        | CV231       |
 
-Unused offsets inside each 7-CV block currently return `ERR`.
+The remaining two offsets inside each 7-CV block currently return `ERR`.
 
-**NOTE**: When a pin is turned on with an FX command it will output a constant (Non-PWM) ~3.3v.  If you are hooking an LED to it you will **NOT** need a resistor inline with the LED.  If your LED is dim check for an inline resistor and remove it.
+**NOTE**: When a pin is turned on with an FX command it will output a constant (Non-PWM) ~3.3v. If you are hooking an LED to it you will **NOT** need a resistor inline with the LED. If your LED is dim check for an inline resistor and remove it.
 
 ---
 
@@ -272,6 +272,29 @@ Direction gating follows the locomotive direction state. When direction does not
 
 ---
 
+## AppFlags CVs
+
+Each function now has an **AppFlags** CV.
+
+These are stored as an **unsigned 32-bit integer**.
+
+Examples:
+
+```text
+CV154=0
+CV161=1
+CV168=32
+```
+
+Notes:
+
+* Default value is `0` for all functions
+* AppFlags values are persisted in NVS along with the other function settings
+* The firmware accepts only valid unsigned 32-bit integer input for these CVs
+* The firmware currently stores and reports AppFlags, but any app-side meaning depends on how the PMT application chooses to use those flag bits
+
+---
+
 # Function Runtime Commands
 
 Function outputs are turned on and off with `FX` commands, not CV commands.
@@ -351,6 +374,22 @@ Meaning:
 * `W1` = WiFi connected
 
 The firmware supports up to **two WebSocket client slots**.
+
+---
+
+# BLE Recovery / Disconnect Behavior
+
+Firmware **1.10.5** adds a stronger BLE recovery path when the controller becomes disconnected and advertising does not recover correctly.
+
+Behavior summary:
+
+* After a BLE disconnect, the firmware still attempts normal advertising restart/recovery
+* If the controller remains disconnected and advertising still has not recovered after the watchdog/retry logic, a **hard recovery escalation** can occur
+* Hard recovery escalation forces a **quick stop** and defers reboot until the locomotive is safely stopped
+* If a valid control connection returns before the stop completes, the deferred reboot is canceled
+* If a **WebSocket control connection** is active, the firmware does **not** force a BLE hard-recovery reboot
+
+This change is intended to make the throttle more resilient when BLE fails to resume normal advertising after a disconnect.
 
 ---
 
@@ -573,6 +612,7 @@ This will:
 * Use **CV6 and CV7** to tune UI responsiveness
 * Use **CV20** when tuning phase-based auxiliary light blinking
 * Configure function outputs with **pin + pattern + direction** before trying `FXn=1`
+* Set **AppFlags** CVs only if your PMT app build uses them
 * Configure motor pins only with allowed runtime GPIOs
 * Enable WiFi (**CV10**) only when needed
 * Use **CV8** after major hardware or configuration changes

@@ -2,6 +2,18 @@
 
 ## Firmware:
 
+### Version 1.10.5
+
+* **Escalated BLE advertising recovery** added with a bounded hard-recovery path that triggers if normal BLE advertising restart and watchdog recovery do not restore scanability after disconnect.
+* **Safe deferred BLE recovery reboot** added so, when hard BLE recovery is required, the controller first forces a quick stop and only reboots after the locomotive has safely stopped.
+* **BLE hard-recovery cancellation during socket control** added so an active WebSocket control path suppresses BLE-forced reboot behavior instead of interrupting an otherwise valid control session.
+* **Improved BLE disconnect recovery state handling** added by explicitly clearing hard-recovery, watchdog, and reboot-pending state in more reconnect and disconnect transitions, reducing stale recovery-state carryover.
+* **Per-function application flags support** added by extending each configurable function slot with a persisted `appFlags` value stored in non-volatile memory.
+* **New function CV field for app flags** added so each function now has an additional CV-backed field for reading and writing its unsigned 32-bit application flags value.
+* **Unsigned 32-bit parsing for function flags** added to validate `appFlags` writes safely before storage, preventing invalid or overflowed values from being accepted.
+* **Function configuration persistence expanded** so the new per-function `appFlags` value is loaded from and saved to preferences alongside each function’s name, pin, pattern, and direction mode.
+* **Version command reply behavior** changed so the `V` command now responds through the ACK/reply path using the firmware version value instead of returning only the raw version string.
+
 ### Version 1.10.4
 
 * **Configurable function-output / lighting support** added, introducing twelve configurable function slots with default roles such as `Headlight`, `ReverseLgt`, and additional `FX` outputs for accessory lighting or other switched outputs.
@@ -245,4 +257,3 @@ Hardware monitoring and debug comparison logic have been updated to properly int
 * **Built-in diagnostic and debug logging mode** with timestamped serial output and hardware/state comparison monitoring.
 * **Periodic hardware verification system** capable of detecting mismatches between stored throttle state and actual PWM output.
 * **Maintenance features** including configuration reset and system reboot capabilities.
-

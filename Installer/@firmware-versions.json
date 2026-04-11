@@ -2,8 +2,8 @@
     "latest": "1.10.4",
     "versions": [
         {
-            "label": "v1.10.4",
-            "manifest": "manifest-1.10.4.json",
+            "label": "v1.10.5",
+            "manifest": "manifest-1.10.5.json",
             "selected": false
         },
         {

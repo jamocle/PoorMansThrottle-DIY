@@ -2,7 +2,14 @@
 
 ## Smartphone App:
 
-### Version 1.8.4
+### Version 1.9.1
+* **Lighting configuration support** The configuration page now supports setup for lighting-related command behavior, including linked function selections and momentary options.
+* **Lighting control slideout** Standard and Pro throttle pages now include a slideout for lighting control while operating the throttle.
+* **Improved BLE device discovery metadata** Mock BLE devices now advertise service UUIDs and include advertisement metadata to better simulate real device discovery behavior.
+* **Refined mock scan/device setup** Mock BLE device definitions were consolidated into reusable device instances for more consistent scan and connection behavior during development and testing.
+* **Faster mock firmware responses** Reduced simulated firmware response delay to make mock-device testing more responsive.
+* **Updated minimum firmware requirement** Minimum supported firmware version updated to **1.10.5**.
+
 ### Version 1.8.4
 * **Stronger BLE Scanning** Hardened the BLE scanning algorithms further to strengthen the apps ability to find devices even on slower devices.
 * **Scripting Halt Ability** The app supports stopping a script mid flight.
@@ -13,7 +20,6 @@
 * **BLE Diagnostic Mode** Ability to view BLE logs for scan failures.
 * **Scripting abaility** The app supports scripting commands together.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
-
 
 ### Version 1.8.0
 
@@ -51,4 +57,3 @@
 * Function key configuration interface supporting tap-to-configure, long-press reconfiguration, and persistent storage of key assignments.
 * Terminal message log distinguishing between sent commands, received responses, and informational status messages.
 * Manual disconnect control available directly from the main throttle screen.
-

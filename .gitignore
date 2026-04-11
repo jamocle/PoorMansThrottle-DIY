@@ -10,3 +10,10 @@ Thumbs.db
 # Logs
 *.log
 '@ | Set-Content -Encoding UTF8 .gitignore
+
+# Origence Codex — generated files (contain short-lived auth tokens)
+.vscode/mcp.json
+.mcp.json
+.claude/
+.cursor/mcp.json
+.codex/config.toml

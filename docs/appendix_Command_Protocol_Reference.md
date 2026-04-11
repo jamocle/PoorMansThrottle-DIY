@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.10.4  
+**Firmware Version:** 1.10.5  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -128,8 +128,12 @@ C?
 IP?
 I
 I,<token>   ; on success
-V
 ```
+
+Notes:
+
+* `V` is **not** a RAW-response command in this firmware version
+* `V` returns an ACK-wrapped response in the form `ACK:V<firmware-version>`
 
 ---
 
@@ -360,10 +364,10 @@ V
 Example response:
 
 ```text
-1.10.4
+ACK:V1.10.5
 ```
 
-This is a **RAW response**.
+This is an **ACK-wrapped response**, not a RAW response.
 
 ---
 
@@ -775,6 +779,7 @@ Documented fields in each block:
 | `+1`   | Function pin            |
 | `+2`   | Function pattern        |
 | `+3`   | Function direction mode |
+| `+4`   | Function app flags      |
 
 ### Function pattern values
 
@@ -790,22 +795,34 @@ Documented fields in each block:
 * `FWD`
 * `REV`
 
+### Function app flags values
+
+* Unsigned 32-bit integer
+* Range: `0..4294967295`
+
 Examples:
 
 * `CV150` = FX1 name
 * `CV151` = FX1 pin
 * `CV152` = FX1 pattern
 * `CV153` = FX1 direction
+* `CV154` = FX1 app flags
 * `CV157` = FX2 name
 * `CV158` = FX2 pin
 * `CV159` = FX2 pattern
 * `CV160` = FX2 direction
+* `CV161` = FX2 app flags
 
-Default function names/directions:
+Default function names/directions/app flags:
 
-* `FX1` default name: `Headlight`, default direction: `FWD`
-* `FX2` default name: `ReverseLgt`, default direction: `REV`
-* `FX3..FX12` default direction: `BOTH`
+* `FX1` default name: `Headlight`, default direction: `FWD`, default app flags: `0`
+* `FX2` default name: `ReverseLgt`, default direction: `REV`, default app flags: `0`
+* `FX3..FX12` default direction: `BOTH`, default app flags: `0`
+
+Notes:
+
+* Function app flags are persisted in NVS
+* Query/set uses the normal CV reply format: `A:CV<n>=<value>`
 
 ---
 
@@ -872,32 +889,53 @@ This behavior helps prevent runaway trains after loss of control connection.
 
 ---
 
+# BLE Advertising Recovery Behavior
+
+When a BLE client disconnects, the firmware first attempts a normal BLE advertising restart so the controller becomes discoverable again.
+
+Recovery behavior:
+
+1. On BLE disconnect, advertising restart is requested
+2. The firmware retries advertising restart on a timed loop
+3. After **10 seconds** disconnected, an advertising watchdog can force another recovery attempt if scanability has not returned
+4. After **12 seconds** disconnected, if BLE still has not recovered, the firmware can escalate to a **hard recovery**
+5. Hard recovery forces a **quick stop**, then defers controller reboot until the train is safely stopped
+6. If a WebSocket control session is active, this BLE hard-recovery reboot path is canceled
+
+Notes:
+
+* This recovery behavior is automatic
+* It is intended to restore BLE scanability safely
+* Reboot is deferred until motion has safely stopped rather than occurring immediately while running
+
+---
+
 # Command Summary
 
-| Command          | Purpose                                |
-| ---------------- | -------------------------------------- |
-| `I?`             | Verify authorization                   |
-| `F<n>`           | Forward momentum ramp                  |
-| `R<n>`           | Reverse momentum ramp                  |
-| `FQ<n>`          | Forward quick ramp                     |
-| `RQ<n>`          | Reverse quick ramp                     |
-| `S`              | Quick stop                             |
-| `B`              | Brake stop                             |
-| `B<n>`           | Variable brake                         |
-| `B0`             | Release variable brake                 |
-| `?`              | Hardware state query                   |
-| `??`             | Stored state query                     |
-| `V`              | Firmware version                       |
-| `C?`             | Connection status                      |
-| `IP?`            | IP address query                       |
-| `D1`             | Debug ON                               |
-| `D0`             | Debug OFF                              |
-| `P0`             | Debug periodic mismatches only         |
-| `P1`             | Debug periodic always                  |
-| `A1`             | Enable async `A:` state notifications  |
-| `A0`             | Disable async `A:` state notifications |
-| `FX<n>=0`        | Turn function output off               |
-| `FX<n>=1`        | Turn function output on                |
-| `CV<n>?`         | Query CV value                         |
-| `CV<n>=<value>`  | Set CV value                           |
+| Command         | Purpose                                |
+| --------------- | -------------------------------------- |
+| `I?`            | Verify authorization                   |
+| `F<n>`          | Forward momentum ramp                  |
+| `R<n>`          | Reverse momentum ramp                  |
+| `FQ<n>`         | Forward quick ramp                     |
+| `RQ<n>`         | Reverse quick ramp                     |
+| `S`             | Quick stop                             |
+| `B`             | Brake stop                             |
+| `B<n>`          | Variable brake                         |
+| `B0`            | Release variable brake                 |
+| `?`             | Hardware state query                   |
+| `??`            | Stored state query                     |
+| `V`             | Firmware version                       |
+| `C?`            | Connection status                      |
+| `IP?`           | IP address query                       |
+| `D1`            | Debug ON                               |
+| `D0`            | Debug OFF                              |
+| `P0`            | Debug periodic mismatches only         |
+| `P1`            | Debug periodic always                  |
+| `A1`            | Enable async `A:` state notifications  |
+| `A0`            | Disable async `A:` state notifications |
+| `FX<n>=0`       | Turn function output off               |
+| `FX<n>=1`       | Turn function output on                |
+| `CV<n>?`        | Query CV value                         |
+| `CV<n>=<value>` | Set CV value                           |
 
