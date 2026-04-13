@@ -2,8 +2,8 @@
 
 ## Firmware:
 
-### Version 1.10.5
-
+### Version 1.10.7
+* **Feathered Braking Bug Fix** The firmware now accurately re-establishes the remembered throttle of the speed does not reach 0
 * **Escalated BLE advertising recovery** added with a bounded hard-recovery path that triggers if normal BLE advertising restart and watchdog recovery do not restore scanability after disconnect.
 * **Safe deferred BLE recovery reboot** added so, when hard BLE recovery is required, the controller first forces a quick stop and only reboots after the locomotive has safely stopped.
 * **BLE hard-recovery cancellation during socket control** added so an active WebSocket control path suppresses BLE-forced reboot behavior instead of interrupting an otherwise valid control session.
