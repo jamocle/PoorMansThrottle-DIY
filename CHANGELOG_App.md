@@ -24,7 +24,7 @@
 ### Version 1.8.4
 * **Stronger BLE Scanning** Hardened the BLE scanning algorithms to strengthen the apps ability to find devices even on slower devices.
 * **BLE Diagnostic Mode** Ability to view BLE logs for scan failures.
-* **Scripting abaility** The app supports scripting commands together.
+* **Scripting ability** The app supports scripting commands together.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.8.0
