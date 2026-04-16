@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version 1.10.9
+* **Websocket Hardeniong** Enhanced the code that handles the WiFi Websocket transport for stronger connectivity
+
 ### Version 1.10.7
 * **Feathered Braking Bug Fix** The firmware now accurately re-establishes the remembered throttle of the speed does not reach 0
 * **Escalated BLE advertising recovery** added with a bounded hard-recovery path that triggers if normal BLE advertising restart and watchdog recovery do not restore scanability after disconnect.

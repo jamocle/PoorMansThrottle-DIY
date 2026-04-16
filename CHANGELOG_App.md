@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 1.9.5
+* **Support for WiFi Failover** The app now uses both BLE and Wifi for better connectivity consistency
+* **Graphical Changes** Slight changes in the graphics
+
+
 ### Version 1.9.3
 * **Added more Permission granting for Android version** The App now notifies of more permissions required to perform BLE scans to better support some Android users. **FIXED**
 * **Lighting configuration support** The configuration page now supports setup for lighting-related command behavior, including linked function selections and momentary options.
