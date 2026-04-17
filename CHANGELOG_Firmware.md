@@ -2,6 +2,14 @@
 
 ## Firmware:
 
+### Version 1.11.0
+* **New `DUAL_INPT` motor driver mode** added for dual-input H-bridge drivers such as the DRV8833. The firmware header now documents this mode as a driver model that swaps which pin receives PWM based on direction.
+* **`CV1` motor driver selection expanded** so the firmware now accepts and reports `DUAL_INPT` alongside the existing `DUAL_PWM`, `PWM_DIR`, and `PWM_BIDIR` modes.
+* **`CV104` / `CV105` reused as the shared two-pin interface** for both `PWM_DIR` and `DUAL_INPT`, with the internal pin naming updated to neutral `TwoPinA` / `TwoPinB` semantics instead of the older PWM-vs-direction wording.
+* **Two-pin PWM attachment and safe-pin handling expanded** so both two-pin outputs are forced safe, detached, and reattached correctly when `DUAL_INPT` is active.
+* **`DUAL_INPT` setup behavior added** so startup and reconfiguration initialize both two-pin outputs as safe low outputs before motion begins.
+* **Hardware-state readback support added for `DUAL_INPT`** so debug and verification logic can interpret forward, reverse, stop, and throttle percentage correctly when either two-pin channel is being PWM-driven.
+
 ### Version 1.10.9
 * **Websocket Hardeniong** Enhanced the code that handles the WiFi Websocket transport for stronger connectivity
 
@@ -61,8 +69,8 @@
 * **Variable braking support** added with dedicated runtime brake-state handling and controlled stop behavior.
 * **Improved stop and reverse sequencing** added for cleaner direction changes, safer transition timing, and more controlled recovery from braking or stop states.
 * **Expanded persistent configuration storage** added to save motor, Wi-Fi, train-name, kick-start, braking, and timing settings in non-volatile memory.
-  
-  
+
+
 ### Version 1.7.0
 
 Version **1.7.0** introduces major flexibility improvements to the firmware, including support for multiple motor driver architectures, configurable GPIO assignments, direction inversion, and expanded CV-based configuration. These changes allow the same firmware image to support a wide range of motor driver boards without recompilation.

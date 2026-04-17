@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.10.5  
+**Firmware Version:** 1.11.0  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -43,7 +43,7 @@ To read a CV value:
 
 ```text
 CV<number>?
-````
+```
 
 Example:
 
@@ -101,31 +101,31 @@ ERR:<command>
 
 # CV Configuration Table
 
-| CV        | Purpose                  | Possible Values (Default)                                       | Description                                                                                                                                                                                                        |
-| --------- | ------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **CV1**   | Motor Driver Mode        | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR` (**Default: DUAL_PWM**)      | Selects motor driver interface type.                                                                                                                                                                               |
-| **CV2**   | Minimum Start (Floor)    | `0 – 100` (**Default: 0**)                                      | Minimum hardware throttle output when any non-zero mapped throttle is commanded.                                                                                                                                   |
-| **CV3**   | Maximum Output (Ceiling) | `0 – 100` (**Default: 100**)                                    | Caps maximum motor output. **`0` means no ceiling cap**, which behaves as `100`.                                                                                                                                   |
-| **CV4**   | Train Name               | Letters, numbers, spaces (**Default: blank**)                   | Sets the train name used for BLE advertising. Leading/trailing spaces are trimmed. Stored value is constrained to fit a single BLE notify reply. The advertised BLE name is also clamped to a conservative length. |
-| **CV5**   | Direction Inversion      | `0`, `1` (**Default: 0**)                                       | Reverses motor direction logic.                                                                                                                                                                                    |
-| **CV6**   | Async Notify (Steady)    | `50 – 10000 ms` (**Default: 10000**)                            | State update interval when throttle is steady.                                                                                                                                                                     |
-| **CV7**   | Async Notify (Changing)  | `50 – 10000 ms` (**Default: 500**)                              | State update interval while throttle is changing or ramping.                                                                                                                                                       |
-| **CV8**   | Reset Trigger            | `8`                                                             | Writing `CV8=8` wipes saved configuration and reboots the ESP32. Query behavior should be treated as unsupported unless your app already special-cases it.                                                         |
-| **CV9**   | Kick Configuration       | `<thr>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**) | Configures start-assist kick used when starting from stop at low throttle.                                                                                                                                         |
-| **CV10**  | WiFi Enable              | `0`, `1` (**Default: 0**)                                       | Enables WiFi/WebSocket service when configured.                                                                                                                                                                    |
-| **CV11**  | WiFi SSID                | Text (**Default: blank**)                                       | WiFi network SSID.                                                                                                                                                                                                 |
-| **CV12**  | WiFi Password            | Text (**Default: blank**)                                       | WiFi password. **Set-only** from the command interface. Query returns `ERR`.                                                                                                                                       |
-| **CV13**  | WebSocket Port           | `1 – 65535` (**Default: 81**)                                   | WebSocket server port.                                                                                                                                                                                             |
-| **CV20**  | LED Blink Timing         | `<periodMs>,<onMs>` (**Default: `1000,250`**)                   | Controls phase-based blink timing used by subscribed LED outputs in `BLINK+` and `BLINK-` modes. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`.                                                    |
-| **CV100** | Dual PWM Forward Pin     | Allowed PWM GPIOs (**Default: 25**)                             | Forward PWM pin for `DUAL_PWM` mode.                                                                                                                                                                               |
-| **CV101** | Dual PWM Reverse Pin     | Allowed PWM GPIOs (**Default: 26**)                             | Reverse PWM pin for `DUAL_PWM` mode.                                                                                                                                                                               |
-| **CV102** | Dual PWM Enable A        | Allowed output GPIOs (**Default: 27**)                          | Enable pin A for `DUAL_PWM` mode.                                                                                                                                                                                  |
-| **CV103** | Dual PWM Enable B        | Allowed output GPIOs (**Default: 33**)                          | Enable pin B for `DUAL_PWM` mode.                                                                                                                                                                                  |
-| **CV104** | PWM_DIR PWM Pin          | Allowed PWM GPIOs (**Default: 25**)                             | PWM pin used in `PWM_DIR` mode.                                                                                                                                                                                    |
-| **CV105** | PWM_DIR Direction Pin    | Allowed output GPIOs (**Default: 26**)                          | Direction pin used in `PWM_DIR` mode.                                                                                                                                                                              |
-| **CV106** | PWM_BIDIR PWM/Enable Pin | Allowed PWM GPIOs (**Default: 25**)                             | PWM/enable pin used in `PWM_BIDIR` mode.                                                                                                                                                                           |
-| **CV107** | PWM_BIDIR Forward Pin    | Allowed output GPIOs (**Default: 26**)                          | Forward logic pin used in `PWM_BIDIR` mode.                                                                                                                                                                        |
-| **CV108** | PWM_BIDIR Reverse Pin    | Allowed output GPIOs (**Default: 27**)                          | Reverse logic pin used in `PWM_BIDIR` mode.                                                                                                                                                                        |
+| CV        | Purpose                  | Possible Values (Default)                                                    | Description |
+| --------- | ------------------------ | ---------------------------------------------------------------------------- | ----------- |
+| **CV1**   | Motor Driver Mode        | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` (**Default: DUAL_PWM**)      | Selects motor driver interface type. |
+| **CV2**   | Minimum Start (Floor)    | `0 – 100` (**Default: 0**)                                                   | Minimum hardware throttle output when any non-zero mapped throttle is commanded. |
+| **CV3**   | Maximum Output (Ceiling) | `0 – 100` (**Default: 100**)                                                 | Caps maximum motor output. **`0` means no ceiling cap**, which behaves as `100`. |
+| **CV4**   | Train Name               | Letters, numbers, spaces (**Default: blank**)                                | Sets the train name used for BLE advertising. Leading/trailing spaces are trimmed. Stored value is constrained to fit a single BLE notify reply. The advertised BLE name is also clamped to a conservative length. |
+| **CV5**   | Direction Inversion      | `0`, `1` (**Default: 0**)                                                    | Reverses motor direction logic. |
+| **CV6**   | Async Notify (Steady)    | `50 – 10000 ms` (**Default: 10000**)                                         | State update interval when throttle is steady. |
+| **CV7**   | Async Notify (Changing)  | `50 – 10000 ms` (**Default: 500**)                                           | State update interval while throttle is changing or ramping. |
+| **CV8**   | Reset Trigger            | `8`                                                                          | Writing `CV8=8` wipes saved configuration and reboots the ESP32. |
+| **CV9**   | Kick Configuration       | `<thr>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**)              | Configures start-assist kick used when starting from stop at low throttle. |
+| **CV10**  | WiFi Enable              | `0`, `1` (**Default: 0**)                                                    | Enables WiFi/WebSocket service when configured. |
+| **CV11**  | WiFi SSID                | Text (**Default: blank**)                                                    | WiFi network SSID. |
+| **CV12**  | WiFi Password            | Text (**Default: blank**)                                                    | WiFi password. **Set-only** from the command interface. Query returns `ERR`. |
+| **CV13**  | WebSocket Port           | `1 – 65535` (**Default: 81**)                                                | WebSocket server port. |
+| **CV20**  | LED Blink Timing         | `<periodMs>,<onMs>` (**Default: `1000,250`**)                                | Controls phase-based blink timing used by subscribed LED outputs in `BLINK+` and `BLINK-` modes. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
+| **CV100** | Dual PWM Forward Pin     | Allowed PWM GPIOs (**Default: 25**)                                          | Forward PWM pin for `DUAL_PWM` mode. |
+| **CV101** | Dual PWM Reverse Pin     | Allowed PWM GPIOs (**Default: 26**)                                          | Reverse PWM pin for `DUAL_PWM` mode. |
+| **CV102** | Dual PWM Enable A        | Allowed output GPIOs (**Default: 27**)                                       | Enable pin A for `DUAL_PWM` mode. |
+| **CV103** | Dual PWM Enable B        | Allowed output GPIOs (**Default: 33**)                                       | Enable pin B for `DUAL_PWM` mode. |
+| **CV104** | Two-Pin A                | Allowed PWM GPIOs (**Default: 25**)                                          | Shared two-pin control input A. Used as the PWM pin in `PWM_DIR`, and as input A in `DUAL_INPT`. |
+| **CV105** | Two-Pin B                | Allowed output GPIOs (**Default: 26**)                                       | Shared two-pin control input B. Used as the direction pin in `PWM_DIR`, and as input B in `DUAL_INPT`. |
+| **CV106** | PWM_BIDIR PWM/Enable Pin | Allowed PWM GPIOs (**Default: 25**)                                          | PWM/enable pin used in `PWM_BIDIR` mode. |
+| **CV107** | PWM_BIDIR Forward Pin    | Allowed output GPIOs (**Default: 26**)                                       | Forward logic pin used in `PWM_BIDIR` mode. |
+| **CV108** | PWM_BIDIR Reverse Pin    | Allowed output GPIOs (**Default: 27**)                                       | Reverse logic pin used in `PWM_BIDIR` mode. |
 
 ---
 
@@ -147,7 +147,7 @@ If a pin value outside the allowed list is written to a pin CV, the firmware ret
 
 The firmware supports **12 function outputs** with per-function configuration.
 
-Each function occupies a **7-CV block**. In firmware **1.10.5**, the first **five** CVs in each block are implemented:
+Each function occupies a **7-CV block**. In firmware **1.11.0**, the first **five** CVs in each block are implemented:
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | -------- | ------- | ------ | ---------- | ------------ | ----------- |
@@ -379,7 +379,7 @@ The firmware supports up to **two WebSocket client slots**.
 
 # BLE Recovery / Disconnect Behavior
 
-Firmware **1.10.5** adds a stronger BLE recovery path when the controller becomes disconnected and advertising does not recover correctly.
+The current firmware includes a stronger BLE recovery path when the controller becomes disconnected and advertising does not recover correctly.
 
 Behavior summary:
 
@@ -389,7 +389,7 @@ Behavior summary:
 * If a valid control connection returns before the stop completes, the deferred reboot is canceled
 * If a **WebSocket control connection** is active, the firmware does **not** force a BLE hard-recovery reboot
 
-This change is intended to make the throttle more resilient when BLE fails to resume normal advertising after a disconnect.
+This behavior is intended to make the throttle more resilient when BLE fails to resume normal advertising after a disconnect.
 
 ---
 
@@ -459,7 +459,7 @@ ws://192.168.1.50:81
 
 # Supported Motor Driver Boards
 
-The firmware supports **three motor driver control interfaces**.
+The firmware supports **four motor driver control interfaces**.
 
 **Important:** Select the driver mode based on the board's control pins, not just the board family name.
 
@@ -543,6 +543,23 @@ These drivers use **one PWM/enable pin plus separate forward/reverse logic pins*
 
 ---
 
+# DUAL_INPT Motor Drivers
+
+Typical control pins:
+
+```text
+IN1
+IN2
+```
+
+Compatible boards include:
+
+* DRV8833
+
+These drivers use **two motor-control inputs**, with the firmware swapping which input receives PWM based on direction.
+
+---
+
 # Wiring Summary
 
 Choose the motor driver mode based on the board's control interface:
@@ -550,6 +567,7 @@ Choose the motor driver mode based on the board's control interface:
 * `DUAL_PWM` = separate forward and reverse PWM inputs
 * `PWM_DIR` = one PWM pin and one direction pin
 * `PWM_BIDIR` = one PWM/enable pin and separate forward/reverse logic pins
+* `DUAL_INPT` = two H-bridge inputs, with PWM applied to input A in one direction and input B in the other
 
 ---
 
@@ -609,10 +627,10 @@ This will:
 
 * Set **CV2** so the locomotive **just begins to move**
 * Use **CV3** to limit unsafe top speeds
-* Use **CV6 and CV7** to tune UI responsiveness
 * Use **CV20** when tuning phase-based auxiliary light blinking
 * Configure function outputs with **pin + pattern + direction** before trying `FXn=1`
 * Set **AppFlags** CVs only if your PMT app build uses them
 * Configure motor pins only with allowed runtime GPIOs
+* For `DUAL_INPT`, wire the driver to **CV104** and **CV105**
 * Enable WiFi (**CV10**) only when needed
 * Use **CV8** after major hardware or configuration changes
