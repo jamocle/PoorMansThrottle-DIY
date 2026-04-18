@@ -27,6 +27,8 @@ Using a simple ESP32 controller and an inexpensive motor driver, the system conv
 
 This provides smooth and powerful motor control while allowing wireless operation from a smartphone.
 
+Go Here to get docs, videso and installations...[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+
 ---
 
 ## What It Does
