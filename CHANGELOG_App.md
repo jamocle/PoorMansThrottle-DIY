@@ -2,6 +2,12 @@
 
 ## Smartphone App:
 
+### Version 1.9.7
+* **Support for formware 1.11.0** Can configure new Driver Modes.  [More...](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
+* **Graphical Changes** Slight changes in the graphics
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+
 ### Version 1.9.5
 * **Support for WiFi Failover** The app now uses both BLE and Wifi for better connectivity consistency
 * **Graphical Changes** Slight changes in the graphics
