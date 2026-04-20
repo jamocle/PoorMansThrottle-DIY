@@ -2,7 +2,7 @@
 
 ## Smartphone App:
 
-### Version 1.9.8
+### Version 1.9.10
 * **PMT Hardware Naming Fix** The app now handles BLE Throttle name by better managing the lifecycle of the BLE Notification name and BLE Cache.  
 ** Basically saying when you change your PMT name in the app it sticks now :-)
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
