@@ -8,6 +8,8 @@ We have had 100% success when using good IBT-2 boards and wiring the project cor
 
 [Check Your IBT-2 Board Before You Start](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md)
 
+Go Here to get docs, videso and installations...[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+
 
 # What is this for?
 The **Poor Man's Throttle** is a low-cost wireless throttle system for model locomotives.
