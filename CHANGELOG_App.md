@@ -2,6 +2,12 @@
 
 ## Smartphone App:
 
+### Version 1.9.8
+* **PMT Hardware Naming Fix** The app now handles BLE Throttle name by better managing the lifecycle of the BLE Notification name and BLE Cache.  
+** Basically saying when you change your PMT name in the app it sticks now :-)
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+
 ### Version 1.9.7
 * **Support for formware 1.11.0** Can configure new Driver Modes.  [More...](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
 * **Graphical Changes** Slight changes in the graphics
