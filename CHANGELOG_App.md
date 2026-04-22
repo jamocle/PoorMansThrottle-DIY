@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 1.9.11
+* **UI Changes** The app will now scroll certain parts of the view depening on UI real-estate.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.9.10
 * **PMT Hardware Naming Fix** The app now handles BLE Throttle name by better managing the lifecycle of the BLE Notification name and BLE Cache.  
 ** Basically saying when you change your PMT name in the app it sticks now :-)
