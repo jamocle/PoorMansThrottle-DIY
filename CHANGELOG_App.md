@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 1.9.12
+* **Backup and restore capabilities** Now there is a copy button on the CV section in configuratiopn that will copy the settings for a throttle for external storage by the user.  The import capability is handled by pasting the output of the copy into the script view on the terminal page and it will reset the hardware to defaults and apply the settings.  This can be used to restore a throttle or copy settings to another throttle.
+* **UI Changes** Minor Tweaks.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.9.11
 * **UI Changes** The app will now scroll certain parts of the view depening on UI real-estate.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

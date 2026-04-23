@@ -39,6 +39,9 @@ Poor Man's Throttle allows a smartphone to control:
 * forward direction  
 * reverse direction  
 * stop  
+* Feathered Brake
+* Lighting control
+* Auxiliary Control
 * other commands  
 
 
@@ -115,7 +118,7 @@ Example parts:
 | Component | Typical Cost |
 |---------------------------------------|------|
 | ESP32 Development Board               | ~$6  |
-| IBT-2 Motor Driver                    | ~$10 |
+| IBT-2 Motor Driver (or other driver)  | ~$10 |
 | 5V ESP32 Logic Processor Power Module | ~$5  |
 
 Total: **about $21**
