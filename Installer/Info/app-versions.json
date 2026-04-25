@@ -2,11 +2,13 @@
     "versions": [
         {
             "version": "1.9.11",
-            "info": "11.html"
+            "info": "11.html",
+            "show-again": "1-1-1990"
         },
         {
             "version": "1.9.12",
-            "info": "9.12.html"
+            "info": "9.12.html",
+            "show-again": "1-1-1990"
         }
     ]
 }
