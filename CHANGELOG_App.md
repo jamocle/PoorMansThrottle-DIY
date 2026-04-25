@@ -8,7 +8,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.11
-* **UI Changes** The app will now scroll certain parts of the view depening on UI real-estate.
+* **UI Changes** The app will now scroll certain parts of the view depending on UI real-estate.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.10
