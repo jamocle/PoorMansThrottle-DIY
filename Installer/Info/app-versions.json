@@ -1,0 +1,12 @@
+{
+    "versions": [
+        {
+            "version": "1.9.11",
+            "info": "11.html"
+        },
+        {
+            "label": "1.9.12",
+            "manifest": "9.12.html"
+        }
+    ]
+}
