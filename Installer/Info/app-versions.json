@@ -1,6 +1,11 @@
 {
     "versions": [
         {
+            "version": "1.9.8",
+            "info": "light.html",
+            "show-again": "2026-04-24 16:24:03"
+        },
+        {
             "version": "1.9.11",
             "info": "11.html",
             "show-again": "2026-04-24 16:24:03"
