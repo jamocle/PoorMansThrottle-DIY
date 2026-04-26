@@ -2,9 +2,13 @@
 
 ## Smartphone App:
 
+### Version 1.9.23
+* **Inforemational Carousel** Add an informational carousel at app startup to provide important information to users of PMT.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.9.21
 * **Swipe between throttle screens** Now when you have multiple throttles connected to the PMT app, you can wasily swipe between them without having to go back to the Scan screen like in previous versions of the app.
-* **Asynchronous Connect** Now you can connect to all of ther throttles without having to wait. 
+* **Asynchronous Connect** Now you can connect to all of the throttles without having to wait. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.12
