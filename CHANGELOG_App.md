@@ -3,7 +3,7 @@
 ## Smartphone App:
 
 ### Version 1.9.23
-* **Inforemational Carousel** Add an informational carousel at app startup to provide important information to users of PMT.
+* **Informational Carousel** Add an informational carousel at app startup to provide important information to users of PMT.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.21
