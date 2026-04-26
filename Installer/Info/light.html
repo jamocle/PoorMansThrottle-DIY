@@ -182,6 +182,26 @@
       color:#153b63;
     }
 
+    .note{
+      margin-top:20px;
+      padding:18px 20px;
+      border-radius:20px;
+      background:#fff1f0;
+      border:2px solid #d92d20;
+      color:#7a271a;
+      box-shadow:0 10px 20px rgba(217,45,32,.08);
+    }
+
+    .note strong{
+      display:block;
+      margin-bottom:8px;
+      color:#b42318;
+      font-size:1.05rem;
+      font-weight:800;
+      letter-spacing:.01em;
+      text-transform:uppercase;
+    }
+
     .footer-note{
       margin-top:30px;
       text-align:center;
@@ -241,7 +261,7 @@
             <span class="label">Per-output configuration</span>
             <h3>Each output is individually defined</h3>
             <p>
-              Every output can have its own name, GPIO pin assignment, pattern, direction behavior, linked relationship, and
+              Every output can have its own name, GPIO pin assignment, pattern, direction setting, linked relationship, and
               interaction style. That means the outputs can be tailored to the layout and purpose of a specific throttle.
             </p>
           </div>
@@ -342,6 +362,19 @@
       <div class="content">
         <div class="card-grid">
           <div class="card">
+            <span class="label">Direction</span>
+            <h3>BOTH, FWD, or REV</h3>
+            <p>
+              Each output can also be assigned a direction setting of <strong>BOTH</strong>, <strong>FWD</strong>, or
+              <strong>REV</strong>. This tells the hardware when that output should be active based on direction.
+            </p>
+            <p>
+              <strong>BOTH</strong> allows the output to operate in either direction, <strong>FWD</strong> limits it to
+              forward operation, and <strong>REV</strong> limits it to reverse operation.
+            </p>
+          </div>
+
+          <div class="card">
             <span class="label">Linked FX</span>
             <h3>Outputs can reference another output</h3>
             <p>
@@ -415,14 +448,22 @@
 
         <div class="callout">
           In summary, auxiliary output support provides a flexible system for both lighting and general-purpose controls:
-          up to 12 outputs, per-output naming, ESP32 GPIO assignment, multiple behavior patterns, linked output support,
-          and the choice between toggle and momentary operation.
+          up to 12 outputs, per-output naming, ESP32 GPIO assignment, direction-aware behavior, multiple behavior patterns,
+          linked output support, and the choice between toggle and momentary operation.
         </div>
+
+        <div class="note">
+          <strong>NOTE</strong>
+          The output pins of the ESP32 are at 3.3v. This is perfect for driving common LEDs. Many LEDs have inline
+          resistors for 12v or 5v circuits. These inline resistors will still work, but they will dim the output of
+          the LED. Simply remove the resistor when connecting the LED to the ESP32.
+        </div>
+
       </div>
     </section>
 
     <div class="footer-note">
-      Mobile-first page with clean vertical scrolling and all supplied auxiliary output screenshots included.
+      Poor Man's Throttle (PMT) © 2026 James Theimer
     </div>
   </main>
 </body>
