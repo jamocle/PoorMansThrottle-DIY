@@ -8,6 +8,39 @@ function getRandomCacheBust() {
     return Date.now() + "-" + Math.random();
 }
 
+function appendCacheBusterToAnchors() {
+    const cacheBust = encodeURIComponent(getRandomCacheBust());
+    const links = document.querySelectorAll("a[href]");
+
+    for (const link of links) {
+        const href = link.getAttribute("href");
+
+        if (
+            !href ||
+            href.startsWith("#") ||
+            href.startsWith("mailto:") ||
+            href.startsWith("tel:") ||
+            href.startsWith("javascript:")
+        ) {
+            continue;
+        }
+
+        try {
+            const url = new URL(href, window.location.href);
+
+            if (url.searchParams.has("v")) {
+                continue;
+            }
+
+            url.searchParams.set("v", cacheBust);
+            link.setAttribute("href", url.toString());
+        } catch {
+            const separator = href.includes("?") ? "&" : "?";
+            link.setAttribute("href", href + separator + "v=" + cacheBust);
+        }
+    }
+}
+
 async function loadFirmwareVersions() {
     const versionsUrl = "@firmware-versions.json?v=" + encodeURIComponent(getRandomCacheBust());
     const response = await fetch(versionsUrl, { cache: "no-store" });
@@ -188,9 +221,10 @@ async function loadAndroidGuide() {
     }
 }
 
-function initialize() {
-    updateFirmwareInstaller();
-    loadAndroidGuide();
+async function initialize() {
+    await updateFirmwareInstaller();
+    appendCacheBusterToAnchors();
+    await loadAndroidGuide();
 }
 
 if (document.readyState === "loading") {
