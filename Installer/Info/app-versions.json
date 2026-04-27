@@ -1,32 +1,44 @@
 {
     "versions": [
         {
-            "version": "1.9.8",
-            "info": "light.html",
-            "show-again": "2026-04-24 16:24:04"
-        },
-        {
             "version": "1.0.0",
+            "title": "Hardware Installation",
+            "description": "Various Motor Driver installation options supported by PMT",
             "info": "installation.html",
             "show-again": "2026-04-24 16:24:03"
         },
         {
+            "version": "1.9.8",
+            "title": "PMT Lighting and Accessories",
+            "description": "Control up to 12 individual lights and accessories",
+            "info": "light.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
             "version": "1.9.11",
+            "title": "Vertical Scrolling",
+            "description": "Vertical Scrolling automatic for smaller devices",
             "info": "11.html",
             "show-again": "2026-04-24 16:24:03"
         },
         {
             "version": "1.9.12",
+            "title": "Backup/Restore/Copy CV's",
+            "description": "You can now backup and restore your individual throttle settings",
             "info": "12.html",
             "show-again": "2026-04-24 16:24:03"
         },
         {
             "version": "1.9.20",
+            "title": "New Motor Drivers Supported",
+            "description": "Various Motor Driver options supported by PMT",
             "info": "mode.html",
             "show-again": "2026-04-24 16:24:03"
         },
         {
             "version": "1.9.21",
+            "title": "Swipe Capability",
+            "description": "Swipe quickly between throttle screens",
             "info": "9.21.html",
             "show-again": "2026-04-24 16:24:04"
         }
