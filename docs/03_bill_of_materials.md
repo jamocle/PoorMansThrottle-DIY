@@ -104,13 +104,14 @@ These parts vary depending on the installation style.
 
 **Coming Soon**
 
-```
-[Photo: ESP32 Wiring]
+![IBT-2 Wiring](docimages/ibt2wiring.PNG)
 
-[Photo: Buck Converter Adjustment]
+![LED Wiring](docimages/ledwiring.PNG)
 
-[Photo: Motor Driver Wiring]
-```
+![L298N](docimages/l298n.PNG)
+
+![L298N Example](docimages/l298nwiring.PNG)
+
 
 ---
 
