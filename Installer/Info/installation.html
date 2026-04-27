@@ -279,6 +279,22 @@
       *{animation:none !important; transition:none !important}
     }
   </style>
+  <script>
+    document.addEventListener('click', function (event) {
+      const link = event.target.closest('a[data-open-external="true"]');
+      if (!link)
+        return;
+
+      const href = link.getAttribute('href');
+      if (!href)
+        return;
+
+      const absoluteUrl = new URL(href, window.location.href).href;
+
+      event.preventDefault();
+      window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
+    });
+  </script>
 </head>
 <body>
   <main class="wrap">
