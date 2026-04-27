@@ -2,6 +2,9 @@
 
 ## Smartphone App:
 
+### Version 1.9.24
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.9.23
 * **Informational Carousel** Add an informational carousel at app startup to provide important information to users of PMT.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
@@ -27,7 +30,7 @@
 
 
 ### Version 1.9.7
-* **Support for formware 1.11.0** Can configure new Driver Modes.  [More...](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
+* **Support for firmware 1.11.0** Can configure new Driver Modes.  [More...](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
 * **Graphical Changes** Slight changes in the graphics
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
