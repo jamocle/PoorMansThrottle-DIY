@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PMT Theming</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.86);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1080px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    .rainbow-word{
+      display:inline-block;
+    }
+
+    .rainbow-word span{
+      font-weight:700;
+    }
+
+    .r1{ color:#ff3b30; } /* red */
+    .r2{ color:#ff9500; } /* orange */
+    .r3{ color:#ffcc00; } /* yellow */
+    .r4{ color:#34c759; } /* green */
+    .r5{ color:#007aff; } /* blue */
+    .r6{ color:#af52de; } /* purple */
+
+    .eyebrow-rest{
+      color:var(--accent);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:840px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.14rem;
+      letter-spacing:-.015em;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .image-grid{
+      display:grid;
+      gap:14px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .steps,
+    .fun-grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .step,
+    .fun-card,
+    .note{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+
+    .num{
+      flex:0 0 34px;
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-weight:700;
+      font-size:.98rem;
+    }
+
+    .step strong,
+    .fun-card strong,
+    .note strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .note{
+      margin-top:20px;
+      background:#fffdf5;
+      border-color:#f0e1a1;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 32px}
+      .image-grid{grid-template-columns:repeat(3, minmax(0,1fr))}
+      .fun-grid{grid-template-columns:repeat(3, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">
+        <span class="rainbow-word" aria-label="COLORS">
+          <span class="r1">C</span><span class="r2">O</span><span class="r3">L</span><span class="r4">O</span><span
+            class="r5">R</span><span class="r6">S</span>
+        </span>
+        <span class="eyebrow-rest"> in PMT</span>
+      </div>
+      <h1>Make PMT look like your railroad.</h1>
+      <p class="subhead">
+        PMT now includes theming, so you can personalize the app with colors that match your railroad, your club,
+        or just your own sense of style. Keep it classic, go bold, or build a color palette that turns heads the
+        next time someone sees your throttle.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="theming-title">
+      <div class="section-header">
+        <h2 id="theming-title">Theming in <em>Settings</em> and <em>Pick Color</em></h2>
+        <p>
+          The new theming capability lets you customize the look of PMT throughout the interface. From the
+          <strong>Settings</strong> screen, you can adjust brand colors used across windows, buttons, text, and
+          other interface elements. When you tap a color picker, the <strong>Pick Color</strong> screen gives you
+          direct control over the exact look you want.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="colors.png" alt="Settings screen showing appearance color options for PMT theming." />
+          <figcaption class="caption">
+            <strong>Settings</strong> lets you choose the colors used throughout PMT.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="colors2.png" alt="Pick Color screen showing current and new color selection with controls." />
+          <figcaption class="caption">
+            <strong>Pick Color</strong> lets you fine-tune a color and apply it exactly where you want it.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="colors3.png" alt="Settings screen after custom colors have been applied to PMT." />
+          <figcaption class="caption">
+            Your choices are reflected back in <strong>Settings</strong>, making it easy to build a theme that feels like your railroad.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          This is more than a cosmetic tweak. It gives PMT personality. You can mirror the colors of your railroad,
+          coordinate with a favorite locomotive scheme, match a club identity, or create something playful and unmistakably yours.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <strong>Open Settings</strong>
+              Go to <strong>Settings</strong> and look under the Appearance section to see the themeable color entries available across the app.
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <strong>Tap Pick</strong>
+              Choose any item you want to personalize, then tap <strong>Pick</strong> to open the <strong>Pick Color</strong> screen.
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <strong>Make it yours</strong>
+              Adjust the color, preview the change, and apply it to start building a PMT theme that looks custom and deliberate.
+            </div>
+          </div>
+        </div>
+
+        <div class="fun-grid">
+          <div class="fun-card">
+            <strong>Match your railroad</strong>
+            Build a theme around your railroad’s official colors and give PMT a look that feels connected to the equipment you run.
+          </div>
+          <div class="fun-card">
+            <strong>Show off a little</strong>
+            A custom theme is a fun way to make your setup stand out and, yes, impress friends the next time they see it in action.
+          </div>
+          <div class="fun-card">
+            <strong>Keep experimenting</strong>
+            Try bold accent colors, clean modern combinations, or high-contrast themes that make PMT feel fresh every time you open it.
+          </div>
+        </div>
+
+        <div class="callout">
+          PMT theming is meant to be enjoyable. It gives the app a more personal feel and turns everyday control into something that
+          looks polished, custom, and a little more fun.
+        </div>
+
+        <div class="note">
+          <strong>Note</strong>
+          Sometimes a restart of the app is required, or the screen may need to be redisplayed before a color change becomes visible.
+          Some devices do not instantly show display updates.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
