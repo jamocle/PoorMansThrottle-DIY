@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Auxiliary Output Support</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.86);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1080px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:860px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.2rem;
+      letter-spacing:-.015em;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .image-grid,
+    .card-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .image-grid{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-card,
+    .card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .card{
+      padding:18px;
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+
+    .klist{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .klist li{
+      margin:0 0 8px;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .note{
+      margin-top:20px;
+      padding:18px 20px;
+      border-radius:20px;
+      background:#fff1f0;
+      border:2px solid #d92d20;
+      color:#7a271a;
+      box-shadow:0 10px 20px rgba(217,45,32,.08);
+    }
+
+    .note strong{
+      display:block;
+      margin-bottom:8px;
+      color:#b42318;
+      font-size:1.05rem;
+      font-weight:800;
+      letter-spacing:.01em;
+      text-transform:uppercase;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 32px}
+      .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .card-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Auxiliary Output Support</div>
+      <h1>Lighting and control outputs are now fully configurable.</h1>
+      <p class="subhead">
+        The app supports up to <strong>12 FX outputs</strong> for auxiliary control and lighting. Each output can be named,
+        assigned to an ESP32 output GPIO pin, given a behavior pattern, linked to another output when needed, and configured
+        as either a normal toggle or a momentary action.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="overview-title">
+      <div class="section-header">
+        <h2 id="overview-title">What auxiliary output support includes</h2>
+        <p>
+          Auxiliary outputs are designed for much more than simple lighting. They can be used for headlights, reverse lights,
+          secondary lights, and other non-lighting control functions where a controllable output is needed. Because each output
+          can be individually configured, the app can support a wide range of accessory and control behaviors from the same
+          configuration system.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Capacity</span>
+            <h3>Up to 12 FX outputs</h3>
+            <p>
+              The app supports twelve separate auxiliary outputs. This gives enough room for basic headlight and reverse light
+              behavior, additional lighting effects, and extra control outputs beyond lighting.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Per-output configuration</span>
+            <h3>Each output is individually defined</h3>
+            <p>
+              Every output can have its own name, GPIO pin assignment, pattern, direction setting, linked relationship, and
+              interaction style. That means the outputs can be tailored to the layout and purpose of a specific throttle.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Naming</span>
+            <h3>Outputs can be clearly labeled</h3>
+            <p>
+              Each output can be given a meaningful name such as <strong>Headlight</strong>, <strong>Reverse Light</strong>,
+              <strong>2nd Light</strong>, or a custom control label. This makes the control panel easier to understand when
+              the output is presented to the user on the throttle screen.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">GPIO assignment</span>
+            <h3>Mapped to ESP32 output pins</h3>
+            <p>
+              Each output can be assigned to an ESP32 output GPIO pin. This lets the app configuration match the physical
+              wiring of the accessory or lighting function being controlled.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          Auxiliary output support is intended for both lighting and general-purpose control. A solid on/off output can be just
+          as useful for a non-lighting accessory as it is for a lamp.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="patterns-title">
+      <div class="section-header">
+        <h2 id="patterns-title">Supported output patterns</h2>
+        <p>
+          Each auxiliary output can be assigned a pattern that defines how it behaves when active.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">SOLID</span>
+            <h3>Simple on and off</h3>
+            <p>
+              Solid provides a straightforward on/off output. It is ideal for standard lighting such as headlights and reverse
+              lights, and it is also useful for non-lighting auxiliary controls where a simple switched output is needed.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">DBL_BLNK</span>
+            <h3>Double Blink</h3>
+            <p>
+              Double Blink creates a repeating double-flash pattern. This is useful when a more noticeable flashing effect is
+              required for a light or indicator output.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">FRED</span>
+            <h3>Flashing Rear End Device</h3>
+            <p>
+              FRED provides a flashing rear-end device style pattern. This is intended for marker or end-of-train style visual effects.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">BLINK+</span>
+            <h3>Positive phase blink</h3>
+            <p>
+              Blink+ flashes on the positive phase. It is especially useful when alternating flash behavior is desired between
+              two related outputs.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">BLINK-</span>
+            <h3>Negative phase blink</h3>
+            <p>
+              Blink- flashes on the negative phase. When paired with Blink+, it can create alternating flashing behavior across
+              linked or coordinated outputs.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="linking-title">
+      <div class="section-header">
+        <h2 id="linking-title">Linked outputs and button behavior</h2>
+        <p>
+          Outputs can be coordinated with each other through Linked FX, and each output can also be set to operate either as a
+          standard toggle or as a momentary control.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Direction</span>
+            <h3>BOTH, FWD, or REV</h3>
+            <p>
+              Each output can also be assigned a direction setting of <strong>BOTH</strong>, <strong>FWD</strong>, or
+              <strong>REV</strong>. This tells the hardware when that output should be active based on direction.
+            </p>
+            <p>
+              <strong>BOTH</strong> allows the output to operate in either direction, <strong>FWD</strong> limits it to
+              forward operation, and <strong>REV</strong> limits it to reverse operation.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Linked FX</span>
+            <h3>Outputs can reference another output</h3>
+            <p>
+              Each auxiliary output can be linked to another output by using <strong>Linked FX</strong>. This allows outputs to
+              work in a coordinated way rather than completely independently.
+            </p>
+            <p>
+              By default, the <strong>Headlight</strong> and <strong>Reverse Light</strong> are linked, which provides a ready-made
+              paired behavior for directional lighting.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Interaction style</span>
+            <h3>Toggle or momentary</h3>
+            <p>
+              Outputs can be configured as a normal <strong>toggle</strong> style control, which is the default, or as
+              <strong>momentary</strong>, where the output stays active only while the control is being pressed.
+            </p>
+            <p>
+              Momentary behavior is useful for controls that should not stay latched on after the press ends.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="images-title">
+      <div class="section-header">
+        <h2 id="images-title">Configuration and control examples</h2>
+        <p>
+          The supplied screens below show auxiliary output configuration entries and how named outputs appear in the control view.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="light1.png" alt="Configuration screen showing an auxiliary output named Headlight." />
+          <figcaption class="caption">
+            An output can be named, assigned a pin, given a pattern, linked to another output, and configured as toggle or momentary.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="light2.png" alt="Configuration screen showing additional auxiliary control entries." />
+          <figcaption class="caption">
+            Multiple outputs can be configured individually, including name, GPIO pin, pattern, direction, linked FX, and momentary behavior.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="light3.png" alt="Throttle screen showing the lighting or control entry point." />
+          <figcaption class="caption">
+            Configured auxiliary outputs are available from the throttle screen for quick access during operation.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="light4.png" alt="Lights control panel showing named auxiliary outputs such as Headlight and 2nd Light." />
+          <figcaption class="caption">
+            Named outputs appear as user-friendly controls, making the lighting and auxiliary panel easier to understand and operate.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          Together, these screens show how auxiliary outputs move from configuration into actual operation. The user can define
+          the output behavior in configuration, then access those named controls directly from the throttle interface.
+        </p>
+
+        <div class="callout">
+          In summary, auxiliary output support provides a flexible system for both lighting and general-purpose controls:
+          up to 12 outputs, per-output naming, ESP32 GPIO assignment, direction-aware behavior, multiple behavior patterns,
+          linked output support, and the choice between toggle and momentary operation.
+        </div>
+
+        <div class="note">
+          <strong>NOTE</strong>
+          The output pins of the ESP32 are at 3.3v. This is perfect for driving common LEDs. Many LEDs have inline
+          resistors for 12v or 5v circuits. These inline resistors will still work, but they will dim the output of
+          the LED. Simply remove the resistor when connecting the LED to the ESP32.
+        </div>
+
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>

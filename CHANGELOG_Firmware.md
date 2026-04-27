@@ -2,6 +2,53 @@
 
 ## Firmware:
 
+### Version 1.11.0
+* **New `DUAL_INPT` motor driver mode** added for dual-input H-bridge drivers such as the DRV8833. The firmware header now documents this mode as a driver model that swaps which pin receives PWM based on direction.
+* **`CV1` motor driver selection expanded** so the firmware now accepts and reports `DUAL_INPT` alongside the existing `DUAL_PWM`, `PWM_DIR`, and `PWM_BIDIR` modes.
+* **`CV104` / `CV105` reused as the shared two-pin interface** for both `PWM_DIR` and `DUAL_INPT`, with the internal pin naming updated to neutral `TwoPinA` / `TwoPinB` semantics instead of the older PWM-vs-direction wording.
+* **Two-pin PWM attachment and safe-pin handling expanded** so both two-pin outputs are forced safe, detached, and reattached correctly when `DUAL_INPT` is active.
+* **`DUAL_INPT` setup behavior added** so startup and reconfiguration initialize both two-pin outputs as safe low outputs before motion begins.
+* **Hardware-state readback support added for `DUAL_INPT`** so debug and verification logic can interpret forward, reverse, stop, and throttle percentage correctly when either two-pin channel is being PWM-driven.
+
+### Version 1.10.9
+* **Websocket Hardeniong** Enhanced the code that handles the WiFi Websocket transport for stronger connectivity
+
+### Version 1.10.7
+* **Feathered Braking Bug Fix** The firmware now accurately re-establishes the remembered throttle of the speed does not reach 0
+* **Escalated BLE advertising recovery** added with a bounded hard-recovery path that triggers if normal BLE advertising restart and watchdog recovery do not restore scanability after disconnect.
+* **Safe deferred BLE recovery reboot** added so, when hard BLE recovery is required, the controller first forces a quick stop and only reboots after the locomotive has safely stopped.
+* **BLE hard-recovery cancellation during socket control** added so an active WebSocket control path suppresses BLE-forced reboot behavior instead of interrupting an otherwise valid control session.
+* **Improved BLE disconnect recovery state handling** added by explicitly clearing hard-recovery, watchdog, and reboot-pending state in more reconnect and disconnect transitions, reducing stale recovery-state carryover.
+* **Per-function application flags support** added by extending each configurable function slot with a persisted `appFlags` value stored in non-volatile memory.
+* **New function CV field for app flags** added so each function now has an additional CV-backed field for reading and writing its unsigned 32-bit application flags value.
+* **Unsigned 32-bit parsing for function flags** added to validate `appFlags` writes safely before storage, preventing invalid or overflowed values from being accepted.
+* **Function configuration persistence expanded** so the new per-function `appFlags` value is loaded from and saved to preferences alongside each function’s name, pin, pattern, and direction mode.
+* **Version command reply behavior** changed so the `V` command now responds through the ACK/reply path using the firmware version value instead of returning only the raw version string.
+
+### Version 1.10.4
+
+* **Configurable function-output / lighting support** added, introducing twelve configurable function slots with default roles such as `Headlight`, `ReverseLgt`, and additional `FX` outputs for accessory lighting or other switched outputs.
+* **Per-function configuration persistence** added so each function can store its own name, assigned GPIO pin, output pattern, and direction behavior in non-volatile memory and restore those settings at startup.
+* **Multiple LED output patterns** added for function outputs, including `SOLID`, `DBL_BLNK`, `FRED`, `BLINK+`, and `BLINK-`, expanding the available lighting effects beyond simple on/off behavior.
+* **Direction-aware function gating** added so configured outputs can be limited to forward-only, reverse-only, or both directions, allowing headlight and reverse-light style behavior to follow train direction automatically.
+* **Runtime subscribed LED-output management** added, allowing configured outputs to be activated, deactivated, tracked by pin, and safely forced off when needed.
+* **Blink timing configuration** added through stored settings for phase period and on-time, allowing the `BLINK+` and `BLINK-` lighting modes to be tuned at runtime instead of using only fixed timing.
+* **Startup function-safe initialization** added so all configured function outputs are explicitly forced off during boot before normal operation begins, improving output safety during startup and configuration restore.
+* **Onboard status LED mode cleanup** appears to be improved by refactoring the built-in LED behavior to use the same named base-pattern concepts (`Solid`, `Double_Blink`, and `FRED`) now used by the new function-lighting system, which should make status-light behavior more consistent internally.
+
+### Version 1.9.6
+
+* **PWM_BIDIR motor driver support** added, expanding compatibility to include single-PWM plus separate forward/reverse logic driver boards in addition to the previously supported dual-PWM and PWM-plus-direction modes. 
+* **Additional motor-driver pin configuration options** added for PWM_BIDIR operation, including configurable PWM, forward, and reverse control pins. 
+* **Runtime pin validation** added so unsupported GPIO assignments are rejected instead of being applied, helping prevent invalid motor-control configurations. 
+* **Safer live pin remapping behavior** added by forcing a motor stop, placing outputs in a safe state, and reinitializing PWM/output pins before applying a new pin configuration. 
+* **Stored pin configuration sanitizing** added during startup so invalid saved pin assignments automatically fall back to safe default pins instead of being used as-is. 
+* **Expanded hardware-state readback support** added for the new PWM_BIDIR driver mode, improving internal verification of actual direction and throttle output across supported driver types. 
+* **Variable-brake resume handling** appears to be improved with added logic for releasing variable brake and replaying the remembered motion target, which should make recovery from braking behavior more consistent. 
+
+* **Major speed and efficiency enhancements** Better memory management
+
+
 ### Version 1.8.0
 
 * **Wi-Fi and WebSocket control support** added as a secondary communication path alongside BLE for controller access and state updates.
@@ -22,8 +69,8 @@
 * **Variable braking support** added with dedicated runtime brake-state handling and controlled stop behavior.
 * **Improved stop and reverse sequencing** added for cleaner direction changes, safer transition timing, and more controlled recovery from braking or stop states.
 * **Expanded persistent configuration storage** added to save motor, Wi-Fi, train-name, kick-start, braking, and timing settings in non-volatile memory.
-  
-  
+
+
 ### Version 1.7.0
 
 Version **1.7.0** introduces major flexibility improvements to the firmware, including support for multiple motor driver architectures, configurable GPIO assignments, direction inversion, and expanded CV-based configuration. These changes allow the same firmware image to support a wide range of motor driver boards without recompilation.
@@ -221,4 +268,3 @@ Hardware monitoring and debug comparison logic have been updated to properly int
 * **Built-in diagnostic and debug logging mode** with timestamped serial output and hardware/state comparison monitoring.
 * **Periodic hardware verification system** capable of detecting mismatches between stored throttle state and actual PWM output.
 * **Maintenance features** including configuration reset and system reboot capabilities.
-

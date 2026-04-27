@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Poor Man's Throttle Firmware Installer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <script>
+    (function () {
+      const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "styles.css?v=" + cacheBust;
+      document.head.appendChild(cssLink);
+
+      const appScript = document.createElement("script");
+      appScript.type = "module";
+      appScript.src = "app.js?v=" + cacheBust;
+      document.head.appendChild(appScript);
+    })();
+  </script>
+
+  <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="page-header">
+      <img src="header.png" alt="Poor Man's Throttle header" class="header-image" />
+    </div>
+
+    <details class="section">
+      <summary>
+        <span class="section-title">
+          <img src="ai.png" alt="" class="section-icon" />
+          <span>Poor Man's Throttle AI Assistant</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card">
+          <h3>AI Assistant. Ask me anything relating to Poor Man's Throttle</h3>
+
+          <ul class="note">
+            <li><a class="doc-link" href="https://chatgpt.com/gpts/editor/g-69b6b9e2de288191b93ca08de865a365"
+                target="_blank" rel="noopener noreferrer">Poor Man's Throttle AI Assistant. Ask questions and get
+                help</a></li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>
+        <span class="section-title">
+          <img src="firmware.png" alt="" class="section-icon" />
+          <span>Firmware Installation</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card">
+          <h3>Recommended: Install Latest</h3>
+
+          <p class="note">
+            <a class="doc-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md"
+              target="_blank" rel="noopener noreferrer"
+              style="display:inline-block; font-weight:700; font-size:1.1em; text-decoration:underline;">
+              What’s New in the Firmware → Latest Changes &amp; Features
+            </a>
+          </p>
+
+          <p class="note">
+            Use <b>Chrome</b> or <b>Edge</b> (Safari/Firefox won’t work for flashing).
+            Use a <b>data-capable USB cable</b>.
+          </p>
+
+          <div class="row">
+            <esp-web-install-button id="latestBtn" manifest=""></esp-web-install-button>
+            <span id="latestVersionLabel" class="note"></span>
+          </div>
+
+          <p class="note warn">
+            If it connects but doesn’t start flashing: hold <b>BOOT</b>, click Install, select the port, then release
+            BOOT once “Erasing/Writing” begins.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Install an older firmware (optional)</h3>
+          <div class="row">
+            <label class="note" for="fwSel">Version:</label>
+            <select id="fwSel"></select>
+
+            <esp-web-install-button id="olderBtn" manifest=""></esp-web-install-button>
+          </div>
+          <p class="note">
+            Useful if you want to roll back after testing a new release.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Troubleshooting</h3>
+          <ul class="note">
+            <li>Close Arduino Serial Monitor or anything else using the COM port.</li>
+            <li>Windows: CP2102 usually works automatically; if not, install Silicon Labs CP210x driver. <a
+                class="doc-link"
+                href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
+                target="_blank" rel="noopener noreferrer">CP210x Driver</a></li>
+            <li>If you see endless resets, re-flash using “Latest” again.</li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>
+        <span class="section-title">
+          <img src="mobile.png" alt="" class="section-icon" />
+          <span>App Installation</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <p class="note">
+          <a class="doc-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md"
+            target="_blank" rel="noopener noreferrer"
+            style="display:inline-block; font-weight:700; font-size:1.1em; text-decoration:underline;">
+            What’s New in the App → Latest Changes &amp; Features
+          </a>
+        </p>
+
+        <details class="subsection">
+          <summary>
+            <span class="section-title">
+              <img src="android.png" alt="" class="subsection-icon" />
+              <span>Android</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <div class="platform-layout">
+              <div class="platform-text">
+                <div class="card">
+                  <h3>Install on Android</h3>
+                  <div class="action-buttons">
+                    <a class="app-link" id="androidGuideLink" href="android-guide.html">
+                      Android Installation Instructions
+                    </a>
+
+                    <a class="app-link" id="androidApkLink" href="downloads/poor-mans-throttle-latest.apk">
+                      Download Latest Android Version
+                    </a>
+                  </div>
+                  <p class="note">
+                    Download the APK, then open it on your Android device to install the app.
+                  </p>
+                </div>
+              </div>
+
+              <div class="platform-visual">
+                <img src="android.png" alt="Android" class="platform-large-icon" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="subsection">
+          <summary>
+            <span class="section-title">
+              <img src="apple.png" alt="" class="subsection-icon" />
+              <span>Apple</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <div class="platform-layout">
+              <div class="platform-text">
+                <div class="card">
+                  <h3>Install on iPhone or iPad</h3>
+                  <p class="note">
+                    Download the Poor Man’s Throttle app from the Apple App Store:
+                  </p>
+                  <p class="note">
+                    <a class="app-link" href="https://apps.apple.com/us/app/poor-mans-throttle/id6760155416"
+                      target="_blank" rel="noopener noreferrer">
+                      Open App Store for iPhone / iPad
+                    </a>
+                  </p>
+                </div>
+              </div>
+
+              <div class="platform-visual">
+                <img src="apple.png" alt="Apple" class="platform-large-icon" />
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>
+        <span class="section-title">
+          <img src="documentation.png" alt="" class="section-icon" />
+          <span>Documentation</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card">
+          <h3>Project Documentation</h3>
+          <p class="note">
+            Open any guide below in GitHub.
+          </p>
+
+          <ul class="note">
+            <li><a class="doc-link" href="https://chatgpt.com/gpts/editor/g-69b6b9e2de288191b93ca08de865a365"
+                target="_blank" rel="noopener noreferrer">Poor Man's Throttle AI Assistant. Ask questions and get
+                help</a></li>
+            <li><a class="doc-link" href="https://www.facebook.com/profile.php?id=61584373474077" target="_blank"
+                rel="noopener noreferrer">Das Fassel Railroad Facebook Page</a></li>
+            <li><a class="doc-link" href="https://github.com/jamocle/PoorMansThrottle-DIY" target="_blank"
+                rel="noopener noreferrer">Poor Man's Throttle GitHub Project Space</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md"
+                target="_blank" rel="noopener noreferrer">00 Why Poor Man's Throttle</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md"
+                target="_blank" rel="noopener noreferrer">01 Quick Overview</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md"
+                target="_blank" rel="noopener noreferrer">02 System Architecture</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md"
+                target="_blank" rel="noopener noreferrer">03 Bill of Materials</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md"
+                target="_blank" rel="noopener noreferrer">04 Tools and Safety</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md"
+                target="_blank" rel="noopener noreferrer">05 Firmware Installation</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md" target="_blank"
+                rel="noopener noreferrer">06 Build Guide</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">07 Installation Options</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md"
+                target="_blank" rel="noopener noreferrer">08 First Power Test</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">09 Troubleshooting</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/10_mobile_device_installation_instructions.md"
+                target="_blank" rel="noopener noreferrer">10 Mobile Device Installation Instructions</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">Appendix - Command Protocol Reference</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">Appendix - Configuration Variables</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_ESP32_GPIO_Pins.md"
+                target="_blank" rel="noopener noreferrer">Appendix - ESP32 GPIO Pins</a></li>
+
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md"
+                target="_blank" rel="noopener noreferrer">Appendix - Traditional Transformer Layout Benefits</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md"
+                target="_blank" rel="noopener noreferrer">Appendix - Troubleshooting IBT-2 Boards</a></li>
+            <li><a class="doc-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">Appendix - Wiring Reference</a></li>
+          </ul>
+        </div>
+      </div>
+    </details>
+
+    <details class="section">
+      <summary>
+        <span class="section-title">
+          <img src="videos.png" alt="" class="section-icon" />
+          <span>Videos</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card">
+          <h3>Project Videos</h3>
+          <p class="note">
+            Open any Video below in YouTube.
+          </p>
+
+          <ul class="note">
+            <li><a class="doc-link" href="https://www.youtube.com/@DasFasselRailroad" target="_blank"
+                rel="noopener noreferrer">YouTube DFRR Channel</a></li>
+            <li><a class="doc-link" href="https://youtu.be/eJoxLKSB3KE" target="_blank"
+                rel="noopener noreferrer">Hardware
+                Build-Out of the Poor Man's Throttle</a></li>
+            <li><a class="doc-link" href="https://youtu.be/VNKrYldYAV4" target="_blank"
+                rel="noopener noreferrer">Testing the IBT-2 Motor Driver. Do you have a bad board?</a></li>
+          </ul>
+          <p class="note">
+            More coming soon.
+          </p>
+        </div>
+      </div>
+
+    </details>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const androidApkLink = document.getElementById("androidApkLink");
+
+      if (androidApkLink) {
+        androidApkLink.addEventListener("click", function () {
+          alert("When going from PMT version <1.9.11 to 1.9.11 or greater you must first uninstall the app from your android device or you may have duplication of the app on your device.");
+        });
+      }
+    });
+  </script>
+</body>
+
+</html>

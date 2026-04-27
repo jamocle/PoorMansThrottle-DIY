@@ -1,0 +1,50 @@
+{
+    "latest": "1.11.0",
+    "versions": [
+        {
+            "label": "v1.11.0",
+            "manifest": "manifest-1.11.0.json",
+            "selected": false
+        },
+        {
+            "label": "v1.10.9",
+            "manifest": "manifest-1.10.9.json",
+            "selected": true
+        },
+        {
+            "label": "v1.10.7",
+            "manifest": "manifest-1.10.7.json",
+            "selected": false
+        },
+        {
+            "label": "v1.9.6",
+            "manifest": "manifest-1.9.6.json",
+            "selected": false
+        },
+        {
+            "label": "v1.9.3",
+            "manifest": "manifest-1.9.3.json",
+            "selected": false
+        },
+        {
+            "label": "v1.8.0",
+            "manifest": "manifest-1.8.0.json",
+            "selected": false
+        },
+        {
+            "label": "v1.6.2",
+            "manifest": "manifest-1.6.2.json",
+            "selected": false
+        },
+        {
+            "label": "v1.6.1",
+            "manifest": "manifest-1.6.1.json",
+            "selected": false
+        },
+        {
+            "label": "v1.7.1 Beta",
+            "manifest": "manifest-1.7.1.json",
+            "selected": false
+        }
+    ]
+}

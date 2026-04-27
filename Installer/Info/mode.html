@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Motor Driver Modes</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.86);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1080px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:860px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.2rem;
+      letter-spacing:-.015em;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .summary-grid,
+    .mode-grid,
+    .image-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .summary-grid,
+    .image-grid{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .summary-card,
+    .mode-card,
+    .image-card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .summary-card,
+    .mode-card{
+      padding:18px;
+    }
+
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+
+    .klist{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .klist li{
+      margin:0 0 8px;
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .mode-grid{
+      margin-top:18px;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 32px}
+      .summary-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .mode-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Motor Driver Modes</div>
+      <h1>One app, multiple motor driver control styles.</h1>
+      <p class="subhead">
+        The app supports several motor driver interface types so the same throttle can be configured for different
+        real-world motor driver boards. Each mode changes the pin configuration to match a specific control scheme,
+        helping the app work across a broad range of common hardware.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="overview-title">
+      <div class="section-header">
+        <h2 id="overview-title">Overview</h2>
+        <p>
+          Four motor driver modes are supported: <strong>DUAL_PWM</strong>, <strong>PWM_DIR</strong>,
+          <strong>PWM_BIDIR</strong>, and <strong>DUAL_INPT</strong>. Each mode represents a different way a motor driver
+          expects speed and direction signals to be provided.
+        </p>
+      </div>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <span class="label">Control model summary</span>
+          <ul class="klist">
+            <li><strong>DUAL_PWM</strong>: two PWM pins, with direction determined by which PWM output is active.</li>
+            <li><strong>PWM_DIR</strong>: one PWM pin for speed and one digital pin for direction.</li>
+            <li><strong>PWM_BIDIR</strong>: one PWM enable pin plus separate forward and reverse logic pins.</li>
+            <li><strong>DUAL_INPT</strong>: two input pins, with PWM applied to the active side.</li>
+          </ul>
+        </div>
+        <div class="summary-card">
+          <span class="label">Why this matters</span>
+          <ul class="klist">
+            <li>The same app can be used with multiple motor driver boards.</li>
+            <li>Pin behavior changes to match the selected control method.</li>
+            <li>Setup stays aligned with the hardware actually being used.</li>
+            <li>The user can choose the mode that best fits current, efficiency, and driver design.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content">
+        <p>
+          The selected motor driver mode determines how throttle, direction, and related control behavior are translated into
+          the pin assignments shown in configuration. This provides flexibility across different driver board designs while
+          keeping the app's control experience consistent.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="modes-title">
+      <div class="section-header">
+        <h2 id="modes-title">Mode details and common hardware</h2>
+        <p>
+          Each mode below has its own control scheme, wiring style, and commonly supported hardware.
+          The screenshots are included as visual references for the configuration associated with each mode.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="dpwm.png" alt="DUAL_PWM configuration example." />
+          <figcaption class="caption">DUAL_PWM configuration example.</figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="pdir.png" alt="PWM_DIR configuration example." />
+          <figcaption class="caption">PWM_DIR configuration example.</figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="pbdir.png" alt="PWM_BIDIR configuration example." />
+          <figcaption class="caption">PWM_BIDIR configuration example.</figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="dimpt.png" alt="DUAL_INPT configuration example." />
+          <figcaption class="caption">DUAL_INPT configuration example.</figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="mode-grid">
+          <article class="mode-card">
+            <span class="label">DUAL_PWM</span>
+            <h3>Separate PWM for forward and reverse</h3>
+            <p>
+              This mode uses <strong>two PWM outputs</strong>: one for forward and one for reverse. Only one side is active at a time,
+              so direction is determined by which PWM channel is being driven.
+            </p>
+            <p>
+              Optional enable pins may also be used, depending on the driver board. In a typical arrangement, the forward pin is
+              connected to the driver's forward PWM input and the reverse pin is connected to the reverse PWM input.
+            </p>
+            <p>
+              <strong>Common hardware:</strong> IBT-2 BTS7960 motor driver.
+            </p>
+            <p>
+              <strong>Characteristics:</strong> high current capability, strong fit for heavier loads, and a control model that handles
+              direction by selecting the active PWM path.
+            </p>
+          </article>
+
+          <article class="mode-card">
+            <span class="label">PWM_DIR</span>
+            <h3>One PWM pin plus one direction pin</h3>
+            <p>
+              This mode uses <strong>one PWM pin for speed</strong> and <strong>one digital pin for direction</strong>.
+              The PWM signal controls speed, while the direction line selects forward or reverse.
+            </p>
+            <p>
+              In a typical arrangement, the PWM output is wired to the driver's PWM input and the direction output is wired
+              to the driver's direction input. A common logic pattern is direction high for forward and low for reverse.
+            </p>
+            <p>
+              <strong>Common hardware:</strong> Cytron MD10C and Cytron MDD10A motor drivers.
+            </p>
+            <p>
+              <strong>Characteristics:</strong> clean and simple control, widely used in higher-end driver designs, with good efficiency
+              and reliability.
+            </p>
+          </article>
+
+          <article class="mode-card">
+            <span class="label">PWM_BIDIR</span>
+            <h3>PWM enable with forward and reverse logic pins</h3>
+            <p>
+              This mode uses <strong>one PWM pin</strong> as an enable or speed signal together with <strong>two digital pins</strong>
+              for forward and reverse logic control.
+            </p>
+            <p>
+              In a typical arrangement, PWM is connected to the enable pin, while the forward and reverse pins are connected to
+              the driver's input lines. A common logic pattern is forward high and reverse low for forward motion, reverse high and
+              forward low for reverse motion, and both low for coast or brake depending on the driver.
+            </p>
+            <p>
+              <strong>Common hardware:</strong> L298N motor driver module and L293D motor driver board.
+            </p>
+            <p>
+              <strong>Characteristics:</strong> common and inexpensive, well suited to basic H-bridge boards, but generally less efficient
+              and not ideal for heavier current demands.
+            </p>
+          </article>
+
+          <article class="mode-card">
+            <span class="label">DUAL_INPT</span>
+            <h3>Two-input H-bridge style control</h3>
+            <p>
+              This mode uses <strong>two input pins</strong>, with PWM applied to whichever side is active. One side receives PWM while
+              the other stays low, then the pattern swaps when direction changes.
+            </p>
+            <p>
+              In a typical arrangement, input A is wired to one driver input and input B is wired to the other. The active side
+              receives the PWM signal that controls the motor.
+            </p>
+            <p>
+              <strong>Common hardware:</strong> DRV8833 motor driver module, TB6612FNG motor driver board, and MX1508 motor driver module.
+            </p>
+            <p>
+              <strong>Characteristics:</strong> efficient modern driver style, common on compact boards, and a good fit for low-to-medium
+              current applications.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          Recommended pairings generally follow load requirements: higher-current applications are a good fit for
+          <strong>DUAL_PWM</strong> with boards like the IBT-2 BTS7960, or <strong>PWM_DIR</strong> with boards such as the Cytron MD10C.
+          For medium and lighter loads, <strong>DUAL_INPT</strong> is often a strong choice with boards like the TB6612FNG or DRV8833.
+          <strong>PWM_BIDIR</strong> remains useful and common, but boards such as the L298N and L293D are typically less suitable for heavy loads.
+        </div>
+
+        <p style="margin-top:18px;">
+          In summary, these modes let the app support the major DC motor driver control patterns found in hobby and embedded systems.
+          The result is a flexible configuration model that can adapt to a wide variety of supported hardware while preserving a consistent
+          throttle experience.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>

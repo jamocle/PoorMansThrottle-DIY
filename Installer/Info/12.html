@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Backing Up and Reusing Throttle Settings</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.84);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#107c41;
+      --success-soft:rgba(16,124,65,.08);
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:980px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 50%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:8px 4px 16px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:780px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.24rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.15rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .image-grid{
+      display:grid;
+      gap:14px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-card{
+      background:#fff;
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .steps{
+      display:grid;
+      gap:12px;
+      margin:20px 0 6px;
+    }
+
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:15px 16px;
+    }
+
+    .num{
+      flex:0 0 34px;
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-weight:700;
+      font-size:.98rem;
+    }
+
+    .step strong{
+      display:block;
+      margin-bottom:5px;
+      font-size:1rem;
+    }
+
+    .feature-grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .feature{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .feature strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--success-soft);
+      border-left:4px solid var(--success);
+      color:#1d5c35;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 32px}
+      .image-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+      .feature-grid{
+        grid-template-columns:repeat(2, minmax(0,1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Configuration Backup and Restore</div>
+      <h1>Save settings. Restore them later. Duplicate them with ease.</h1>
+      <p class="subhead">
+        Throttle settings can now be copied out of the device, saved as a backup, and pasted back later.
+        The same copied settings can also be applied to another throttle, making it much easier to duplicate
+        configuration across multiple throttles without manually re-entering every value.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="backup-title">
+      <div class="section-header">
+        <h2 id="backup-title">How the backup and copy workflow works</h2>
+        <p>
+          The screens below show the full path: copy the CV values from the Configuration page, save that copied content,
+          then paste it into the script screen and send it to restore settings or duplicate them onto another throttle.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="12.png" alt="Configuration screen with the Copy button highlighted under Copy All CV's." />
+          <figcaption class="caption">
+            Copy all CV values from the Configuration page.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="12a.png" alt="Popup confirming that CV values were copied to the clipboard for backup or reuse." />
+          <figcaption class="caption">
+            A confirmation message lets you know the CV data has been copied and is ready to save or reuse.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="12b.png" alt="Throttle terminal screen showing the Send button used to move pasted commands into the script flow." />
+          <figcaption class="caption">
+            Open the terminal when you are ready to move the copied settings into another throttle workflow.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="12c.png" alt="Run Script screen displaying a pasted list of CV values with Send and Cancel buttons." />
+          <figcaption class="caption">
+            Paste the copied CV script and send it to restore or duplicate the saved configuration.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          From the Configuration screen, the <strong>Copy</strong> action gathers the throttle's CV settings and places them
+          on the clipboard. That copied output can be saved somewhere safe as a backup, such as in a note, document,
+          or maintenance record. Later, if the throttle needs to be restored, those same values can be pasted back into the app.
+        </p>
+
+        <p>
+          This same workflow is also useful when you want multiple throttles to share the same configuration. Instead of
+          manually repeating the same CV setup one value at a time, you can copy the settings from one throttle and paste
+          them onto another throttle to duplicate the configuration much more quickly and consistently.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="num">1</div>
+            <div>
+              <strong>Copy the settings</strong>
+              On the Configuration screen, use <strong>Copy All CV's</strong> and tap <strong>Copy</strong> to place the full
+              configuration onto the clipboard.
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">2</div>
+            <div>
+              <strong>Save the copied data</strong>
+              After the confirmation message appears, store the copied text somewhere safe if you want a backup for later use.
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">3</div>
+            <div>
+              <strong>Open the terminal on the target throttle</strong>
+              When restoring settings or applying them to another throttle, open the terminal and prepare to paste the copied content.
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="num">4</div>
+            <div>
+              <strong>Paste and send</strong>
+              Paste the copied CV script into the run script area, then send it so the configuration values are applied.
+            </div>
+          </div>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature">
+            <strong>Simple backup method</strong>
+            Settings can be copied off the device so they are not lost if a throttle needs to be reset or rebuilt later.
+          </div>
+          <div class="feature">
+            <strong>Faster duplication</strong>
+            A known-good configuration can be copied from one throttle and reused on another without manually entering each CV.
+          </div>
+          <div class="feature">
+            <strong>Better consistency</strong>
+            Reusing the same copied script helps keep multiple throttles aligned with the same settings.
+          </div>
+          <div class="feature">
+            <strong>Practical field workflow</strong>
+            The clipboard-based process makes it easy to move configurations between screens and devices as needed.
+          </div>
+        </div>
+
+        <div class="callout">
+          In short, this feature turns throttle configuration into something you can preserve and reuse. You can back up
+          settings for safekeeping, restore them later if needed, or paste them into another throttle to duplicate the
+          same setup across more than one unit.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>

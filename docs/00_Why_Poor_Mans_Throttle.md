@@ -27,6 +27,8 @@ Using a simple ESP32 controller and an inexpensive motor driver, the system conv
 
 This provides smooth and powerful motor control while allowing wireless operation from a smartphone.
 
+Go Here to get docs, videso and installations...[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+
 ---
 
 ## What It Does
@@ -37,6 +39,9 @@ Poor Man's Throttle allows a smartphone to control:
 * forward direction  
 * reverse direction  
 * stop  
+* Feathered Brake
+* Lighting control
+* Auxiliary Control
 * other commands  
 
 
@@ -113,7 +118,7 @@ Example parts:
 | Component | Typical Cost |
 |---------------------------------------|------|
 | ESP32 Development Board               | ~$6  |
-| IBT-2 Motor Driver                    | ~$10 |
+| IBT-2 Motor Driver (or other driver)  | ~$10 |
 | 5V ESP32 Logic Processor Power Module | ~$5  |
 
 Total: **about $21**
