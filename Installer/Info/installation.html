@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PMT Hardware Installation Guide</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.88);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#107c41;
+      --success-soft:rgba(16,124,65,.08);
+      --warn:#8a5a00;
+      --warn-soft:rgba(138,90,0,.08);
+      --shadow:0 16px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1120px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 64px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.8);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 4rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:900px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.9vw, 1.22rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:26px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.4rem, 4vw, 2.2rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.18rem;
+      letter-spacing:-.015em;
+      line-height:1.2;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 30px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .cards{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .card,
+    .image-card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .card{
+      padding:18px;
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+
+    .klist{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .klist li{
+      margin:0 0 8px;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .callout.success{
+      background:var(--success-soft);
+      border-left-color:var(--success);
+      color:#1d5c35;
+    }
+
+    .callout.warn{
+      background:var(--warn-soft);
+      border-left-color:var(--warn);
+      color:#6a4600;
+    }
+
+    .mode-grid,
+    .image-grid,
+    .two-col,
+    .link-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .link-grid{
+      margin-top:20px;
+    }
+
+    .top-link{
+      display:block;
+      text-decoration:none;
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      padding:18px 20px;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+      color:var(--text);
+      transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .top-link:hover{
+      transform:translateY(-1px);
+      box-shadow:0 14px 24px rgba(0,0,0,.08);
+      border-color:#c7d7f7;
+    }
+
+    .top-link strong{
+      display:block;
+      font-size:1.05rem;
+      margin-bottom:5px;
+      color:var(--accent);
+    }
+
+    .top-link span{
+      color:var(--muted);
+      font-size:.98rem;
+    }
+
+    .board-list{
+      margin:10px 0 0;
+      padding-left:18px;
+    }
+
+    .board-list li{
+      margin:0 0 6px;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:.92em;
+      background:#f2f2f7;
+      padding:.14em .38em;
+      border-radius:8px;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 76px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .two-col{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .mode-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .link-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">PMT Hardware Installation</div>
+      <h1>Hardware guidance for building and wiring PMT.</h1>
+      <p class="subhead">
+        This page is focused on the physical side of Poor Man's Throttle: choosing a supported motor driver mode,
+        wiring the controller and motor driver, powering the ESP32 correctly, and connecting a default headlight output.
+        Use it as a practical installation reference while assembling a PMT throttle.
+      </p>
+
+      <div class="link-grid">
+        <a class="top-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md" target="_blank" rel="noopener noreferrer">
+          <strong>Open PMT Online Documentation</strong>
+          <span>Launch the online guide in a separate browser window for the full documentation set.</span>
+        </a>
+        <a class="top-link" href="installation.html" target="_blank" rel="noopener noreferrer">
+          <strong>Open This Installation Guide Outside the App</strong>
+          <span>Launch this installation page in a separate browser window for easier viewing and reference.</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="overview-title">
+      <div class="section-header">
+        <h2 id="overview-title">System overview</h2>
+        <p>
+          PMT is designed so the same app and controller can support several different motor driver boards.
+          The important thing is to choose the driver mode based on the board's control pins, then wire the ESP32
+          to match that control style. Power for the motor driver and motor comes from the main power source,
+          while the ESP32 is powered separately through a 5V power module feeding USB-C.
+        </p>
+      </div>
+
+      <div class="cards grid two-col">
+        <div class="card">
+          <span class="label">Typical power path</span>
+          <ul class="klist">
+            <li>Main power source feeds the motor driver.</li>
+            <li>A 5V power module powers the ESP32 through USB-C.</li>
+            <li>The ESP32 sends control signals to the motor driver.</li>
+            <li>The motor driver sends power to the locomotive motor or track output.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <span class="label">Important hardware idea</span>
+          <ul class="klist">
+            <li>Select the PMT motor driver mode by control interface, not just by product family name.</li>
+            <li>Match the GPIO mapping in the app to the wiring on the board.</li>
+            <li>Use shared ground between the ESP32 and the motor driver logic side.</li>
+            <li>After wiring, confirm the mode and pin mapping in the PMT app before running the motor.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="callout">
+          For PMT hardware setup, think in three layers: <strong>power</strong>, <strong>motor driver wiring</strong>, and
+          <strong>app configuration</strong>. When those three match, installation becomes much easier to verify and troubleshoot.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="modes-title">
+      <div class="section-header">
+        <h2 id="modes-title">Motor driver modes and supported boards</h2>
+        <p>
+          PMT supports four motor driver control interfaces. Each one expects a different wiring pattern between the ESP32
+          and the motor driver board. Choose the mode that matches the board's pin behavior.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="mode-grid">
+          <article class="card">
+            <span class="label">DUAL_PWM</span>
+            <h3>Separate forward and reverse PWM</h3>
+            <p>
+              Uses separate forward and reverse PWM paths, typically with enable pins. This is a strong fit for higher-current
+              applications and heavy train loads.
+            </p>
+            <p><strong>Typical control pins:</strong> <code>RPWM</code>, <code>LPWM</code>, <code>R_EN</code>, <code>L_EN</code></p>
+            <p><strong>Example boards:</strong></p>
+            <ul class="board-list">
+              <li>IBT-2</li>
+              <li>IBT-20</li>
+              <li>BTS7960 modules</li>
+              <li>BTS7960B modules</li>
+              <li>BTN7960 / BTS7960 style dual-PWM drivers</li>
+              <li>Cytron MDD10A</li>
+              <li>Cytron MDD20A</li>
+              <li>Cytron MDD30A</li>
+              <li>Monster Moto Shield (VNH2SP30)</li>
+              <li>VNH5019 driver boards</li>
+              <li>VNH3SP30 modules</li>
+              <li>Sabertooth drivers in PWM mode</li>
+              <li>Roboclaw drivers in PWM mode</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <span class="label">PWM_DIR</span>
+            <h3>One PWM pin and one direction pin</h3>
+            <p>
+              Uses one PWM signal for speed and one direction signal for forward or reverse.
+              This is a simple and clean control model used by several dedicated motor drivers.
+            </p>
+            <p><strong>Typical control pins:</strong> <code>PWM</code>, <code>DIR</code></p>
+            <p><strong>Example boards:</strong></p>
+            <ul class="board-list">
+              <li>Cytron MD10C</li>
+              <li>Cytron MD13S</li>
+              <li>Cytron MD30C</li>
+              <li>Cytron MDS40A</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <span class="label">PWM_BIDIR</span>
+            <h3>PWM enable plus forward/reverse logic</h3>
+            <p>
+              Uses one enable or PWM input together with separate logic inputs for direction.
+              This is common on many inexpensive H-bridge boards.
+            </p>
+            <p><strong>Typical control pins:</strong> <code>EN / PWM</code>, <code>IN1</code>, <code>IN2</code></p>
+            <p><strong>Example boards:</strong></p>
+            <ul class="board-list">
+              <li>L298N</li>
+              <li>L293D</li>
+              <li>TB6612FNG</li>
+              <li>DRV8871</li>
+              <li>DRV8876</li>
+              <li>MC33926</li>
+              <li>MX1508</li>
+              <li>SN754410</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <span class="label">DUAL_INPT</span>
+            <h3>Two H-bridge inputs with PWM applied to the active side</h3>
+            <p>
+              Uses two motor-control inputs. PMT applies PWM to one side in one direction and to the other side when direction changes.
+            </p>
+            <p><strong>Typical control pins:</strong> <code>IN1</code>, <code>IN2</code></p>
+            <p><strong>Example boards:</strong></p>
+            <ul class="board-list">
+              <li>DRV8833</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout success">
+          A practical rule of thumb: <strong>DUAL_PWM</strong> is often the right place to start for high-current train installations,
+          while <strong>PWM_BIDIR</strong> is common when using boards like the L298N. Always confirm the board's actual control pins
+          before selecting the PMT mode in the app.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ibt2-title">
+      <div class="section-header">
+        <h2 id="ibt2-title">IBT-2 installation for PMT</h2>
+        <p>
+          The IBT-2 is a common PMT choice for the <strong>DUAL_PWM</strong> mode. The wiring example below shows the ESP32,
+          the IBT-2, the motor connection, the 5V power module, and the main power source.
+        </p>
+      </div>
+
+      <div class="cards grid image-grid">
+        <figure class="image-card">
+          <img src="ibt2wiring.PNG" alt="IBT-2 wiring example for PMT showing ESP32, motor driver, motor, 5V power module, and power source." />
+          <figcaption class="caption">
+            Example PMT wiring for an IBT-2 style installation.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="ibt2screen.png" alt="PMT configuration screen for the IBT-2 setup." />
+          <figcaption class="caption">
+            Configure the app to match the IBT-2 pin layout and motor driver mode.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          For an IBT-2 style PMT setup, the control wiring typically maps the ESP32 to the motor driver as follows:
+          <code>GPIO25 → RPWM</code>, <code>GPIO26 → LPWM</code>, <code>GPIO27 → R_EN</code>, <code>GPIO33 → L_EN</code>,
+          <code>VIN/5V → VCC</code>, and <code>GND → GND</code>. The motor driver's power side then connects to the main
+          power source and to the motor output.
+        </p>
+        <p>
+          In the PMT app, configure the motor driver mode as <strong>DUAL_PWM</strong> and confirm the displayed pin mapping
+          matches the physical wiring. This is the key checkpoint between the hardware build and the app setup.
+        </p>
+        <div class="callout">
+          PMT build guidance for IBT-2 installations also recommends a separate 5V logic supply for the ESP32, delivered through USB-C,
+          while the motor driver itself is fed by the main motor power path.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="l298n-title">
+      <div class="section-header">
+        <h2 id="l298n-title">L298N installation for PMT</h2>
+        <p>
+          The L298N is a common example of a <strong>PWM_BIDIR</strong> driver. The board image helps identify the major control
+          and power pins, and the PMT wiring example shows how to connect it to the ESP32.
+        </p>
+      </div>
+
+      <div class="cards grid image-grid">
+        <figure class="image-card">
+          <img src="l298n.PNG" alt="L298N board image with pin labels and outputs identified." />
+          <figcaption class="caption">
+            Pin description view showing the key L298N terminals and control inputs.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="l298nwiring.PNG" alt="L298N wiring example for PMT showing ESP32, motor driver, motor, 5V power module, and power source." />
+          <figcaption class="caption">
+            Example PMT wiring for an L298N style installation.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="cards grid" style="padding:0;background:none;border:none">
+          <figure class="image-card" style="margin:0">
+            <img src="l298nscreen.png" alt="PMT configuration screen for the L298N setup." />
+            <figcaption class="caption">
+              Configure the app to match the L298N pin layout and driver mode.
+            </figcaption>
+          </figure>
+        </div>
+
+        <p style="margin-top:18px;">
+          In a PMT L298N installation, the control pattern follows the <strong>PWM_BIDIR</strong> model. A typical mapping is
+          <code>GPIO25 → IN2</code>, <code>GPIO26 → IN1</code>, <code>GPIO33 → ENA</code>, with shared ground and the 5V logic connection
+          tied back to the ESP32 power side as shown in the wiring example.
+        </p>
+        <p>
+          In the PMT app, configure the motor driver mode as <strong>PWM_BIDIR</strong> and verify that the pin mapping shown in the
+          configuration screen matches the actual board wiring you used. The board image is helpful here because it labels the enable,
+          input, and output terminals clearly.
+        </p>
+
+        <div class="callout warn">
+          The L298N is widely available and easy to find, but it is generally a better fit for lighter-duty use than for heavy-current
+          train installations. For larger loads, PMT users often prefer boards that fit the <strong>DUAL_PWM</strong> control style.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="light-title">
+      <div class="section-header">
+        <h2 id="light-title">Default headlight output wiring</h2>
+        <p>
+          PMT also supports function outputs for lighting. The example below shows how to wire a simple LED to the default
+          headlight output and how that output appears in the app configuration.
+        </p>
+      </div>
+
+      <div class="cards grid image-grid">
+        <figure class="image-card">
+          <img src="ledwiring.PNG" alt="Example LED wiring to the PMT controller for the default headlight function output." />
+          <figcaption class="caption">
+            Example of wiring an LED to the default Headlight function output.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="light1.png" alt="PMT app screen showing the Headlight configuration using GPIO Pin 4." />
+          <figcaption class="caption">
+            Default Headlight setup in the app, using GPIO Pin 4.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          By default, the first light function is the configurable <strong>Headlight</strong> output and it is defaulted on
+          <strong>GPIO Pin 4</strong>. This can be modified and changed freely via the app. In the app, the headlight is shown as a named output with its pin assignment,
+          pattern, direction behavior, and linked function.
+        </p>
+        <p>
+          For a basic installation, wire the LED as shown in the example and then confirm in the app that the Headlight
+          output is present on GPIO 4. This gives the user a straightforward way to add a visible front light without
+          changing the default output assignment.
+        </p>
+        <div class="callout success">
+          The default headlight configuration is a useful first accessory test because it validates both the physical output
+          wiring and the app's function-output configuration at the same time.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="checklist-title">
+      <div class="section-header">
+        <h2 id="checklist-title">PMT hardware checklist</h2>
+        <p>
+          Before first power-up, walk through the physical installation one more time.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="mode-grid">
+          <div class="card">
+            <span class="label">Power</span>
+            <ul class="klist">
+              <li>Main power source connected with correct polarity.</li>
+              <li>ESP32 powered from a 5V module through USB-C.</li>
+              <li>Ground shared correctly between control and driver logic.</li>
+              <li>No exposed conductors touching adjacent terminals.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="label">Motor driver</span>
+            <ul class="klist">
+              <li>Driver mode selected in PMT matches the board's control interface.</li>
+              <li>GPIO pin mapping in the app matches the real wiring.</li>
+              <li>Motor connected to the correct output terminals.</li>
+              <li>Direction can be corrected later by swapping motor leads if needed.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="label">Lighting</span>
+            <ul class="klist">
+              <li>Headlight output wired to the intended LED.</li>
+              <li>Headlight shown in the app on GPIO Pin 4 by default.</li>
+              <li>Pattern and direction settings reviewed in the app.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <span class="label">Final verification</span>
+            <ul class="klist">
+              <li>IBT-2 uses <strong>DUAL_PWM</strong> configuration in the app.</li>
+              <li>L298N uses <strong>PWM_BIDIR</strong> configuration in the app.</li>
+              <li>Only supported board control styles are selected.</li>
+              <li>Wiring and app settings are checked together before running the motor.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          The fastest way to troubleshoot PMT hardware is to compare three things side by side: the physical wiring image,
+          the board's pin names, and the PMT configuration screen. If all three agree, the installation is usually very close.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>

@@ -6,6 +6,8 @@ This document explains how to load the firmware onto the ESP32 development board
 
 This process only needs to be done once unless the firmware is updated.
 
+[Additional installation material from the app](../Installer/Info/installation.html)
+
 ---
 
 # Required Hardware

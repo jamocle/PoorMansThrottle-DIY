@@ -102,13 +102,13 @@ These parts vary depending on the installation style.
 
 # Photo Examples
 
-![IBT-2 Wiring](docimages/ibt2wiring.PNG)
+![IBT-2 Wiring](../Installer/Info/ibt2wiring.PNG)
 
-![LED Wiring](docimages/ledwiring.PNG)
+![LED Wiring](../Installer/Info/ledwiring.PNG)
 
-![L298N](docimages/l298n.PNG)
+![L298N](../Installer/Info/l298n.PNG)
 
-![L298N Example](docimages/l298nwiring.PNG)
+![L298N Example](../Installer/Info/l298nwiring.PNG)
 
 
 ---
