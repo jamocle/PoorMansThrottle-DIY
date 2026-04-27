@@ -100,9 +100,7 @@ These parts vary depending on the installation style.
 
 ---
 
-# Photo Placeholders
-
-**Coming Soon**
+# Photo Examples
 
 ![IBT-2 Wiring](docimages/ibt2wiring.PNG)
 
