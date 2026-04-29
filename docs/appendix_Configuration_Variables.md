@@ -1,13 +1,13 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.11.0  
+**Firmware Version:** 1.12.0  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
 
 # Overview
 
-The Poor Man's Throttle firmware supports **Configuration Variables (CVs)** that allow operators to configure motor behavior, communication settings, hardware pin assignments, LED behavior, and function outputs.
+The Poor Man's Throttle firmware supports **Configuration Variables (CVs)** that allow operators to configure motor behavior, communication settings, hardware pin assignments, LED behavior, function outputs, and the **INA219 voltage/current/power telemetry and protection subsystem**.
 
 CVs are **read and modified using commands entered into the Terminal inside the PMT (Poor Man's Throttle) application**.
 
@@ -97,41 +97,59 @@ ERR:<command>
 * Pin CVs accept only the firmware’s allowed runtime GPIO list, not every ESP32 GPIO number
 * CV commands can be sent over **BLE or WebSocket**
 
+* Firmware **1.12.0** adds an **INA219 telemetry/protection subsystem** controlled by **CV30–CV42**
+* INA219 async telemetry is published as compact unsolicited lines: `TV:`, `TI:`, `TP:`, and `TF:`
+* `TF:` bit order is `LED BAT WARN LIM SD`, where **BAT=1 means battery connected** and **BAT=0 means battery disconnected**
+
 ---
 
 # CV Configuration Table
 
-| CV        | Purpose                  | Possible Values (Default)                                                    | Description |
-| --------- | ------------------------ | ---------------------------------------------------------------------------- | ----------- |
-| **CV1**   | Motor Driver Mode        | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` (**Default: DUAL_PWM**)      | Selects motor driver interface type. |
-| **CV2**   | Minimum Start (Floor)    | `0 – 100` (**Default: 0**)                                                   | Minimum hardware throttle output when any non-zero mapped throttle is commanded. |
-| **CV3**   | Maximum Output (Ceiling) | `0 – 100` (**Default: 100**)                                                 | Caps maximum motor output. **`0` means no ceiling cap**, which behaves as `100`. |
-| **CV4**   | Train Name               | Letters, numbers, spaces (**Default: blank**)                                | Sets the train name used for BLE advertising. Leading/trailing spaces are trimmed. Stored value is constrained to fit a single BLE notify reply. The advertised BLE name is also clamped to a conservative length. |
-| **CV5**   | Direction Inversion      | `0`, `1` (**Default: 0**)                                                    | Reverses motor direction logic. |
-| **CV6**   | Async Notify (Steady)    | `50 – 10000 ms` (**Default: 10000**)                                         | State update interval when throttle is steady. |
-| **CV7**   | Async Notify (Changing)  | `50 – 10000 ms` (**Default: 500**)                                           | State update interval while throttle is changing or ramping. |
-| **CV8**   | Reset Trigger            | `8`                                                                          | Writing `CV8=8` wipes saved configuration and reboots the ESP32. |
-| **CV9**   | Kick Configuration       | `<thr>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**)              | Configures start-assist kick used when starting from stop at low throttle. |
-| **CV10**  | WiFi Enable              | `0`, `1` (**Default: 0**)                                                    | Enables WiFi/WebSocket service when configured. |
-| **CV11**  | WiFi SSID                | Text (**Default: blank**)                                                    | WiFi network SSID. |
-| **CV12**  | WiFi Password            | Text (**Default: blank**)                                                    | WiFi password. **Set-only** from the command interface. Query returns `ERR`. |
-| **CV13**  | WebSocket Port           | `1 – 65535` (**Default: 81**)                                                | WebSocket server port. |
-| **CV20**  | LED Blink Timing         | `<periodMs>,<onMs>` (**Default: `1000,250`**)                                | Controls phase-based blink timing used by subscribed LED outputs in `BLINK+` and `BLINK-` modes. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
-| **CV100** | Dual PWM Forward Pin     | Allowed PWM GPIOs (**Default: 25**)                                          | Forward PWM pin for `DUAL_PWM` mode. |
-| **CV101** | Dual PWM Reverse Pin     | Allowed PWM GPIOs (**Default: 26**)                                          | Reverse PWM pin for `DUAL_PWM` mode. |
-| **CV102** | Dual PWM Enable A        | Allowed output GPIOs (**Default: 27**)                                       | Enable pin A for `DUAL_PWM` mode. |
-| **CV103** | Dual PWM Enable B        | Allowed output GPIOs (**Default: 33**)                                       | Enable pin B for `DUAL_PWM` mode. |
-| **CV104** | Two-Pin A                | Allowed PWM GPIOs (**Default: 25**)                                          | Shared two-pin control input A. Used as the PWM pin in `PWM_DIR`, and as input A in `DUAL_INPT`. |
-| **CV105** | Two-Pin B                | Allowed output GPIOs (**Default: 26**)                                       | Shared two-pin control input B. Used as the direction pin in `PWM_DIR`, and as input B in `DUAL_INPT`. |
-| **CV106** | PWM_BIDIR PWM/Enable Pin | Allowed PWM GPIOs (**Default: 25**)                                          | PWM/enable pin used in `PWM_BIDIR` mode. |
-| **CV107** | PWM_BIDIR Forward Pin    | Allowed output GPIOs (**Default: 26**)                                       | Forward logic pin used in `PWM_BIDIR` mode. |
-| **CV108** | PWM_BIDIR Reverse Pin    | Allowed output GPIOs (**Default: 27**)                                       | Reverse logic pin used in `PWM_BIDIR` mode. |
-
+| CV        | Purpose                        | Possible Values (Default)                                                    | Description |
+| --------- | ------------------------------ | ---------------------------------------------------------------------------- | ----------- |
+| **CV1**   | Motor Driver Mode              | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` (**Default: DUAL_PWM**)      | Selects motor driver interface type. |
+| **CV2**   | Minimum Start (Floor)          | `0 – 100` (**Default: 0**)                                                   | Minimum hardware throttle output when any non-zero mapped throttle is commanded. |
+| **CV3**   | Maximum Output (Ceiling)       | `0 – 100` (**Default: 100**)                                                 | Caps maximum motor output. **`0` means no ceiling cap**, which behaves as `100`. |
+| **CV4**   | Train Name                     | Letters, numbers, spaces (**Default: blank**)                                | Sets the train name used for BLE advertising. Leading/trailing spaces are trimmed. Stored value is constrained to fit a single BLE notify reply. The advertised BLE name is also clamped to a conservative length. |
+| **CV5**   | Direction Inversion            | `0`, `1` (**Default: 0**)                                                    | Reverses motor direction logic. |
+| **CV6**   | Async Notify (Steady)          | `50 – 10000 ms` (**Default: 10000**)                                         | State update interval when throttle is steady. |
+| **CV7**   | Async Notify (Changing)        | `50 – 10000 ms` (**Default: 500**)                                           | State update interval while throttle is changing or ramping. |
+| **CV8**   | Reset Trigger                  | `8`                                                                          | Writing `CV8=8` wipes saved configuration and reboots the ESP32. |
+| **CV9**   | Kick Configuration             | `<thr>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**)              | Configures start-assist kick used when starting from stop at low throttle. |
+| **CV10**  | WiFi Enable                    | `0`, `1` (**Default: 0**)                                                    | Enables WiFi/WebSocket service when configured. |
+| **CV11**  | WiFi SSID                      | Text (**Default: blank**)                                                    | WiFi network SSID. |
+| **CV12**  | WiFi Password                  | Text (**Default: blank**)                                                    | WiFi password. **Set-only** from the command interface. Query returns `ERR`. |
+| **CV13**  | WebSocket Port                 | `1 – 65535` (**Default: 81**)                                                | WebSocket server port. |
+| **CV20**  | LED Blink Timing               | `<periodMs>,<onMs>` (**Default: `1000,250`**)                                | Controls phase-based blink timing used by subscribed LED outputs in `BLINK+` and `BLINK-` modes. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
+| **CV30**  | INA219 Enable                  | `0`, `1` (**Default: 0**)                                                    | Enables or disables the INA219 subsystem. Disabled by default for safe rollout. |
+| **CV31**  | INA219 SDA Pin                 | Allowed runtime GPIOs (**Default: 21**)                                      | I²C SDA pin used by the INA219 on ESP32. |
+| **CV32**  | INA219 SCL Pin                 | Allowed runtime GPIOs (**Default: 22**)                                      | I²C SCL pin used by the INA219 on ESP32. |
+| **CV33**  | INA219 I²C Address             | `64 – 79` (**Default: 64**)                                                  | Decimal I²C address for the INA219. `64` corresponds to `0x40`. |
+| **CV34**  | INA219 Sample Interval         | `50 – 60000 ms` (**Default: 250**)                                           | How often the firmware samples INA219 measurements. |
+| **CV35**  | INA219 Publish Interval        | `100 – 60000 ms` (**Default: 1000**)                                         | How often INA219 async telemetry is published while enabled. |
+| **CV36**  | Low-Voltage Warn Threshold     | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates low-voltage warning behavior. `0` disables the threshold. |
+| **CV37**  | Low-Voltage Limit Threshold    | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates throttle limiting. `0` disables the threshold. |
+| **CV38**  | Shutdown Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that forces shutdown/stop behavior. `0` disables the threshold. |
+| **CV39**  | Recovery Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Recovery threshold used for hysteresis after warn/limit/shutdown conditions. |
+| **CV40**  | Disconnect Threshold           | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold used to infer battery disconnected or collapsed supply. `0` disables the threshold. |
+| **CV41**  | Low-Voltage Throttle Cap       | `0 – 100` (**Default: 25**)                                                  | Maximum allowed mapped throttle percentage while low-voltage limiting is active. |
+| **CV42**  | Low-Voltage LED Pin            | Allowed runtime GPIOs or `0` (**Default: 0**)                                | Optional dedicated LED output pin used to indicate low-voltage-related states. `0` means unassigned. |
+| **CV100** | Dual PWM Forward Pin           | Allowed PWM GPIOs (**Default: 25**)                                          | Forward PWM pin for `DUAL_PWM` mode. |
+| **CV101** | Dual PWM Reverse Pin           | Allowed PWM GPIOs (**Default: 26**)                                          | Reverse PWM pin for `DUAL_PWM` mode. |
+| **CV102** | Dual PWM Enable A              | Allowed output GPIOs (**Default: 27**)                                       | Enable pin A for `DUAL_PWM` mode. |
+| **CV103** | Dual PWM Enable B              | Allowed output GPIOs (**Default: 33**)                                       | Enable pin B for `DUAL_PWM` mode. |
+| **CV104** | Two-Pin A                      | Allowed PWM GPIOs (**Default: 25**)                                          | Shared two-pin control input A. Used as the PWM pin in `PWM_DIR`, and as input A in `DUAL_INPT`. |
+| **CV105** | Two-Pin B                      | Allowed output GPIOs (**Default: 26**)                                       | Shared two-pin control input B. Used as the direction pin in `PWM_DIR`, and as input B in `DUAL_INPT`. |
+| **CV106** | PWM_BIDIR PWM/Enable Pin       | Allowed PWM GPIOs (**Default: 25**)                                          | PWM/enable pin used in `PWM_BIDIR` mode. |
+| **CV107** | PWM_BIDIR Forward Pin          | Allowed output GPIOs (**Default: 26**)                                       | Forward logic pin used in `PWM_BIDIR` mode. |
+| **CV108** | PWM_BIDIR Reverse Pin          | Allowed output GPIOs (**Default: 27**)                                       | Reverse logic pin used in `PWM_BIDIR` mode. |
 ---
 
 # Allowed GPIOs for Runtime CV Pin Assignment
 
 The firmware does **not** accept every ESP32 pin number for runtime CV pin assignment.
+
+This allowed list applies to motor/output pin CVs and also to the INA219 pin-related CVs such as **CV31**, **CV32**, and **CV42**.
 
 The allowed runtime output/PWM GPIOs are:
 
@@ -143,11 +161,92 @@ If a pin value outside the allowed list is written to a pin CV, the firmware ret
 
 ---
 
+# INA219 Telemetry and Protection
+
+Firmware **1.12.0** adds an optional **INA219** subsystem for:
+
+* bus-voltage measurement
+* current measurement
+* power measurement
+* battery disconnected detection
+* low-voltage warning
+* throttle limiting
+* shutdown and recovery behavior
+* compact async telemetry publishing
+
+The INA219 is the **sensor only**. Higher-level behavior such as warning state, throttle limiting, shutdown, recovery, and LED indication is implemented in firmware policy.
+
+## INA219 Defaults
+
+Factory defaults for the INA219 subsystem are:
+
+* disabled
+* SDA = `21`
+* SCL = `22`
+* address = `64` (`0x40`)
+* sample interval = `250 ms`
+* publish interval = `1000 ms`
+* warn / limit / shutdown / recovery / disconnect thresholds = `0` (inactive until configured)
+* low-voltage throttle cap = `25%`
+* low-voltage LED pin = `0` (unassigned)
+
+## INA219 Async Telemetry Format
+
+When INA219 telemetry publishing is active, the firmware emits compact unsolicited telemetry lines:
+
+```text
+TV:<millivolts>
+TI:<milliamps>
+TP:<milliwatts>
+TF:<LED><BAT><WARN><LIM><SD>
+```
+
+Status bit order in `TF:` is fixed:
+
+1. `LED`
+2. `BAT`
+3. `WARN`
+4. `LIM`
+5. `SD`
+
+Battery bit meaning:
+
+* `BAT=1` = battery connected
+* `BAT=0` = battery disconnected
+
+Example:
+
+```text
+TV:18120
+TI:410
+TP:742
+TF:01000
+```
+
+Meaning:
+
+* `LED=0`
+* `BAT=1`
+* `WARN=0`
+* `LIM=0`
+* `SD=0`
+
+## INA219 Behavior Notes
+
+* All INA219 measurement values are integer-based
+* Default threshold values of `0` keep the measurement subsystem additive while leaving protection inactive until configured
+* The low-voltage LED pin is configurable through **CV42**
+* The low-voltage LED active behavior is fixed internally to **BLINK+**
+* INA219 telemetry enable is an internal runtime policy, not a CV
+* On INA219 read failure, the firmware marks telemetry invalid, keeps the last known protection state, and retries sensor setup
+
+---
+
 # Function Output CVs (CV150+)
 
 The firmware supports **12 function outputs** with per-function configuration.
 
-Each function occupies a **7-CV block**. In firmware **1.11.0**, the first **five** CVs in each block are implemented:
+Each function occupies a **7-CV block**. In firmware **1.12.0**, the first **five** CVs in each block are implemented:
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | -------- | ------- | ------ | ---------- | ------------ | ----------- |

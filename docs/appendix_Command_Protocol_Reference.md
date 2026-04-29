@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.10.5  
+**Firmware Version:** 1.12.0  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -26,6 +26,7 @@ Responses are returned as one of:
 - `ERR:<command>`
 - `A:CV<n>=<value>` for CV queries/sets
 - **RAW responses** (no `ACK:`/`ERR:` wrapper) for selected commands
+- **Asynchronous unsolicited telemetry/status lines** for runtime state reporting
 
 ---
 
@@ -45,7 +46,7 @@ Send:
 
 ```text
 I
-````
+```
 
 Response:
 
@@ -145,6 +146,8 @@ Values are in the **mapped throttle domain** and are converted to hardware outpu
 
 * **CV2** = floor / minimum start
 * **CV3** = ceiling / maximum output
+
+When INA219 low-voltage throttle limiting is active, the firmware applies an effective cap centrally before output is sent to the motor driver.
 
 ---
 
@@ -364,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.10.5
+ACK:V1.12.0
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -495,7 +498,24 @@ ACK:P1
 
 ---
 
-# Asynchronous State Updates
+# Asynchronous Runtime Updates
+
+The firmware can send automatic unsolicited runtime updates.
+
+There are now **two categories** of async runtime lines:
+
+1. **State updates** using the `A:` prefix
+2. **INA219 telemetry / protection updates** using the `TV:`, `TI:`, `TP:`, and `TF:` prefixes
+
+These messages are transport-selected the same way as the rest of the firmware:
+
+* If **BLE is connected**, BLE is the preferred async path
+* If BLE is not connected and a WebSocket client is connected, socket async messages can be used
+* Async publishing does **not** change command/reply semantics
+
+---
+
+## Async `A:` State Updates
 
 The firmware can send automatic unsolicited state updates in this format:
 
@@ -547,6 +567,82 @@ Response:
 ```text
 ACK:A0
 ```
+
+---
+
+## INA219 Async Telemetry Updates
+
+When INA219 support is enabled and telemetry publishing is active, the firmware emits compact unsolicited telemetry lines:
+
+```text
+TV:<millivolts>
+TI:<milliamps>
+TP:<milliwatts>
+TF:<LED><BAT><WARN><LIM><SD>
+```
+
+Example:
+
+```text
+TV:18120
+TI:410
+TP:742
+TF:01000
+```
+
+`TF` bit order is fixed:
+
+1. `LED`
+2. `BAT`
+3. `WARN`
+4. `LIM`
+5. `SD`
+
+Bit meanings:
+
+* `LED=1` → low-voltage LED subscription is active
+* `BAT=1` → battery connected
+* `BAT=0` → battery disconnected
+* `WARN=1` → low-voltage warning active
+* `LIM=1` → low-voltage throttle limiting active
+* `SD=1` → shutdown active
+
+Notes:
+
+* These telemetry lines are **unsolicited**
+* They are **not controlled by `A1` / `A0`**
+* Telemetry can publish on interval and also immediately when important INA219 status changes occur
+* If INA219 measurement data is invalid, `TV`, `TI`, and `TP` report `0` until valid samples resume
+* Firmware policy derived from INA219 includes battery disconnect detection, low-voltage warning, throttle limiting, shutdown, recovery, and low-voltage LED behavior
+
+---
+
+# INA219 Telemetry / Protection
+
+The INA219 is used as a **sensor only**. The firmware derives the higher-level protection behavior from its measurements.
+
+Measured values:
+
+* Bus voltage
+* Current
+* Power
+
+Firmware behaviors derived from those measurements:
+
+* Battery disconnected detection
+* Low-voltage warning
+* Low-voltage throttle limiting
+* Shutdown
+* Recovery hysteresis
+* Low-voltage LED output behavior
+* Compact async telemetry publishing
+
+Important implementation notes:
+
+* Thresholds default to `0`, which effectively leaves that policy inactive until configured
+* The low-voltage LED active mode is internal firmware policy and is fixed to **BLINK+**
+* INA219 async telemetry enable is internal runtime policy, not a documented CV
+* On sensor read failure, the firmware preserves the last known protection state and keeps retrying INA219 setup
 
 ---
 
@@ -669,7 +765,7 @@ Only the CVs confirmed below are documented here.
 
 | CV    | Purpose                                 | Value Format                              |
 | ----- | --------------------------------------- | ----------------------------------------- |
-| `CV1` | Motor driver type                       | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`        |
+| `CV1` | Motor driver type                       | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` |
 | `CV2` | Minimum start / floor                   | `0..100`                                  |
 | `CV3` | Ceiling / max output                    | `0..100`                                  |
 | `CV4` | Train name                              | ASCII letters, digits, spaces             |
@@ -695,33 +791,89 @@ A:CV9=25,300,80,15
 
 ## WiFi / WebSocket CVs
 
-| CV     | Purpose             | Value Format             |
-| ------ | ------------------- | ------------------------ |
-| `CV10` | WiFi enable         | `0` or `1`               |
-| `CV11` | WiFi SSID           | free-form string         |
-| `CV12` | Blink timing config | `<phasePeriodMs>,<onMs>` |
-| `CV13` | WebSocket port      | `1..65535`               |
-
-### CV12 Example
-
-```text
-CV12=1000,250
-```
-
-Response:
-
-```text
-A:CV12=1000,250
-```
+| CV     | Purpose        | Value Format     |
+| ------ | -------------- | ---------------- |
+| `CV10` | WiFi enable    | `0` or `1`       |
+| `CV11` | WiFi SSID      | free-form string |
+| `CV12` | WiFi password  | set-only string  |
+| `CV13` | WebSocket port | `1..65535`       |
 
 Notes:
 
+* Querying `CV12?` returns `ERR:<original-command>`
 * Changing `CV10`, `CV11`, `CV12`, or `CV13` can affect runtime WiFi/WebSocket behavior
 * When WiFi connects, the firmware may emit an unsolicited:
 
 ```text
 IP:<address>
 ```
+
+---
+
+## LED Timing CVs
+
+| CV     | Purpose             | Value Format             |
+| ------ | ------------------- | ------------------------ |
+| `CV20` | Blink timing config | `<phasePeriodMs>,<onMs>` |
+
+### CV20 Example
+
+```text
+CV20=1000,250
+```
+
+Response:
+
+```text
+A:CV20=1000,250
+```
+
+Notes:
+
+* `CV20` controls firmware LED blink timing behavior
+* Changing `CV20` can affect runtime LED timing behavior
+
+---
+
+## INA219 CVs
+
+| CV     | Purpose                               | Value Format         |
+| ------ | ------------------------------------- | -------------------- |
+| `CV30` | INA219 enable                         | `0` or `1`           |
+| `CV31` | INA219 SDA pin                        | `0..39`              |
+| `CV32` | INA219 SCL pin                        | `0..39`              |
+| `CV33` | INA219 I²C address                    | `64..79`             |
+| `CV34` | INA219 sample interval (ms)           | `50..60000`          |
+| `CV35` | INA219 publish interval (ms)          | `100..60000`         |
+| `CV36` | Low-voltage warning threshold (mV)    | `0..50000`           |
+| `CV37` | Low-voltage limit threshold (mV)      | `0..50000`           |
+| `CV38` | Low-voltage shutdown threshold (mV)   | `0..50000`           |
+| `CV39` | Low-voltage recovery threshold (mV)   | `0..50000`           |
+| `CV40` | Battery disconnect threshold (mV)     | `0..50000`           |
+| `CV41` | Low-voltage throttle cap (%)          | `0..100`             |
+| `CV42` | Low-voltage LED pin                   | `0..39`              |
+
+Default INA219 values:
+
+* `CV30=0`
+* `CV31=21`
+* `CV32=22`
+* `CV33=64` (`0x40`)
+* `CV34=250`
+* `CV35=1000`
+* `CV36=0`
+* `CV37=0`
+* `CV38=0`
+* `CV39=0`
+* `CV40=0`
+* `CV41=25`
+* `CV42=0`
+
+Notes:
+
+* Thresholds set to `0` leave the associated protection policy inactive
+* Changing INA219 pin or address settings can trigger INA219 reinitialization
+* `CV42` configures the low-voltage LED **pin** only; the active pattern is internal firmware policy
 
 ---
 
@@ -939,3 +1091,16 @@ Notes:
 | `CV<n>?`        | Query CV value                         |
 | `CV<n>=<value>` | Set CV value                           |
 
+---
+
+# Async Telemetry Summary
+
+These are **not commands**, but they may appear asynchronously at runtime:
+
+| Line Prefix | Meaning                         |
+| ----------- | ------------------------------- |
+| `A:`        | General runtime state           |
+| `TV:`       | INA219 bus voltage in mV        |
+| `TI:`       | INA219 current in mA            |
+| `TP:`       | INA219 power in mW              |
+| `TF:`       | INA219 compact status bitfield  |

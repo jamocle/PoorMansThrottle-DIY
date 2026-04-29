@@ -2,6 +2,16 @@
 
 ## Firmware:
 
+### Version 1.12.0
+* **Battery telemetry and protection support** added, giving the throttle controller optional live battery monitoring for voltage, current, and power when an INA219 sensor is enabled.
+* **Low-voltage protection behavior** added so the controller can warn, reduce available throttle, or stop output based on configured battery thresholds.
+* **Battery recovery behavior** added so protection states can clear automatically after voltage recovers above the configured recovery threshold.
+* **Battery-disconnect detection** added so the controller can recognize a disconnected or collapsed battery condition and report it to the app.
+* **Configurable battery-monitoring settings** added through CVs, including enable/disable, sensor connection settings, telemetry timing, voltage thresholds, throttle-cap percentage, and low-voltage indicator pin assignment.
+* **Low-voltage indicator output** added so users can assign a dedicated output pin to visually show low-voltage-related states.
+* **Compact app telemetry updates** added for battery voltage, current, power, and protection-state flags, using shorter async messages designed to fit more reliably over BLE.
+* **Safer default rollout behavior** added by leaving battery-protection thresholds inactive until the feature is explicitly configured, allowing the monitoring subsystem to be introduced without immediately changing train behavior.
+
 ### Version 1.11.0
 * **New `DUAL_INPT` motor driver mode** added for dual-input H-bridge drivers such as the DRV8833. The firmware header now documents this mode as a driver model that swaps which pin receives PWM based on direction.
 * **`CV1` motor driver selection expanded** so the firmware now accepts and reports `DUAL_INPT` alongside the existing `DUAL_PWM`, `PWM_DIR`, and `PWM_BIDIR` modes.

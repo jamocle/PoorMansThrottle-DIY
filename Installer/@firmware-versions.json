@@ -1,15 +1,20 @@
 {
-    "latest": "1.11.0",
+    "latest": "1.12.0",
     "versions": [
+        {
+            "label": "v1.12.0",
+            "manifest": "manifest-1.12.0.json",
+            "selected": false
+        },
         {
             "label": "v1.11.0",
             "manifest": "manifest-1.11.0.json",
-            "selected": false
+            "selected": true
         },
         {
             "label": "v1.10.9",
             "manifest": "manifest-1.10.9.json",
-            "selected": true
+            "selected": false
         },
         {
             "label": "v1.10.7",
