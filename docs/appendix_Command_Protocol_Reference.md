@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.0  
+**Firmware Version:** 1.12.1  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -367,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.12.0
+ACK:V1.12.1
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -633,13 +633,13 @@ Firmware behaviors derived from those measurements:
 * Low-voltage warning
 * Low-voltage throttle limiting
 * Shutdown
-* Recovery hysteresis
+* Recovery threshold / hysteresis behavior
 * Low-voltage LED output behavior
 * Compact async telemetry publishing
 
 Important implementation notes:
 
-* Thresholds default to `0`, which effectively leaves that policy inactive until configured
+* Thresholds default to 0, which disables the associated protection behavior until configured. For CV39, a value of 0 disables automatic recovery.
 * The low-voltage LED active mode is internal firmware policy and is fixed to **BLINK+**
 * INA219 async telemetry enable is internal runtime policy, not a documented CV
 * On sensor read failure, the firmware preserves the last known protection state and keeps retrying INA219 setup
@@ -859,8 +859,8 @@ Default INA219 values:
 * `CV31=21`
 * `CV32=22`
 * `CV33=64` (`0x40`)
-* `CV34=250`
-* `CV35=1000`
+* `CV34=500`
+* `CV35=10000`
 * `CV36=0`
 * `CV37=0`
 * `CV38=0`

@@ -2,6 +2,12 @@
 
 ## Firmware:
 
+### Version 1.12.1
+* **INA219 telemetry sampling default** changed from `250 ms` to `500 ms`, reducing background sensor polling frequency so battery monitoring stays lighter-weight relative to throttle-control work.
+* **INA219 telemetry publish default** changed from `1000 ms` to `10000 ms`, making battery status reporting far less chatty over BLE and WebSocket connections.
+* **INA219 recovery-threshold semantics corrected** so `CV39 = 0` now means **recovery disabled / off** instead of being treated as an always-satisfied recovery condition.
+* **Safer low-voltage recovery behavior** added by preventing automatic recovery when no explicit recovery threshold is configured, avoiding unintended rapid recovery after shutdown or protection events.
+
 ### Version 1.12.0
 * **Battery telemetry and protection support** added, giving the throttle controller optional live battery monitoring for voltage, current, and power when an INA219 sensor is enabled.
 * **Low-voltage protection behavior** added so the controller can warn, reduce available throttle, or stop output based on configured battery thresholds.

@@ -1,33 +1,31 @@
-# Poor Man's Throttle  
+# Poor Man's Throttle
 ### Wireless Control for Model Trains — Without the High Cost
 
 ## The Problem
 
-Wireless throttle systems for model trains can be expensive and complicated.
+Wireless throttle systems for model trains can be expensive, closed, and harder to justify for hobbyists who simply want reliable wireless control.
 
-Many hobbyists who convert locomotives to **battery power (dead-rail)** need a simple way to control their trains wirelessly without investing hundreds of dollars in commercial systems.
+Many builders converting locomotives to **battery power (dead-rail)** want a practical way to control their trains from a phone without investing hundreds of dollars in proprietary hardware.
 
-At the same time, hobbyists using **traditional DC transformers** often experience poor low-speed performance.
-
-Typical problems include:
+At the same time, hobbyists using **traditional DC transformers** often run into familiar low-speed problems:
 
 * locomotive hum at low speeds  
-* weak torque when starting  
+* weak starting torque  
 * jerky slow-speed operation  
 
-These issues occur because inexpensive DC transformers reduce voltage instead of properly controlling motor power.
+These issues are common when speed is controlled mainly by lowering voltage instead of controlling motor power more effectively.
 
 ---
 
 ## The Solution
 
-**Poor Man's Throttle** is a low-cost wireless throttle system that lets a smartphone control a model locomotive.
+**Poor Man's Throttle** is a low-cost wireless throttle system that lets a smartphone control a model locomotive using an **ESP32** and an inexpensive **DC motor driver**.
 
-Using a simple ESP32 controller and an inexpensive motor driver, the system converts Bluetooth commands from a phone into **PWM motor control** (Pulse Width Modulation) signals.
+At its core, the firmware receives wireless commands and converts them into **PWM motor control** (Pulse Width Modulation) for the locomotive motor. The primary control path is **Bluetooth Low Energy (BLE)**, and the firmware also supports an optional **Wi-Fi / WebSocket** control path as a secondary or failover connection when enabled and configured.
 
-This provides smooth and powerful motor control while allowing wireless operation from a smartphone.
+That gives builders an affordable path to smooth motor control, flexible hardware choices, and walk-around wireless operation from a smartphone.
 
-Go Here to get docs, videso and installations...[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+Go here for docs, videos, and installation help: [Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
 
 ---
 
@@ -39,25 +37,31 @@ Poor Man's Throttle allows a smartphone to control:
 * forward direction  
 * reverse direction  
 * stop  
-* Feathered Brake
-* Lighting control
-* Auxiliary Control
-* other commands  
+* quick stop and momentum-style changes  
+* feathered / variable brake behavior  
+* lighting and auxiliary function outputs  
+* additional configuration and status features  
 
+Depending on how a builder configures the installation, the system can also support:
 
-All control is wireless, allowing the operator to walk around the layout while controlling the train.
+* multiple supported motor driver control styles  
+* configurable train naming for easier identification  
+* optional Wi-Fi / WebSocket access  
+* optional voltage telemetry and low-voltage protection features  
+
+All control is designed to be wireless, allowing the operator to walk around the layout while controlling the train.
 
 ---
 
 # A Huge Upgrade for Traditional DC Layouts
 
-Poor Man's Throttle is especially powerful when used with **traditional DC transformers**.
+Poor Man's Throttle is especially useful on **traditional DC transformer** layouts.
 
-Instead of using the transformer to control speed, the transformer is set to **full power**.
+Instead of using the transformer as the main speed control, the transformer is typically set to provide steady power.
 
 The Poor Man's Throttle hardware then uses **PWM motor control** to regulate the locomotive speed.
 
-```
+```text
 DC Transformer (set to full power)
             │
             │
@@ -72,44 +76,61 @@ This provides several major benefits.
 
 ### Smooth Low-Speed Operation
 
-PWM control allows locomotives to move smoothly at extremely low speeds.
+PWM control can produce smoother low-speed movement than basic voltage-only throttling.
 
-### High Starting Torque
+### Stronger Starts
 
-The motor still receives strong power pulses, allowing the locomotive to start moving easily.
+The motor still receives controlled power pulses, which can help the locomotive start more confidently at low speed.
 
-### Eliminate Transformer Hum
+### Reduced Low-Speed Hum Issues
 
-Because the transformer is not operating at very low voltage levels, the humming and buzzing common with cheap DC throttles is greatly reduced.
+Because the transformer is not being relied on as the fine speed-control device at very low voltage, the humming and buzzing common with inexpensive DC throttles can be reduced.
 
 ### Wireless Operation
 
 The system also adds **smartphone wireless control** to traditional DC layouts.
 
-This combination of **smooth PWM control and wireless operation** is rarely available with inexpensive DC transformer systems.
+That combination of **PWM motor control** and **wireless walk-around operation** is a major upgrade over many low-cost DC setups.
 
 ---
 
 ## Designed for Dead-Rail
 
-The system is also ideal for **dead-rail locomotives** powered by onboard batteries.
+The system is also well suited to **dead-rail locomotives** powered by onboard batteries.
 
-It works with common cordless tool batteries such as:
+It can be used with common cordless tool battery ecosystems such as:
 
 * DeWalt  
 * Milwaukee  
 * Ryobi  
-* Rigid    
+* Ridgid  
 * other compatible tool batteries  
-* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* other hobby battery types such as **LiPo, lithium-ion, NiMH, lead-acid, and alkaline** when used appropriately for the installation  
 
-This allows hobbyists to reuse inexpensive and widely available batteries.
+This gives hobbyists the freedom to build around batteries that are affordable, familiar, and widely available.
+
+---
+
+## Flexible Hardware Choices
+
+Poor Man's Throttle is not limited to a single motor driver style.
+
+The current firmware supports several common control patterns used by hobby DC motor drivers, including:
+
+* **DUAL_PWM**  
+* **PWM_DIR**  
+* **PWM_BIDIR**  
+* **DUAL_INPT**  
+
+That flexibility helps the project work with more than one hardware approach instead of locking builders into only one exact driver board.
 
 ---
 
 ## Typical Hardware Cost
 
-A basic build typically costs around:
+A basic build can still be very inexpensive.
+
+A common entry-level example is around:
 
 **$21 per locomotive**
 
@@ -123,7 +144,7 @@ Example parts:
 
 Total: **about $21**
 
-Many hobbyists already have some of these components available.
+Actual cost depends on the motor driver, battery setup, protection parts, and optional accessories chosen for a specific installation.
 
 ---
 
@@ -139,9 +160,9 @@ This project is designed for:
 
 It supports both:
 
-**Beginner builders** using simple wiring  
+**Beginner builders** using simple hardware combinations  
 and  
-**Advanced builders** creating permanent installations.
+**Advanced builders** creating more customized or permanent installations.
 
 ---
 
@@ -152,8 +173,8 @@ The goal of Poor Man's Throttle is simple:
 **Make wireless model train control accessible to anyone who wants to build it.**
 
 No expensive proprietary hardware.  
-No complicated systems.  
-Just a simple, open, affordable throttle.
+No unnecessary complexity.  
+Just a practical, open, affordable throttle system that hobbyists can actually build and use.
 
 ---
 
@@ -161,11 +182,10 @@ Just a simple, open, affordable throttle.
 
 Continue to:
 
-This document performs a quick overview of Poor Man's Throttle.
+This document is a quick overview of what Poor Man's Throttle is and why it exists.
 
 [**01_quick_overview.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)
 
-
-[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+[<< Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
 
 [<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)

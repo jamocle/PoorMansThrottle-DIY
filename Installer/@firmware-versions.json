@@ -1,9 +1,9 @@
 {
-    "latest": "1.12.0",
+    "latest": "1.12.1",
     "versions": [
         {
-            "label": "v1.12.0",
-            "manifest": "manifest-1.12.0.json",
+            "label": "v1.12.1",
+            "manifest": "manifest-1.12.1.json",
             "selected": false
         },
         {

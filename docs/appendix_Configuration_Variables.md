@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.12.0  
+**Firmware Version:** 1.12.1  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -97,7 +97,7 @@ ERR:<command>
 * Pin CVs accept only the firmware’s allowed runtime GPIO list, not every ESP32 GPIO number
 * CV commands can be sent over **BLE or WebSocket**
 
-* Firmware **1.12.0** adds an **INA219 telemetry/protection subsystem** controlled by **CV30–CV42**
+* Firmware **1.12.1** includes an **INA219 telemetry/protection subsystem** controlled by **CV30–CV42**
 * INA219 async telemetry is published as compact unsolicited lines: `TV:`, `TI:`, `TP:`, and `TF:`
 * `TF:` bit order is `LED BAT WARN LIM SD`, where **BAT=1 means battery connected** and **BAT=0 means battery disconnected**
 
@@ -125,12 +125,12 @@ ERR:<command>
 | **CV31**  | INA219 SDA Pin                 | Allowed runtime GPIOs (**Default: 21**)                                      | I²C SDA pin used by the INA219 on ESP32. |
 | **CV32**  | INA219 SCL Pin                 | Allowed runtime GPIOs (**Default: 22**)                                      | I²C SCL pin used by the INA219 on ESP32. |
 | **CV33**  | INA219 I²C Address             | `64 – 79` (**Default: 64**)                                                  | Decimal I²C address for the INA219. `64` corresponds to `0x40`. |
-| **CV34**  | INA219 Sample Interval         | `50 – 60000 ms` (**Default: 250**)                                           | How often the firmware samples INA219 measurements. |
-| **CV35**  | INA219 Publish Interval        | `100 – 60000 ms` (**Default: 1000**)                                         | How often INA219 async telemetry is published while enabled. |
+| **CV34**  | INA219 Sample Interval         | `50 – 60000 ms` (**Default: 500**)                                           | How often the firmware samples INA219 measurements. |
+| **CV35**  | INA219 Publish Interval        | `100 – 60000 ms` (**Default: 10000**)                                        | How often INA219 async telemetry is published while enabled. |
 | **CV36**  | Low-Voltage Warn Threshold     | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates low-voltage warning behavior. `0` disables the threshold. |
 | **CV37**  | Low-Voltage Limit Threshold    | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates throttle limiting. `0` disables the threshold. |
 | **CV38**  | Shutdown Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that forces shutdown/stop behavior. `0` disables the threshold. |
-| **CV39**  | Recovery Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Recovery threshold used for hysteresis after warn/limit/shutdown conditions. |
+| **CV39**  | Recovery Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Recovery threshold used for hysteresis after warn/limit/shutdown conditions. `0` disables automatic recovery. |
 | **CV40**  | Disconnect Threshold           | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold used to infer battery disconnected or collapsed supply. `0` disables the threshold. |
 | **CV41**  | Low-Voltage Throttle Cap       | `0 – 100` (**Default: 25**)                                                  | Maximum allowed mapped throttle percentage while low-voltage limiting is active. |
 | **CV42**  | Low-Voltage LED Pin            | Allowed runtime GPIOs or `0` (**Default: 0**)                                | Optional dedicated LED output pin used to indicate low-voltage-related states. `0` means unassigned. |
@@ -163,7 +163,7 @@ If a pin value outside the allowed list is written to a pin CV, the firmware ret
 
 # INA219 Telemetry and Protection
 
-Firmware **1.12.0** adds an optional **INA219** subsystem for:
+Firmware **1.12.1** includes an optional **INA219** subsystem for:
 
 * bus-voltage measurement
 * current measurement
@@ -184,9 +184,10 @@ Factory defaults for the INA219 subsystem are:
 * SDA = `21`
 * SCL = `22`
 * address = `64` (`0x40`)
-* sample interval = `250 ms`
-* publish interval = `1000 ms`
-* warn / limit / shutdown / recovery / disconnect thresholds = `0` (inactive until configured)
+* sample interval = `500 ms`
+* publish interval = `10000 ms`
+* warn / limit / shutdown / disconnect thresholds = `0` (inactive until configured)
+* recovery threshold = `0` (automatic recovery disabled)
 * low-voltage throttle cap = `25%`
 * low-voltage LED pin = `0` (unassigned)
 
@@ -231,10 +232,34 @@ Meaning:
 * `LIM=0`
 * `SD=0`
 
+## INA219 Suggested Starting Values by Battery Type
+
+These are **starting-point recommendations**, not absolute battery-protection rules. Actual safe thresholds depend on pack chemistry, cell count, wiring loss under load, BMS behavior, and how much voltage sag your locomotive causes during startup or heavy pull.
+
+For a **generic firmware build**, the shipped defaults remaining at `0` are still appropriate. Use the table below when tuning for a **known battery type**.
+
+| Battery / Supply Type | Typical Pack Range | CV36 Warn | CV37 Limit | CV38 Shutdown | CV39 Recovery | CV40 Disconnect | Notes |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | --- |
+| 3S Li-ion / LiPo | 12.6V full, ~9.0V near empty | `10200` | `9600` | `9300` | `10500` | `6000` | Good starting point for small 12V-class lithium packs. |
+| 4S Li-ion / LiPo | 16.8V full, ~12.0V near empty | `13600` | `12800` | `12400` | `14000` | `8000` | Common for “16V / 18V-class” packs. |
+| 5S Li-ion / LiPo | 21.0V full, ~15.0V near empty | `17000` | `16000` | `15500` | `17500` | `10000` | Useful for higher-voltage handheld-tool style packs. |
+| 4S LiFePO4 | 14.6V full, ~10.0V near empty | `12400` | `12000` | `11600` | `12800` | `8000` | LiFePO4 tends to hold voltage flat, so field tuning is important. |
+| 12V SLA / AGM / Gel | ~12.7V full, ~11.0V very low | `11800` | `11400` | `11100` | `12300` | `9000` | Good conservative starting point for sealed lead-acid packs. |
+| 12-cell NiMH | ~16.8V fresh, ~12.0V under load late in discharge | `12600` | `11800` | `11000` | `13200` | `8000` | NiMH sag varies a lot with load, age, and temperature. |
+| Bench / regulated DC supply | Fixed supply | `0` | `0` | `0` | `0` | `0` | Leave all battery policies off unless you specifically want telemetry-based limits. |
+
+### Suggested Tuning Order
+
+1. Start with **CV36** (warn) only.
+2. Add **CV37** (limit) if you want reduced speed before shutdown.
+3. Add **CV38** (shutdown) only after validating under real train load.
+4. Set **CV39** above shutdown if you want automatic recovery hysteresis. Leave `CV39=0` to disable automatic recovery.
+5. Add **CV40** only after you understand your pack’s worst-case voltage sag.
+
 ## INA219 Behavior Notes
 
 * All INA219 measurement values are integer-based
-* Default threshold values of `0` keep the measurement subsystem additive while leaving protection inactive until configured
+* Default threshold values of `0` keep the measurement subsystem additive while leaving warn/limit/shutdown/disconnect protection inactive until configured; `CV39=0` disables automatic recovery
 * The low-voltage LED pin is configurable through **CV42**
 * The low-voltage LED active behavior is fixed internally to **BLINK+**
 * INA219 telemetry enable is an internal runtime policy, not a CV
@@ -246,7 +271,7 @@ Meaning:
 
 The firmware supports **12 function outputs** with per-function configuration.
 
-Each function occupies a **7-CV block**. In firmware **1.12.0**, the first **five** CVs in each block are implemented:
+Each function occupies a **7-CV block**. In firmware **1.12.1**, the first **five** CVs in each block are implemented:
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | -------- | ------- | ------ | ---------- | ------------ | ----------- |
