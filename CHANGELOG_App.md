@@ -3,7 +3,7 @@
 ## Smartphone App:
 
 ### Version 1.10.0
-* **Battery Management Support** The app supports the use of the INA219 board to moditor and manage battery information that ties to locomotive behavior.  The app can no protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
+* **Battery Management Support** The app supports the use of the INA219 board to monitor and manage battery information that ties to locomotive behavior.  The app can no protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
 
 ### Version 1.9.24
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
