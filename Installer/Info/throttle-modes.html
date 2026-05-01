@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Throttle Modes Explained</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --card:rgba(255,255,255,.82);
+      --card-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 16px 40px rgba(0,0,0,.08);
+      --radius:28px;
+      --max:980px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 55%, #ececf1 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      line-height:1.58;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 64px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:8px 6px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2.2rem, 7vw, 4rem);
+      line-height:1.03;
+      letter-spacing:-.04em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:780px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.25rem);
+    }
+
+    .intro{
+      margin-top:26px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      padding:24px 20px;
+    }
+
+    .intro p{
+      margin:0 0 14px;
+    }
+
+    .section{
+      margin-top:24px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 20px 0;
+    }
+
+    .badge{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:600;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.45rem, 4vw, 2.2rem);
+      line-height:1.08;
+      letter-spacing:-.025em;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+    }
+
+    .image-frame{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-frame img{
+      display:block;
+      width:100%;
+      max-width:460px;
+      margin:0 auto;
+      height:auto;
+      border-radius:24px;
+      box-shadow:0 14px 28px rgba(0,0,0,.1);
+      background:#fff;
+    }
+
+    .content{
+      padding:22px 20px 28px;
+    }
+
+    .content p{
+      margin:0 0 16px;
+    }
+
+    .feature-grid{
+      display:grid;
+      gap:12px;
+      margin:18px 0 8px;
+    }
+
+    .feature{
+      background:var(--card-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .feature strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:16px;
+      padding:16px 18px;
+      border-left:4px solid var(--accent);
+      background:var(--accent-soft);
+      border-radius:18px;
+      color:#153b63;
+    }
+
+    .pin{
+      margin-top:26px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      padding:24px 20px 28px;
+    }
+
+    .footer-note{
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 820px){
+      .wrap{padding:32px 24px 80px}
+      .intro,.pin{padding:30px 28px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .feature-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Throttle Screen Options</div>
+      <h1>Three throttle views, each with a different feel.</h1>
+      <p class="subhead">
+        The app includes Novice, Standard, and Pro throttle screens so the experience can match the operator.
+        Whether someone wants simple control, a more realistic feel, or finer braking behavior, there is a view
+        that fits.
+      </p>
+    </section>
+
+    <section class="intro">
+      <p>
+        Not every operator wants the same kind of throttle. Some users want a screen that is easy to understand in seconds.
+        Others want more realism and more control. That is why the app offers three throttle styles instead of forcing one
+        layout on everyone.
+      </p>
+      <p>
+        Each throttle view builds on the one before it. Novice is intentionally simple. Standard adds a more engaging sense
+        of train handling through momentum and operational options. Pro goes further by introducing finer braking control for
+        users who want a richer driving experience.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="novice-title">
+      <div class="section-header">
+        <div class="badge">Novice Throttle</div>
+        <h2 id="novice-title">Simple, approachable, and easy to hand to anyone.</h2>
+        <p>
+          Novice mode is designed for users who do not need a lot of train control knowledge. The screen keeps the experience
+          friendly and obvious, making it a great choice for a first-time user, a guest, or a child.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="nov.png" alt="Novice throttle screen with large simple controls and easy forward, backward, and stop actions." />
+      </div>
+      <div class="content">
+        <p>
+          The goal of Novice mode is confidence. It removes unnecessary complexity and presents the core actions in a very direct way.
+          Someone can look at it and quickly understand how to make the train move, change direction, and stop without needing deeper
+          knowledge of more advanced throttle behavior.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature">
+            <strong>Easy controls</strong>
+            Large, clear controls make the screen feel approachable for casual use.
+          </div>
+          <div class="feature">
+            <strong>Low learning curve</strong>
+            Great for friends, visitors, or younger operators who just want to enjoy running a train.
+          </div>
+          <div class="feature">
+            <strong>Less intimidation</strong>
+            The interface focuses on the essentials so it feels simple instead of technical.
+          </div>
+          <div class="feature">
+            <strong>Fast handoff</strong>
+            Easy to pass to someone else without a long explanation first.
+          </div>
+        </div>
+
+        <div class="callout">
+          Novice mode is ideal when the priority is ease of use and confidence, not advanced train handling.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="standard-title">
+      <div class="section-header">
+        <div class="badge">Standard Throttle</div>
+        <h2 id="standard-title">A more advanced throttle with momentum and switching control.</h2>
+        <p>
+          Standard mode is more advanced than Novice and is meant to feel a little more fun and a little more realistic.
+          It introduces the concept of momentum, giving throttle changes more weight and making train handling feel less immediate.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="std.png" alt="Standard throttle screen with momentum-based control, stop and brake buttons, and switcher mode." />
+      </div>
+      <div class="content">
+        <p>
+          Momentum changes the feel of operation by preventing the train from reacting like a simple on-and-off toy.
+          Instead, the throttle feels more alive and more deliberate. This makes Standard mode a nice step up for users who
+          want more involvement without jumping all the way into the most advanced view.
+        </p>
+        <p>
+          Standard mode also introduces <strong>Switcher Mode</strong>. When enabled, Switcher Mode removes the heavy momentum effect
+          so that controlled switching operations become easier and more precise. That gives the operator the flexibility to enjoy
+          momentum during regular running, then switch to a more responsive feel when yard work or switching tasks require finer control.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature">
+            <strong>Momentum</strong>
+            Adds a more realistic sense of train response and makes throttle handling more engaging.
+          </div>
+          <div class="feature">
+            <strong>More advanced than Novice</strong>
+            A good middle ground for users ready for a deeper operating experience.
+          </div>
+          <div class="feature">
+            <strong>Switcher Mode</strong>
+            Removes the heavier momentum feel to support controlled switching operations.
+          </div>
+          <div class="feature">
+            <strong>Flexible operation</strong>
+            Useful for both casual running and more deliberate yard work.
+          </div>
+        </div>
+
+        <div class="callout">
+          Standard mode is the balance point: more depth than Novice, but still straightforward and comfortable on mobile.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="pro-title">
+      <div class="section-header">
+        <div class="badge">Pro Throttle</div>
+        <h2 id="pro-title">Adds a real feather brake for finer control.</h2>
+        <p>
+          Pro mode builds on the Standard throttle and introduces a real feather brake. This is not just a simple on-and-off brake.
+          It allows slight braking control, which makes operation feel more nuanced and more satisfying for users who want that extra layer.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="pro.png" alt="Pro throttle screen with advanced controls including a feather brake for more precise braking." />
+      </div>
+      <div class="content">
+        <p>
+          The feather brake makes it possible to apply braking in a more subtle way instead of treating braking as a single binary action.
+          That adds another level of fun and finesse to train handling, especially for users who enjoy making small adjustments while driving.
+        </p>
+        <p>
+          Pro mode is best for operators who want the richest control experience available in the app. It keeps the familiar layout ideas
+          from the other screens while giving the user more expressive control over how the train behaves.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature">
+            <strong>Feather brake</strong>
+            Enables slight braking control instead of only a full on or full off behavior.
+          </div>
+          <div class="feature">
+            <strong>More realism</strong>
+            Creates a more refined and rewarding operating feel.
+          </div>
+          <div class="feature">
+            <strong>Built for enthusiasts</strong>
+            A stronger choice for users who want richer train handling.
+          </div>
+          <div class="feature">
+            <strong>Still familiar</strong>
+            Expands the experience without abandoning the throttle concepts users already know.
+          </div>
+        </div>
+
+        <div class="callout">
+          Pro mode is where the throttle becomes more expressive, giving the operator more subtle control over speed changes and braking feel.
+        </div>
+      </div>
+    </section>
+
+    <section class="pin">
+      <div class="badge">PIN Protection</div>
+      <h2>Lock the throttle view to keep it child-friendly.</h2>
+      <p>
+        The app also supports a PIN that can lock out the ability to change the throttle screen view without entering the PIN.
+        This is especially useful when the throttle is being used by children or guests and you want the current experience
+        to stay exactly as you set it.
+      </p>
+      <p>
+        That means a child can stay in a simpler view like Novice without accidentally switching into a more advanced mode.
+        It also helps parents and operators keep the interface consistent, predictable, and appropriate for the person holding the device.
+      </p>
+      <div class="callout">
+        PIN protection makes the throttle experience safer and more controlled for shared use, especially in family settings.
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
