@@ -48,6 +48,13 @@
             "description": "Swipe quickly between throttle screens",
             "info": "9.21.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "1.10.0",
+            "title": "Battery Management",
+            "description": "Use the INA219 board with PMT to manage battery usage safely",
+            "info": "ina219.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }

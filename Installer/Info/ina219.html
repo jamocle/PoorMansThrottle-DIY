@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>INA219 Battery Management</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.86);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --good:#1d8f3a;
+      --good-soft:rgba(29,143,58,.08);
+      --warn:#b26a00;
+      --warn-soft:rgba(178,106,0,.08);
+      --shadow:0 12px 34px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:960px;
+    }
+
+    * { box-sizing:border-box; }
+
+    html { scroll-behavior:smooth; }
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 50%, #ececf1 100%);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:20px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2.2rem, 7vw, 4rem);
+      line-height:1.03;
+      letter-spacing:-.04em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:780px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.24rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.7);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .pad{
+      padding:24px 20px 28px;
+    }
+
+    h2{
+      margin:0 0 12px;
+      font-size:clamp(1.45rem, 4vw, 2.2rem);
+      line-height:1.08;
+      letter-spacing:-.025em;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.08rem;
+      letter-spacing:-.015em;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .muted{ color:var(--muted); }
+
+    .image-frame{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-frame img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:22px;
+      box-shadow:0 12px 24px rgba(0,0,0,.1);
+      background:#fff;
+    }
+
+    .image-frame.board-large{
+      padding:22px;
+    }
+
+    .image-frame.board-large img{
+      width:min(100%, 260px);
+      margin:0 auto;
+      border-radius:18px;
+      box-shadow:0 10px 20px rgba(0,0,0,.08);
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      border-left:4px solid var(--accent);
+      background:var(--accent-soft);
+      color:#153b63;
+    }
+
+    .callout.good{
+      border-left-color:var(--good);
+      background:var(--good-soft);
+      color:#1d5a2d;
+    }
+
+    .callout.warn{
+      border-left-color:var(--warn);
+      background:var(--warn-soft);
+      color:#6e4600;
+    }
+
+    ul.clean{
+      margin:0;
+      padding-left:18px;
+    }
+
+    ul.clean li{
+      margin:0 0 10px;
+    }
+
+    .kicker{
+      display:inline-block;
+      margin-bottom:10px;
+      color:var(--muted);
+      font-size:.9rem;
+      font-weight:600;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .footer-note{
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width:780px){
+      .wrap{ padding:32px 24px 72px; }
+      .pad{ padding:30px 28px 34px; }
+      .grid.two{ grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .grid.three{ grid-template-columns:repeat(3, minmax(0,1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{ scroll-behavior:auto; }
+      *{ animation:none !important; transition:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Battery Management</div>
+      <h1>Live battery telemetry with INA219 support.</h1>
+      <p class="subhead">
+        The app can now show live battery information when an INA219 sensor board is installed in your buildout
+        and battery monitoring is configured in the app. This adds visibility into voltage, current, power,
+        battery protection state, and recovery behavior without cluttering the normal throttle experience.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <span class="kicker">What the board is</span>
+        <h2>The INA219 is a current and voltage monitoring board</h2>
+        <p>
+          The INA219 is a compact sensor board used to measure battery voltage, current draw, and calculated power.
+          In practical terms, it gives the throttle controller a live view of how the battery is behaving while the train is running.
+          That makes it possible to detect low-voltage conditions, disconnected batteries, and other power-related conditions
+          that would otherwise be hidden from the user.
+        </p>
+        <p class="muted">
+          The image below shows the INA219 board enlarged so it is easier to recognize in a buildout.
+        </p>
+      </div>
+      <div class="image-frame board-large">
+        <img src="ina219.png" alt="Enlarged INA219 current and voltage monitoring board." />
+      </div>
+      <div class="pad">
+        <div class="callout">
+          Installing the INA219 is optional. Battery telemetry only appears when the sensor is physically installed and
+          the related battery-monitoring settings are enabled in the app and controller configuration.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <span class="kicker">How it appears in the app</span>
+        <h2>Press the battery button to open the telemetry drawer</h2>
+        <p>
+          When the INA219 is active, the throttle screen can show a battery indicator button near the status area.
+          Pressing that battery button opens the battery telemetry drawer. The drawer expands above the throttle screen
+          and gives you a more detailed live view of battery status without forcing you to leave the main control page.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="ina219a.png" alt="Throttle screen showing the battery button that opens the telemetry drawer." />
+      </div>
+      <div class="pad">
+        <div class="grid two">
+          <div class="card">
+            <h3>Battery button</h3>
+            <p>
+              This is the entry point for battery details. Tap it to open the drawer and view live telemetry and protection status.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Non-intrusive design</h3>
+            <p>
+              Battery information stays available when needed, but does not take over the entire throttle interface during normal use.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <span class="kicker">Telemetry drawer details</span>
+        <h2>What the battery drawer is telling you</h2>
+        <p>
+          The drawer is designed to give a quick summary and a deeper operational view at the same time. It can show both live measurements
+          and the controller's interpretation of those measurements.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="ina219b.png" alt="Battery telemetry drawer showing low battery and throttle limiting state." />
+      </div>
+      <div class="pad">
+        <div class="grid two">
+          <div class="card">
+            <h3>Battery voltage</h3>
+            <p>
+              Shows the current measured battery voltage. This is often the most important number for understanding whether the pack
+              is healthy, dropping under load, or approaching a configured protection threshold.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Connection</h3>
+            <p>
+              Indicates whether the battery is detected. This helps identify a disconnected battery, a collapsed supply, or a sensor
+              configuration issue.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Current and power</h3>
+            <p>
+              The drawer can also show current draw and calculated power. This helps explain not just battery level, but how hard the
+              system is working in real time.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Protection state</h3>
+            <p>
+              This tells you whether the controller is operating normally, warning, limiting throttle, or protecting the system because
+              voltage conditions have crossed a configured threshold.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Status messages</h3>
+            <p>
+              These short messages summarize what the controller is doing, such as battery connected, throttle limiting active,
+              or other protection-related conditions.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Throttle limited indicator</h3>
+            <p>
+              When a low-voltage protection mode is configured to reduce available output instead of stopping immediately,
+              the drawer can show the active throttle-cap percentage so the user understands why full throttle is not available.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Last update</h3>
+            <p>
+              Shows when the telemetry was last refreshed. This helps confirm that the data is live and still being updated by the controller.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Compact communication</h3>
+            <p>
+              Battery telemetry was designed to use compact async updates so it fits more reliably over BLE and remains practical for app use.
+            </p>
+          </div>
+        </div>
+        <div class="callout warn">
+          In the example above, the battery is connected but protection is limiting throttle. That means the controller is still operating,
+          but it is intentionally restricting output because the battery voltage has moved into a configured low-voltage protection state.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <span class="kicker">Healthy state example</span>
+        <h2>What normal battery operation looks like</h2>
+        <p>
+          When battery voltage is healthy and no protection thresholds are being crossed, the drawer shows a cleaner normal-state presentation.
+          This gives the user a fast visual confirmation that the battery is connected, healthy, and not currently limiting throttle behavior.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="ina219c.png" alt="Battery telemetry drawer showing healthy battery and normal status." />
+      </div>
+      <div class="pad">
+        <div class="callout good">
+          In a healthy state, battery monitoring remains informative but quiet. You still get live voltage, current, and power data,
+          while the protection section clearly indicates that no intervention is currently active.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <span class="kicker">Version 1.12.0</span>
+        <h2>What battery support introduced</h2>
+        <div class="grid two">
+          <div class="card">
+            <h3>Live telemetry and protection</h3>
+            <p>
+              Battery telemetry and protection support were added so the controller can optionally monitor voltage, current, and power
+              when an INA219 sensor is enabled.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Low-voltage protection modes</h3>
+            <p>
+              The controller can now warn, reduce available throttle, or stop output based on configured battery thresholds.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Battery recovery behavior</h3>
+            <p>
+              Protection states can clear automatically after voltage recovers above the configured recovery threshold.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Disconnect detection</h3>
+            <p>
+              The system can detect a disconnected battery or collapsed battery condition and report that state to the app.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Configurable settings</h3>
+            <p>
+              CV-based settings allow enable or disable control, sensor connection settings, telemetry timing, threshold values,
+              throttle-cap percentage, and low-voltage indicator pin assignment.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Low-voltage indicator output</h3>
+            <p>
+              A dedicated output pin can be assigned to visually indicate low-voltage-related states outside the app.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Compact async app updates</h3>
+            <p>
+              Battery voltage, current, power, and protection-state flags are delivered using shorter messages designed to fit
+              more reliably over BLE.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Safer rollout defaults</h3>
+            <p>
+              Battery-protection thresholds remain inactive until the feature is explicitly configured, so introducing the monitoring
+              subsystem does not automatically change train behavior.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
