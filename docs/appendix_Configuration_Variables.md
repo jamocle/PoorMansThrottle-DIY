@@ -1,13 +1,13 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.12.1  
+**Firmware Version:** 1.12.2  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
 
 # Overview
 
-The Poor Man's Throttle firmware supports **Configuration Variables (CVs)** that allow operators to configure motor behavior, communication settings, hardware pin assignments, LED behavior, function outputs, and the **INA219 voltage/current/power telemetry and protection subsystem**.
+The Poor Man's Throttle firmware supports **Configuration Variables (CVs)** that allow operators to configure motor behavior, communication settings, hardware pin assignments, LED behavior, function outputs, etc.
 
 CVs are **read and modified using commands entered into the Terminal inside the PMT (Poor Man's Throttle) application**.
 
@@ -97,9 +97,6 @@ ERR:<command>
 * Pin CVs accept only the firmware’s allowed runtime GPIO list, not every ESP32 GPIO number
 * CV commands can be sent over **BLE or WebSocket**
 
-* Firmware **1.12.1** includes an **INA219 telemetry/protection subsystem** controlled by **CV30–CV42**
-* INA219 async telemetry is published as compact unsolicited lines: `TV:`, `TI:`, `TP:`, and `TF:`
-* `TF:` bit order is `LED BAT WARN LIM SD`, where **BAT=1 means battery connected** and **BAT=0 means battery disconnected**
 
 ---
 
@@ -143,6 +140,12 @@ ERR:<command>
 | **CV106** | PWM_BIDIR PWM/Enable Pin       | Allowed PWM GPIOs (**Default: 25**)                                          | PWM/enable pin used in `PWM_BIDIR` mode. |
 | **CV107** | PWM_BIDIR Forward Pin          | Allowed output GPIOs (**Default: 26**)                                       | Forward logic pin used in `PWM_BIDIR` mode. |
 | **CV108** | PWM_BIDIR Reverse Pin          | Allowed output GPIOs (**Default: 27**)                                       | Reverse logic pin used in `PWM_BIDIR` mode. |
+| **CV300** | Schedule Enable                | `0`, `1` (**Default: 0**)                                                    | Enables or disables the Scheduling / Autonomous Mode subsystem. |
+| **CV301** | Schedule Weekday Bitmask       | `1 – 127` bitmask (**Default: 0**)                                           | UTC weekday enable mask. Uses firmware `tm_wday` bit positions: Sunday=`1`, Monday=`2`, Tuesday=`4`, Wednesday=`8`, Thursday=`16`, Friday=`32`, Saturday=`64`. `0` means no enabled days and is treated as not configured. |
+| **CV302** | Schedule ON Time (UTC)         | Strict `HH:MM` (**Default: blank / unset**)                                  | UTC start time for the scheduled ON boundary. Must be exactly two digits, colon, two digits, such as `08:30`. Internally stored as minute-of-day. |
+| **CV303** | Schedule OFF Time (UTC)        | Strict `HH:MM` (**Default: blank / unset**)                                  | UTC stop time for the scheduled OFF boundary. Must be exactly two digits, colon, two digits, such as `17:45`. Internally stored as minute-of-day. |
+| **CV304** | Schedule ON Command            | Command text (**Default: blank**)                                            | Exact command string executed internally at the scheduled ON boundary. During autonomous mode, this exact normalized command can also bypass pre-handshake blocking. |
+| **CV305** | Schedule OFF Command           | Command text (**Default: blank**)                                            | Exact command string executed internally at the scheduled OFF boundary. During autonomous mode, this exact normalized command can also bypass pre-handshake blocking. |
 ---
 
 # Allowed GPIOs for Runtime CV Pin Assignment
@@ -264,6 +267,169 @@ For a **generic firmware build**, the shipped defaults remaining at `0` are stil
 * The low-voltage LED active behavior is fixed internally to **BLINK+**
 * INA219 telemetry enable is an internal runtime policy, not a CV
 * On INA219 read failure, the firmware marks telemetry invalid, keeps the last known protection state, and retries sensor setup
+
+---
+
+# Scheduling / Autonomous Mode (CV300–CV305)
+
+Firmware **1.12.2** includes a **Scheduling / Autonomous Mode** feature block beginning at **CV300**.
+
+This subsystem allows the throttle to:
+
+* become **autonomous** during a configured UTC schedule window
+* suppress normal BLE disconnect-grace and BLE hard-recovery escalation while autonomous mode is active
+* fire an internally configured **ON command** at the exact schedule start time
+* fire an internally configured **OFF command** at the exact schedule stop time
+
+## Schedule CV Defaults
+
+Factory defaults for the schedule subsystem are effectively:
+
+* schedule disabled
+* no enabled weekdays
+* ON time unset
+* OFF time unset
+* ON command blank
+* OFF command blank
+
+Until all required values are configured, the schedule is treated as **not configured** and autonomous mode will not activate.
+
+## Schedule Time Format
+
+**CV302** and **CV303** use a strict UTC `HH:MM` format.
+
+Valid examples:
+
+```text
+CV302=08:30
+CV303=17:45
+```
+
+Rules:
+
+* exactly two digits for hour
+* exactly two digits for minute
+* `00:00` through `23:59`
+* values are evaluated in **UTC**, not local time
+* the current firmware requires **start time < end time**
+* schedules that **cross midnight are not supported**
+
+If the time string is malformed, the firmware returns `ERR:<command>`.
+
+## Weekday Bitmask Format
+
+**CV301** is a bitmask based on the firmware's UTC `tm_wday` numbering:
+
+| Day | Bit Value |
+| --- | ---: |
+| Sunday | `1` |
+| Monday | `2` |
+| Tuesday | `4` |
+| Wednesday | `8` |
+| Thursday | `16` |
+| Friday | `32` |
+| Saturday | `64` |
+
+Examples:
+
+```text
+CV301=62
+```
+
+Meaning:
+
+* Monday through Friday enabled
+* Sunday and Saturday disabled
+
+```text
+CV301=65
+```
+
+Meaning:
+
+* Sunday and Saturday enabled
+* Monday through Friday disabled
+
+## Schedule Configuration Requirements
+
+The firmware considers the schedule fully configured only when all of the following are true:
+
+* **CV300=1**
+* **CV301** contains at least one enabled day bit
+* **CV302** is a valid UTC `HH:MM`
+* **CV303** is a valid UTC `HH:MM`
+* start time is **earlier than** stop time
+* **CV304** is non-empty
+* **CV305** is non-empty
+
+If any of these checks fail, the schedule is considered invalid and autonomous mode will stay off.
+
+## Autonomous Mode Window
+
+Autonomous mode is reevaluated using current **UTC** system time.
+
+It activates only when:
+
+* system time is valid
+* the schedule is fully configured
+* the current UTC weekday is enabled in **CV301**
+* the current UTC minute-of-day is within:
+
+  * `CV302 - 2 minutes`
+  * through `CV303 + 2 minutes`
+
+This means autonomous mode uses a small **±2 minute extension window** around the configured ON/OFF times.
+
+Important distinction:
+
+* the **autonomous-mode eligibility window** uses the ±2 minute extension
+* the configured **ON/OFF commands themselves** still fire only at the **exact configured boundary minute**
+
+## Scheduled Command Execution
+
+The firmware continuously evaluates schedule boundaries in the main loop using **UTC** time.
+
+When a boundary is crossed on an enabled weekday:
+
+* the command stored in **CV304** is executed at the exact ON boundary
+* the command stored in **CV305** is executed at the exact OFF boundary
+
+Scheduled commands are executed through the normal command-processing pipeline, but:
+
+* replies are suppressed during internally scheduled execution
+* scheduled execution is marked internally so the firmware can distinguish it from external user commands
+
+## BLE / Disconnect Behavior During Autonomous Mode
+
+While autonomous mode is active:
+
+* BLE disconnect grace countdown does not start
+* BLE grace processing exits early
+* BLE hard-recovery escalation is suppressed
+* a deferred reboot after safe stop is canceled if autonomous mode becomes active
+
+When autonomous mode exits, normal disconnected grace behavior can resume if the system is disconnected and a handshake had previously been established.
+
+## Example Schedule
+
+Example: weekdays, 08:00 UTC start, 17:00 UTC stop, forward at start and quick-stop at end.
+
+```text
+CV300=1
+CV301=62
+CV302=08:00
+CV303=17:00
+CV304=F50
+CV305=FQ
+```
+
+In this example:
+
+* the schedule is active Monday through Friday
+* autonomous mode becomes eligible from **07:58 UTC** through **17:02 UTC**
+* `F50` is executed at exactly **08:00 UTC**
+* `FQ` is executed at exactly **17:00 UTC**
+
 
 ---
 
@@ -512,8 +678,9 @@ Behavior summary:
 * Hard recovery escalation forces a **quick stop** and defers reboot until the locomotive is safely stopped
 * If a valid control connection returns before the stop completes, the deferred reboot is canceled
 * If a **WebSocket control connection** is active, the firmware does **not** force a BLE hard-recovery reboot
+* If **autonomous mode** is active, BLE disconnect grace and BLE hard-recovery escalation are suppressed until autonomous mode ends
 
-This behavior is intended to make the throttle more resilient when BLE fails to resume normal advertising after a disconnect.
+This behavior is intended to make the throttle more resilient when BLE fails to resume normal advertising after a disconnect, while also allowing scheduled autonomous operation to continue without unnecessary recovery escalation.
 
 ---
 
@@ -756,5 +923,8 @@ This will:
 * Set **AppFlags** CVs only if your PMT app build uses them
 * Configure motor pins only with allowed runtime GPIOs
 * For `DUAL_INPT`, wire the driver to **CV104** and **CV105**
+* Use **CV300–CV305** only after system UTC time is being maintained correctly
+* Choose **CV304** and **CV305** carefully, because only those exact normalized commands are allowed without handshake during autonomous mode
+* Do not configure schedules that need to cross midnight; the current firmware requires `CV302 < CV303`
 * Enable WiFi (**CV10**) only when needed
 * Use **CV8** after major hardware or configuration changes

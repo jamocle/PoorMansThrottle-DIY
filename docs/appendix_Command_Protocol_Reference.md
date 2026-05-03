@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.1  
+**Firmware Version:** 1.12.2  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -367,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.12.1
+ACK:V1.12.2
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -978,6 +978,76 @@ Notes:
 
 ---
 
+## Scheduling / Autonomous Mode CVs
+
+The firmware exposes a scheduling block starting at **CV300**.
+
+| CV      | Purpose                         | Value Format |
+| ------- | ------------------------------- | ------------ |
+| `CV300` | Schedule enable                 | `0` or `1` |
+| `CV301` | Weekday bitmask                 | `0..127` |
+| `CV302` | Schedule ON time (UTC)          | `HH:MM` |
+| `CV303` | Schedule OFF time (UTC)         | `HH:MM` |
+| `CV304` | Schedule ON command             | free-form command string |
+| `CV305` | Schedule OFF command            | free-form command string |
+
+Notes:
+
+* `CV302` and `CV303` use strict **UTC** `HH:MM` 24-hour format
+* Schedule validation requires:
+  * schedule enabled
+  * at least one enabled weekday bit
+  * valid ON/OFF times
+  * `ON < OFF`
+  * non-empty ON/OFF commands
+* The current implementation does **not** support schedules that cross midnight
+* `CV301` uses the firmware's UTC weekday mapping from `tm_wday`:
+  * bit `0` = Sunday
+  * bit `1` = Monday
+  * bit `2` = Tuesday
+  * bit `3` = Wednesday
+  * bit `4` = Thursday
+  * bit `5` = Friday
+  * bit `6` = Saturday
+
+---
+
+# Scheduling / Autonomous Mode
+
+When the schedule is valid and system time is valid, the firmware can enter **autonomous mode** based on UTC weekday and UTC time.
+
+Autonomous mode becomes active only when all of the following are true:
+
+* schedule is enabled and fully configured
+* current UTC weekday is enabled by `CV301`
+* current UTC time is between:
+  * `CV302 - 2 minutes`
+  * `CV303 + 2 minutes`
+
+Important distinction:
+
+* the **±2 minute extension** is used only to decide whether autonomous mode is active
+* the scheduled ON/OFF commands themselves still fire only at the exact configured boundary times
+
+## Scheduled Command Execution
+
+At runtime, the firmware continuously evaluates the schedule using UTC time.
+
+Boundary behavior:
+
+* the ON command in `CV304` is fired when the firmware crosses the exact configured `CV302` minute
+* the OFF command in `CV305` is fired when the firmware crosses the exact configured `CV303` minute
+* boundary execution occurs only on enabled UTC weekdays
+* replies are suppressed for internally scheduled command execution
+
+Operational notes:
+
+* scheduled commands execute through the same internal command pipeline as external commands
+* this means the configured schedule commands should be valid runtime commands such as motion or stop commands
+* only the exact configured ON/OFF commands gain the autonomous pre-handshake exception described earlier
+
+---
+
 # Control Transport Priority
 
 The firmware supports two control transports.
@@ -1039,6 +1109,12 @@ If all control connections are lost **after authorization has already succeeded*
 
 This behavior helps prevent runaway trains after loss of control connection.
 
+Autonomous-mode exception:
+
+* If **autonomous mode** is active, disconnect grace does **not** start
+* If autonomous mode becomes active while a deferred disconnect/reboot path is pending, that deferred reboot path is canceled
+* When autonomous mode later exits while still disconnected and authorization had already happened, grace can begin again
+
 ---
 
 # BLE Advertising Recovery Behavior
@@ -1059,6 +1135,7 @@ Notes:
 * This recovery behavior is automatic
 * It is intended to restore BLE scanability safely
 * Reboot is deferred until motion has safely stopped rather than occurring immediately while running
+* While **autonomous mode** is active, BLE hard-recovery escalation is suppressed
 
 ---
 

@@ -2,6 +2,14 @@
 
 ## Firmware:
 
+### Version 1.12.3
+* **Scheduled operating mode** added, allowing the controller to automatically turn activity on and off at user-configured times on selected days.
+* **Autonomous operation during scheduled windows** added so the train can continue following its configured start and stop schedule even when no controller is actively connected.
+* **Automatic start and stop actions** added so the configured ON and OFF commands run at the exact scheduled times on enabled days.
+* **Safer scheduled behavior** added by requiring a complete and valid schedule before autonomous operation can activate, helping prevent accidental or partial schedule setups from taking effect.
+* **More reliable unattended operation** added by temporarily suppressing disconnect grace, BLE recovery escalation, and pending reboot-after-stop behavior while scheduled autonomous mode is active.
+* **Persistent schedule settings** added so schedule enablement, days, times, and commands are saved and restored after reboot.
+
 ### Version 1.12.1
 * **INA219 telemetry sampling default** changed from `250 ms` to `500 ms`, reducing background sensor polling frequency so battery monitoring stays lighter-weight relative to throttle-control work.
 * **INA219 telemetry publish default** changed from `1000 ms` to `10000 ms`, making battery status reporting far less chatty over BLE and WebSocket connections.

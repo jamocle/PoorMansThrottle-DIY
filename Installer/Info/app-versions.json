@@ -62,6 +62,13 @@
             "description": "Use the INA219 board with PMT to manage battery usage safely",
             "info": "ina219.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "1.10.2",
+            "title": "Scheduling",
+            "description": "Start and stop your train on a schedule",
+            "info": "schedule.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }

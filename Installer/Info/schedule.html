@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Scheduling Autonomous Runs</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.84);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 14px 38px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:900px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 56px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:8px 4px 16px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2.1rem, 7vw, 3.7rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:760px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.24rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .image-frame{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,248,250,.9));
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-frame img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:22px;
+      box-shadow:0 12px 24px rgba(0,0,0,.10);
+      background:#fff;
+    }
+
+    .content{
+      padding:24px 22px 28px;
+    }
+
+    h2{
+      margin:0 0 12px;
+      font-size:clamp(1.4rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .feature-grid{
+      display:grid;
+      gap:12px;
+      margin:18px 0 8px;
+    }
+
+    .feature{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .feature strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:16px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 780px){
+      .wrap{padding:32px 24px 72px}
+      .content{padding:30px 28px 34px}
+      .feature-grid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Autonomous Scheduling</div>
+      <h1>Now you can schedule autonomous runs.</h1>
+      <p class="subhead">
+        The scheduling screen lets you automate when your locomotive starts, when it stops, and which commands are sent
+        at the beginning and end of the run. It is a simple way to create repeatable operation without needing manual
+        input every time.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="schedule-title">
+      <div class="image-frame">
+        <img src="schedule.png" alt="Configuration screen showing scheduling options for autonomous locomotive runs." />
+      </div>
+
+      <div class="content">
+        <h2 id="schedule-title">Set the days, times, and commands that fit your display</h2>
+
+        <p>
+          You can now schedule an autonomous run of your locomotive directly from the configuration screen. Choose the
+          days the schedule should be active, set the start time and stop time, and define the command that begins the
+          run as well as the command that ends it. This gives you much more control over how your locomotive starts and
+          how it comes to a stop.
+        </p>
+
+        <p>
+          Instead of relying on the same fixed behavior every time, scheduling allows you to tailor operation to the
+          environment. You can decide exactly when the locomotive should begin moving, how long it should run, and what
+          stop behavior is most appropriate for the display or venue.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature">
+            <strong>Choose active days</strong>
+            Enable the schedule only on the days you want, whether that is every day, weekends, or a custom weekday pattern.
+          </div>
+          <div class="feature">
+            <strong>Define start and stop times</strong>
+            Set the exact time the scheduled run should begin and the exact time it should end.
+          </div>
+          <div class="feature">
+            <strong>Customize the ON command</strong>
+            Select the command that starts the scheduled run so the locomotive begins in the way that best suits your setup.
+          </div>
+          <div class="feature">
+            <strong>Customize the OFF command</strong>
+            Choose the command that ends the schedule so the locomotive stops the way you want it to stop.
+          </div>
+        </div>
+
+        <div class="callout">
+          This makes the locomotive more adaptable for displays that need consistent, hands-off operation throughout the day.
+        </div>
+
+        <p style="margin-top:18px;">
+          It is especially useful for holiday train gardens, seasonal displays, bars, restaurants, retail spaces, or any
+          business that features a train display and wants reliable scheduled movement without constant supervision.
+          With scheduling in place, the locomotive can follow a predictable routine that matches your hours, your event,
+          or your audience.
+        </p>
+
+        <p>
+          The result is a cleaner experience for operators and a more polished presentation for viewers. Once configured,
+          the locomotive can start and stop on schedule with behavior tailored to your needs, helping your display feel
+          intentional, smooth, and professionally managed.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>

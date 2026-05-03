@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 1.10.2
+* **Schedule a Run** The app supports the ability to schedule the start and stop commands for autonomous running of a train.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.10.0
 * **Battery Management Support** The app supports the use of the INA219 board to monitor and manage battery information that ties to locomotive behavior.  The app can no protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
 
