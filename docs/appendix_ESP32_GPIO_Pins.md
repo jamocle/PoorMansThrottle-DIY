@@ -1,4 +1,4 @@
-Here’s a **beginner-friendly but accurate ESP32 GPIO capability table** (based on the classic ESP32-WROOM / DevKit boards).
+Here’s a **ESP32 GPIO capability table** (based on the classic ESP32-WROOM / DevKit boards).
 
 ⭐ = *primary / most typical use for that pin*
 ⚠️ = caution (boot strapping, input-only, or special behavior)
