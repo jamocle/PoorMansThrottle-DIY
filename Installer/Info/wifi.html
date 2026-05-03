@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PMT Connectivity Overview</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --card: rgba(255, 255, 255, 0.82);
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #0071e3;
+      --accent-2: #34c759;
+      --shadow: 0 16px 40px rgba(0, 0, 0, .08);
+      --radius: 26px;
+      --max: 980px;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 46%, #ececf1 100%);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      line-height: 1.55;
+    }
+
+    .wrap {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 22px 16px 60px;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 8px 4px 10px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 113, 227, .16);
+      background: rgba(255, 255, 255, .75);
+      color: var(--accent);
+      font-size: .85rem;
+      font-weight: 600;
+      letter-spacing: .01em;
+      backdrop-filter: blur(12px);
+    }
+
+    h1 {
+      margin: 14px 0 10px;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      line-height: 1.05;
+      letter-spacing: -.03em;
+      font-weight: 700;
+    }
+
+    .subhead {
+      max-width: 760px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.6vw, 1.22rem);
+    }
+
+    .section {
+      margin-top: 26px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, .72);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+    }
+
+    .image-frame {
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .95), rgba(247, 247, 250, .88));
+      border-bottom: 1px solid var(--line);
+    }
+
+    .image-frame img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .12);
+    }
+
+    .content {
+      padding: 24px 20px 30px;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.35rem, 4vw, 2rem);
+      letter-spacing: -.02em;
+    }
+
+    p {
+      margin: 0 0 16px;
+      font-size: 1rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e5ea;
+      border-radius: 20px;
+      padding: 16px;
+    }
+
+    .card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .compare {
+      display: grid;
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .compare .panel {
+      border-radius: 22px;
+      padding: 18px;
+      background: #fff;
+      border: 1px solid #e5e5ea;
+    }
+
+    .compare .panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.1rem;
+      letter-spacing: -.01em;
+    }
+
+    .ble {
+      box-shadow: inset 0 0 0 1px rgba(0, 113, 227, .12);
+    }
+
+    .bt {
+      box-shadow: inset 0 0 0 1px rgba(52, 199, 89, .14);
+    }
+
+    ul {
+      margin: 10px 0 0 18px;
+      padding: 0;
+    }
+
+    li {
+      margin: 0 0 8px;
+    }
+
+    .callout {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      background: rgba(0, 113, 227, .06);
+      border-radius: 16px;
+      color: #143a63;
+    }
+
+    .footer-note {
+      margin-top: 24px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .95rem;
+    }
+
+    @media (min-width: 820px) {
+      .wrap {
+        padding: 32px 24px 74px;
+      }
+
+      .content {
+        padding: 30px 28px 36px;
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .compare {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">PMT Connectivity Explained</div>
+      <h1>BLE and Wi-Fi working together.</h1>
+      <p class="subhead">
+        PMT combines Bluetooth Low Energy, Wi-Fi, and WebSocket connectivity to deliver fast control, broader coverage,
+        and advanced integration options in one flexible platform.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="overview-title">
+      <div class="image-frame">
+        <img src="wifi.png" alt="PMT connectivity overview" />
+      </div>
+      <div class="content">
+        <h2 id="overview-title">Expanded overview</h2>
+        <p>
+          PMT is built around two communication modes that work together to improve reliability and flexibility.
+          Bluetooth Low Energy serves as the primary connection for direct control, giving users a fast and efficient
+          way to communicate between a mobile device and PMT hardware. Wi-Fi acts as the secondary layer, extending
+          communication across larger spaces and supporting more advanced network-based operation.
+        </p>
+        <p>
+          This dual-mode approach gives PMT a major advantage. Instead of relying on a single connection type for every
+          situation, PMT can prioritize quick local responsiveness while also supporting broader coverage when a layout
+          becomes larger, more complex, or harder to reach consistently. The result is smoother operation, fewer
+          interruptions, and a control experience that scales better as needs grow.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <strong>Primary connection: BLE</strong>
+            BLE provides responsive direct communication with low power use, low overhead, and excellent suitability for
+            command-and-status traffic.
+          </div>
+          <div class="card">
+            <strong>Secondary connection: Wi-Fi</strong>
+            Wi-Fi adds longer reach, stronger full-layout coverage, and support for installations where broader network
+            access is valuable.
+          </div>
+          <div class="card">
+            <strong>Automatic failover</strong>
+            PMT is designed to move between BLE and Wi-Fi more smoothly, helping reduce dropouts and maintain dependable
+            control.
+          </div>
+          <div class="card">
+            <strong>WebSocket interface</strong>
+            Users can connect custom software, dashboards, websites, or programs directly to PMT for specialized control
+            and integration.
+          </div>
+        </div>
+
+        <h2 style="margin-top:28px;">Why BLE is better than classic Bluetooth for this use case</h2>
+        <p>
+          BLE, or Bluetooth Low Energy, is a better fit for PMT than classic Bluetooth because it is designed for
+          lightweight, efficient communication rather than heavier continuous connections. Classic Bluetooth is commonly
+          associated with things like speakers, headsets, and ongoing media streams. BLE is optimized for quick
+          exchanges of compact data, which makes it much better suited for sending commands, receiving status updates,
+          and maintaining responsive control. It also offers significantly better usable range for this application,
+          with BLE reaching up to 150 meters while classic Bluetooth is often only around 30 feet.
+        </p>
+
+        <div class="compare">
+          <div class="panel ble">
+            <h3>Benefits of BLE for PMT</h3>
+            <ul>
+              <li><strong>Longer range:</strong> BLE can reach up to 150 meters, giving PMT much more operating distance
+                than classic Bluetooth, which is often only about 30 feet.</li>
+              <li><strong>Lower power consumption:</strong> BLE is designed to use much less energy, which is ideal for
+                compact onboard or control hardware.</li>
+              <li><strong>Fast control messaging:</strong> It works extremely well for short, frequent packets such as
+                throttle updates, direction changes, and function commands.</li>
+              <li><strong>Lower connection overhead:</strong> BLE keeps communication lean and efficient rather than
+                treating everything like a persistent high-bandwidth session.</li>
+              <li><strong>Better for responsive control:</strong> PMT benefits from a connection type that is
+                purpose-built for device control rather than media streaming.</li>
+              <li><strong>Excellent mobile compatibility:</strong> Phones and tablets are already well suited for
+                BLE-based control experiences.</li>
+            </ul>
+          </div>
+          <div class="panel bt">
+            <h3>Compared with classic Bluetooth</h3>
+            <ul>
+              <li><strong>Classic Bluetooth is heavier:</strong> It was designed around different connection patterns,
+                often involving more persistent and higher-bandwidth use cases.</li>
+              <li><strong>It has much shorter range:</strong> In this context, classic Bluetooth is typically only about
+                30 feet, which is far less flexible than BLE’s longer reach.</li>
+              <li><strong>It can be less efficient for control traffic:</strong> Small command packets do not need the
+                same kind of connection behavior as audio or media devices.</li>
+              <li><strong>It is often more than is needed:</strong> For direct control, a simpler and lighter
+                communication model is usually the better choice.</li>
+              <li><strong>BLE is the cleaner fit:</strong> It gives PMT an efficient local-control channel that aligns
+                much better with the product’s job.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout">
+          BLE gives PMT a more efficient local communication path than classic Bluetooth. It is better suited for
+          precise control, lower power use, lightweight two-way status communication, and much greater usable range.
+        </div>
+
+        <h2 style="margin-top:28px;">What the Wi-Fi side adds</h2>
+        <p>
+          Wi-Fi expands PMT beyond short-range direct communication. It supports broader layout coverage, makes
+          operation more practical across larger spaces, and helps maintain connectivity in more demanding environments.
+          That is especially important where distance, obstacles, benchwork, or tunnel sections can make direct
+          short-range communication less ideal.
+        </p>
+        <p>
+          Wi-Fi also enables infrastructure-based connectivity. Extenders can be used to improve coverage through long
+          tunnels or difficult areas, helping create a more seamless operating experience across the full railroad. For
+          larger layouts, clubs, or installations where range matters, this is a major practical advantage.
+        </p>
+        <p>
+          In addition to coverage, Wi-Fi opens the door to software integration. PMT’s WebSocket interface allows
+          websites, programs, and custom control tools to communicate directly with the system. That makes it possible
+          to build custom throttles, monitoring dashboards, automation tools, or specialized interfaces around the PMT
+          platform.
+        </p>
+
+        <h2 style="margin-top:28px;">Flexible installation options</h2>
+        <div class="grid">
+          <div class="card">
+            <strong>1. Between transformer and track</strong>
+            PMT can be installed between the transformer and the track for a simple setup that works well with
+            unmodified trains while still adding PMT control capabilities.
+          </div>
+          <div class="card">
+            <strong>2. Onboard with track power</strong>
+            PMT can also be installed inside the locomotive while the rails continue providing power, enabling onboard
+            control of motor, lights, and functions with more individual control.
+          </div>
+          <div class="card">
+            <strong>3. Deadrail with onboard battery</strong>
+            PMT supports battery-powered onboard installations for maximum freedom, eliminating dependence on powered
+            rails and enabling a more self-contained approach.
+          </div>
+          <div class="card">
+            <strong>Why this matters</strong>
+            These options make PMT adaptable to different operating styles, from simple retrofits to advanced onboard
+            installations with a higher degree of independence and flexibility.
+          </div>
+        </div>
+
+        <p style="margin-top:20px;">
+          PMT is designed to deliver dependable communication, flexible installation, and room for future expansion. BLE
+          provides efficient and responsive local control, Wi-Fi adds reach and infrastructure support, automatic
+          failover helps reduce interruptions, and WebSocket access makes custom integrations possible for advanced
+          users.
+        </p>
+
+        <div class="footer-note">
+          Poor Man's Throttle (PMT) © 2026 James Theimer
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

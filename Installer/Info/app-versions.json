@@ -29,6 +29,13 @@
             "show-again": "2026-04-24 16:24:03"
         },
         {
+            "version": "1.9.5",
+            "title": "Wifi Failover",
+            "description": "PMT now communitcates over 2 separate communication paths for better communication reliability.",
+            "info": "wifi.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
             "version": "1.9.8",
             "title": "PMT Lighting and Accessories",
             "description": "Control up to 12 individual lights and accessories",
