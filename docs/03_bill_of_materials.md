@@ -12,8 +12,8 @@ These are the common core parts for a basic build.
 
 | Component | Description | Possible Buy Location |
 |---|---|---|
-| ESP32-WROOM-32 USB-C Development Board | Main controller running the PMT firmware | (Cheap Chinese)https://www.amazon.com/dp/B0DNYR973V?ref=ppx_yo2ov_dt_b_fed_asin_title&th=1  Check Ebay as well |
-| Motor Driver Board | Drives the locomotive motor from ESP32 control signals | Choose a board that matches one of the supported driver modes below |
+| ESP32-WROOM-32 USB-C Development Board | Main controller running the PMT firmware | https://www.amazon.com/s?k=esp32+wroom&crid=2D5BJCIDJ5EUE&sprefix=esp32+wroom%2Caps%2C199&ref=nb_sb_noss_1 |
+| Motor Driver Board | Drives the locomotive motor from ESP32 control signals | Choose a board that matches one of the supported driver modes below.  IBT-2 Motor driver examples: https://www.amazon.com/s?k=ibt-2+bts7960+motor+driver&crid=289MLQ04OWAUY&sprefix=ibt-2%2Caps%2C100&ref=nb_sb_ss_p13n-expert-pd-ops-ranker_1_5 |
 | 5V Power Module | Provides stable 5V power for the ESP32 | https://www.amazon.com/dp/B0BNQ5JNWZ?ref=ppx_yo2ov_dt_b_fed_asin_title&th=1 |
 | Main Power Source | Powers the motor side of the installation | Battery or DC model railroad transformer |
 | Hookup Wire / Power Wire | Required for motor, power, and control wiring | |
