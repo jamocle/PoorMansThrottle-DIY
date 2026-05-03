@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Think Outside The Battery</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.82);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --blue:#0071e3;
+      --green:#248a3d;
+      --gold:#b07a00;
+      --shadow:0 14px 38px rgba(0,0,0,.08);
+      --radius:28px;
+      --max:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 50%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:24px 16px 72px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:8px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--blue);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2.2rem, 7vw, 4.4rem);
+      line-height:1.02;
+      letter-spacing:-.04em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:820px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.28rem);
+    }
+
+    .intro{
+      margin-top:28px;
+      padding:26px 22px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+    }
+
+    .intro p{
+      margin:0 0 14px;
+      font-size:1.02rem;
+    }
+
+    .scenario{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+
+    .scenario-header{
+      padding:26px 22px 0;
+    }
+
+    .tag{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      font-size:.84rem;
+      font-weight:700;
+      letter-spacing:.02em;
+      margin-bottom:12px;
+      color:#fff;
+    }
+
+    .tag.blue{background:var(--blue)}
+    .tag.green{background:var(--green)}
+    .tag.gold{background:var(--gold)}
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.45rem, 4vw, 2.3rem);
+      line-height:1.08;
+      letter-spacing:-.03em;
+    }
+
+    .scenario-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .image-frame{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-frame img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:22px;
+      box-shadow:0 12px 24px rgba(0,0,0,.10);
+      background:#fff;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    .benefits{
+      display:grid;
+      gap:12px;
+      margin:18px 0;
+    }
+
+    .benefit{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .benefit strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:16px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:rgba(0,113,227,.08);
+      border-left:4px solid var(--blue);
+      color:#153b63;
+    }
+
+    .summary{
+      margin-top:28px;
+      padding:26px 22px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+
+    .summary-grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .summary-card{
+      background:#fff;
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .footer-note{
+      margin-top:28px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 820px){
+      .wrap{padding:32px 24px 84px}
+      .intro,.summary{padding:30px 28px}
+      .scenario-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .benefits{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">PMT Possibilities</div>
+      <h1>Think Outside The Battery.</h1>
+      <p class="subhead">
+        PMT is not limited to a single power strategy. These four operating scenarios show how it can work with
+        track power, onboard battery power, or a hybrid of both, giving users more flexibility to match the way
+        they actually run their layout.
+      </p>
+    </section>
+
+    <section class="intro">
+      <p>
+        Traditional conversations around control systems often begin and end with onboard batteries, but PMT opens
+        the door to more than one approach. Depending on the layout, locomotive, and operating style, users can choose
+        a setup that prioritizes simplicity, wireless control, independent train operation, powered accessories, or full
+        deadrail freedom.
+      </p>
+      <p>
+        The point is choice. These scenarios show that PMT can fit into a wide range of layouts without forcing a
+        single way of thinking about power. Whether you want constant track voltage, control inside the locomotive,
+        battery-only operation, or a best-of-both-worlds hybrid, the system can be adapted to fit the experience you want.
+      </p>
+    </section>
+
+    <section class="scenario" aria-labelledby="scenario-1-title">
+      <div class="scenario-header">
+        <div class="tag blue">Scenario 1</div>
+        <h2 id="scenario-1-title">PMT between transformer and track</h2>
+        <p>
+          In this setup, the transformer is left at a constant 100% output and PMT sits between the transformer and the track.
+          PMT becomes the control point for all track power and sends modulated power to the rails, while the smartphone provides
+          wireless control over speed, direction, and braking.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="scenario1.png" alt="Diagram showing PMT between the transformer and the track with smartphone wireless control." />
+      </div>
+      <div class="content">
+        <div class="benefits">
+          <div class="benefit">
+            <strong>Simple central control</strong>
+            The transformer stays fixed at 100%, while PMT handles the actual control of track power.
+          </div>
+          <div class="benefit">
+            <strong>Works with unmodified trains</strong>
+            The image highlights that all trains on the track can be controlled by PMT without needing changes inside the locomotive.
+          </div>
+          <div class="benefit">
+            <strong>Wireless smartphone operation</strong>
+            Speed, direction, and braking can be managed from anywhere on the layout.
+          </div>
+          <div class="benefit">
+            <strong>Clean transition path</strong>
+            This is an easy way to add wireless control while keeping a familiar track-powered layout.
+          </div>
+        </div>
+        <div class="callout">
+          Best for users who want modern wireless control with minimal disruption to a conventional transformer-and-track setup.
+        </div>
+      </div>
+    </section>
+
+    <section class="scenario" aria-labelledby="scenario-2-title">
+      <div class="scenario-header">
+        <div class="tag green">Scenario 2</div>
+        <h2 id="scenario-2-title">PMT installed in the locomotive with track power</h2>
+        <p>
+          Here the transformer still powers the rails at 100%, including accessories, buildings, and all trains on the track.
+          But PMT is installed inside the locomotive, where it takes power from the rails and directly controls the motor and lights.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="scenario2.png" alt="Diagram showing PMT installed inside a locomotive while the track remains powered at 100 percent." />
+      </div>
+      <div class="content">
+        <div class="benefits">
+          <div class="benefit">
+            <strong>Track power remains useful</strong>
+            The rails still feed accessories, buildings, and the rest of the layout at full power.
+          </div>
+          <div class="benefit">
+            <strong>Locomotive-level control</strong>
+            PMT inside the locomotive directly manages motor speed, direction, braking, and onboard lights.
+          </div>
+          <div class="benefit">
+            <strong>Independent multi-train operation</strong>
+            The image notes that multiple trains can be run independently on the same track.
+          </div>
+          <div class="benefit">
+            <strong>Balanced flexibility</strong>
+            This approach blends the familiarity of powered rails with more advanced per-locomotive control.
+          </div>
+        </div>
+        <div class="callout">
+          A strong option for layouts that still rely on powered track infrastructure but want smarter control inside each engine.
+        </div>
+      </div>
+    </section>
+
+    <section class="scenario" aria-labelledby="scenario-3-title">
+      <div class="scenario-header">
+        <div class="tag blue">Scenario 3</div>
+        <h2 id="scenario-3-title">Deadrail operation with onboard battery only</h2>
+        <p>
+          In this deadrail scenario there is no transformer and no power on the rails. PMT is installed in the locomotive
+          and powered by an onboard battery, giving the locomotive its own self-contained source for motor control and lighting.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="scenario3.png" alt="Diagram showing deadrail operation with PMT in the locomotive and onboard battery power only." />
+      </div>
+      <div class="content">
+        <div class="benefits">
+          <div class="benefit">
+            <strong>No rail power required</strong>
+            The rails remain unpowered, which simplifies operation where clean electrical pickup is a concern.
+          </div>
+          <div class="benefit">
+            <strong>Runs anywhere</strong>
+            The image emphasizes that no transformer is required, making the setup more portable and self-contained.
+          </div>
+          <div class="benefit">
+            <strong>Individual train control</strong>
+            Multiple trains can be controlled independently on the same track.
+          </div>
+          <div class="benefit">
+            <strong>True battery-driven freedom</strong>
+            Motor and lighting control come directly from the onboard battery and PMT inside the locomotive.
+          </div>
+        </div>
+        <div class="callout">
+          Ideal for users who want complete independence from track power and the freedom of true deadrail operation.
+        </div>
+      </div>
+    </section>
+
+    <section class="scenario" aria-labelledby="scenario-4-title">
+      <div class="scenario-header">
+        <div class="tag gold">Scenario 4</div>
+        <h2 id="scenario-4-title">Transformer and battery hybrid</h2>
+        <p>
+          This hybrid model keeps the transformer supplying full power to the track for passenger cars, accessories, and other
+          powered devices, while the locomotive itself is isolated from the rails and operated from an onboard battery through PMT.
+        </p>
+      </div>
+      <div class="image-frame">
+        <img src="scenario4.png" alt="Diagram showing a hybrid system with track power for accessories and battery power for the locomotive." />
+      </div>
+      <div class="content">
+        <div class="benefits">
+          <div class="benefit">
+            <strong>Best of both worlds</strong>
+            The image explicitly describes this as track power plus wireless engine control.
+          </div>
+          <div class="benefit">
+            <strong>Powered accessories stay active</strong>
+            Full rail power can continue supporting lighted cars, buildings, and trackside devices.
+          </div>
+          <div class="benefit">
+            <strong>Locomotive isolated from the rails</strong>
+            The engine runs from its onboard battery through PMT, independent of rail pickup.
+          </div>
+          <div class="benefit">
+            <strong>Complete wireless engine control</strong>
+            Throttle, direction, braking, and lights all remain under PMT control.
+          </div>
+        </div>
+        <div class="callout">
+          Perfect for layouts that want powered accessories and traditional rail-fed extras without giving up battery-based locomotive control.
+        </div>
+      </div>
+    </section>
+
+    <section class="summary">
+      <h2>Why this matters</h2>
+      <p>
+        These four scenarios make the same point from different angles: PMT is flexible. It can act as a bridge between a transformer
+        and the rails, a controller inside the locomotive, a deadrail battery system, or the heart of a hybrid layout. That means users
+        are not boxed into a single architecture or forced to redesign everything around one power philosophy.
+      </p>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <strong>More choice</strong><br />
+          Users can select the setup that fits their layout, not the other way around.
+        </div>
+        <div class="summary-card">
+          <strong>More compatibility</strong><br />
+          PMT can support conventional, deadrail, and hybrid operating styles.
+        </div>
+        <div class="summary-card">
+          <strong>More freedom</strong><br />
+          Wireless control can be paired with the power strategy that makes the most sense.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
