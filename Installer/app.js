@@ -27,6 +27,11 @@ function appendCacheBusterToAnchors() {
 
         try {
             const url = new URL(href, window.location.href);
+            const hostname = (url.hostname || "").toLowerCase();
+
+            if (hostname === "youtu.be" || hostname === "www.youtu.be") {
+                continue;
+            }
 
             if (url.searchParams.has("v")) {
                 continue;
