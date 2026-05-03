@@ -29,6 +29,13 @@
             "show-again": "2026-04-24 16:24:03"
         },
         {
+            "version": "1.8.4",
+            "title": "Scripting",
+            "description": "Autonomous thjrottle through scripting capability",
+            "info": "script.html",
+            "show-again": "2026-04-24 16:24:03"
+        },
+        {
             "version": "1.9.5",
             "title": "Wifi Failover",
             "description": "PMT now communitcates over 2 separate communication paths for better communication reliability.",

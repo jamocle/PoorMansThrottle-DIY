@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Scripting</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.86);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 14px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:980px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 52%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 60px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:780px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 28px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .image-grid{
+      display:grid;
+      gap:14px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-card{
+      background:#fff;
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .steps{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .step{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .step strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 32px}
+      .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .steps{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Scripting</div>
+      <h1>PMT now supports autonomous scripting.</h1>
+      <p class="subhead">
+        Scripting makes it possible to run the train autonomously through scripted commands.
+        The scripting language is continuing to expand, allowing for more and more logic over time.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="access-title">
+      <div class="section-header">
+        <h2 id="access-title">How to access the script page</h2>
+        <p>
+          From the throttle terminal, press and hold the <strong>Send</strong> button. A normal tap sends the current command,
+          but a long-press opens the dedicated script page where larger scripted sequences can be entered and run.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="script.png" alt="Throttle Terminal page with the Send button highlighted to show where to long-press." />
+          <figcaption class="caption">
+            Long-press the Send button on the throttle terminal to open scripting.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="script2.png" alt="Run Script page showing the area where scripted commands can be entered." />
+          <figcaption class="caption">
+            The Run Script page provides a dedicated area for entering and running scripted commands.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          The script page is intended for more than one-off commands. It provides a place to enter a sequence of instructions
+          that can direct train behavior automatically, helping reduce repetitive manual control when a repeatable flow is needed.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <strong>Step 1</strong>
+            Open the throttle terminal and locate the Send button.
+          </div>
+          <div class="step">
+            <strong>Step 2</strong>
+            Long-press Send to open the Run Script page.
+          </div>
+          <div class="step">
+            <strong>Step 3</strong>
+            Enter the script in the editor area.
+          </div>
+          <div class="step">
+            <strong>Step 4</strong>
+            Run the script to let the train follow the scripted command sequence.
+          </div>
+        </div>
+
+        <div class="callout">
+          Scripting is designed for autonomous control through commands, and the language is growing over time to support
+          increasingly capable logic and more advanced scripted behavior.
+        </div>
+
+        <p style="margin-top:18px;">
+          As the language expands, scripting becomes more useful for creating repeatable train actions, more structured command
+          sequences, and richer control flows without requiring every step to be handled manually in real time.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
