@@ -268,4 +268,6 @@ CV33 = 65
 * Power cycle.
 * Test sensor readings.
 
+
+## Wiring diagram
 ![Battery Management Wiring](../Installer/Info/batterywiring.png)
