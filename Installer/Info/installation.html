@@ -292,7 +292,33 @@
       const absoluteUrl = new URL(href, window.location.href).href;
 
       event.preventDefault();
-      window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
+
+      let fallbackOpened = false;
+
+      const fallbackTimer = setTimeout(function () {
+        if (document.visibilityState === 'visible' && !fallbackOpened) {
+          fallbackOpened = true;
+          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
+        }
+      }, 700);
+
+      window.addEventListener('pagehide', function () {
+        clearTimeout(fallbackTimer);
+      }, { once: true });
+
+      window.addEventListener('blur', function () {
+        clearTimeout(fallbackTimer);
+      }, { once: true });
+
+      try {
+        window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
+      } catch (error) {
+        clearTimeout(fallbackTimer);
+        if (!fallbackOpened) {
+          fallbackOpened = true;
+          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
+        }
+      }
     });
   </script>
 </head>
