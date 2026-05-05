@@ -9,6 +9,7 @@
 * **Safer scheduled behavior** added by requiring a complete and valid schedule before autonomous operation can activate, helping prevent accidental or partial schedule setups from taking effect.
 * **More reliable unattended operation** added by temporarily suppressing disconnect grace, BLE recovery escalation, and pending reboot-after-stop behavior while scheduled autonomous mode is active.
 * **Persistent schedule settings** added so schedule enablement, days, times, and commands are saved and restored after reboot.
+* **Support for consisting** added firmware support for MU trains (Multiple unit Consisting).
 
 ### Version 1.12.1
 * **INA219 telemetry sampling default** changed from `250 ms` to `500 ms`, reducing background sensor polling frequency so battery monitoring stays lighter-weight relative to throttle-control work.
