@@ -121,7 +121,7 @@ ERR:<command>
 | **CV30**  | INA219 Enable                  | `0`, `1` (**Default: 0**)                                                    | Enables or disables the INA219 subsystem. Disabled by default for safe rollout. |
 | **CV31**  | INA219 SDA Pin                 | Allowed runtime GPIOs (**Default: 21**)                                      | I²C SDA pin used by the INA219 on ESP32. |
 | **CV32**  | INA219 SCL Pin                 | Allowed runtime GPIOs (**Default: 22**)                                      | I²C SCL pin used by the INA219 on ESP32. |
-| **CV33**  | INA219 I²C Address             | `64 – 79` (**Default: 64**)                                                  | Decimal I²C address for the INA219. `64` corresponds to `0x40`. |
+| **CV33**  | INA219 I²C (I2C) Address       | `64 – 79` (**Default: 64**)                                                  | Decimal I²C address for the INA219. `64` corresponds to `0x40`. |
 | **CV34**  | INA219 Sample Interval         | `50 – 60000 ms` (**Default: 500**)                                           | How often the firmware samples INA219 measurements. |
 | **CV35**  | INA219 Publish Interval        | `100 – 60000 ms` (**Default: 10000**)                                        | How often INA219 async telemetry is published while enabled. |
 | **CV36**  | Low-Voltage Warn Threshold     | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates low-voltage warning behavior. `0` disables the threshold. |

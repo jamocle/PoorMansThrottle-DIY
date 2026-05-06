@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 1.10.3
+* **New Telemetry** The app supports new telemetry coming from Firmware v1.12.4.
+* **UI change** Modified configuration to uncomplicate the Battarey Management section and removed the INA219 I2C Address from the UI. To set this use CV33.  The default is 0x40 (64 decimal). 
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.10.2
 * **Schedule a Run** The app supports the ability to schedule the start and stop commands for autonomous running of a train.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
