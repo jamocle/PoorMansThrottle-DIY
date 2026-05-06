@@ -461,7 +461,10 @@
         }
 
         const data = await response.json();
-        const items = Array.isArray(data?.versions) ? [...data.versions] : [];
+        const items = Array.isArray(data?.versions)
+          ? data.versions.filter(item => item?.['info-only'] !== true)
+          : [];
+
         items.sort((a, b) => compareVersionsDesc(a?.version, b?.version));
 
         grid.innerHTML = '';

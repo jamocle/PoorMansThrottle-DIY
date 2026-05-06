@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version 1.12.4
+* Telemetry changes and efficiency modifications
+
 ### Version 1.12.3
 * **Scheduled operating mode** added, allowing the controller to automatically turn activity on and off at user-configured times on selected days.
 * **Autonomous operation during scheduled windows** added so the train can continue following its configured start and stop schedule even when no controller is actively connected.

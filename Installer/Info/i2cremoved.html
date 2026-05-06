@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>I2C Address Configuration Update</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.82);
+      --card:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --shadow:0 18px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --maxw:920px;
+    }
+
+    *{box-sizing:border-box}
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f7f7f9 45%, #ececf1 100%);
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+      line-height:1.55;
+    }
+
+    .page{
+      width:min(100%, var(--maxw));
+      margin:0 auto;
+      padding:22px 16px 64px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 18px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(0,113,227,.08);
+      color:var(--accent);
+      border:1px solid rgba(0,113,227,.15);
+      font-size:.88rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(8px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.8rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:760px;
+      margin:0 auto;
+      font-size:clamp(1rem, 2.9vw, 1.22rem);
+      color:var(--muted);
+    }
+
+    .section{
+      margin-top:28px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.7);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+
+    .section-inner{
+      padding:24px 20px 28px;
+    }
+
+    h2{
+      margin:0 0 12px;
+      font-size:clamp(1.35rem, 4vw, 2rem);
+      letter-spacing:-.02em;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .muted{
+      color:var(--muted);
+    }
+
+    .image-grid{
+      display:grid;
+      gap:14px;
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,248,250,.9));
+      border-bottom:1px solid var(--line);
+    }
+
+    .shot{
+      background:var(--card);
+      border:1px solid #e6e6eb;
+      border-radius:22px;
+      padding:10px;
+      box-shadow:0 10px 25px rgba(0,0,0,.06);
+    }
+
+    .shot img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:16px;
+    }
+
+    .feature-list{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .feature{
+      background:#fff;
+      border:1px solid #e8e8ed;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .feature strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:20px;
+      padding:16px 18px;
+      background:rgba(0,113,227,.06);
+      border:1px solid rgba(0,113,227,.12);
+      border-radius:18px;
+      color:#183a5c;
+    }
+
+    .cv-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:64px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid #d9d9de;
+      font-weight:700;
+      letter-spacing:.01em;
+      box-shadow:0 6px 16px rgba(0,0,0,.05);
+      margin:0 6px;
+    }
+
+    .footer-note{
+      margin-top:24px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .page{
+        padding:34px 24px 80px;
+      }
+
+      .image-grid{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+
+      .section-inner{
+        padding:30px 28px 34px;
+      }
+
+      .feature-list{
+        grid-template-columns:repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="eyebrow">Configuration Screen Update</div>
+      <h1>The I2C Address setting has been removed from this page.</h1>
+      <p class="subhead">
+        Yes, the I2C Address configuration field is now intentionally removed from the Battery Management page.
+        This helps reduce configuration overload and keeps the screen focused on the settings that users commonly need.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="screens-title">
+      <div class="image-grid">
+        <figure class="shot">
+          <img src="tempinfo/1.10.3.png" alt="Configuration screen showing the previous Battery Management section with the I2C Address field highlighted." />
+        </figure>
+        <figure class="shot">
+          <img src="tempinfo/1.10.3a.png" alt="Configuration screen showing the Configuration Variables section with CV number 33 highlighted." />
+        </figure>
+      </div>
+
+      <div class="section-inner">
+        <h2 id="screens-title">Why it was removed</h2>
+        <p>
+          The I2C Address value is rarely changed in typical installations. Because of that, showing it directly on the main
+          Battery Management page added visual weight and extra decision-making for most users without providing much practical value
+          in day-to-day setup. Removing it from the primary page helps simplify the configuration experience and makes the interface
+          easier to scan, especially on mobile devices.
+        </p>
+        <p>
+          This is a deliberate usability improvement. The goal is not to remove flexibility, but to reduce clutter and prevent
+          less-common configuration items from competing with the settings that matter most during normal setup and operation.
+        </p>
+
+        <div class="feature-list">
+          <div class="feature">
+            <strong>Less configuration overload</strong>
+            The page is cleaner and easier to understand because uncommon options are no longer presented as if they need routine attention.
+          </div>
+          <div class="feature">
+            <strong>Better focus</strong>
+            Users can move through the Battery Management screen more confidently without unnecessary distractions.
+          </div>
+          <div class="feature">
+            <strong>Still fully configurable</strong>
+            The setting has not been taken away. It has simply been moved out of the main flow of the page.
+          </div>
+          <div class="feature">
+            <strong>Better for most installations</strong>
+            In the vast majority of cases, no change to this value is needed at all.
+          </div>
+        </div>
+
+        <div class="callout">
+          If a specific installation does require the I2C Address to be changed, it can still always be modified through the
+          <strong>Configuration Variables</strong> section of the Config screen by getting or setting
+          <span class="cv-badge">CV33</span>.
+        </div>
+
+        <p style="margin-top:20px;">
+          In other words, the setting remains available for advanced or unusual cases, but it is no longer placed directly on the
+          Battery Management page where it can contribute to unnecessary complexity. Users who need it can access it through the
+          Configuration Variables workflow, while everyone else benefits from a cleaner and more focused configuration screen.
+        </p>
+
+        <p class="muted">
+          For most users, this change will never affect normal operation. Only particular installations are likely to need an I2C Address
+          adjustment, and those cases are considered rare.
+        </p>
+
+        <div class="footer-note">
+          Mobile-first, vertically scrollable, and intentionally simplified for a cleaner user experience.
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
