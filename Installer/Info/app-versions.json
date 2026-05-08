@@ -96,6 +96,11 @@
             "info": "i2cremoved.html",
             "show-again": "2026-04-24 16:24:04",
             "info-only": true
+        },
+        {
+            "version": "1.11.0",
+            "info": "mu.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }
