@@ -12,14 +12,14 @@
             "title": "Layout Strategies",
             "description": "Think outside the battery with various ways to use PMT in your layout",
             "info": "battery.html",
-            "show-again": "2026-04-24 16:24:04"
+            "show-again": "2026-04-24 16:24:03"
         },
         {
             "version": "1.0.2",
             "title": "Minimum/Maximum Throttle",
             "description": "Match the throttle to the motor for maximum reality",
             "info": "throttle-limits.html",
-            "show-again": "2026-04-24 16:24:03"
+            "show-again": "2026-04-24 16:24:04"
         },
         {
             "version": "1.6.0",
