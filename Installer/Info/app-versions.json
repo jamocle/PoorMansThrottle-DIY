@@ -15,6 +15,13 @@
             "show-again": "2026-04-24 16:24:03"
         },
         {
+            "version": "1.0.2",
+            "title": "Minimum/Maximum Throttle",
+            "description": "Match the throttle to the motor for maximum reality",
+            "info": "throttle-limits.html",
+            "show-again": "2026-04-24 16:24:03"
+        },
+        {
             "version": "1.6.0",
             "title": "Multiple Throttle Control Screens",
             "description": "Use the throttle that makes the most sense to you",

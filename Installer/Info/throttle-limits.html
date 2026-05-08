@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Minimum and Maximum Throttle</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --card:#ffffffcc;
+      --card-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --warning:#b42318;
+      --warning-soft:rgba(180,35,24,.08);
+      --shadow:0 14px 36px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:920px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top, #ffffff 0%, #f5f5f7 55%, #ececf1 100%);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 64px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:6px 4px 12px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(180,35,24,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--warning);
+      font-size:.86rem;
+      font-weight:700;
+      letter-spacing:.02em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.7rem);
+      line-height:1.04;
+      letter-spacing:-.035em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:760px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .priority-note{
+      max-width:760px;
+      margin:20px auto 0;
+      text-align:left;
+      padding:18px 18px;
+      border-radius:20px;
+      background:var(--warning-soft);
+      border:1px solid rgba(180,35,24,.14);
+      box-shadow:var(--shadow);
+    }
+
+    .priority-note strong{
+      display:block;
+      margin-bottom:8px;
+      color:var(--warning);
+      font-size:1.02rem;
+      letter-spacing:.01em;
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .image-frame{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-bottom:1px solid var(--line);
+    }
+
+    .image-frame img{
+      display:block;
+      width:100%;
+      height:auto;
+      border-radius:22px;
+      background:#fff;
+      box-shadow:0 12px 24px rgba(0,0,0,.10);
+    }
+
+    .content{
+      padding:24px 22px 30px;
+    }
+
+    h2{
+      margin:0 0 12px;
+      font-size:clamp(1.35rem, 4vw, 2.15rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .card{
+      background:var(--card-solid);
+      border:1px solid #e5e5ea;
+      border-radius:20px;
+      padding:16px;
+    }
+
+    .card strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1rem;
+    }
+
+    .callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .warning-callout{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--warning-soft);
+      border-left:4px solid var(--warning);
+      color:#6b1f16;
+      font-weight:600;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .content{padding:30px 28px 34px}
+      .grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Important Setup Guidance</div>
+      <h1>Stop and read this before changing these values.</h1>
+      <p class="subhead">
+        Minimum Start Throttle and Maximum Throttle help match the throttle response to the way a locomotive
+        actually moves, so acceleration feels smoother, more predictable, and easier to control.
+      </p>
+      <div class="priority-note">
+        <strong>This is important.</strong>
+        These are not minor settings. If they are set poorly, the locomotive can hesitate at low throttle,
+        jump into motion later than expected, or waste part of the throttle range where no real speed change happens.
+        A few minutes spent understanding this will make operation much smoother.
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="throttle-title">
+      <div class="image-frame">
+        <img src="minthrottle.png" alt="Configuration screen showing Minimum Start Throttle and Maximum Throttle settings." />
+      </div>
+
+      <div class="content">
+        <h2 id="throttle-title">Why these settings matter</h2>
+
+        <p>
+          Not every motor starts moving the instant the throttle leaves zero. On many locomotives, the first few low
+          throttle values do not create enough power to make the motor turn. That can cause a delay where the user raises
+          the throttle but the locomotive still does not move.
+        </p>
+
+        <p>
+          <strong>Minimum Start Throttle</strong> fixes that by setting the lowest useful starting point. Instead of wasting
+          the first part of the throttle range on values that do nothing, the app can begin at the point where the motor
+          actually starts responding. That makes low-speed control feel more immediate and much smoother.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <strong>Minimum Start Throttle</strong>
+            Think of this like pushing a bicycle just hard enough to get it rolling. Too little force does nothing.
+            This setting finds the point where the motor begins to move, so the locomotive does not hesitate when the throttle is first raised.
+          </div>
+
+          <div class="card">
+            <strong>Why it matters</strong>
+            This is especially important for smooth locomotive operation. It helps remove dead space at the bottom of the throttle range,
+            reduces delayed starts, and makes slow movement feel more controlled and realistic.
+          </div>
+
+          <div class="card">
+            <strong>Cutting off the top-end dead zone</strong>
+            Many motors reach a point where increasing the throttle no longer makes them go any faster.
+            If that happens, Maximum Throttle can be set at that useful top point so the extra, non-helpful range is removed.
+          </div>
+
+          <div class="card">
+            <strong>Maximum Throttle (Governor)</strong>
+            This is the ceiling. Like a car governor. It sets the highest output the locomotive will use at 100%.
+            You can use it as a speed limiter to keep a locomotive from running faster than you want.
+          </div>
+        </div>
+
+        <p style="margin-top:18px;">
+          In simple terms, <strong>Minimum Start Throttle</strong> helps the locomotive start moving sooner, and
+          <strong>Maximum Throttle</strong> helps the locomotive stop accelerating at the right point.
+          Together, they shape the throttle range so more of it is useful.
+        </p>
+
+        <p>
+          That means less time spent in low-throttle values where nothing happens, and less time spent at high-throttle values
+          where the motor is already at full practical speed. The result is a throttle that feels more responsive, smoother,
+          and easier to understand.
+        </p>
+
+        <div class="warning-callout">
+          Do not skim past this. These settings have a major effect on how the locomotive behaves. Getting them right can make the
+          difference between jerky, frustrating control and smooth, predictable operation.
+        </div>
+
+        <div class="callout">
+          A good way to think about it: Minimum Start Throttle removes the dead zone at the bottom, and Maximum Throttle removes
+          the dead zone at the top. Together, they help the locomotive use the throttle range more effectively.
+        </div>
+
+        <p style="margin-top:18px;">
+          The idea is simple: match the controls to the real behavior of the motor.
+          When the settings line up with how the locomotive actually starts and tops out, operation becomes smoother and more consistent.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
