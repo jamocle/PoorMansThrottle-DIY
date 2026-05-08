@@ -124,7 +124,7 @@ async function updateFirmwareInstaller() {
         }
 
         if (latestVersionLabel) {
-            latestVersionLabel.textContent = latestVersion ? "v" + latestVersion : "";
+            latestVersionLabel.textContent = latestVersion ? "Version " + latestVersion : "";
         }
 
         if (sel && olderBtn) {
@@ -183,7 +183,7 @@ async function updateFirmwareInstaller() {
             androidApkLink.textContent = "Download Android version " + androidVersion;
         } catch (error) {
             console.error(error);
-            androidApkLink.textContent = "Download LatestAndroid version";
+            androidApkLink.textContent = "Download latest Android version";
         }
     }
 }
