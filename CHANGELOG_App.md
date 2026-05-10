@@ -3,7 +3,11 @@
 ## Smartphone App:
 
 ### Version 1.11.1
-* **MU Consisting** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
+* **MU Consisting for Apple** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 1.11.0
+* **MU Consisting Beta for Android** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.3
