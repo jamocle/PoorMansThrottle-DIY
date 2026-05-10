@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 1.11.1
+* **MU Consisting** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 1.10.3
 * **New Telemetry** The app supports new telemetry coming from Firmware v1.12.4.
 * **UI change** Modified configuration to uncomplicate the Battarey Management section and removed the INA219 I2C Address from the UI. To set this use CV33.  The default is 0x40 (64 decimal). 
