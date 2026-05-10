@@ -16,13 +16,13 @@ This eliminates the **low-speed hum and weak torque** common with inexpensive DC
 
 ## Why This Project Exists
 
-Go Here to get docs, videso and installations...[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+Go here for docs, videos, and installation help:[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
 
 Many hobbyists want wireless control for their trains, but most commercial systems are expensive and complicated.
 
 Poor Man's Throttle was created to provide a simple alternative:
 
-* **Affordable** — about $21 in hardware  
+* **Affordable** — about $15–$21 in hardware, depending on parts selected  
 * **Simple** — built from common off-the-shelf parts  
 * **Flexible** — works with battery or DC layouts  
 * **Powerful** — PWM motor control for smooth low-speed operation  
@@ -34,7 +34,7 @@ The goal is simple:
 
 A low-cost **Bluetooth wireless throttle system** for model trains.
 
-The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an **ESP32 controller** and an **IBT-2 motor driver**.
+The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an **ESP32 controller** and a **supported motor driver**. The **IBT-2/BTS7960** is one commonly used example, but all supported motor drivers can be used.
 
 The system is designed primarily for **G-scale dead-rail battery locomotives**, but it can also be used with **traditional DC model railroad transformers**.
 
@@ -52,15 +52,14 @@ Current status:
 * ESP32 control system implemented
 * ESP32 PWM firmware completed
 * Documentation completed
-* iPhone App completed in TestFlight
-
-Planned improvements:
-
-* Android throttle application
+* iPhone app available through TestFlight
+* Android app available
 * Multiple locomotive control
 * Locomotive consisting (tying multiple locomotives to a single throttle)
 * Expanded troubleshooting guides
 * Peripheral control via app
+
+
 
 Community testing and feedback are welcome.
 
@@ -96,7 +95,8 @@ Hardware projects benefit greatly from visual demonstrations. Photos and videos 
         Motor Control Signals
                  │
                  ▼
-         IBT-2 Motor Driver
+      Supported Motor Driver
+        (IBT-2 example)
                  │
                  ▼
            Locomotive Motor
@@ -112,11 +112,11 @@ The ESP32 receives commands from the smartphone and converts them into motor con
 
 2. The **ESP32 controller** receives those commands.
 
-3. The ESP32 sends control signals to the **IBT-2 motor driver**.
+3. The ESP32 sends control signals to the **supported motor driver**. The **IBT-2/BTS7960** is one example, but all supported motor drivers can be used.
 
 4. The motor driver adjusts the **power going to the locomotive motor**.
 
-5. The locomotive moves **forward, reverse, faster, or slower, etc** based on throttle input or other controls.
+5. The locomotive moves **forward, reverse, faster, slower, or stop** based on throttle input or other controls.
 
 All control is wireless so operators can walk around the layout while running trains.
 
@@ -141,18 +141,18 @@ Typical hardware cost per locomotive:
 | Component               | Approx Cost | Purpose                                     |
 | ----------------------- | ----------- |---------------------------------------------|
 | ESP32 development board | $6          |Logic processor                              |
-| IBT-2 motor driver      | $10         | H-Bridge Motor Driver                       |
+| Supported H-bridge motor driver | ~$10 | Drives the locomotive motor. The IBT-2/BTS7960 is one example; all supported motor drivers can be used. |
 | 5V power module         | $5          | Powers the ESP32 **(not the motor driver)** |
 
 Typical total:
 
-**~$21 per locomotive**
+**~$15 per locomotive**
 
 Optional components may add a few dollars.
 
 | Optional Component | Purpose                                                                             |
 | ------------------ | ----------------------------------------------------------------------------------- |
-| Buck converter     | Reduce motor voltage for battery installs down to your individual locomotiove needs |
+| Buck converter     | Reduce motor voltage for battery installs down to your individual locomotive needs |
 | Capacitors         | Reduce electrical noise                                                             |
 | Ferrite core       | Reduce motor interference                                                           |
 
@@ -177,7 +177,13 @@ Motor requirements:
 * Brushed DC motor
 * Typical voltage range: **6V – 24V**
 
-The **IBT-2 motor driver** supports high current loads (48 amps) and works well with most G-scale locomotives.
+Motor driver note:
+
+* The IBT-2/BTS7960 is a common example used in the documentation.
+* All supported motor drivers can be used.
+* Choose a driver rated for your locomotive motor voltage and current.
+
+The **IBT-2/BTS7960 motor driver** is one example of a supported driver. It supports high current loads and works well with many G-scale locomotives, but all supported motor drivers can be used.
 
 ### Not Compatible With
 
@@ -210,7 +216,8 @@ Battery Adapter or DC Transformer
            │
           Fuse
            │
-     IBT-2 Motor Driver
+  Supported Motor Driver
+   (IBT-2 example)
            │
            Motor
 ```
@@ -224,7 +231,7 @@ Common battery brands used by builders:
 * Ryobi  
 * Rigid  
 * other compatible tool batteries  
-* other model hobbyist batteries (LiPo, Lithuim Ion, NiMH, Lead Acid, Alkaline) 
+* other model hobbyist batteries (LiPo, Lithium Ion, NiMH, Lead Acid, Alkaline) 
 
 A compatible **battery adapter** is required for battery installations.
 
@@ -255,9 +262,9 @@ The fastest way to try the Poor Man's Throttle.
 Minimum hardware:
 
 * ESP32 development board  
-* IBT-2 motor driver  
+* Supported motor driver (IBT-2/BTS7960 is one example; all supported motor drivers can be used)  
 * 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
-* Power source ((Tool/ LIon) battery or DC transformer)  
+* Power source (tool/Li-ion battery or DC transformer)  
 
 Full parts list:
 
@@ -308,7 +315,7 @@ Available controls:
 
 Multiple locomotives can be controlled individually.
 
-Future versions will support **consisting**, allowing multiple locomotives to move together.
+Consisting support allows multiple locomotives to move together from a single throttle.
 
 ---
 
@@ -340,7 +347,7 @@ Used for **battery-powered locomotives**.
 | Component                      | Description                        |
 | ------------------------------ | -----------------------------------|
 | ESP32-WROOM-32 USB-C dev board | Main controller                    |
-| IBT-2 BTS7960 motor driver     | High current motor driver          |
+| Supported motor driver          | Drives the locomotive motor; IBT-2/BTS7960 is one example |
 | 5V power module                | Powers the ESP32 (Logic processor) |
 | Battery adapter                | Connects cordless tool batteries   |
 
@@ -359,7 +366,7 @@ Used for **traditional DC model railroad layouts**.
 | Component                      | Description               |
 | ------------------------------ | ------------------------- |
 | ESP32-WROOM-32 USB-C dev board | Main controller           |
-| IBT-2 BTS7960 motor driver     | High current motor driver |
+| Supported motor driver          | Drives the locomotive motor; IBT-2/BTS7960 is one example |
 | 5V power module                | Powers the ESP32          |
 | DC model railroad transformer  | Layout power source       |
 
@@ -368,7 +375,7 @@ Optional components:
 * Noise suppression capacitors  
 * Ferrite core  
 
-Battery adapters and buck converters are **Unnecessary** for DC Transformer installations.
+Battery adapters and buck converters are **unnecessary** for DC transformer installations.
 
 ---
 
@@ -394,7 +401,7 @@ Full documentation is located in the [**/docs**](https://github.com/jamocle/Poor
 
 | Document                     | Description                    |
 | ---------------------------- | ------------------------------ |
-| [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md) | Elevatror Pitch                |
+| [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md) | Elevator pitch                |
 | [01_quick_overview.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)         | Introduction to the system     |
 | [02_system_architecture.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md)    | System diagrams and power flow |
 | [03_bill_of_materials.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)      | Parts list                     |
