@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.2  
+**Firmware Version:** 1.12.5  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -367,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.12.2
+ACK:V1.12.5
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -865,7 +865,7 @@ Default INA219 values:
 * `CV37=0`
 * `CV38=0`
 * `CV39=0`
-* `CV40=0`
+* `CV40=1000`
 * `CV41=25`
 * `CV42=0`
 

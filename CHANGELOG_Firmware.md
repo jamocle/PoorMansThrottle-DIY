@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version 1.12.5
+* CV40 defaults to 1000mV
+
 ### Version 1.12.4
 * Telemetry changes and efficiency modifications
 

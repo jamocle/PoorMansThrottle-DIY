@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 1.12.2  
+**Firmware Version:** 1.12.5  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -128,7 +128,7 @@ ERR:<command>
 | **CV37**  | Low-Voltage Limit Threshold    | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that activates throttle limiting. `0` disables the threshold. |
 | **CV38**  | Shutdown Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold that forces shutdown/stop behavior. `0` disables the threshold. |
 | **CV39**  | Recovery Threshold             | `0 – 50000 mV` (**Default: 0**)                                              | Recovery threshold used for hysteresis after warn/limit/shutdown conditions. `0` disables automatic recovery. |
-| **CV40**  | Disconnect Threshold           | `0 – 50000 mV` (**Default: 0**)                                              | Bus-voltage threshold used to infer battery disconnected or collapsed supply. `0` disables the threshold. |
+| **CV40**  | Disconnect Threshold           | `0 – 50000 mV` (**Default: 1000**)                                           | Bus-voltage threshold used to infer battery disconnected or collapsed supply. `0` disables the threshold. |
 | **CV41**  | Low-Voltage Throttle Cap       | `0 – 100` (**Default: 25**)                                                  | Maximum allowed mapped throttle percentage while low-voltage limiting is active. |
 | **CV42**  | Low-Voltage LED Pin            | Allowed runtime GPIOs or `0` (**Default: 0**)                                | Optional dedicated LED output pin used to indicate low-voltage-related states. `0` means unassigned. |
 | **CV100** | Dual PWM Forward Pin           | Allowed PWM GPIOs (**Default: 25**)                                          | Forward PWM pin for `DUAL_PWM` mode. |
@@ -189,7 +189,8 @@ Factory defaults for the INA219 subsystem are:
 * address = `64` (`0x40`)
 * sample interval = `500 ms`
 * publish interval = `10000 ms`
-* warn / limit / shutdown / disconnect thresholds = `0` (inactive until configured)
+* warn / limit / shutdown thresholds = `0` (inactive until configured)
+* disconnect threshold = `1000`
 * recovery threshold = `0` (automatic recovery disabled)
 * low-voltage throttle cap = `25%`
 * low-voltage LED pin = `0` (unassigned)
