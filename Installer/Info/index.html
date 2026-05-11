@@ -104,11 +104,15 @@
     }
 
     .subhead {
-      margin: 0;
+      margin: 0 0 12px;
       max-width: 680px;
       color: var(--muted);
       font-size: clamp(1rem, 2.8vw, 1.18rem);
       line-height: 1.5;
+    }
+
+    .subhead:last-of-type {
+      margin-bottom: 0;
     }
 
     .hero-meta {
@@ -314,10 +318,18 @@
       <div class="hero-grid">
         <div class="hero-copy">
           <div class="eyebrow">Poor Man’s Throttle feature index</div>
-          <h1>What’s new across PMT versions.</h1>
+          <h1>See how PMT keeps getting better.</h1>
+
+          <p class="subhead">
+            <strong>What is PMT?</strong> Poor Man’s Throttle is a completely FREE DIY wireless train control system for
+            DC and dead-rail (Battery) locomotives. It uses affordable ESP32-based hardware and a phone app so builders can run,
+            tune, and improve their railroad without expensive proprietary gear.
+          </p>
+
           <p class="subhead">
             Explore PMT features by version, with quick access to each update and its supporting details.
           </p>
+
           <div class="hero-meta">
             <div class="pill" id="featureCount">Loading features…</div>
             <div class="pill">Tap any item to open its details in a new tab</div>
