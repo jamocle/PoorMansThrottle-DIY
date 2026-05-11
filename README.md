@@ -392,6 +392,42 @@ Full documentation is available in the `/docs` directory.
 
 ---
 
+# Wigand — Poor Man’s Throttle Technical Assistant
+
+Poor Man’s Throttle includes an AI technical assistant named **Wigand** (pronounced **Vee-gaand**).
+
+Wigand has access to:
+
+* Project documentation
+* Firmware architecture
+* Hardware documentation
+* Mobile application behavior
+* Wiring references
+* Troubleshooting procedures
+* Configuration variables
+* BLE command protocol documentation
+
+Wigand is designed to help builders, testers, and developers troubleshoot and understand the Poor Man’s Throttle platform.
+
+Typical topics Wigand can assist with:
+
+* ESP32 firmware questions
+* Wiring assistance
+* IBT-2 troubleshooting
+* Power architecture questions
+* Battery management setup
+* Mobile app behavior
+* Configuration variable tuning
+* Bluetooth connection troubleshooting
+* Installation guidance
+* System architecture explanations
+
+Access Wigand here:
+
+👉 https://chatgpt.com/g/g-69b6b9e2de288191b93ca08de865a365-wigand-your-poor-man-s-throttle-troubleshooter
+
+---
+
 # Repository Structure
 
 ```text
