@@ -5,86 +5,176 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
 
-**Poor Man's Throttle is a FREE (<$15 in off the shelf parts) DIY wireless throttle that lets a smartphone control a model locomotive using simple open hardware.**
+## Open-Source Wireless Train Control Platform
 
-It works for both **dead-rail battery locomotives** and **traditional DC transformer layouts**.  
-For DC layouts, it acts as a **PWM motor controller** (Pulse Width Modulation), allowing your transformer to run at full power while the throttle hardware precisely controls the motor.
+Poor Man’s Throttle is an open-source wireless control platform for DC and dead-rail model railroads using ESP32 controllers, smartphone-based throttles, and low-cost off-the-shelf hardware.
 
-This eliminates the **low-speed hum and weak torque** common with inexpensive DC transformers and allows **smooth creeping speeds with strong pulling power** — while adding **wireless smartphone control** at the same time.
+The system provides smooth PWM motor control, wireless Bluetooth operation, multiple locomotive support, and flexible installation options for both battery-powered locomotives and traditional DC transformer layouts.
 
 ---
 
-## Why This Project Exists
+# Key Features
 
-Go here for docs, videos, and installation help:[Installation Hub](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/)
+* Wireless Bluetooth smartphone control
+* Smooth PWM low-speed motor control
+* Dead-rail battery locomotive support
+* Traditional DC transformer compatibility
+* Multiple locomotive support
+* Locomotive consisting support
+* Peripheral control through the mobile app
+* Battery management and telemetry support
+* Configurable firmware variables
+* Expandable modular hardware architecture
+* Low-cost DIY hardware platform
+* ESP32-based open firmware
 
-Many hobbyists want wireless control for their trains, but most commercial systems are expensive and complicated.
+---
 
-Poor Man's Throttle was created to provide a simple alternative:
+# System Capabilities
 
-* **Affordable** — about $15 in hardware, depending on parts selected  
-* **Simple** — built from common off-the-shelf parts  
-* **Flexible** — works with battery or DC layouts  
-* **Powerful** — PWM motor control for smooth low-speed operation  
-* **Wireless** — control your trains from a smartphone  
+| Capability | Supported |
+|---|---|
+| Bluetooth smartphone control | Yes |
+| Dead-rail operation | Yes |
+| Traditional DC layouts | Yes |
+| PWM motor control | Yes |
+| Multiple locomotives | Yes |
+| Locomotive consisting | Yes |
+| Peripheral control | Yes |
+| Battery telemetry | Yes |
+| Configuration variables | Yes |
+| BLE command protocol | Yes |
+| Firmware updates | Yes |
+| ESP32 platform | Yes |
 
-The goal is simple:
+---
 
-> **Make wireless model train control accessible to anyone who wants to build it.**
+# Why Poor Man’s Throttle Is Different
 
-A low-cost **Bluetooth wireless throttle system** for model trains.
+Traditional DC transformers reduce motor voltage to control speed.
 
-The **Poor Man's Throttle** allows a smartphone to control a locomotive motor using inexpensive off-the-shelf electronics and a simple wiring setup built around an **ESP32 controller** and a **supported motor driver**. The **IBT-2/BTS7960** is one commonly used example, but all supported motor drivers can be used.
+At low speeds this often causes:
 
-The system is designed primarily for **G-scale dead-rail battery locomotives**, but it can also be used with **traditional DC model railroad transformers**.
+* Weak motor torque
+* Poor crawling performance
+* Motor hum
+* Stalling
+* Inconsistent operation
 
-The goal of the project is to provide a **simple, inexpensive wireless throttle system** that hobbyists can build with commonly available parts.
+Poor Man’s Throttle uses PWM (Pulse Width Modulation) motor control instead.
+
+This allows the transformer or battery source to remain at full power while the throttle precisely controls the motor electronically.
+
+Benefits include:
+
+* Smooth creeping speeds
+* Strong low-speed pulling power
+* Reduced motor hum
+* Better slow-speed control
+* Improved responsiveness
+* Wireless walk-around operation
+
+---
+
+# What Poor Man’s Throttle Is
+
+Poor Man’s Throttle is:
+
+* An open-source wireless locomotive control platform
+* A Bluetooth-based smartphone throttle system
+* A PWM motor controller for DC locomotives
+* A dead-rail compatible control system
+* A modular ESP32 hardware platform
+
+---
+
+# What Poor Man’s Throttle Is NOT
+
+Poor Man’s Throttle is not:
+
+* DCC command control
+* Track signal encoding
+* A proprietary commercial throttle system
+
+The system uses direct onboard PWM motor control with wireless Bluetooth communication.
+
+---
+
+# Supported Installation Types
+
+Poor Man’s Throttle supports multiple installation methods.
+
+## Dead-Rail Battery Installations
+
+For onboard battery-powered locomotives using:
+
+* Tool batteries
+* Lithium-ion battery packs
+* Hobby battery systems
+
+## Traditional DC Transformer Layouts
+
+For conventional DC layouts using:
+
+* Existing model railroad transformers
+* Existing track wiring
+* Existing DC locomotives
+
+## Physical Installation Options
+
+Electronics may be installed:
+
+* Inside the locomotive body
+* Inside a tender
+* Inside a battery car
+* Inside a portable enclosure
+
+---
+
+# Mobile App Features
+
+The smartphone application provides wireless locomotive control using Bluetooth communication.
+
+Supported app capabilities include:
+
+* Throttle speed control
+* Forward and reverse direction
+* Stop and braking control
+* Multiple locomotive control
+* Locomotive consisting
+* Peripheral control
+* Battery telemetry support
+* Configuration management
+* Wireless walk-around operation
 
 ---
 
 # Project Status
 
-The Poor Man's Throttle project is actively being developed.
+The Poor Man’s Throttle project is actively developed and operational.
 
-Current status:
+Current project status includes:
 
-* Core hardware architecture completed
-* ESP32 control system implemented
-* ESP32 PWM firmware completed
-* Documentation completed
-* iPhone app available through TestFlight
-* Android app available
-* Multiple locomotive control
-* Locomotive consisting (tying multiple locomotives to a single throttle)
-* Expanded troubleshooting guides
-* Peripheral control via app
-
-
+* ESP32 firmware platform completed
+* PWM motor control implemented
+* Mobile applications available
+* Bluetooth communication implemented
+* Multiple locomotive support
+* Consisting support
+* Expanded troubleshooting documentation
+* Configuration variable system
+* Command protocol documentation
+* Battery management module support
+* Peripheral control support
+* Full hardware build documentation
 
 Community testing and feedback are welcome.
 
 ---
 
-# Demo
-
-Example of the Poor Man's Throttle in action. **Coming Soon**
-
-```
-[Photo: Smartphone controlling locomotive]
-
-[Photo: ESP32 + motor driver installed in locomotive]
-
-[Video or GIF of locomotive moving]
-```
-
-
-Hardware projects benefit greatly from visual demonstrations. Photos and videos will be added as the project evolves.
-
----
-
 # System Overview
 
-```
+```text
            Smartphone App
                  │
              Bluetooth
@@ -96,429 +186,309 @@ Hardware projects benefit greatly from visual demonstrations. Photos and videos 
                  │
                  ▼
       Supported Motor Driver
-        (IBT-2 example)
                  │
                  ▼
            Locomotive Motor
 ```
 
-The ESP32 receives commands from the smartphone and converts them into motor control signals that drive the locomotive.
+The ESP32 receives wireless commands from the smartphone application and converts them into motor control signals for the locomotive motor driver.
 
 ---
 
-# How It Works in 30 Seconds
+# Hardware Architecture
 
-1. The [**smartphone app**](https://testflight.apple.com/join/VQwjRQUk) sends throttle commands over Bluetooth.
+The system is built around:
 
-2. The **ESP32 controller** receives those commands.
+| Component | Purpose |
+|---|---|
+| ESP32 Controller | Main control processor |
+| Supported Motor Driver | Motor power control |
+| 5V Logic Power Module | Powers the ESP32 |
+| Battery or DC Supply | Motor power source |
+| Smartphone App | Wireless throttle interface |
 
-3. The ESP32 sends control signals to the **supported motor driver**. The **IBT-2/BTS7960** is one example, but all supported motor drivers can be used.
-
-4. The motor driver adjusts the **power going to the locomotive motor**.
-
-5. The locomotive moves **forward, reverse, faster, slower, or stop** based on throttle input or other controls.
-
-All control is wireless so operators can walk around the layout while running trains.
-
----
-
-# Key Features
-
-* Bluetooth wireless control from a smartphone  
-* Works with **battery-powered locomotives (dead-rail-no power on tracks)**  
-* Works with **traditional DC model railroad transformers**  
-* Uses inexpensive off-the-shelf electronics  
-* Beginner-friendly wiring  
-* Expandable for multiple locomotives  
-* Future support planned for **consisting**  
-
----
-
-# Estimated Build Cost
-
-Typical hardware cost per locomotive:
-
-| Component               | Approx Cost | Purpose                                     |
-| ----------------------- | ----------- |---------------------------------------------|
-| ESP32 development board | $6          |Logic processor                              |
-| Supported H-bridge motor driver | ~$10 | Drives the locomotive motor. The IBT-2/BTS7960 is one example; all supported motor drivers can be used. |
-| 5V power module         | $5          | Powers the ESP32 **(not the motor driver)** |
-
-Typical total:
-
-**~$15 per locomotive**
-
-Optional components may add a few dollars.
-
-| Optional Component | Purpose                                                                             |
-| ------------------ | ----------------------------------------------------------------------------------- |
-| Buck converter     | Reduce motor voltage for battery installs down to your individual locomotive needs |
-| Capacitors         | Reduce electrical noise                                                             |
-| Ferrite core       | Reduce motor interference                                                           |
+The IBT-2/BTS7960 is one commonly used supported motor driver, though the platform supports multiple compatible motor drivers.
 
 ---
 
 # Hardware Compatibility
 
-The Poor Man's Throttle works with ALL **DC model locomotives**.
+Poor Man’s Throttle supports DC model locomotives using brushed DC motors.
 
-Typical compatible scales:
+Typical supported scales include:
 
-* G scale  
-* O scale  
-* S scale  
-* HO scale  
-* N scale  
+* G scale
+* O scale
+* S scale
+* HO scale
+* N scale
 * Large scale garden railways
 * Custom battery conversions
 
-Motor requirements:
+Typical motor voltage range:
 
-* Brushed DC motor
-* Typical voltage range: **6V – 24V**
-
-Motor driver note:
-
-* The IBT-2/BTS7960 is a common example used in the documentation.
-* All supported motor drivers can be used.
-* Choose a driver rated for your locomotive motor voltage and current.
-
-The **IBT-2/BTS7960 motor driver** is one example of a supported driver. It supports high current loads and works well with many G-scale locomotives, but all supported motor drivers can be used.
-
-### Not Compatible With
-
-This system does **not directly support**:
-
-* DCC decoder locomotives
-* AC motors
-* Digital command control systems
-
-Those systems require different control hardware.
+* 6V–24V DC
 
 ---
 
 # Power Architecture
 
-The system separates **motor power** and **logic power**.
-
-Separating these supplies improves reliability and reduces electrical noise affecting the controller.
-
----
+The system separates logic power and motor power for improved reliability and reduced electrical noise.
 
 ## Motor Power
 
-Battery or DC supply powers the motor driver.
+Motor power may come from:
 
-```
-Battery Adapter or DC Transformer
-           │
-(Optional) Buck Converter
-           │
-          Fuse
-           │
-  Supported Motor Driver
-   (IBT-2 example)
-           │
-           Motor
-```
+* Tool batteries
+* Lithium battery systems
+* DC transformers
+* Other compatible DC supplies
 
-The buck converter is **optional** and mainly used when battery voltage is higher than desired motor voltage.
+Optional components include:
 
-Common battery brands used by builders:
+* Buck converters
+* Noise suppression capacitors
+* Ferrite cores
 
-* DeWalt  
-* Milwaukee  
-* Ryobi  
-* Rigid  
-* other compatible tool batteries  
-* other model hobbyist batteries (LiPo, Lithium Ion, NiMH, Lead Acid, Alkaline) 
+## Logic Power
 
-A compatible **battery adapter** is required for battery installations.
+The ESP32 controller uses a dedicated regulated 5V supply.
 
----
-
-## Logic Power (Controller Power)
-
-The ESP32 controller (logic processor) is powered by a dedicated 5V module.
-
-```
-Battery / DC Rail
-        │
-   5V Power Module
-        │
-     ESP32 USB-C
-```
-
-Separating motor power and controller power helps keep the ESP32 stable and protected from motor noise.
+Separating logic power from motor power improves controller stability and helps protect the ESP32 from motor noise.
 
 ---
 
 # Quick Start
 
-The fastest way to try the Poor Man's Throttle.
+## 1. Gather Hardware
 
-### 1. Gather Parts
+Minimum required hardware:
 
-Minimum hardware:
-
-* ESP32 development board  
-* Supported motor driver (IBT-2/BTS7960 is one example; all supported motor drivers can be used)  
-* 5V power module  (Powers the ESP32 Logic Processor **not** motor driver)
-* Power source (tool/Li-ion battery or DC transformer)  
+* ESP32 development board
+* Supported motor driver
+* 5V power module
+* Battery or DC transformer power source
 
 Full parts list:
 
-👉 [**docs/03_bill_of_materials.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)
+👉 [docs/03_bill_of_materials.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)
 
 ---
 
-### 2. Install Firmware
+## 2. Install Firmware
 
-Upload firmware to the ESP32.
+Upload firmware to the ESP32 controller.
 
-Instructions:
-
-👉 [**docs/05_firmware_installation.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
+👉 [docs/05_firmware_installation.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)
 
 ---
 
-### 3. Wire the System
+## 3. Build and Wire the System
 
-Follow the wiring diagrams in:
+Follow the build and wiring instructions.
 
-👉 [**docs/06_build_guide.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
+👉 [docs/06_build_guide.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
 
----
-
-### 4. First Power Test
-
-Run the safe power-up procedure:
-
-👉 [**docs/08_first_power_test.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
-
-You should now be able to control the locomotive from the smartphone app.
+👉 [appendix_wiring_reference.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md)
 
 ---
 
-# Control Features
+## 4. Perform First Power Test
 
-The smartphone app provides simple locomotive controls.
+Run the safe startup verification procedure.
 
-Available controls:
-
-* Throttle speed  
-* Forward direction  
-* Reverse direction  
-* Stop  
-* Other controls  
-
-
-Multiple locomotives can be controlled individually.
-
-Consisting support allows multiple locomotives to move together from a single throttle.
+👉 [docs/08_first_power_test.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)
 
 ---
 
-# Example Installation Options
+# Advanced Features
 
-Electronics can be installed in several locations depending on the locomotive.
+Advanced platform capabilities include:
 
-Common options:
-
-* Inside the locomotive body  
-* Inside a tender  
-* Inside a battery car  
-* Inside a small electronics enclosure  
-
-The system is flexible so builders can adapt it to their locomotives.
-
----
-
-# Example Hardware Configurations
-
-The Poor Man's Throttle supports **two common power configurations**.
+* BLE command protocol support
+* Configuration variable system
+* Telemetry support
+* Battery management module integration
+* Peripheral control support
+* Multiple locomotive management
+* Expandable firmware architecture
+* ESP32 GPIO configuration support
 
 ---
 
-## Battery Installation (Dead-Rail)
+# Battery Management and Telemetry
 
-Used for **battery-powered locomotives**.
+Optional battery management support includes:
 
-| Component                      | Description                        |
-| ------------------------------ | -----------------------------------|
-| ESP32-WROOM-32 USB-C dev board | Main controller                    |
-| Supported motor driver          | Drives the locomotive motor; IBT-2/BTS7960 is one example |
-| 5V power module                | Powers the ESP32 (Logic processor) |
-| Battery adapter                | Connects cordless tool batteries   |
+* Battery voltage monitoring
+* Current monitoring
+* Battery telemetry
+* Battery protection integration
 
-Optional components:
+See:
 
-* Adjustable buck converter  
-* Noise suppression capacitors  
-* Ferrite core  
+👉 [appendix_battery_management_module.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_battery_management_module.md)
 
 ---
 
-## DC Transformer Installation
+# Developer Resources
 
-Used for **traditional DC model railroad layouts**.
+Advanced technical documentation includes:
 
-| Component                      | Description               |
-| ------------------------------ | ------------------------- |
-| ESP32-WROOM-32 USB-C dev board | Main controller           |
-| Supported motor driver          | Drives the locomotive motor; IBT-2/BTS7960 is one example |
-| 5V power module                | Powers the ESP32          |
-| DC model railroad transformer  | Layout power source       |
-
-Optional components:
-
-* Noise suppression capacitors  
-* Ferrite core  
-
-Battery adapters and buck converters are **unnecessary** for DC transformer installations.
-
----
-
-# Getting Started
-
-If this is your first build:
-
-1. Read [**Quick Overview**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)
-2. Review [**Tools and Safety**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
-3. Follow the [**Build Guide**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)
-
-Start here:
-
-👉 [**docs/00_Why_Poor_Mans_Throttle.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md)
+| Document | Purpose |
+|---|---|
+| appendix_Command_Protocol_Reference.md | BLE protocol reference |
+| appendix_Configuration_Variables.md | Firmware configuration variables |
+| appendix_ESP32_GPIO_Pins.md | ESP32 GPIO mapping |
+| appendix_wiring_reference.md | Wiring reference |
+| appendix_troubleshooting_a_bad_IBT_board.md | IBT driver diagnostics |
 
 ---
 
 # Documentation
 
-Full documentation is located in the [**/docs**](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs) folder.
+Full documentation is available in the `/docs` directory.
 
-### Documentation Index
+## Getting Started
 
-| Document                     | Description                    |
-| ---------------------------- | ------------------------------ |
-| [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md) | Elevator pitch                |
-| [01_quick_overview.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md)         | Introduction to the system     |
-| [02_system_architecture.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md)    | System diagrams and power flow |
-| [03_bill_of_materials.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md)      | Parts list                     |
-| [04_tools_and_safety.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)       | Tools and safety guidance      |
-| [05_firmware_installation.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md)  | Installing firmware            |
-| [06_build_guide.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md)            | Step-by-step hardware assembly |
-| [07_installation_options.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md)   | Installation methods           |
-| [08_first_power_test.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md)       | Safe first power-up            |
-| [09_troubleshooting.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md)        | Common issues                  |
-| [appendix_traditional_transformer_layout_benefits.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md) | Why Poor Man’s Throttle is Better for Traditional DC Layouts         |
-| [appendix_wiring_reference.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md) | Complete wiring tables         |
+| Document | Description |
+|---|---|
+| 01_quick_overview.md | System introduction |
+| 03_bill_of_materials.md | Hardware parts list |
+| 05_firmware_installation.md | Firmware installation |
+| 06_build_guide.md | Hardware assembly |
+| 07_installation_options.md | Installation methods |
+| 08_first_power_test.md | Safe startup procedure |
+
+---
+
+## System Architecture
+
+| Document | Description |
+|---|---|
+| 02_system_architecture.md | System architecture |
+| appendix_wiring_reference.md | Wiring reference |
+| appendix_ESP32_GPIO_Pins.md | GPIO reference |
+
+---
+
+## Advanced Technical Reference
+
+| Document | Description |
+|---|---|
+| appendix_Command_Protocol_Reference.md | BLE protocol |
+| appendix_Configuration_Variables.md | Configuration variables |
+| appendix_battery_management_module.md | Battery telemetry |
+| appendix_traditional_transformer_layout_benefits.md | PWM transformer benefits |
+
+---
+
+## Troubleshooting
+
+| Document | Description |
+|---|---|
+| 09_troubleshooting.md | General troubleshooting |
+| appendix_troubleshooting_a_bad_IBT_board.md | IBT driver diagnostics |
 
 ---
 
 # Repository Structure
 
+```text
+/docs            Documentation
+/firmware        ESP32 firmware
+/Installer       App and firmware installer
+/.github         Repository configuration
+```
 
-[/docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs) (Documents)  
+Additional repository files:
 
-[/firmware](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/firmware) (ESP32 firmware)
-
-[/Installer](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/Installer) (app or firmware installer)
-
-/.github (repository configuration)
-
-README.md
-
-[ROADMAP.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/ROADMAP.md)
-
-[SUPPORT.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/SUPPORT.md)
-
-[CHANGELOG_App.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md)
-
-[CHANGELOG_Firmware.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
-
-[LICENSE](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE)
-
+* README.md
+* ROADMAP.md
+* SUPPORT.md
+* CHANGELOG_App.md
+* CHANGELOG_Firmware.md
+* LICENSE
 
 ---
 
-# Builder Skill Level
+# Builder Skill Levels
 
-The project supports two types of builders.
+## Beginner Builders
 
-### Beginner Builders
+Suitable for:
 
-* jumper wires  
-* breadboard-style connections  
-* minimal soldering  
+* Jumper wire builds
+* Breadboard prototyping
+* Minimal soldering
 
-### Advanced Builders
-  
-* soldered wiring  
-* heat shrink  
-* perfboard mounting  
-* enclosure installs  
+## Advanced Builders
+
+Suitable for:
+
+* Soldered installations
+* Custom enclosures
+* Perfboard assembly
+* Advanced locomotive integration
 
 ---
 
 # Safety Reminder
 
-Always follow these safety guidelines when building the system.
+Always follow proper electrical safety procedures.
 
 * Always use a fuse
-* Verify polarity before connecting power
-* Disconnect power before changing wiring
+* Verify polarity before powering electronics
+* Disconnect power before rewiring
 * Adjust buck converters before connecting electronics
 * Avoid short circuits
 
-Full safety guidance is available in:
+Additional safety guidance:
 
-👉 [**docs/04_tools_and_safety.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
+👉 [docs/04_tools_and_safety.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md)
 
 ---
 
-# Photo Placeholders
+# Installation Hub
 
-**Coming Soon**
+Documentation, installers, and setup resources:
 
-```
-[Photo: ESP32 Wiring]
-
-[Photo: Buck Converter Adjustment]
-
-[Photo: Motor Driver Wiring]
-```
+👉 https://jamocle.github.io/PoorMansThrottle-DIY/Installer/
 
 ---
 
 # Support
 
-If you need help:
+Support information:
 
-See [**SUPPORT.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/SUPPORT.md) for support information.
+👉 [SUPPORT.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/SUPPORT.md)
 
 ---
 
 # License
 
-This project is released under the **MIT License**.
+Released under the MIT License.
 
-See [**LICENSE**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE) for full details.
+👉 [LICENSE](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE)
 
 ---
 
 # Contributing
 
-Community improvements and documentation corrections are welcome.
+Community feedback, testing, pull requests, and documentation improvements are welcome.
 
-Pull requests, issue reports, and build feedback help improve the project for other hobbyists.
+Builder feedback helps improve compatibility, documentation quality, and future platform features.
 
+---
 
 # Next Step
 
-[**00_Why_Poor_Mans_Throttle.md**](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md)
+Start here:
 
+👉 [00_Why_Poor_Mans_Throttle.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md)
 
-[<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
+---
+
+[<< Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
 
 [<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
