@@ -112,7 +112,7 @@ ERR:<command>
 | **CV6**   | Async Notify (Steady)          | `50 – 10000 ms` (**Default: 10000**)                                         | State update interval when throttle is steady. |
 | **CV7**   | Async Notify (Changing)        | `50 – 10000 ms` (**Default: 500**)                                           | State update interval while throttle is changing or ramping. |
 | **CV8**   | Reset Trigger                  | `8`                                                                          | Writing `CV8=8` wipes saved configuration and reboots the ESP32. |
-| **CV9**   | Kick Configuration             | `<thr>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**)              | Configures start-assist kick used when starting from stop at low throttle. |
+| **CV9**   | Kick Configuration             | `throttle value>,<ms>,<rampDownMs>,<maxApply>` (**Default: `0,0,80,15`**)              | Configures start-assist kick used when starting from stop at low throttle. |
 | **CV10**  | WiFi Enable                    | `0`, `1` (**Default: 0**)                                                    | Enables WiFi/WebSocket service when configured. |
 | **CV11**  | WiFi SSID                      | Text (**Default: blank**)                                                    | WiFi network SSID. |
 | **CV12**  | WiFi Password                  | Text (**Default: blank**)                                                    | WiFi password. **Set-only** from the command interface. Query returns `ERR`. |
