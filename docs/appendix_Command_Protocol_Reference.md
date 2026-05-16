@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.5  
+**Firmware Version:** 1.12.6  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -367,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.12.5
+ACK:V1.12.6
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -497,6 +497,51 @@ ACK:P1
 ```
 
 ---
+
+# Grace Shutdown Runtime Override
+
+These commands control the **disconnect grace shutdown behavior** for the current runtime only.
+
+They are **not persisted**. After reboot, grace shutdown returns to the default enabled behavior.
+
+## Disable Grace Shutdown
+
+```text
+G1
+```
+
+Response:
+
+```text
+ACK:G1
+```
+
+Behavior:
+
+* Disables disconnect grace handling for the current runtime
+* Prevents the grace countdown from starting
+* Prevents grace-expiry forced stop / deferred shutdown behavior from running
+* If a grace countdown is already active, it is cleared
+
+## Enable Grace Shutdown
+
+```text
+G0
+```
+
+Response:
+
+```text
+ACK:G0
+```
+
+Behavior:
+
+* Re-enables disconnect grace handling for the current runtime
+* Future qualifying disconnects can start grace again
+
+---
+
 
 # Asynchronous Runtime Updates
 
@@ -1100,7 +1145,7 @@ IP:<address>
 
 # Graceful Disconnect Behavior
 
-If all control connections are lost **after authorization has already succeeded**:
+If all control connections are lost **after authorization has already succeeded** and grace shutdown is enabled:
 
 1. A **15-second grace timer** begins
 2. If no control connection returns before the timer expires
@@ -1108,6 +1153,13 @@ If all control connections are lost **after authorization has already succeeded*
 4. If still disconnected after safe stop, the controller may reboot to recover BLE advertising
 
 This behavior helps prevent runaway trains after loss of control connection.
+
+Runtime override:
+
+* `G1` disables disconnect grace shutdown for the current runtime only
+* While disabled, no grace countdown starts and no grace-expiry shutdown path runs
+* `G0` re-enables disconnect grace shutdown for the current runtime
+* Reboot restores the default enabled behavior
 
 Autonomous-mode exception:
 
@@ -1161,6 +1213,8 @@ Notes:
 | `D0`            | Debug OFF                              |
 | `P0`            | Debug periodic mismatches only         |
 | `P1`            | Debug periodic always                  |
+| `G1`            | Disable grace shutdown for this boot   |
+| `G0`            | Enable grace shutdown for this boot    |
 | `A1`            | Enable async `A:` state notifications  |
 | `A0`            | Disable async `A:` state notifications |
 | `FX<n>=0`       | Turn function output off               |

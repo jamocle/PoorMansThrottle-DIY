@@ -1,234 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>PMT Accessibility & Multi-Language Support</title>
   <style>
-    :root{
-      --bg:#f5f5f7;
-      --surface:rgba(255,255,255,.82);
-      --surface-strong:#ffffff;
-      --text:#1d1d1f;
-      --muted:#6e6e73;
-      --line:#d2d2d7;
-      --accent:#8b5a2b;
-      --accent-soft:rgba(139,90,43,.08);
-      --shadow:0 16px 40px rgba(0,0,0,.08);
-      --radius:26px;
-      --max:1100px;
+    :root {
+      --bg: #f5f5f7;
+      --surface: rgba(255, 255, 255, .82);
+      --surface-strong: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #8b5a2b;
+      --accent-soft: rgba(139, 90, 43, .08);
+      --shadow: 0 16px 40px rgba(0, 0, 0, .08);
+      --radius: 26px;
+      --max: 1100px;
     }
 
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-      color:var(--text);
+    * {
+      box-sizing: border-box
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
       background:
         radial-gradient(circle at top, #ffffff 0%, #f7f7f9 42%, #efeff4 100%);
-      -webkit-font-smoothing:antialiased;
-      text-rendering:optimizeLegibility;
-      line-height:1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      line-height: 1.6;
     }
 
-    img{max-width:100%;display:block}
-    .wrap{
-      width:min(100%, var(--max));
-      margin:0 auto;
-      padding:18px 16px 56px;
+    img {
+      max-width: 100%;
+      display: block
     }
 
-    .hero{
-      text-align:center;
-      padding:10px 0 24px;
+    .wrap {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 18px 16px 56px;
     }
 
-    .eyebrow{
-      display:inline-block;
-      padding:7px 13px;
-      border-radius:999px;
-      background:var(--surface);
-      border:1px solid rgba(139,90,43,.16);
-      color:var(--accent);
-      font-weight:600;
-      font-size:.88rem;
-      backdrop-filter:blur(12px);
+    .hero {
+      text-align: center;
+      padding: 10px 0 24px;
     }
 
-    h1{
-      margin:16px 0 12px;
-      font-size:clamp(2.2rem, 7vw, 4.5rem);
-      line-height:1.03;
-      letter-spacing:-.04em;
-      font-weight:700;
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 13px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid rgba(139, 90, 43, .16);
+      color: var(--accent);
+      font-weight: 600;
+      font-size: .88rem;
+      backdrop-filter: blur(12px);
     }
 
-    .lede{
-      max-width:820px;
-      margin:0 auto;
-      color:var(--muted);
-      font-size:clamp(1rem, 2.6vw, 1.25rem);
+    h1 {
+      margin: 16px 0 12px;
+      font-size: clamp(2.2rem, 7vw, 4.5rem);
+      line-height: 1.03;
+      letter-spacing: -.04em;
+      font-weight: 700;
     }
 
-    .card{
-      background:var(--surface);
-      border:1px solid rgba(255,255,255,.78);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      backdrop-filter:blur(18px);
-      overflow:hidden;
-      margin-top:24px;
+    .lede {
+      max-width: 820px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(1rem, 2.6vw, 1.25rem);
     }
 
-    .hero-image{
-      padding:14px;
-      background:linear-gradient(180deg, rgba(255,255,255,.94), rgba(247,247,249,.85));
-      border-bottom:1px solid var(--line);
+    .card {
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, .78);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
+      overflow: hidden;
+      margin-top: 24px;
     }
 
-    .hero-image img{
-      border-radius:20px;
-      box-shadow:0 14px 30px rgba(0,0,0,.12);
+    .hero-image {
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .94), rgba(247, 247, 249, .85));
+      border-bottom: 1px solid var(--line);
     }
 
-    .content{
-      padding:24px 20px 28px;
+    .hero-image img {
+      border-radius: 20px;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, .12);
     }
 
-    h2{
-      margin:0 0 12px;
-      font-size:clamp(1.4rem, 4vw, 2rem);
-      line-height:1.12;
-      letter-spacing:-.02em;
+    .content {
+      padding: 24px 20px 28px;
     }
 
-    p{
-      margin:0 0 16px;
-      font-size:1rem;
+    h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.4rem, 4vw, 2rem);
+      line-height: 1.12;
+      letter-spacing: -.02em;
     }
 
-    .story{
-      background:var(--accent-soft);
-      border:1px solid rgba(139,90,43,.12);
-      border-radius:22px;
-      padding:18px;
-      margin:18px 0 6px;
+    p {
+      margin: 0 0 16px;
+      font-size: 1rem;
     }
 
-    .story strong{
-      color:var(--accent);
+    .story {
+      background: var(--accent-soft);
+      border: 1px solid rgba(139, 90, 43, .12);
+      border-radius: 22px;
+      padding: 18px;
+      margin: 18px 0 6px;
     }
 
-    .grid{
-      display:grid;
-      gap:16px;
-      margin-top:18px;
+    .story strong {
+      color: var(--accent);
     }
 
-    .feature{
-      background:var(--surface-strong);
-      border:1px solid #e5e5ea;
-      border-radius:22px;
-      padding:18px;
+    .grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
     }
 
-    .feature h3{
-      margin:0 0 8px;
-      font-size:1.08rem;
-      letter-spacing:-.01em;
+    .feature {
+      background: var(--surface-strong);
+      border: 1px solid #e5e5ea;
+      border-radius: 22px;
+      padding: 18px;
     }
 
-    .feature p{
-      margin:0;
-      color:var(--muted);
+    .feature h3 {
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+      letter-spacing: -.01em;
     }
 
-    .gallery{
-      display:grid;
-      grid-template-columns:repeat(2, minmax(0, 1fr));
-      gap:12px;
-      margin-top:18px;
+    .feature p {
+      margin: 0;
+      color: var(--muted);
     }
 
-    .thumb{
-      background:#fff;
-      border:1px solid #e5e5ea;
-      border-radius:22px;
-      overflow:hidden;
-      box-shadow:0 8px 20px rgba(0,0,0,.05);
+    .gallery {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 18px;
     }
 
-    .thumb img{
-      width:100%;
-      height:auto;
+    .thumb {
+      background: #fff;
+      border: 1px solid #e5e5ea;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, .05);
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
     }
 
-    .thumb .label{
-      padding:10px 12px 12px;
-      font-size:.94rem;
-      color:var(--muted);
-      text-align:center;
+    .thumb img {
+      width: 100%;
+      height: auto;
     }
 
-    .callout{
-      margin-top:20px;
-      padding:18px;
-      border-radius:20px;
-      background:linear-gradient(180deg, rgba(139,90,43,.09), rgba(139,90,43,.04));
-      border:1px solid rgba(139,90,43,.12);
+    .thumb .label {
+      padding: 10px 12px 12px;
+      font-size: .94rem;
+      color: var(--muted);
+      text-align: center;
     }
 
-    .footer-note{
-      margin-top:30px;
-      text-align:center;
-      color:var(--muted);
-      font-size:.95rem;
+    .callout {
+      margin-top: 20px;
+      padding: 18px;
+      border-radius: 20px;
+      background: linear-gradient(180deg, rgba(139, 90, 43, .09), rgba(139, 90, 43, .04));
+      border: 1px solid rgba(139, 90, 43, .12);
+    }
+
+    .footer-note {
+      margin-top: 30px;
+      text-align: center;
+      color: var(--muted);
+      font-size: .95rem;
     }
 
 
-    .callout strong{
-      color:var(--accent);
+    .callout strong {
+      color: var(--accent);
     }
 
-    .footer{
-      text-align:center;
-      color:var(--muted);
-      margin-top:22px;
-      font-size:.95rem;
+    .footer {
+      text-align: center;
+      color: var(--muted);
+      margin-top: 22px;
+      font-size: .95rem;
     }
 
-    @media (min-width: 820px){
-      .wrap{padding:28px 22px 72px}
-      .content{padding:30px 28px 34px}
-      .grid{
-        grid-template-columns:repeat(2, minmax(0, 1fr));
+    @media (min-width: 640px) {
+      .gallery {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
-      .gallery{
-        grid-template-columns:repeat(4, minmax(0, 1fr));
+
+      .thumb {
+        max-width: none;
       }
     }
 
-    @media (prefers-reduced-motion: reduce){
-      html{scroll-behavior:auto}
-      *{animation:none !important; transition:none !important}
+    @media (min-width: 820px) {
+      .wrap {
+        padding: 28px 22px 72px
+      }
+
+      .content {
+        padding: 30px 28px 34px
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .gallery {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      * {
+        animation: none !important;
+        transition: none !important
+      }
     }
   </style>
 </head>
+
 <body>
   <main class="wrap">
     <section class="hero">
       <div class="eyebrow">Poor Man’s Throttle • Inclusion by design</div>
       <h1>Built to speak your language.<br>Built to be heard.</h1>
       <p class="lede">
-        Poor Man’s Throttle now supports multilingual experiences and mobile accessibility features so more people can enjoy the hobby,
+        Poor Man’s Throttle now supports multilingual experiences and mobile accessibility features so more people can
+        enjoy the hobby,
         more comfortably, in the language that feels natural on their own device.
       </p>
     </section>
 
     <section class="card">
       <div class="hero-image">
-        <img src="voiceover.png" alt="Promotional graphic showing Poor Man's Throttle accessibility support, including VoiceOver and TalkBack." />
+        <img src="voiceover.png"
+          alt="Promotional graphic showing Poor Man's Throttle accessibility support, including VoiceOver and TalkBack." />
       </div>
       <div class="content">
         <h2>A warm request that became an important feature</h2>
@@ -236,7 +276,8 @@
           <p>
             Two days ago, a user reached out with a simple question that carried a lot of meaning:
             <strong>could Poor Man’s Throttle work with VoiceOver so he could use it independently?</strong>
-            He wanted to enjoy PMT the same way anyone else would, but many apps in this space were not built with that in mind.
+            He wanted to enjoy PMT the same way anyone else would, but many apps in this space were not built with that
+            in mind.
             They looked fine visually, yet they were difficult or impossible to navigate with screen-reading tools.
           </p>
           <p>
@@ -244,7 +285,8 @@
           </p>
           <p>
             That message was a reminder that accessibility is not an extra. It is part of making something welcoming.
-            So PMT was built to hook into the accessibility APIs on modern mobile devices, making it possible for visually impaired users
+            So PMT was built to hook into the accessibility APIs on modern mobile devices, making it possible for
+            visually impaired users
             to navigate controls, hear interface labels, and move through the app with greater confidence.
           </p>
         </div>
@@ -253,16 +295,20 @@
           <article class="feature">
             <h3>Apple VoiceOver support</h3>
             <p>
-              VoiceOver is Apple’s built-in screen reader for iPhone and iPad. It speaks interface elements aloud and helps users navigate
-              apps through gestures, focus changes, and spoken feedback. PMT connects into these accessibility APIs so important controls,
+              VoiceOver is Apple’s built-in screen reader for iPhone and iPad. It speaks interface elements aloud and
+              helps users navigate
+              apps through gestures, focus changes, and spoken feedback. PMT connects into these accessibility APIs so
+              important controls,
               labels, and interface structure can be surfaced in a way VoiceOver users can understand and operate.
             </p>
           </article>
           <article class="feature">
             <h3>Android TalkBack support</h3>
             <p>
-              TalkBack is Android’s equivalent screen reader. It provides spoken feedback and guided navigation for users who are blind or
-              have low vision. PMT also hooks into Android accessibility APIs so the experience is not limited to one platform. The goal is
+              TalkBack is Android’s equivalent screen reader. It provides spoken feedback and guided navigation for
+              users who are blind or
+              have low vision. PMT also hooks into Android accessibility APIs so the experience is not limited to one
+              platform. The goal is
               reliable, consistent support whether a user prefers Apple or Android.
             </p>
           </article>
@@ -270,20 +316,27 @@
 
         <h2 style="margin-top:24px;">PMT follows the language of the device</h2>
         <p>
-          One of the most surprising and exciting parts of building PMT has been hearing from users all over the world. I was genuinely shocked,
-          in the best possible way, to have people reach out about PMT from Finland, Germany, Belgium, the UK, Brazil, Canada, and of course the USA.
-          What started as a project close to home suddenly became something connecting with model railroaders across countries, languages, and communities.
+          One of the most surprising and exciting parts of building PMT has been hearing from users all over the world.
+          I was genuinely shocked,
+          in the best possible way, to have people reach out about PMT from Finland, Germany, Belgium, the UK, Brazil,
+          Canada, and of course the USA.
+          What started as a project close to home suddenly became something connecting with model railroaders across
+          countries, languages, and communities.
         </p>
         <p>
-          That is exactly why PMT ties into the localization features of the phone or tablet and automatically selects the language that most closely matches
-          the user’s device settings. When someone opens the app, it can already feel familiar from the first screen without requiring extra steps or setup.
+          That is exactly why PMT ties into the localization features of the phone or tablet and automatically selects
+          the language that most closely matches
+          the user’s device settings. When someone opens the app, it can already feel familiar from the first screen
+          without requiring extra steps or setup.
         </p>
         <p>
-          This keeps the experience simple and welcoming. If the device is set to Spanish, French, German, Hindi, or another supported language,
+          This keeps the experience simple and welcoming. If the device is set to Spanish, French, German, Hindi, or
+          another supported language,
           PMT will choose the closest available match and present the interface accordingly.
         </p>
         <p>
-          For users who prefer something different, that automatic choice can also be overridden manually in PMT’s settings. So PMT can either follow
+          For users who prefer something different, that automatic choice can also be overridden manually in PMT’s
+          settings. So PMT can either follow
           the device by default or let the user pick the language that feels right for them.
         </p>
 
@@ -308,27 +361,33 @@
 
         <div class="callout">
           <p>
-            <strong>Why this matters:</strong> multilingual support and accessibility support are really about the same thing.
-            They remove friction. They help people feel included. They make the app more personal, more usable, and more respectful of the
+            <strong>Why this matters:</strong> multilingual support and accessibility support are really about the same
+            thing.
+            They remove friction. They help people feel included. They make the app more personal, more usable, and more
+            respectful of the
             person holding the device.
           </p>
         </div>
 
         <p style="margin-top:18px;">
-          That original user request helped shape a better version of PMT. What started as one person asking whether he could use VoiceOver became
-          a broader commitment: make PMT easier to access, easier to understand, and easier to enjoy for more people. The result is an app that
+          That original user request helped shape a better version of PMT. What started as one person asking whether he
+          could use VoiceOver became
+          a broader commitment: make PMT easier to access, easier to understand, and easier to enjoy for more people.
+          The result is an app that
           listens to the device, adapts to the user, and leaves room for manual choice when that is the better fit.
         </p>
 
         <div class="footer">
-          PMT is designed so more enthusiasts can connect, control, and participate — in the language and accessibility mode that works best for them.
+          PMT is designed so more enthusiasts can connect, control, and participate — in the language and accessibility
+          mode that works best for them.
         </div>
       </div>
-      
+
     </section>
     <div class="footer-note">
       Poor Man's Throttle (PMT) © 2026 James Theimer
     </div>
   </main>
 </body>
+
 </html>

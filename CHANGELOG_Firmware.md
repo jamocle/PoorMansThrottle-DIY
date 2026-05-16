@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version 1.12.6
+* Added new G command that disables the grace shutdown
+
 ### Version 1.12.5
 * CV40 defaults to 1000mV
 

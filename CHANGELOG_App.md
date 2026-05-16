@@ -2,11 +2,20 @@
 
 ## Smartphone App:
 
+### Version 1.12.1
+* **PMT is Multilingual** The PMT app now supports multiple languages including Spanish, French, and English.
+* **PMT is Accessible** A user of PMT with vision impairment asked for integration with Accessibility voice-over and I coded it for them.
+* **Consist view selection dialog** The selection of the view for consists had a regression where the selection dialog was removed. It is now back.
+* **Android slider tap behavior fixed** Now Android and iOS behave the same with the tap behavior on throttle sliders.
+* **configuration safety** The firmware and the app safely retain the state of the configuration against accidental overwrites during firmware flashing.
+* Fixed bug where mismatches can occur between throttle names and throttle names inside of consists.
+* **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
+
 ### Version 1.11.2
 * **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
 
 ### Version 1.11.1
-* **MU Consisting for Apple** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
+* **MU Consisting for Apple** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.11.0
