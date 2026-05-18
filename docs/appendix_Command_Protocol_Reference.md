@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.6  
+**Firmware Version:** 1.12.7  
 **Platform:** ESP32 BLE Heavy-Train Throttle Controller
 
 ---
@@ -367,7 +367,7 @@ V
 Example response:
 
 ```text
-ACK:V1.12.6
+ACK:V1.12.7
 ```
 
 This is an **ACK-wrapped response**, not a RAW response.
@@ -504,7 +504,7 @@ These commands control the **disconnect grace shutdown behavior** for the curren
 
 They are **not persisted**. After reboot, grace shutdown returns to the default enabled behavior.
 
-## Disable Grace Shutdown
+## Enable Grace Shutdown
 
 ```text
 G1
@@ -518,12 +518,10 @@ ACK:G1
 
 Behavior:
 
-* Disables disconnect grace handling for the current runtime
-* Prevents the grace countdown from starting
-* Prevents grace-expiry forced stop / deferred shutdown behavior from running
-* If a grace countdown is already active, it is cleared
+* Re-enables disconnect grace handling for the current runtime
+* Future qualifying disconnects can start grace again
 
-## Enable Grace Shutdown
+## Disable Grace Shutdown
 
 ```text
 G0
@@ -537,8 +535,10 @@ ACK:G0
 
 Behavior:
 
-* Re-enables disconnect grace handling for the current runtime
-* Future qualifying disconnects can start grace again
+* Disables disconnect grace handling for the current runtime
+* Prevents the grace countdown from starting
+* Prevents grace-expiry forced stop / deferred shutdown behavior from running
+* If a grace countdown is already active, it is cleared
 
 ---
 
@@ -816,7 +816,7 @@ Only the CVs confirmed below are documented here.
 | `CV4` | Train name                              | ASCII letters, digits, spaces             |
 | `CV5` | Direction invert                        | `0` or `1`                                |
 | `CV6` | Async state interval when steady (ms)   | `50..10000`                               |
-| `CV7` | Async state interval when changing (ms) | `50..10000`                               |
+| `CV7` | Async state interval while changing (ms) | `50..10000`                              |
 | `CV8` | Reserved / special handling             | query returns `0`                         |
 | `CV9` | Kick config                             | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
 
@@ -1156,9 +1156,11 @@ This behavior helps prevent runaway trains after loss of control connection.
 
 Runtime override:
 
-* `G1` disables disconnect grace shutdown for the current runtime only
+* `G1` enables disconnect grace shutdown for the current runtime
+* While enabled, future qualifying disconnects can start grace again
+* `G0` disables disconnect grace shutdown for the current runtime
 * While disabled, no grace countdown starts and no grace-expiry shutdown path runs
-* `G0` re-enables disconnect grace shutdown for the current runtime
+* If a grace countdown is already active when `G0` is issued, it is cleared
 * Reboot restores the default enabled behavior
 
 Autonomous-mode exception:
@@ -1213,8 +1215,8 @@ Notes:
 | `D0`            | Debug OFF                              |
 | `P0`            | Debug periodic mismatches only         |
 | `P1`            | Debug periodic always                  |
-| `G1`            | Disable grace shutdown for this boot   |
-| `G0`            | Enable grace shutdown for this boot    |
+| `G1`            | Enable grace shutdown for this boot    |
+| `G0`            | Disable grace shutdown for this boot   |
 | `A1`            | Enable async `A:` state notifications  |
 | `A0`            | Disable async `A:` state notifications |
 | `FX<n>=0`       | Turn function output off               |

@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 1.12.7
+* Fixed telemerty queueing where sometimes TF wouldnt be sent.
+
+
 ### Version 1.12.6
 * Added new G command that disables the grace shutdown
 
