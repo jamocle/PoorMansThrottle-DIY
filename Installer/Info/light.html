@@ -454,10 +454,12 @@
 
         <div class="note">
           <strong>NOTE</strong>
-          The output pins of the ESP32 are at 3.3v. This is perfect for driving common LEDs. Many LEDs have inline
-          resistors for 12v or 5v circuits. These inline resistors will still work, but they will dim the output of
-          the LED. Simply remove the resistor when connecting the LED to the ESP32.
-        </div>
+          ESP32 GPIO outputs are 3.3V, so LEDs should still use a series resistor sized for 3.3V operation. For direct
+          GPIO indicator use, a practical range is <strong>100Ω to 220Ω</strong> to keep current at a safer level for the ESP32.
+          As a quick guide, use about <strong>68Ω</strong> for red, orange, or amber LEDs, <strong>62Ω</strong> for yellow,
+          <strong>56Ω</strong> for standard green, and start around <strong>10Ω to 22Ω</strong> for blue, white, purple,
+          pink, or true green LEDs since their forward voltage is very close to 3.3V and brightness can vary. Do not
+          simply remove an existing resistor unless you have confirmed the LED current will remain safe.  </div>
 
       </div>
     </section>
