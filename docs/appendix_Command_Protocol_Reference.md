@@ -1,48 +1,132 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 1.12.7  
-**Platform:** ESP32 BLE Heavy-Train Throttle Controller
+**Firmware Version:** 2.0.0  
+**Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
 
-# Overview
+# Purpose of This Reference
 
-The throttle accepts **ASCII text commands** sent over either control interface:
+This appendix documents the **text command protocol** used by PMT firmware.
 
-- **BLE (Primary Control)**
-- **WebSocket / WiFi (Secondary / failover control)**
+It is intended for:
 
-Both interfaces use the **same command handling path**.
+* the PMT smartphone app
+* diagnostic tools
+* terminal users
+* advanced builders
+* compatible third-party control software
+
+This is a protocol reference, not a beginner setup guide. It intentionally documents command syntax, response formats, CVs, and device-specific command availability.
+
+---
+
+# Device Types Covered
+
+PMT firmware 2.0.0 uses a shared protocol foundation across more than one device type.
+
+| Device type | Purpose | Protocol scope |
+|---|---|---|
+| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared configuration, schedule, INA219 telemetry/protection |
+| **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, schedule, INA219, debug, and configuration protocol |
+| **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, turbine configuration CVs, shared configuration, schedule, INA219 telemetry/protection |
+
+Commands and CVs in this document are marked as **Shared**, **Throttle-only**, or **Turbine-only** where needed.
+
+---
+
+# Transport Overview
+
+PMT commands are ASCII text commands sent over supported control transports.
+
+Supported transports:
+
+* **BLE** — primary control and discovery path
+* **Wi-Fi / WebSocket** — optional secondary / backup path when enabled and configured
+
+Both transports feed the same command parser for a given firmware image.
 
 Command characteristics:
 
-- Commands are **case-insensitive**
-- Leading/trailing whitespace and CR/LF are **ignored**
-- Throttle values are **clamped to 0–100**
-
-Responses are returned as one of:
-
-- `ACK:<command>`
-- `ERR:<command>`
-- `A:CV<n>=<value>` for CV queries/sets
-- **RAW responses** (no `ACK:`/`ERR:` wrapper) for selected commands
-- **Asynchronous unsolicited telemetry/status lines** for runtime state reporting
+* Commands are case-insensitive.
+* Leading/trailing whitespace and CR/LF are ignored.
+* Numeric throttle/output values are generally clamped or validated in the `0..100` domain, depending on the command.
+* CV commands require authorization first.
 
 ---
 
-# Connection Authorization
+# Device Availability Summary
 
-Before **CV commands** are accepted, the controller requires a **connection authorization handshake**.
-
-Most status/debug/runtime commands can still be used before authorization, but CV access is blocked until authorization succeeds.
-
-Authorization remains active until the device reboots.
+| Command family | Throttle | Module | Turbine |
+|---|---:|---:|---:|
+| Identity / authorization | Yes | Yes | Yes |
+| Version query | Yes | Yes | Yes |
+| Connection status | Yes | Yes | Yes |
+| IP query | Yes | Yes | Yes |
+| Time query / set | Yes | Yes | Yes |
+| Debug on/off | Yes | Yes | Yes |
+| Async state notify control | Yes | Yes | Yes |
+| Grace shutdown runtime override | Yes | Yes | Yes |
+| Throttle motion commands | Yes | No | No |
+| Hardware/stored throttle state query | Yes | No | No |
+| Periodic throttle debug commands | Yes | No | No |
+| Function output commands | Yes | No | No |
+| Turbine output commands | No | No | Yes |
+| Shared CVs | Yes | Yes | Yes |
+| Throttle CVs | Yes | No | No |
+| Turbine CVs | No | No | Yes |
 
 ---
 
-## Step 1 — Request the Connection Authorization ID
+# Response Types
 
-Send:
+Most commands return one of:
+
+```text
+ACK:<command>
+ERR:<command>
+```
+
+CV commands return:
+
+```text
+A:CV<n>=<value>
+```
+
+Some commands return raw lines without an `ACK:` or `ERR:` wrapper.
+
+Common raw response examples:
+
+```text
+I:CONNECTED
+CONN B1 S0 W1
+IP:192.168.1.50
+T:1720000000
+F:25
+HW-FWD M40 HW60
+```
+
+Asynchronous runtime messages may also be sent without being directly requested.
+
+---
+
+# Authorization / Identity Handshake
+
+CV commands require a successful authorization handshake.
+
+Before authorization, the firmware allows only a limited set of safe commands such as identity, version, connection status, async-notify control, debug control, state queries where supported, IP query, and time query/set.
+
+If a protected command is attempted before authorization succeeds, the firmware returns:
+
+```text
+ERR:InvalidCMD
+```
+
+Authorization remains active until the firmware reboots.
+
+---
+
+## Request Device Identity
 
 ```text
 I
@@ -51,16 +135,26 @@ I
 Response:
 
 ```text
-I:<auth-id>
+I:<device-id>
 ```
 
 ---
 
-## Step 2 — Send Connection Authorization Token
+```
 
-The client must send a **connection authorization token**.
+Backup WebSocket connection:
 
-If the token is invalid:
+```text
+IB,<token>
+```
+
+Successful response:
+
+```text
+I:CONNECTED
+```
+
+Failure response:
 
 ```text
 ERR:ConnFailed
@@ -68,15 +162,14 @@ ERR:ConnFailed
 
 Notes:
 
-* If authorization was already completed earlier in the same boot session, the firmware still returns:
-
-```text
-I:CONNECTED
-```
+* `I,<token>` authorizes a normal control connection.
+* `IB,<token>` authorizes and marks the current socket connection as a backup connection.
+* Only one backup socket connection is allowed.
+* If authorization already succeeded earlier in the boot session, a valid identity command can still return `I:CONNECTED`.
 
 ---
 
-## Step 3 — Verify Authorization
+## Verify Authorization State
 
 ```text
 I?
@@ -88,277 +181,19 @@ Responses:
 ACK:Connected
 ```
 
-or
+or:
 
 ```text
 ERR:ConnFailed
 ```
 
-Once authorization succeeds, it stays enabled until reboot.
-
 ---
 
-# Command Response Types
+# Shared Runtime Commands
 
-Most commands return:
+These commands are part of the shared PMT firmware foundation.
 
-```text
-ACK:<command>
-```
-
-or:
-
-```text
-ERR:<command>
-```
-
-CV commands are different. Successful CV reads/writes return:
-
-```text
-A:CV<n>=<value>
-```
-
-Some commands return **RAW responses** without `ACK:` or `ERR:` wrappers.
-
-RAW-response commands include:
-
-```text
-?
-??
-C?
-IP?
-I
-I,<token>   ; on success
-```
-
-Notes:
-
-* `V` is **not** a RAW-response command in this firmware version
-* `V` returns an ACK-wrapped response in the form `ACK:V<firmware-version>`
-
----
-
-# Motion Commands
-
-Throttle values range from **0–100**.
-
-Values are in the **mapped throttle domain** and are converted to hardware output using:
-
-* **CV2** = floor / minimum start
-* **CV3** = ceiling / maximum output
-
-When INA219 low-voltage throttle limiting is active, the firmware applies an effective cap centrally before output is sent to the motor driver.
-
----
-
-## Momentum Ramp Commands
-
-Smooth acceleration and deceleration using the firmware momentum model.
-
-Forward:
-
-```text
-F<n>
-```
-
-Reverse:
-
-```text
-R<n>
-```
-
-Example:
-
-```text
-F40
-```
-
-Successful response:
-
-```text
-ACK:F40
-```
-
----
-
-## Quick Ramp Commands
-
-Faster acceleration profile than momentum ramps.
-
-Forward quick ramp:
-
-```text
-FQ<n>
-```
-
-Reverse quick ramp:
-
-```text
-RQ<n>
-```
-
-Example:
-
-```text
-FQ60
-```
-
-Successful response:
-
-```text
-ACK:FQ60
-```
-
----
-
-# Stop and Brake Commands
-
-## Quick Stop
-
-```text
-S
-```
-
-Rapid ramp down to stop.
-
-Response:
-
-```text
-ACK:S
-```
-
----
-
-## Brake Stop
-
-```text
-B
-```
-
-Slower deceleration ramp.
-
-Response:
-
-```text
-ACK:B
-```
-
----
-
-## Variable Brake
-
-The firmware also supports a **variable brake level** form:
-
-```text
-B<n>
-```
-
-Where `n` is `1..100`.
-
-Example:
-
-```text
-B35
-```
-
-Response:
-
-```text
-ACK:B35
-```
-
-Behavior:
-
-* Applies a brake ramp scaled by the brake level
-* Captures the currently commanded motion target so it can optionally be resumed later
-
-### Release Variable Brake
-
-```text
-B0
-```
-
-Response:
-
-```text
-ACK:B0
-```
-
-Behavior:
-
-* Releases variable brake mode
-* If a motion target was remembered, the firmware replays it when motion is allowed
-
----
-
-# Direction Change Behavior
-
-If a direction change is requested while the train is moving, the firmware automatically performs:
-
-1. Ramp down to zero
-2. Wait the configured direction delay
-3. Ramp up in the new direction
-
-This prevents mechanical shock and protects motor drivers.
-
-Notes:
-
-* Direction-change delay is currently **2000 ms**
-* Reverse sequencing uses a true stop before changing direction
-
----
-
-# State Query Commands
-
-These commands return **RAW responses**.
-
----
-
-## Hardware State
-
-```text
-?
-```
-
-Example response:
-
-```text
-HW-FWD M40 HW60
-```
-
-Possible stopped example:
-
-```text
-HW-STOPPED M0 HW0
-```
-
-Fields:
-
-| Field                              | Meaning                            |
-| ---------------------------------- | ---------------------------------- |
-| `HW-FWD` / `HW-REV` / `HW-STOPPED` | Hardware direction / stopped state |
-| `M<n>`                             | Mapped throttle                    |
-| `HW<n>`                            | Actual hardware output percentage  |
-
----
-
-## Stored State
-
-```text
-??
-```
-
-Example:
-
-```text
-FWD M40 HW60
-```
-
-This reports the **stored/logical state** rather than raw hardware state.
-
----
-
-# Firmware Version
+## Firmware Version
 
 ```text
 V
@@ -367,14 +202,14 @@ V
 Example response:
 
 ```text
-ACK:V1.12.7
+ACK:V2.0.0
 ```
 
-This is an **ACK-wrapped response**, not a RAW response.
+`V` is ACK-wrapped.
 
 ---
 
-# Connection Status
+## Connection Status
 
 ```text
 C?
@@ -388,19 +223,17 @@ CONN B1 S0 W1
 
 Fields:
 
-| Field | Meaning                                         |
-| ----- | ----------------------------------------------- |
-| `B`   | BLE connected                                   |
-| `S`   | At least one tracked WebSocket client connected |
-| `W`   | WiFi connected                                  |
+| Field | Meaning |
+|---|---|
+| `B` | BLE connected |
+| `S` | At least one tracked WebSocket client connected |
+| `W` | Wi-Fi connected |
 
-This is a **RAW response**.
+This is a raw response.
 
 ---
 
-# IP Address Query
-
-When WiFi is enabled/configured, the IP can be retrieved with:
+## IP Address Query
 
 ```text
 IP?
@@ -412,290 +245,321 @@ Example response:
 IP:192.168.1.50
 ```
 
-This is a **RAW response**.
-
-The WebSocket endpoint then uses:
+The default WebSocket endpoint is then:
 
 ```text
 ws://192.168.1.50:81
 ```
 
+The WebSocket port is configurable with `CV13`.
+
+---
+
+## Current Time Query
+
+```text
+T?
+```
+
+Successful response:
+
+```text
+T:<unix-time>
+```
+
+Example:
+
+```text
+T:1720000000
+```
+
+If time has not been established:
+
+```text
+ERR:No NTP
+```
+
+---
+
+## Manual Time Set
+
+```text
+T=<unix-time>
+```
+
+Example:
+
+```text
+T=1720000000
+```
+
+Successful response:
+
+```text
+T:<unix-time>
+```
+
+Invalid values return:
+
+```text
+ERR:T=<value>
+```
+
 Notes:
 
-* The default WebSocket port is **81**
-* The port is configurable via **CV13**
+* The value must be a positive Unix timestamp.
+* The firmware accepts values up to `2147483647`.
+* `CV14` controls the configured UTC offset used by the firmware's time handling.
 
 ---
 
-# Debug Commands
+## Debug Logging
 
-Debug commands control serial logging.
-
----
-
-## Enable Debug
+Enable debug:
 
 ```text
 D1
 ```
 
-Response:
-
-```text
-ACK:D1
-```
-
-Behavior:
-
-* Enables serial debug logging
-* Starts serial output at **115200 baud**
-
----
-
-## Disable Debug
+Disable debug:
 
 ```text
 D0
 ```
 
-Response:
+Responses:
 
 ```text
+ACK:D1
 ACK:D0
 ```
 
 ---
 
-# Periodic Debug Logging
+## Async State Notify Control
 
-## Print only mismatches
-
-```text
-P0
-```
-
-Response:
-
-```text
-ACK:P0
-```
-
-This is the default behavior.
-
----
-
-## Print every period
-
-```text
-P1
-```
-
-Response:
-
-```text
-ACK:P1
-```
-
----
-
-# Grace Shutdown Runtime Override
-
-These commands control the **disconnect grace shutdown behavior** for the current runtime only.
-
-They are **not persisted**. After reboot, grace shutdown returns to the default enabled behavior.
-
-## Enable Grace Shutdown
-
-```text
-G1
-```
-
-Response:
-
-```text
-ACK:G1
-```
-
-Behavior:
-
-* Re-enables disconnect grace handling for the current runtime
-* Future qualifying disconnects can start grace again
-
-## Disable Grace Shutdown
-
-```text
-G0
-```
-
-Response:
-
-```text
-ACK:G0
-```
-
-Behavior:
-
-* Disables disconnect grace handling for the current runtime
-* Prevents the grace countdown from starting
-* Prevents grace-expiry forced stop / deferred shutdown behavior from running
-* If a grace countdown is already active, it is cleared
-
----
-
-
-# Asynchronous Runtime Updates
-
-The firmware can send automatic unsolicited runtime updates.
-
-There are now **two categories** of async runtime lines:
-
-1. **State updates** using the `A:` prefix
-2. **INA219 telemetry / protection updates** using the `TV:`, `TI:`, `TP:`, and `TF:` prefixes
-
-These messages are transport-selected the same way as the rest of the firmware:
-
-* If **BLE is connected**, BLE is the preferred async path
-* If BLE is not connected and a WebSocket client is connected, socket async messages can be used
-* Async publishing does **not** change command/reply semantics
-
----
-
-## Async `A:` State Updates
-
-The firmware can send automatic unsolicited state updates in this format:
-
-```text
-A:<state>
-```
-
-Example:
-
-```text
-A:HW-FWD M30 HW50
-```
-
-Notes:
-
-* These are **runtime-controlled**
-* They are **disabled by default on every boot**
-* They do **not** affect direct command replies
-
-Update interval is controlled by:
-
-* **CV6** = notify interval when throttle is steady
-* **CV7** = notify interval while throttle is changing
-
----
-
-## Enable Async State Updates
+Enable async state notifications:
 
 ```text
 A1
 ```
 
-Response:
-
-```text
-ACK:A1
-```
-
----
-
-## Disable Async State Updates
+Disable async state notifications:
 
 ```text
 A0
 ```
 
-Response:
+Responses:
 
 ```text
+ACK:A1
 ACK:A0
 ```
 
+Notes:
+
+* `A1` / `A0` control `A:` state-notification publishing.
+* INA219 telemetry lines such as `TV:`, `TI:`, `TP:`, and `TF:` are not controlled by `A1` / `A0`.
+
 ---
 
-## INA219 Async Telemetry Updates
+## Grace Shutdown Runtime Override
 
-When INA219 support is enabled and telemetry publishing is active, the firmware emits compact unsolicited telemetry lines:
-
-```text
-TV:<millivolts>
-TI:<milliamps>
-TP:<milliwatts>
-TF:<LED><BAT><WARN><LIM><SD>
-```
-
-Example:
+Enable grace shutdown:
 
 ```text
-TV:18120
-TI:410
-TP:742
-TF:01000
+G1
 ```
 
-`TF` bit order is fixed:
+Disable grace shutdown:
 
-1. `LED`
-2. `BAT`
-3. `WARN`
-4. `LIM`
-5. `SD`
+```text
+G0
+```
 
-Bit meanings:
+Responses:
 
-* `LED=1` → low-voltage LED subscription is active
-* `BAT=1` → battery connected
-* `BAT=0` → battery disconnected
-* `WARN=1` → low-voltage warning active
-* `LIM=1` → low-voltage throttle limiting active
-* `SD=1` → shutdown active
+```text
+ACK:G1
+ACK:G0
+```
 
 Notes:
 
-* These telemetry lines are **unsolicited**
-* They are **not controlled by `A1` / `A0`**
-* Telemetry can publish on interval and also immediately when important INA219 status changes occur
-* If INA219 measurement data is invalid, `TV`, `TI`, and `TP` report `0` until valid samples resume
-* Firmware policy derived from INA219 includes battery disconnect detection, low-voltage warning, throttle limiting, shutdown, recovery, and low-voltage LED behavior
+* This is runtime-only.
+* Reboot restores the default grace behavior.
+* `G0` clears any active grace countdown.
+* These commands are shared across supported firmware images, but the visible effect depends on the device's disconnect behavior.
 
 ---
 
-# INA219 Telemetry / Protection
+# Throttle-Only Commands
 
-The INA219 is used as a **sensor only**. The firmware derives the higher-level protection behavior from its measurements.
-
-Measured values:
-
-* Bus voltage
-* Current
-* Power
-
-Firmware behaviors derived from those measurements:
-
-* Battery disconnected detection
-* Low-voltage warning
-* Low-voltage throttle limiting
-* Shutdown
-* Recovery threshold / hysteresis behavior
-* Low-voltage LED output behavior
-* Compact async telemetry publishing
-
-Important implementation notes:
-
-* Thresholds default to 0, which disables the associated protection behavior until configured. For CV39, a value of 0 disables automatic recovery.
-* The low-voltage LED active mode is internal firmware policy and is fixed to **BLINK+**
-* INA219 async telemetry enable is internal runtime policy, not a documented CV
-* On sensor read failure, the firmware preserves the last known protection state and keeps retrying INA219 setup
+These commands apply to **Poor Man's Throttle** locomotive firmware.
 
 ---
 
-# Function Output Commands
+## Motion Commands
 
-The firmware supports **12 function outputs**.
+Throttle values range from `0..100`.
 
-Runtime control uses:
+Forward momentum ramp:
+
+```text
+F<n>
+```
+
+Reverse momentum ramp:
+
+```text
+R<n>
+```
+
+Forward quick ramp:
+
+```text
+FQ<n>
+```
+
+Reverse quick ramp:
+
+```text
+RQ<n>
+```
+
+Examples:
+
+```text
+F40
+RQ60
+```
+
+Responses:
+
+```text
+ACK:F40
+ACK:RQ60
+```
+
+Notes:
+
+* `CV2` controls minimum start / floor.
+* `CV3` controls maximum output / ceiling.
+* `CV41` can cap throttle when low-voltage limiting is active.
+* Direction changes while moving are handled as stop-first direction changes.
+
+---
+
+## Stop and Brake
+
+Quick stop:
+
+```text
+S
+```
+
+Brake stop:
+
+```text
+B
+```
+
+Variable brake:
+
+```text
+B<n>
+```
+
+Release variable brake:
+
+```text
+B0
+```
+
+Examples:
+
+```text
+B35
+B0
+```
+
+Responses:
+
+```text
+ACK:S
+ACK:B
+ACK:B35
+ACK:B0
+```
+
+---
+
+## Hardware State Query
+
+```text
+?
+```
+
+Example responses:
+
+```text
+HW-FWD M40 HW60
+HW-STOPPED M0 HW0
+```
+
+Fields:
+
+| Field | Meaning |
+|---|---|
+| `HW-FWD` / `HW-REV` / `HW-STOPPED` | Hardware direction/state |
+| `M<n>` | Mapped throttle |
+| `HW<n>` | Actual hardware output percentage |
+
+---
+
+## Stored State Query
+
+```text
+??
+```
+
+Example response:
+
+```text
+FWD M40 HW60
+```
+
+This reports the stored/logical state rather than direct hardware state.
+
+---
+
+## Periodic Debug Logging
+
+Print only mismatches:
+
+```text
+P0
+```
+
+Print every period:
+
+```text
+P1
+```
+
+Responses:
+
+```text
+ACK:P0
+ACK:P1
+```
+
+---
+
+## Function Output Commands
+
+The throttle firmware supports 12 configurable function outputs.
 
 ```text
 FX<n>=0
@@ -727,74 +591,218 @@ ERR:FX<n>=<value>
 
 Notes:
 
-* A function can fail to activate if its configuration is incomplete or invalid
-* Direction-gated functions may be forced off automatically when the current allowed direction does not match their configured direction mode
+* Function output configuration is controlled by the function CV block starting at `CV150`.
+* Direction-gated functions can be forced off automatically when the active direction does not match their configured direction rule.
 
 ---
 
-# CV Commands
+# Turbine-Only Commands
 
-CV commands require successful authorization first.
+These commands apply to **Poor Man's Turbine** firmware.
 
-If a CV command is attempted before authorization succeeds, the firmware returns:
+The turbine firmware controls an ESC-style PWM output using a percentage command domain.
+
+---
+
+## Turbine Output Query
 
 ```text
-ERR:InvalidCMD
+F?
+```
+
+Response:
+
+```text
+F:<requested-output>
+```
+
+Example:
+
+```text
+F:25
 ```
 
 ---
 
-## CV Query Format
+## Turbine Normal Output
+
+Ramp to requested output:
+
+```text
+F<n>
+```
+
+Immediate output change:
+
+```text
+F<n>*
+```
+
+Where `n` is `0..100`.
+
+Examples:
+
+```text
+F25
+F0
+F75*
+```
+
+Responses:
+
+```text
+ACK:F25
+ACK:F0
+ACK:F75*
+```
+
+Notes:
+
+* Normal `F<n>` commands ramp using the configured turbine ramp behavior.
+* `F<n>*` bypasses the normal ramp and applies the requested value immediately.
+* `CV2` and `CV3` define the physical output scale used by normal turbine output.
+
+---
+
+## Turbine Quick Output
+
+```text
+FQ100
+```
+
+Response:
+
+```text
+ACK:FQ100
+```
+
+Behavior:
+
+* Temporarily applies the configured turbine quick output.
+* The quick-blast duration is 2000 ms.
+* After the quick blast, the firmware returns to the previously requested `F<n>` output.
+
+Notes:
+
+* `FQ100` is the only valid turbine quick-output command.
+* Other `FQ<n>` values return `ERR:<original-command>`.
+* `CV5` controls the configured quick output percentage.
+
+---
+
+# Module Firmware Commands
+
+Poor Man's Module firmware supports the shared PMT command set and shared CV blocks.
+
+It does **not** implement locomotive throttle commands or turbine output commands.
+
+Use module firmware for PMT-compatible devices that need the shared foundation:
+
+* BLE identity and authorization
+* Wi-Fi / WebSocket transport
+* debug commands
+* time commands
+* schedule commands
+* shared device name
+* INA219 telemetry/protection configuration
+* LED timing configuration
+
+---
+
+# Asynchronous Runtime Updates
+
+The firmware can send unsolicited runtime updates.
+
+There are two main categories:
+
+1. `A:` state updates
+2. INA219 telemetry/protection updates using `TV:`, `TI:`, `TP:`, and `TF:`
+
+---
+
+## Async `A:` State Updates
+
+Format:
+
+```text
+A:<state>
+```
+
+Throttle example:
+
+```text
+A:HW-FWD M30 HW50
+```
+
+Notes:
+
+* Controlled by `A1` / `A0`.
+* Disabled by default on boot.
+* Throttle firmware uses `CV6` and `CV7` for steady/changing state intervals.
+
+---
+
+## INA219 Async Telemetry Updates
+
+When INA219 support is enabled and telemetry publishing is active, the firmware can emit:
+
+```text
+TV:<millivolts>
+TI:<milliamps>
+TP:<milliwatts>
+TF:<LED><BAT><WARN><LIM><SD>
+```
+
+Example:
+
+```text
+TV:18120
+TI:410
+TP:742
+TF:01000
+```
+
+`TF` bit order:
+
+| Position | Meaning |
+|---:|---|
+| 1 | `LED` — low-voltage LED subscription active |
+| 2 | `BAT` — battery connected |
+| 3 | `WARN` — low-voltage warning active |
+| 4 | `LIM` — low-voltage limiting active |
+| 5 | `SD` — shutdown active |
+
+Notes:
+
+* These telemetry lines are unsolicited.
+* They are not controlled by `A1` / `A0`.
+* If INA219 measurement data is invalid, voltage/current/power telemetry can report `0` until valid samples resume.
+
+---
+
+# CV Command Format
+
+CV commands require authorization.
+
+Query:
 
 ```text
 CV<n>?
 ```
 
-Successful response format:
-
-```text
-A:CV<n>=<value>
-```
-
-Example:
-
-```text
-CV2?
-```
-
-Response:
-
-```text
-A:CV2=10
-```
-
----
-
-## CV Set Format
+Set:
 
 ```text
 CV<n>=<value>
 ```
 
-Successful response format:
+Successful response:
 
 ```text
 A:CV<n>=<value>
 ```
 
-Example:
-
-```text
-CV3=85
-```
-
-Response:
-
-```text
-A:CV3=85
-```
-
-Invalid CV syntax or invalid values return:
+Invalid syntax or invalid values return:
 
 ```text
 ERR:<original-command>
@@ -802,183 +810,202 @@ ERR:<original-command>
 
 ---
 
-# Implemented CVs
+# Shared CVs
 
-Only the CVs confirmed below are documented here.
+These CVs are available across supported PMT firmware images.
 
-## Core Motion / Identity CVs
+## Shared Device CVs
 
-| CV    | Purpose                                 | Value Format                              |
-| ----- | --------------------------------------- | ----------------------------------------- |
-| `CV1` | Motor driver type                       | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` |
-| `CV2` | Minimum start / floor                   | `0..100`                                  |
-| `CV3` | Ceiling / max output                    | `0..100`                                  |
-| `CV4` | Train name                              | ASCII letters, digits, spaces             |
-| `CV5` | Direction invert                        | `0` or `1`                                |
-| `CV6` | Async state interval when steady (ms)   | `50..10000`                               |
-| `CV7` | Async state interval while changing (ms) | `50..10000`                              |
-| `CV8` | Reserved / special handling             | query returns `0`                         |
-| `CV9` | Kick config                             | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
-
-### CV9 Example
-
-```text
-CV9=25,300,80,15
-```
-
-Response:
-
-```text
-A:CV9=25,300,80,15
-```
+| CV | Purpose | Value format | Notes |
+|---|---|---|---|
+| `CV4` | Device / component name | letters, digits, spaces | Used for device identity / advertising name where applicable |
+| `CV8` | Factory reset trigger | set-only value `8` | Query returns `ERR`; successful set reboots after wiping persisted settings |
 
 ---
 
-## WiFi / WebSocket CVs
+## Wi-Fi / WebSocket / Time CVs
 
-| CV     | Purpose        | Value Format     |
-| ------ | -------------- | ---------------- |
-| `CV10` | WiFi enable    | `0` or `1`       |
-| `CV11` | WiFi SSID      | free-form string |
-| `CV12` | WiFi password  | set-only string  |
-| `CV13` | WebSocket port | `1..65535`       |
+| CV | Purpose | Value format |
+|---|---|---|
+| `CV10` | Wi-Fi enable | `0` or `1` |
+| `CV11` | Wi-Fi SSID | string |
+| `CV12` | Wi-Fi password | set-only string; query returns `ERR` |
+| `CV13` | WebSocket port | `1..65535` |
+| `CV14` | UTC offset | signed hour value such as `0`, `-5`, `+5.5`, `9` |
 
 Notes:
 
-* Querying `CV12?` returns `ERR:<original-command>`
-* Changing `CV10`, `CV11`, `CV12`, or `CV13` can affect runtime WiFi/WebSocket behavior
-* When WiFi connects, the firmware may emit an unsolicited:
-
-```text
-IP:<address>
-```
+* Changing Wi-Fi CVs can restart or stop network services.
+* `CV14` stores a UTC offset in hours. One decimal place is accepted, where each tenth represents 6 minutes.
+* `CV14=-5` means UTC minus 5 hours.
 
 ---
 
-## LED Timing CVs
+## LED Timing CV
 
-| CV     | Purpose             | Value Format             |
-| ------ | ------------------- | ------------------------ |
-| `CV20` | Blink timing config | `<phasePeriodMs>,<onMs>` |
+| CV | Purpose | Value format |
+|---|---|---|
+| `CV20` | Shared blink timing | `<phasePeriodMs>,<onMs>` |
 
-### CV20 Example
+Example:
 
 ```text
 CV20=1000,250
 ```
 
-Response:
+Valid range:
+
+* `phasePeriodMs`: `1..60000`
+* `onMs`: `1..phasePeriodMs`
+
+---
+
+## INA219 Telemetry / Protection CVs
+
+| CV | Purpose | Value format |
+|---|---|---|
+| `CV30` | INA219 enable | `0` or `1` |
+| `CV31` | INA219 SDA pin | valid runtime-capable pin |
+| `CV32` | INA219 SCL pin | valid runtime-capable pin |
+| `CV33` | INA219 I2C address | `64..79` decimal (`0x40..0x4F`) |
+| `CV34` | Sample interval ms | `50..60000` |
+| `CV35` | Publish interval ms | `100..60000` |
+| `CV36` | Warning threshold mV | `0..50000` |
+| `CV37` | Limit threshold mV | `0..50000` |
+| `CV38` | Shutdown threshold mV | `0..50000` |
+| `CV39` | Recovery threshold mV | `0..50000`; `0` disables automatic recovery |
+| `CV40` | Battery disconnect threshold mV | `0..50000` |
+| `CV42` | Low-voltage LED pin | `0` or valid runtime-capable pin |
+
+Notes:
+
+* The INA219 is used as a sensor; firmware derives warning, limiting, shutdown, recovery, and telemetry behavior from its readings.
+* Pin CVs reject duplicate SDA/SCL/LED pin assignments.
+* Threshold `0` generally disables the associated protection behavior.
+
+---
+
+## Schedule CVs
+
+| CV | Purpose | Value format |
+|---|---|---|
+| `CV300` | Schedule enable | `0` or `1` |
+| `CV301` | Weekday bitmask | `0..127` |
+| `CV302` | Schedule ON time | UTC `HH:MM` |
+| `CV303` | Schedule OFF time | UTC `HH:MM` |
+| `CV304` | Schedule ON command | non-empty command string |
+| `CV305` | Schedule OFF command | non-empty command string |
+
+Weekday bit mapping:
+
+| Bit | Day |
+|---:|---|
+| 0 | Sunday |
+| 1 | Monday |
+| 2 | Tuesday |
+| 3 | Wednesday |
+| 4 | Thursday |
+| 5 | Friday |
+| 6 | Saturday |
+
+Notes:
+
+* `CV302` and `CV303` must use strict 24-hour `HH:MM` time.
+* The schedule does not support crossing midnight.
+* Schedule validation requires schedule enabled, at least one day selected, valid ON/OFF times, `ON < OFF`, and non-empty ON/OFF commands.
+* Scheduled commands are executed through the same command pipeline as external commands.
+* The configured ON/OFF commands are allowed to run internally for autonomous schedule execution.
+
+---
+
+# Throttle-Specific CVs
+
+These CVs apply to **Poor Man's Throttle** locomotive firmware.
+
+## Core Throttle CVs
+
+| CV | Purpose | Value format |
+|---|---|---|
+| `CV1` | Motor driver type | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` |
+| `CV2` | Minimum start / floor | `0..100` |
+| `CV3` | Ceiling / max output | `0..100` |
+| `CV5` | Direction invert | `0` or `1` |
+| `CV6` | Async state interval when steady | `50..10000` ms |
+| `CV7` | Async state interval while changing | `50..10000` ms |
+| `CV9` | Kick config | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
+| `CV41` | Low-voltage throttle cap percent | `0..100` |
+
+Example `CV9`:
 
 ```text
-A:CV20=1000,250
+CV9=25,300,80,15
 ```
 
-Notes:
-
-* `CV20` controls firmware LED blink timing behavior
-* Changing `CV20` can affect runtime LED timing behavior
-
 ---
 
-## INA219 CVs
-
-| CV     | Purpose                               | Value Format         |
-| ------ | ------------------------------------- | -------------------- |
-| `CV30` | INA219 enable                         | `0` or `1`           |
-| `CV31` | INA219 SDA pin                        | `0..39`              |
-| `CV32` | INA219 SCL pin                        | `0..39`              |
-| `CV33` | INA219 I²C address                    | `64..79`             |
-| `CV34` | INA219 sample interval (ms)           | `50..60000`          |
-| `CV35` | INA219 publish interval (ms)          | `100..60000`         |
-| `CV36` | Low-voltage warning threshold (mV)    | `0..50000`           |
-| `CV37` | Low-voltage limit threshold (mV)      | `0..50000`           |
-| `CV38` | Low-voltage shutdown threshold (mV)   | `0..50000`           |
-| `CV39` | Low-voltage recovery threshold (mV)   | `0..50000`           |
-| `CV40` | Battery disconnect threshold (mV)     | `0..50000`           |
-| `CV41` | Low-voltage throttle cap (%)          | `0..100`             |
-| `CV42` | Low-voltage LED pin                   | `0..39`              |
-
-Default INA219 values:
-
-* `CV30=0`
-* `CV31=21`
-* `CV32=22`
-* `CV33=64` (`0x40`)
-* `CV34=500`
-* `CV35=10000`
-* `CV36=0`
-* `CV37=0`
-* `CV38=0`
-* `CV39=0`
-* `CV40=1000`
-* `CV41=25`
-* `CV42=0`
-
-Notes:
-
-* Thresholds set to `0` leave the associated protection policy inactive
-* Changing INA219 pin or address settings can trigger INA219 reinitialization
-* `CV42` configures the low-voltage LED **pin** only; the active pattern is internal firmware policy
-
----
-
-## Driver Pin CVs
+## Throttle Motor Pin CVs
 
 ### DUAL_PWM Pins
 
-| CV      | Purpose                  |
-| ------- | ------------------------ |
-| `CV100` | DUAL_PWM forward PWM pin |
-| `CV101` | DUAL_PWM reverse PWM pin |
-| `CV102` | DUAL_PWM ENA pin         |
-| `CV103` | DUAL_PWM ENB pin         |
+| CV | Purpose |
+|---|---|
+| `CV100` | DUAL_PWM forward / RPWM pin |
+| `CV101` | DUAL_PWM reverse / LPWM pin |
+| `CV102` | DUAL_PWM enable A / R_EN pin |
+| `CV103` | DUAL_PWM enable B / L_EN pin |
 
-### PWM_DIR Pins
+### PWM_DIR / DUAL_INPT Pins
 
-| CV      | Purpose               |
-| ------- | --------------------- |
-| `CV104` | PWM_DIR PWM pin       |
-| `CV105` | PWM_DIR direction pin |
+| CV | Purpose |
+|---|---|
+| `CV104` | Two-pin A / PWM pin |
+| `CV105` | Two-pin B / direction or alternate input pin |
 
 ### PWM_BIDIR Pins
 
-| CV      | Purpose                     |
-| ------- | --------------------------- |
-| `CV106` | PWM_BIDIR PWM pin           |
+| CV | Purpose |
+|---|---|
+| `CV106` | PWM_BIDIR PWM / enable pin |
 | `CV107` | PWM_BIDIR forward logic pin |
 | `CV108` | PWM_BIDIR reverse logic pin |
 
 Notes:
 
-* Pin CV values are validated
-* Invalid pin values return `ERR:<original-command>`
-* Runtime pin changes stop the motor, reconfigure outputs, and then reply with the CV value
+* Invalid GPIO assignments return `ERR:<original-command>`.
+* Runtime pin changes place outputs in a safe state and reinitialize the selected driver interface.
 
 ---
 
 ## Function Configuration CV Blocks
 
-The firmware exposes 12 function configuration blocks starting at **CV150**.
+Throttle firmware exposes 12 function configuration blocks starting at `CV150`.
 
-Each function uses a stride of **7 CV numbers**.
+Each function uses a stride of 7 CV numbers.
 
-For function index `n` (`1..12`), the base CV is:
+For function index `n` (`1..12`):
 
 ```text
-CV150 + ((n - 1) * 7)
+base = 150 + ((n - 1) * 7)
 ```
 
-Documented fields in each block:
+| Offset | Meaning |
+|---:|---|
+| `+0` | Function name |
+| `+1` | Function output pin |
+| `+2` | Function pattern |
+| `+3` | Function direction mode |
+| `+4` | Function app flags |
 
-| Offset | Meaning                 |
-| ------ | ----------------------- |
-| `+0`   | Function name           |
-| `+1`   | Function pin            |
-| `+2`   | Function pattern        |
-| `+3`   | Function direction mode |
-| `+4`   | Function app flags      |
+Examples:
 
-### Function pattern values
+| Function | Name CV | Pin CV | Pattern CV | Direction CV | App flags CV |
+|---|---:|---:|---:|---:|---:|
+| FX1 | 150 | 151 | 152 | 153 | 154 |
+| FX2 | 157 | 158 | 159 | 160 | 161 |
+| FX3 | 164 | 165 | 166 | 167 | 168 |
+| FX12 | 227 | 228 | 229 | 230 | 231 |
+
+Pattern values:
 
 * `SOLID`
 * `DBL_BLNK`
@@ -986,142 +1013,59 @@ Documented fields in each block:
 * `BLINK+`
 * `BLINK-`
 
-### Function direction values
+Direction values:
 
 * `BOTH`
 * `FWD`
 * `REV`
 
-### Function app flags values
+App flags:
 
-* Unsigned 32-bit integer
-* Range: `0..4294967295`
+* unsigned 32-bit integer
+* range `0..4294967295`
 
-Examples:
+Default function notes:
 
-* `CV150` = FX1 name
-* `CV151` = FX1 pin
-* `CV152` = FX1 pattern
-* `CV153` = FX1 direction
-* `CV154` = FX1 app flags
-* `CV157` = FX2 name
-* `CV158` = FX2 pin
-* `CV159` = FX2 pattern
-* `CV160` = FX2 direction
-* `CV161` = FX2 app flags
+* FX1 default name is `Headlight`, direction `FWD`.
+* FX2 default name is `ReverseLgt`, direction `REV`.
+* FX3..FX12 default to direction `BOTH`.
 
-Default function names/directions/app flags:
+---
 
-* `FX1` default name: `Headlight`, default direction: `FWD`, default app flags: `0`
-* `FX2` default name: `ReverseLgt`, default direction: `REV`, default app flags: `0`
-* `FX3..FX12` default direction: `BOTH`, default app flags: `0`
+# Turbine-Specific CVs
+
+These CVs apply to **Poor Man's Turbine** firmware.
+
+Some CV numbers overlap with throttle firmware, but the meaning is device-specific.
+
+| CV | Turbine purpose | Value format | Default |
+|---|---|---|---:|
+| `CV2` | Minimum output percent | `0..100`, must be <= `CV3` | `0` |
+| `CV3` | Full output percent | `1..100`, must be >= `CV2` | `100` |
+| `CV5` | Quick output percent for `FQ100` | `0..100` | `0` |
+| `CV9` | Ramp-to-full-output duration | `100..60000` ms | `4000` |
+| `CV41` | Low-voltage limit cap percent | `0..100` | `25` |
+| `CV100` | ESC PWM output pin | valid runtime-capable pin | `25` |
 
 Notes:
 
-* Function app flags are persisted in NVS
-* Query/set uses the normal CV reply format: `A:CV<n>=<value>`
-
----
-
-## Scheduling / Autonomous Mode CVs
-
-The firmware exposes a scheduling block starting at **CV300**.
-
-| CV      | Purpose                         | Value Format |
-| ------- | ------------------------------- | ------------ |
-| `CV300` | Schedule enable                 | `0` or `1` |
-| `CV301` | Weekday bitmask                 | `0..127` |
-| `CV302` | Schedule ON time (UTC)          | `HH:MM` |
-| `CV303` | Schedule OFF time (UTC)         | `HH:MM` |
-| `CV304` | Schedule ON command             | free-form command string |
-| `CV305` | Schedule OFF command            | free-form command string |
-
-Notes:
-
-* `CV302` and `CV303` use strict **UTC** `HH:MM` 24-hour format
-* Schedule validation requires:
-  * schedule enabled
-  * at least one enabled weekday bit
-  * valid ON/OFF times
-  * `ON < OFF`
-  * non-empty ON/OFF commands
-* The current implementation does **not** support schedules that cross midnight
-* `CV301` uses the firmware's UTC weekday mapping from `tm_wday`:
-  * bit `0` = Sunday
-  * bit `1` = Monday
-  * bit `2` = Tuesday
-  * bit `3` = Wednesday
-  * bit `4` = Thursday
-  * bit `5` = Friday
-  * bit `6` = Saturday
-
----
-
-# Scheduling / Autonomous Mode
-
-When the schedule is valid and system time is valid, the firmware can enter **autonomous mode** based on UTC weekday and UTC time.
-
-Autonomous mode becomes active only when all of the following are true:
-
-* schedule is enabled and fully configured
-* current UTC weekday is enabled by `CV301`
-* current UTC time is between:
-  * `CV302 - 2 minutes`
-  * `CV303 + 2 minutes`
-
-Important distinction:
-
-* the **±2 minute extension** is used only to decide whether autonomous mode is active
-* the scheduled ON/OFF commands themselves still fire only at the exact configured boundary times
-
-## Scheduled Command Execution
-
-At runtime, the firmware continuously evaluates the schedule using UTC time.
-
-Boundary behavior:
-
-* the ON command in `CV304` is fired when the firmware crosses the exact configured `CV302` minute
-* the OFF command in `CV305` is fired when the firmware crosses the exact configured `CV303` minute
-* boundary execution occurs only on enabled UTC weekdays
-* replies are suppressed for internally scheduled command execution
-
-Operational notes:
-
-* scheduled commands execute through the same internal command pipeline as external commands
-* this means the configured schedule commands should be valid runtime commands such as motion or stop commands
-* only the exact configured ON/OFF commands gain the autonomous pre-handshake exception described earlier
-
----
-
-# Control Transport Priority
-
-The firmware supports two control transports.
-
-## BLE
-
-Primary control interface.
-
-## WebSocket
-
-Secondary / failover control interface.
-
-Priority behavior:
-
-* If **BLE is connected**, BLE is the preferred control path
-* If BLE is not connected and a WebSocket client is connected, socket control can operate normally
-* Both transports share the same command parser and response behavior
+* Turbine output uses a 50 Hz ESC-style PWM signal.
+* The ESC pulse range is 1000–2000 μs.
+* Changing `CV100` reconfigures the output pin and forces output back to a safe stopped state.
+* When shutdown is active from INA219 policy, turbine output is forced off.
+* When limit is active from INA219 policy, output is capped by `CV41`.
 
 ---
 
 # WebSocket Operation
 
-When WiFi is enabled using:
+When Wi-Fi is enabled with:
 
 ```text
 CV10=1
 ```
 
-The firmware starts WiFi/WebSocket service using the configured settings.
+The firmware starts the configured Wi-Fi/WebSocket service.
 
 Defaults:
 
@@ -1132,108 +1076,128 @@ Max tracked WebSocket clients: 2
 
 Notes:
 
-* If WiFi becomes connected, the firmware can emit:
-
-```text
-IP:<address>
-```
-
-* A third simultaneous socket client is rejected
-* WebSocket text payloads are processed through the same command handler as BLE
+* A third simultaneous socket client is rejected.
+* A backup socket can use `IB,<token>`.
+* WebSocket text payloads are processed through the same command handler as BLE.
+* When Wi-Fi connects, firmware can emit an unsolicited `IP:<address>` line.
 
 ---
 
-# Graceful Disconnect Behavior
+# Scheduling / Autonomous Mode
 
-If all control connections are lost **after authorization has already succeeded** and grace shutdown is enabled:
+When a valid schedule is configured and system time is valid, supported firmware can enter autonomous schedule mode.
 
-1. A **15-second grace timer** begins
-2. If no control connection returns before the timer expires
-3. The firmware performs a forced stop behavior equivalent to a stop ramp
-4. If still disconnected after safe stop, the controller may reboot to recover BLE advertising
+A schedule is considered active when current UTC time is within the configured operating window for an enabled day.
 
-This behavior helps prevent runaway trains after loss of control connection.
+Important behavior:
+
+* `CV304` fires at the configured `CV302` ON boundary.
+* `CV305` fires at the configured `CV303` OFF boundary.
+* Replies are suppressed for internally scheduled command execution.
+* The ON/OFF commands still execute through the normal command pipeline.
+* Device-specific commands must match the firmware image. For example, throttle firmware can schedule `F40` or `S`; turbine firmware can schedule `F50` or `F0`.
+
+---
+
+# Control Transport Priority
+
+Priority behavior:
+
+* If BLE is connected, BLE is the preferred async/control path.
+* If BLE is not connected and a WebSocket client is connected, socket control can operate.
+* Both transports share the same command parser for the active firmware image.
+
+---
+
+# Disconnect / Recovery Behavior
+
+The shared firmware foundation includes disconnect and recovery behavior intended to keep PMT devices predictable after communication loss.
+
+For throttle firmware, this is especially important because the controller may be driving a locomotive.
+
+Typical behavior:
+
+1. A qualifying disconnect can start a grace period.
+2. If no control connection returns before grace expires, the device can force a safe stop behavior.
+3. BLE advertising recovery is attempted automatically.
+4. When needed, hard recovery is deferred until safe conditions are reached.
+5. Active WebSocket control can suppress BLE-only hard recovery paths.
+6. Autonomous schedule mode can suppress disconnect grace behavior while scheduled operation is active.
 
 Runtime override:
 
-* `G1` enables disconnect grace shutdown for the current runtime
-* While enabled, future qualifying disconnects can start grace again
-* `G0` disables disconnect grace shutdown for the current runtime
-* While disabled, no grace countdown starts and no grace-expiry shutdown path runs
-* If a grace countdown is already active when `G0` is issued, it is cleared
-* Reboot restores the default enabled behavior
-
-Autonomous-mode exception:
-
-* If **autonomous mode** is active, disconnect grace does **not** start
-* If autonomous mode becomes active while a deferred disconnect/reboot path is pending, that deferred reboot path is canceled
-* When autonomous mode later exits while still disconnected and authorization had already happened, grace can begin again
-
----
-
-# BLE Advertising Recovery Behavior
-
-When a BLE client disconnects, the firmware first attempts a normal BLE advertising restart so the controller becomes discoverable again.
-
-Recovery behavior:
-
-1. On BLE disconnect, advertising restart is requested
-2. The firmware retries advertising restart on a timed loop
-3. After **10 seconds** disconnected, an advertising watchdog can force another recovery attempt if scanability has not returned
-4. After **12 seconds** disconnected, if BLE still has not recovered, the firmware can escalate to a **hard recovery**
-5. Hard recovery forces a **quick stop**, then defers controller reboot until the train is safely stopped
-6. If a WebSocket control session is active, this BLE hard-recovery reboot path is canceled
-
-Notes:
-
-* This recovery behavior is automatic
-* It is intended to restore BLE scanability safely
-* Reboot is deferred until motion has safely stopped rather than occurring immediately while running
-* While **autonomous mode** is active, BLE hard-recovery escalation is suppressed
+* `G1` enables grace shutdown for the current runtime.
+* `G0` disables grace shutdown for the current runtime.
 
 ---
 
 # Command Summary
 
-| Command         | Purpose                                |
-| --------------- | -------------------------------------- |
-| `I?`            | Verify authorization                   |
-| `F<n>`          | Forward momentum ramp                  |
-| `R<n>`          | Reverse momentum ramp                  |
-| `FQ<n>`         | Forward quick ramp                     |
-| `RQ<n>`         | Reverse quick ramp                     |
-| `S`             | Quick stop                             |
-| `B`             | Brake stop                             |
-| `B<n>`          | Variable brake                         |
-| `B0`            | Release variable brake                 |
-| `?`             | Hardware state query                   |
-| `??`            | Stored state query                     |
-| `V`             | Firmware version                       |
-| `C?`            | Connection status                      |
-| `IP?`           | IP address query                       |
-| `D1`            | Debug ON                               |
-| `D0`            | Debug OFF                              |
-| `P0`            | Debug periodic mismatches only         |
-| `P1`            | Debug periodic always                  |
-| `G1`            | Enable grace shutdown for this boot    |
-| `G0`            | Disable grace shutdown for this boot   |
-| `A1`            | Enable async `A:` state notifications  |
-| `A0`            | Disable async `A:` state notifications |
-| `FX<n>=0`       | Turn function output off               |
-| `FX<n>=1`       | Turn function output on                |
-| `CV<n>?`        | Query CV value                         |
-| `CV<n>=<value>` | Set CV value                           |
+| Command | Availability | Purpose |
+|---|---|---|
+| `I` | Shared | Identity reply |
+| `I?` | Shared | Authorization status |
+| `I,<token>` | Shared | Authorize normal connection |
+| `IB,<token>` | Shared | Authorize backup socket connection |
+| `V` | Shared | Firmware version |
+| `C?` | Shared | Connection status |
+| `IP?` | Shared | IP address query |
+| `T?` | Shared | Current time query |
+| `T=<unix>` | Shared | Manual time set |
+| `D1` | Shared | Debug on |
+| `D0` | Shared | Debug off |
+| `A1` | Shared | Enable async `A:` state updates |
+| `A0` | Shared | Disable async `A:` state updates |
+| `G1` | Shared | Enable grace shutdown for this boot |
+| `G0` | Shared | Disable grace shutdown for this boot |
+| `F<n>` | Throttle | Forward momentum ramp |
+| `R<n>` | Throttle | Reverse momentum ramp |
+| `FQ<n>` | Throttle | Forward quick ramp |
+| `RQ<n>` | Throttle | Reverse quick ramp |
+| `S` | Throttle | Quick stop |
+| `B` | Throttle | Brake stop |
+| `B<n>` | Throttle | Variable brake |
+| `?` | Throttle | Hardware state query |
+| `??` | Throttle | Stored state query |
+| `P0` | Throttle | Periodic mismatch debug only |
+| `P1` | Throttle | Periodic debug always |
+| `FX<n>=0/1` | Throttle | Function output off/on |
+| `F?` | Turbine | Requested turbine output query |
+| `F<n>` | Turbine | Ramp turbine output |
+| `F<n>*` | Turbine | Immediate turbine output |
+| `FQ100` | Turbine | Temporary quick turbine output |
+| `CV<n>?` | Device-specific | Query CV |
+| `CV<n>=<value>` | Device-specific | Set CV |
 
 ---
 
 # Async Telemetry Summary
 
-These are **not commands**, but they may appear asynchronously at runtime:
+These are not commands. They may appear asynchronously at runtime.
 
-| Line Prefix | Meaning                         |
-| ----------- | ------------------------------- |
-| `A:`        | General runtime state           |
-| `TV:`       | INA219 bus voltage in mV        |
-| `TI:`       | INA219 current in mA            |
-| `TP:`       | INA219 power in mW              |
-| `TF:`       | INA219 compact status bitfield  |
+| Line prefix | Meaning |
+|---|---|
+| `A:` | General runtime state |
+| `TV:` | INA219 bus voltage in mV |
+| `TI:` | INA219 current in mA |
+| `TP:` | INA219 power in mW |
+| `TF:` | INA219 compact status flags |
+| `IP:` | Wi-Fi IP announcement |
+
+---
+
+# What Changed from the Older 1.12.x Reference
+
+This reference has been updated for the current PMT 2.0.0 firmware family.
+
+Major documentation changes:
+
+* Updated the document from throttle-only to the PMT device family.
+* Added Poor Man's Module protocol scope.
+* Added Poor Man's Turbine commands and CVs.
+* Added backup socket authorization with `IB,<token>`.
+* Added current time query/set documentation with `T?` and `T=<unix-time>`.
+* Added `CV14` UTC offset documentation.
+* Clarified that some CV numbers are device-specific and can mean different things on throttle vs turbine firmware.
+* Corrected the identity flow so `I` requests identity and `I?` checks authorization state.
+* Clarified shared vs throttle-only vs turbine-only command availability.

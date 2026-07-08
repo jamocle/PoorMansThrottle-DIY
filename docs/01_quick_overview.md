@@ -17,41 +17,54 @@ Go here for docs, videos, and installation resources: [Installation Hub](https:/
 
 # What Is This For?
 
-**Poor Man's Throttle** is a low-cost wireless throttle system for model locomotives.
+**Poor Man's Throttle** is a low-cost wireless control system for model railroad hobbyists.
 
-A smartphone connects to the locomotive controller wirelessly.  
-The firmware primarily uses **Bluetooth Low Energy (BLE)** and can also support **optional Wi-Fi / WebSocket control** when configured.
+At its core, it lets a smartphone control an ESP32-based device over **Bluetooth Low Energy (BLE)**. When configured, supported devices can also use **Wi-Fi / WebSocket** as an optional backup or secondary control path.
 
-The smartphone app sends throttle and control commands, and the ESP32-based controller converts those commands into motor power for the locomotive.
+The most common use is locomotive throttle control: the smartphone app sends speed, direction, stop, brake, lighting, and configuration commands, and the ESP32 firmware converts those commands into motor-control output for the locomotive.
+
+The project has also grown into a broader PMT device platform. Depending on the firmware installed, the app can work with:
+
+* **Poor Man's Throttle** locomotive controllers
+* **Poor Man's Module** accessory / module-style controllers
+* **Poor Man's Turbine** controllers for ESC-style turbine or blower output
+
+**More modules coming quickly**
 
 This system can be used with:
 
 * battery-powered locomotives (dead-rail)
 * traditional DC-powered model railroad installations
+* compatible accessory or module-style projects
 
 ---
 
 # What the System Does
 
-The system converts wireless control commands into motor power for a locomotive.
+The system converts wireless app commands into useful model railroad control output.
 
-At a basic level, the system includes:
+For a locomotive throttle build, the basic system includes:
 
 | Component | Purpose |
 |----------|---------|
-| Smartphone App | Sends throttle and control commands |
-| ESP32 Controller | Receives commands and manages motor, configuration, and optional accessory features |
+| Smartphone App | Sends throttle, configuration, lighting, schedule, and diagnostic commands |
+| ESP32 Controller | Receives commands and manages motor, configuration, communication, and optional accessory features |
 | Motor Driver | Converts controller signals into motor power |
 | Power System | Provides power for the motor and electronics |
 | Locomotive Motor | Drives the train |
 
-The firmware also supports optional advanced capabilities such as:
+For module or turbine builds, the same general idea applies, but the ESP32 firmware controls the appropriate output for that device instead of a locomotive motor driver.
+
+The app and firmware can also support optional advanced capabilities such as:
 
 * multiple motor driver interface styles
-* configurable momentum, braking, and stop behavior
-* optional lighting / function outputs
-* optional battery-voltage monitoring and protection features
+* configurable momentum, braking, stop, and quick-stop behavior
+* optional lighting and function outputs
+* optional battery-voltage/current telemetry and low-voltage protection features
+* scheduled command (e.g. start/stop) behavior for supported devices
+* app-managed MU / consist control for multiple locomotive throttles
 * persistent configuration storage inside the controller
+* multilingual and accessibility-friendly app behavior
 
 ---
 
@@ -66,11 +79,11 @@ Bluetooth Low Energy (BLE)
        │
 ESP32 Controller
        │
-Motor Control Signals
+Device Output Signals
        │
-Motor Driver
+Motor Driver, Function Output, or ESC-Style Output
        │
-Locomotive Motor
+Locomotive Motor, Lighting, Accessory, or Turbine Output
 ```
 
 ## Optional Wi-Fi / WebSocket Control Path
@@ -82,15 +95,15 @@ Wi-Fi / WebSocket
        │
 ESP32 Controller
        │
-Motor Control Signals
+Device Output Signals
        │
-Motor Driver
+Motor Driver, Function Output, or ESC-Style Output
        │
-Locomotive Motor
+Locomotive Motor, Lighting, Accessory, or Turbine Output
 ```
 
 BLE is the primary control method.  
-Wi-Fi / WebSocket is an optional secondary control path for supported setups.
+Wi-Fi / WebSocket is an optional secondary or backup control path for supported setups.
 
 ---
 
@@ -129,7 +142,7 @@ No battery adapter is required.
 
 # Major Hardware Components
 
-Typical hardware used in the system:
+Typical hardware used in a locomotive throttle build:
 
 | Component | Description |
 |----------|-------------|
@@ -151,6 +164,7 @@ Optional components may include:
 * ferrite core for motor wires
 * external LEDs or function outputs
 * INA219 voltage/current monitor for battery telemetry and low-voltage protection
+* ESC-style output hardware for turbine / blower-style builds
 
 ---
 
@@ -188,7 +202,7 @@ Keeping the logic/controller power path separate from the motor power path impro
 ```text
 Battery Adapter or DC Transformer
             │
-(Optional for Battery (Unnecessary for DC))
+(Optional for Battery / Usually Unnecessary for DC)
      Buck Converter
             │
            Fuse
@@ -210,21 +224,27 @@ Actual wiring can vary depending on:
 * battery voltage
 * whether a buck converter is needed
 * whether optional accessories such as lights or telemetry are installed
+* whether the device is a locomotive throttle, module, or turbine-style build
 
 ---
 
-# Extra Built-In Firmware Features
+# Extra Built-In App and Firmware Features
 
-Even though this page is only a quick overview, it helps to know that the firmware can do more than simple speed control.
+Even though this page is only a quick overview, it helps to know that PMT can do more than simple speed control.
 
-Depending on configuration, the controller can also support:
+Depending on the device and configuration, the system can support:
 
 * configurable train/device naming for wireless identification
 * saved settings that persist after power-off
 * configurable lighting and function outputs
 * momentum, quick-ramp, brake, and stop behaviors
 * optional battery telemetry, low-voltage warning, throttle limiting, and shutdown behavior
+* scheduled operation for supported firmware
+* app-managed MU / consist operation for multiple locomotives
+* known-device management and connection assistance in the smartphone app
 * onboard status LED behavior that shows connection state
+* app diagnostics, terminal access, and configuration tools
+* multilingual app text and accessibility / screen-reader improvements
 
 These advanced features are explained in later documentation.
 
@@ -238,6 +258,7 @@ This project is designed for hobbyists who want:
 * inexpensive electronics
 * flexible hardware choices
 * support for battery-powered or DC-powered builds
+* support for accessory/module experimentation
 * a system that can start simple and expand later
 
 The documentation supports both:
