@@ -2,29 +2,45 @@
 
 ## Smartphone App:
 
+### Version 2.0.0
+* **App support for Poor Man's Turbine added** so PMT can discover, connect to, configure, and control Poor Man's Turbine firmware in addition to train throttle controllers.
+* **New turbine control screen added** with a dedicated turbine output dial, stop control, live output readback, and a saved governor limit so users can cap the maximum turbine output from the app.
+* **Guided ESC calibration added** to walk users through teaching an Electronic Speed Control its low and high throttle endpoints, with safety prompts, confirmation steps, and automatic restoration of the previous output limits.
+* **Turbine configuration support added** for minimum output, full output, ramp-to-full-output time, ESC PWM pin, and turbine dial tap behavior.
+* **Module-style device support added** so the scan screen can recognize registered PMT module devices, display them separately from locomotive throttles, and open the correct module control/configuration experience.
+* **Minimum supported firmware updated to 2.0.0** so the app targets the shared 2.0 firmware generation used by the throttle, module, and turbine firmware.
+* **WebSocket backup connection behavior improved** so the app can continue using a known network connection when available and show clearer status when neither BLE nor WebSocket is connected.
+* **WebSocket diagnostic logging added** so users can enable WebSocket logging for the next launch and review connection, persisted-IP discovery, and error details from settings.
+* **Known-device scanning improved** so previously known devices can be shown from saved network information when reachable, even when BLE discovery is not the only available path.
+* **Known throttle management added** so users can review and administer remembered throttles from settings.
+* **Auto-connect and disconnected-throttle shutdown settings added** so users can control whether known throttles reconnect automatically and whether disconnected train throttles are shut down automatically.
+* **Version information experience expanded** with startup and settings-based release notices so users can review relevant app/version information from inside PMT.
+* **Localization expanded** beyond English, Spanish, and French to include German, Finnish, Gujarati, Hindi, Italian, Dutch, Portuguese, and Tamil.
+* **Accessibility and screen-reader support expanded** across newer PMT screens and controls, including module/turbine screens, diagnostics, settings, and version-notice experiences.
+
 ### Version 1.12.2
-* **PMT is Multilingual** The PMT app now supports multiple languages including Spanish, French, and English.
-* **PMT is Accessible** A user of PMT with vision impairment asked for integration with Accessibility voice-over and I coded it for them.
+* **PMT is multilingual** The PMT app now supports multiple languages including Spanish, French, and English.
+* **PMT is accessible** VoiceOver / screen-reader support was added and expanded for users with vision impairments.
 * **Consist view selection dialog** The selection of the view for consists had a regression where the selection dialog was removed. It is now back.
 * **Android slider tap behavior fixed** Now Android and iOS behave the same with the tap behavior on throttle sliders.
-* **configuration safety** The firmware and the app safely retain the state of the configuration against accidental overwrites during firmware flashing.
-* Fixed bug where mismatches can occur between throttle names and throttle names inside of consists.
+* **Configuration safety** The firmware and app safely retain configuration state to help protect settings from accidental overwrites during firmware flashing.
+* Fixed a bug where throttle names could become mismatched between the scan list and saved consists.
 * **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
 
 ### Version 1.11.2
 * **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
 
 ### Version 1.11.1
-* **MU Consisting for Apple** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
+* **MU Consisting for Apple** Configure and run MU Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.11.0
-* **MU Consisting Beta for Android** Configure and run MY Consists with PMT.  Multiple engine control with one throttle like the big boys do it..
+* **MU Consisting Beta for Android** Configure and run MU Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.3
 * **New Telemetry** The app supports new telemetry coming from Firmware v1.12.4.
-* **UI change** Modified configuration to uncomplicate the Battarey Management section and removed the INA219 I2C Address from the UI. To set this use CV33.  The default is 0x40 (64 decimal). 
+* **UI change** Modified configuration to uncomplicate the Battery Management section and removed the INA219 I2C Address from the UI. To set this use CV33.  The default is 0x40 (64 decimal). 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.2
@@ -32,7 +48,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.0
-* **Battery Management Support** The app supports the use of the INA219 board to monitor and manage battery information that ties to locomotive behavior.  The app can no protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
+* **Battery Management Support** The app supports the use of the INA219 board to monitor and manage battery information that ties to locomotive behavior.  The app can now protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
 
 ### Version 1.9.24
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
@@ -42,12 +58,12 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.21
-* **Swipe between throttle screens** Now when you have multiple throttles connected to the PMT app, you can wasily swipe between them without having to go back to the Scan screen like in previous versions of the app.
+* **Swipe between throttle screens** Now when you have multiple throttles connected to the PMT app, you can easily swipe between them without having to go back to the Scan screen like in previous versions of the app.
 * **Asynchronous Connect** Now you can connect to all of the throttles without having to wait. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.12
-* **Backup and restore capabilities** Now there is a copy button on the CV section in configuratiopn that will copy the settings for a throttle for external storage by the user.  The import capability is handled by pasting the output of the copy into the script view on the terminal page and it will reset the hardware to defaults and apply the settings.  This can be used to restore a throttle or copy settings to another throttle.
+* **Backup and restore capabilities** Now there is a copy button on the CV section in configuration that will copy the settings for a throttle for external storage by the user.  The import capability is handled by pasting the output of the copy into the script view on the terminal page and it will reset the hardware to defaults and apply the settings.  This can be used to restore a throttle or copy settings to another throttle.
 * **UI Changes** Minor Tweaks.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
@@ -56,8 +72,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.10
-* **PMT Hardware Naming Fix** The app now handles BLE Throttle name by better managing the lifecycle of the BLE Notification name and BLE Cache.  
-** Basically saying when you change your PMT name in the app it sticks now :-)
+* **PMT Hardware Naming Fix** The app now handles BLE throttle names by better managing the BLE notification name and BLE cache lifecycle. Basically, when you change your PMT name in the app, it sticks now :-)
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 
@@ -68,7 +83,7 @@
 
 
 ### Version 1.9.5
-* **Support for WiFi Failover** The app now uses both BLE and Wifi for better connectivity consistency
+* **Support for WiFi Failover** The app now uses both BLE and Wi-Fi for better connectivity consistency
 * **Graphical Changes** Slight changes in the graphics
 
 
@@ -82,19 +97,19 @@
 * **Updated minimum firmware requirement** Minimum supported firmware version updated to **1.10.5**.
 
 ### Version 1.8.4
-* **Stronger BLE Scanning** Hardened the BLE scanning algorithms further to strengthen the apps ability to find devices even on slower devices.
-* **Scripting Halt Ability** The app supports stopping a script mid flight.
+* **Stronger BLE Scanning** Hardened the BLE scanning algorithms further to strengthen the app's ability to find devices even on slower devices.
+* **Scripting Halt Ability** The app supports stopping a script mid-flight.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.8.4
-* **Stronger BLE Scanning** Hardened the BLE scanning algorithms to strengthen the apps ability to find devices even on slower devices.
+* **Stronger BLE Scanning** Hardened the BLE scanning algorithms to strengthen the app's ability to find devices even on slower devices.
 * **BLE Diagnostic Mode** Ability to view BLE logs for scan failures.
 * **Scripting ability** The app supports scripting commands together.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.8.0
 
-* **Improved throttle Look** more streamlined and asthetic look and feel for the standard throttle screen
+* **Improved throttle look** More streamlined and aesthetic look and feel for the standard throttle screen
 * **BLE scan and device discovery interface** for locating and selecting available throttle controllers.
 * **Multiple throttle interface modes** including Novice, Standard, and Pro throttle layouts.
 * **Default throttle page selection** with persistent storage of the preferred throttle interface.
@@ -102,7 +117,7 @@
 * **Appearance customization interface** for adjusting application theme colors and restoring default theme settings.
 * **Demo mode support** for operating the application without a live controller connection.
 * **Expanded controller configuration interface** for adjusting motor driver type, minimum start throttle, maximum throttle, reverse direction, and start assist behavior.
-* **Raw CV Editor** Editor to modify CV's without having to use the terminal for any newly added CV's not enabled yet by the App UI.
+* **Raw CV Editor** Editor to modify CVs without having to use the terminal for any newly added CVs not enabled yet by the App UI.
 * **Configurable debug mode** for enabling enhanced diagnostics from the configuration area.
 * **Dedicated throttle debug interface** for viewing live session and message activity while connected to a controller.
 * Pro throttle brake feathering control with a dedicated brake slider for finer braking adjustment.
