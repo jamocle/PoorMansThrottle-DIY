@@ -13,7 +13,7 @@ Poor Man’s Throttle has grown from a single locomotive throttle into a broader
 
 ⸻
 
-✅ ## Completed Features (Available Today)
+## ✅ Completed Features (Available Today)
 
 These items are already part of the current PMT app and firmware platform.
 
@@ -92,7 +92,7 @@ App Experience
 
 ⸻
 
-🛠️ ## Planned Improvements (Requested / In Progress)
+## 🛠️ Planned Improvements (Requested / In Progress)
 
 These are customer-requested or planned improvements that align with the PMT direction but are not yet released.
 
