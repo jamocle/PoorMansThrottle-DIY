@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PMT 2.0 Modules</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.88);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#0a7f48;
+      --success-soft:rgba(10,127,72,.08);
+      --shadow:0 16px 40px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f5f5f7 54%, #ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%, var(--max));
+      margin:0 auto;
+      padding:22px 16px 64px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:10px 4px 20px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.78);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:600;
+      letter-spacing:.01em;
+      backdrop-filter:blur(10px);
+    }
+
+    h1{
+      margin:16px 0 10px;
+      font-size:clamp(2rem, 7vw, 3.9rem);
+      line-height:1.04;
+      letter-spacing:-.04em;
+      font-weight:700;
+    }
+
+    .subhead{
+      max-width:880px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1rem, 2.8vw, 1.2rem);
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-header{
+      padding:24px 22px 0;
+    }
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.35rem, 4vw, 2.1rem);
+      letter-spacing:-.025em;
+      line-height:1.1;
+    }
+
+    h3{
+      margin:0 0 10px;
+      font-size:1.2rem;
+      letter-spacing:-.015em;
+    }
+
+    .section-header p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .content{
+      padding:22px 22px 30px;
+    }
+
+    p{
+      margin:0 0 16px;
+      font-size:1rem;
+    }
+
+    .image-grid,
+    .card-grid,
+    .bullet-grid{
+      display:grid;
+      gap:14px;
+    }
+
+    .image-grid{
+      padding:14px;
+      background:linear-gradient(180deg, rgba(255,255,255,.93), rgba(248,248,250,.9));
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+    }
+
+    .card,
+    .image-card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      overflow:hidden;
+      box-shadow:0 10px 20px rgba(0,0,0,.06);
+    }
+
+    .card{
+      padding:18px;
+    }
+
+    .image-card img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    .caption{
+      padding:12px 14px 14px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:600;
+      letter-spacing:.01em;
+    }
+
+    .klist{
+      margin:0;
+      padding-left:18px;
+    }
+
+    .klist li{
+      margin:0 0 9px;
+    }
+
+    .note{
+      margin-top:18px;
+      padding:16px 18px;
+      border-radius:18px;
+      background:var(--success-soft);
+      border-left:4px solid var(--success);
+      color:#155233;
+    }
+
+    .timeline{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .timeline .card strong{
+      display:block;
+      margin-bottom:6px;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
+
+    .placeholder{
+      min-height:240px;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:linear-gradient(180deg, #fafafa, #f1f1f4);
+      color:var(--muted);
+      text-align:center;
+      font-size:1rem;
+    }
+
+    @media (min-width: 760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .card-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .bullet-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">PMT 2.0</div>
+      <h1>Modules have arrived.</h1>
+      <p class="subhead">
+        Version 2.0 expands PMT beyond train throttles and introduces a new module ecosystem.
+        The first released module is <strong>PoorMansTurbine</strong>, and the new module foundation opens the door
+        for future plugins such as railroad switch control, layout lighting, layout sound, and other specialized accessories.
+      </p>
+    </section>
+
+    <section class="section" aria-labelledby="modules-title">
+      <div class="section-header">
+        <h2 id="modules-title">A new module platform for the PMT ecosystem</h2>
+        <p>
+          PMT 2.0 adds module-style device support so the app can discover module devices, show them separately from locomotive throttles,
+          and open the correct module-specific control and configuration experience. The goal is simple: create a growing PMT ecosystem
+          where dedicated devices can be built for different layout and maintenance jobs.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="module.png" alt="PMT module baseline icon representing the shared module template." />
+          <figcaption class="caption">
+            The baseline PMT module concept: a shared module template that future PMT module types can build on.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="module2.png" alt="PoorMansTurbine module icon." />
+          <figcaption class="caption">
+            PoorMansTurbine is the first module released on the new PMT module foundation.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">What modules enable</span>
+            <h3>PMT can now grow beyond throttles</h3>
+            <p>
+              Modules make it possible for PMT to support specialized devices that are not train throttles. That means the platform can
+              continue expanding into other railroad and layout roles while still using the same familiar PMT app and shared device family.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Future plugin ideas</span>
+            <h3>The ecosystem is expanding</h3>
+            <p>
+              Future module plugins can be created for railroad switches, layout lights, layout sounds, maintenance tools, and other
+              purpose-built layout accessories. The module system is intended to make those additions feel like part of one connected PMT platform.
+            </p>
+          </div>
+        </div>
+
+        <div class="note">
+          PMT 2.0 is the first release where throttle, module, and turbine devices all share the same 2.0 firmware generation and app support.
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="turbine-title">
+      <div class="section-header">
+        <h2 id="turbine-title">PoorMansTurbine: the first PMT module</h2>
+        <p>
+          PoorMansTurbine is designed for high-speed brushless fans driven by an Electronic Speed Controller (ESC), such as a
+          Flycolor 50A ESC 2–4S electric speed controller, though other ESCs can be used as well. It is well suited for accessories
+          like snow blowers, track blowers, smoke systems, and similar high-airflow applications.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card" style="grid-column:1 / -1;">
+          <img src="turbine.png" alt="PoorMansTurbine powering a track blower while controlled from the PMT app." />
+          <figcaption class="caption">
+            Example use: a PMT-controlled track blower using PoorMansTurbine and a brushless fan with ESC-style output control.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Purpose</span>
+            <h3>Built for high-speed fan control</h3>
+            <p>
+              PoorMansTurbine provides ESC-style output control for fan-driven accessories where fast airflow is the goal. That makes it a strong
+              fit for track-clearing and snow-clearing tools, as well as other experimental layout accessories that benefit from controlled fan output.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Dedicated app experience</span>
+            <h3>Module-aware control and configuration</h3>
+            <p>
+              PMT 2.0 adds a dedicated turbine control screen with a turbine output dial, stop control, live output readback, and a saved governor limit.
+              The app also adds guided ESC calibration plus turbine configuration for minimum output, full output, ramp time, ESC PWM pin, and dial tap behavior.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          On the firmware side, the 2.0 release adds PoorMansTurbine firmware, ESC-style output commands, turbine output tuning,
+          low-voltage protection support, scheduled command execution, and the shared module foundation used across the PMT 2.0 family.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="app-title">
+      <div class="section-header">
+        <h2 id="app-title">App 2.0 highlights</h2>
+        <p>
+          The PMT app now understands both throttle devices and module-class devices, including PoorMansTurbine.
+        </p>
+      </div>
+      <div class="content">
+        <div class="bullet-grid">
+          <div class="card">
+            <ul class="klist">
+              <li>App support for PoorMansTurbine discovery, connection, configuration, and control.</li>
+              <li>A dedicated turbine control screen with live output, stop control, and governor limit support.</li>
+              <li>Guided ESC calibration with safety prompts and automatic restoration of previous output limits.</li>
+              <li>Turbine configuration support for minimum output, full output, ramp-to-full time, ESC PWM pin, and dial behavior.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <ul class="klist">
+              <li>Module-style device support on the scan screen so modules are recognized separately from train throttles.</li>
+              <li>Minimum supported firmware updated to 2.0.0 across the shared PMT device family.</li>
+              <li>Improved WebSocket backup connection behavior and known-device scanning.</li>
+              <li>Expanded localization, accessibility, diagnostics, and version-information experiences.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="firmware-title">
+      <div class="section-header">
+        <h2 id="firmware-title">Firmware 2.0 highlights</h2>
+        <p>
+          Firmware 2.0 establishes the shared module and turbine generation that the new app release is built around.
+        </p>
+      </div>
+      <div class="content">
+        <div class="bullet-grid">
+          <div class="card">
+            <ul class="klist">
+              <li>Shared firmware versioning now spans Throttle, Module, and Turbine firmware in the 2.0 family.</li>
+              <li>PoorMansTurbine firmware added for ESC-style output control of turbine, smoke, fan, and similar accessory modules.</li>
+              <li>Turbine output commands and tuning added for normal output, immediate changes, output queries, and quick-blast behavior.</li>
+              <li>Battery-protection behavior added for low-voltage shutdown and output limiting when configured.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <ul class="klist">
+              <li>PoorMansModule shared firmware foundation added with common BLE, Wi-Fi, WebSocket, identity, debug, schedule, naming, reset, and telemetry capabilities.</li>
+              <li>Scheduled command execution expanded across supported firmware images, including module and turbine devices.</li>
+              <li>Manual time support and backup WebSocket handshake support added.</li>
+              <li>BLE command processing and battery telemetry delivery reliability improved.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+</html>
