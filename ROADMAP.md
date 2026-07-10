@@ -1,104 +1,212 @@
-# Poor Man's Throttle Roadmap
+Poor Man’s Throttle Roadmap
 
-This document outlines planned and potential features for the Poor Man's Throttle project.
+This document outlines completed features, planned improvements, and future ideas for the Poor Man’s Throttle project.
 
 The roadmap is organized by feature category rather than development order.
 
----
+Poor Man’s Throttle has grown from a single locomotive throttle into a broader PMT control platform that includes:
 
-# Requested Completed Items
-1. **Locomotive Profiles**  
-   Allow the app to store settings for individual locomotives. Each locomotive can have its own throttle tuning, limits, and behavior settings.
+* Poor Man’s Throttle locomotive controllers
+* Poor Man’s Module accessory / module-style controllers
+* Poor Man’s Turbine ESC-style turbine / blower controllers
+* the PMT smartphone app used to discover, configure, and operate supported devices
 
-2. **Yard Switching Mode**  
-   A special throttle mode optimized for switching operations. This mode prioritizes very fine low-speed control and strong starting torque for slow yard movements.
+⸻
 
-3. **Personal Railroad Branding**  
-   Allow users to personalize the app with their Theme Colors.  Also individual locomotives can be named for identification.
+✅ Completed Features (Available Today)
 
-# Core Locomotive Control
+These items are already part of the current PMT app and firmware platform.
 
-Features that improve the basic throttle experience and locomotive behavior.
+Core Wireless Control
 
-1. **Copy Settings Between Locomotives**  
-   Allow users to quickly copy configuration settings from one locomotive profile to another. This is useful when multiple locomotives should behave similarly.
+* Bluetooth smartphone control for PMT devices.
+* Optional Wi-Fi / WebSocket control path for supported and configured devices.
+* Known-device support to help reconnect to previously configured devices.
+* Device naming so locomotives and PMT devices can be identified more easily in the app.
 
-2. **Locomotive Templates**  
-   Allow users to create reusable setup templates such as "Yard Switcher", "Heavy Freight", or "Passenger". Templates can be applied to new locomotives for quick setup.
+Locomotive Profiles, Configuration Management, and Operating Modes
 
-3. **Adjustable Throttle Curves**  
-   Allow different throttle response curves to match locomotive type and operator preference. This can improve low-speed control and make locomotives feel more realistic.
+* Locomotive Profiles
+    The app can store settings for individual locomotives so each locomotive can have its own tuning, limits, behavior settings, and configuration.
+* Copy Settings Between Locomotives
+    Users can copy configuration settings from one locomotive profile to another, making it easier to configure multiple locomotives with similar behavior.
+* Yard Switching Mode
+    The app includes a yard switching mode optimized for slow-speed switching operations, giving users finer low-speed control for yard movements and close-coupling work.
 
+Locomotive Throttle Control
 
+* Forward / reverse direction control.
+* Stop, quick-stop, and braking behavior.
+* Momentum-style throttle behavior.
+* Variable / feathered braking behavior.
+* Configurable minimum start and maximum output limits.
+* Multiple supported motor-driver interface styles, including DUAL_PWM, PWM_DIR, PWM_BIDIR, and DUAL_INPT.
 
-These features improve everyday operation and make it easier to tune locomotive performance.
+App-Managed Multi-Locomotive Operation
 
----
+* App-managed MU / consist operation for controlling multiple locomotive throttles together from the smartphone app.
+* Multiple throttle support so users can operate more than one connected locomotive.
+* Consist speed matching / trim support so individual locomotives in a consist can be adjusted to run together more smoothly.
+* Consist profiles so users can save reusable locomotive groups such as Double-Header Freight, Passenger Pair, or Helper Set.
+* Consist health / connection view so users can see whether every locomotive in a consist is connected and responding before or during operation.
 
-# Multi-Locomotive Operation
+Lighting and Function Outputs
 
-Features that support running more than one locomotive.
+* Configurable function outputs for lights and accessories.
+* Direction-aware outputs for forward/reverse lighting behavior.
+* Multiple output patterns, including solid, blinking, double-blink, and FRED-style behavior.
+* Lighting control from the app for supported configured outputs.
 
-4. **Multi-Locomotive Consisting**  
-   Allow multiple locomotives to be grouped and controlled together using a single throttle. Individual locomotives may optionally have speed offsets for better synchronization.
+Battery Telemetry and Protection
 
-This allows multiple locomotives to pull long trains together in a realistic manner.
+* Optional INA219 battery telemetry for voltage, current, and power reporting.
+* Low-voltage warning behavior.
+* Low-voltage output limiting.
+* Low-voltage shutdown behavior.
+* Battery-disconnect / collapsed-supply detection.
+* Optional low-voltage indicator output.
 
----
+Scheduled / Autonomous Operation
 
-# System Awareness
+* Scheduled ON / OFF operation using configured days, times, and commands.
+* Autonomous behavior during scheduled windows when configured correctly.
+* Persistent schedule settings saved on the controller.
 
-Features that provide additional operational feedback to the user.
+Module Platform Expansion
 
-5. **Bluetooth Signal Strength Indicator**  
-   Display the connection quality between the smartphone and locomotive controller. This helps diagnose connection problems and understand range limitations on large layouts.
+* Poor Man’s Module foundation for PMT-compatible module-style devices.
+* Poor Man’s Turbine support for ESC-style turbine, fan, blower, or accessory output.
+* Turbine output control from the app.
+* Guided ESC calibration support for turbine-style builds.
+* Turbine-specific configuration for output limits, ramping, quick-blast behavior, and ESC signal pin.
 
----
+App Experience
 
-# Locomotive Feature Control
+* Configuration screens for supported firmware features.
+* Terminal access for advanced command and CV use.
+* Configuration backup / restore support.
+* Diagnostics and WebSocket logging support.
+* Multilingual app support.
+* Accessibility / screen-reader improvements.
+* In-app version and release information.
 
-Features that allow the throttle to control additional locomotive functions.
+⸻
 
-6. **Lighting Control Outputs**  
-   Allow the controller to operate locomotive lighting such as headlights, cab lights, or marker lights using dedicated output pins.
+🛠️ Planned Improvements (Requested / In Progress)
 
-7. **Sound Trigger Outputs**  
-   Provide output triggers that can activate external sound boards or audio modules (e.g. DFMini sound board). These triggers could support common locomotive sounds such as horns, bells, or whistles.
+These are customer-requested or planned improvements that align with the PMT direction but are not yet released.
 
-These outputs allow the throttle system to expand beyond motor control.
+Core Locomotive Control
 
----
+1. Locomotive Templates
+    Allow users to create reusable setup templates such as Yard Switcher, Heavy Freight, Passenger, or Light Engine. Templates could be applied to new locomotives for quicker setup.
+2. Adjustable Throttle Curves
+    Allow different throttle response curves to match locomotive type and operator preference. This could improve low-speed control and make locomotives feel more realistic.
 
-# Layout-Level Control
+Personalization and Branding
 
-Features that extend the system beyond controlling individual locomotives.
+1. Personal Railroad Branding
+    Allow users to personalize the app with railroad-themed branding, including custom theme colors, layout names, railroad names, or preferred display styles.
+2. Enhanced Device Presentation
+    Improve how locomotives, consists, modules, and turbine devices are displayed in the app so larger collections are easier to identify and manage.
 
-8. **Layout Control Mode**  
-   Allow the system to interact with layout devices such as turnouts, signals, or accessories. This could enable basic layout automation or remote control.
+System Awareness
 
-9. **Layout Mode vs Portable Mode**  
-   Support two operating modes. Portable Mode connects directly from phone to locomotive, while Layout Mode allows a layout controller to coordinate multiple locomotives and accessories.
+1. Bluetooth Signal Strength Indicator
+    Display connection quality between the smartphone and PMT device. This would help diagnose connection problems and understand range limitations on larger layouts.
+2. Connection Quality History
+    Show recent BLE and WebSocket connection events so users can understand whether problems are caused by range, power, firmware reset, or network behavior.
+3. Battery and Protection History
+    Add a simple view of recent battery warning, limit, shutdown, and recovery events for telemetry-enabled builds.
 
-These features allow the system to scale from small portable layouts to larger installations.
+Locomotive Feature Control
 
----
+1. Sound Trigger Outputs
+    Provide output triggers that can activate external sound boards or audio modules, such as DFPlayer Mini-style sound boards. These triggers could support common locomotive sounds such as horn, bell, whistle, brake squeal, or prime-mover effects.
+2. Expanded Function Output Presets
+    Add easier app presets for common lighting and accessory output setups.
+3. Function Output Test Mode
+    Provide a safer app workflow for testing function outputs one at a time during installation.
 
-# Future Hardware Expansion
+Module and Accessory Control
 
-Some future capabilities may require additional hardware or expansion modules.
+1. Additional PMT Module Types
+    Add more supported module plugins beyond Poor Man’s Turbine.
+2. Turnout / Switch Control Module
+    Support layout turnouts or switch motors using PMT-compatible module firmware and app screens.
+3. Lighting Module
+    Support layout lighting, structure lighting, yard lights, or effect lighting from PMT-compatible module hardware.
+4. Sound Module
+    Support dedicated sound-trigger modules for layout or locomotive sound effects.
+5. Accessory Automation Module
+    Support simple automation actions for layout accessories.
+
+Layout-Level Control
+
+1. Layout Control Mode
+    Allow the system to interact with layout devices such as turnouts, signals, lighting, accessories, or sound modules.
+2. Layout Mode vs Portable Mode
+    Support two operating styles:
+    * Portable Mode — the phone connects directly to locomotives and PMT devices.
+    * Layout Mode — a layout controller or hub coordinates multiple locomotives, modules, and accessories.
+3. Basic Layout Automation
+    Allow users to define simple actions such as turning lights on, triggering sounds, or activating modules based on time or user command.
+
+⸻
+
+💡 Future Ideas (Exploratory / Hardware Expansion)
+
+These are longer-term ideas or capabilities that may require additional hardware or further design work.
+
+Future Hardware Expansion
 
 Examples include:
 
-* additional output drivers  
-* accessory control boards  
-* layout control interfaces  
+* additional output drivers
+* turnout / switch motor driver boards
+* sound trigger boards
+* layout lighting boards
+* signal control boards
+* sensor input boards
+* layout control interfaces
 
-These expansions would allow the system to grow while keeping the base throttle simple and inexpensive.
+These expansions should continue following the PMT philosophy: inexpensive, understandable, modular, and friendly to hobby builders.
 
----
+Documentation Roadmap
 
-# Contributing
+Future documentation improvements may include:
+
+* dedicated Poor Man’s Turbine build guide
+* dedicated Poor Man’s Module guide
+* turnout / switch motor module guide when supported
+* sound trigger setup guide
+* more app screenshots and walkthroughs
+* more troubleshooting decision trees
+* more examples for battery telemetry and low-voltage tuning
+
+⸻
+
+Contributing
 
 Contributions and ideas are welcome.
 
 If you have a feature suggestion or improvement, please open a GitHub issue to discuss it.
+
+Builder feedback is especially useful when it includes:
+
+* the device type being used
+* app platform, such as iOS or Android
+* firmware version
+* hardware parts used
+* wiring notes or photos
+* what worked
+* what failed
+* what behavior you expected
+
+⸻
+
+Roadmap Note
+
+This roadmap is not a promise of release dates or development order.
+
+It is a guide to where the project is going and how future ideas fit into the Poor Man’s Throttle ecosystem.
