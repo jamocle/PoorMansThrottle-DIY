@@ -2,18 +2,33 @@
 
 ## Firmware:
 
+
+### Version 2.0.0
+* **Shared firmware versioning expanded across the Poor Man’s firmware family**, with Throttle, Module, and Turbine firmware now reporting the shared `2.0.0` firmware version.
+* **PoorMansTurbine firmware added**, providing ESC-style output control for turbine, smoke, fan, or similar accessory modules using a standard servo-style PWM signal.
+* **Turbine output commands added**, including normal `F<n>` output control, immediate `F<n>*` output changes, `F?` output queries, and a timed `FQ100` quick-blast command that temporarily applies the configured quick output before returning to the requested output.
+* **Turbine output tuning added** through CVs for minimum output, full output, quick-blast output, ramp duration, low-voltage output cap, and ESC PWM pin assignment.
+* **Turbine battery-protection behavior added**, allowing INA219 low-voltage shutdown to force output off and low-voltage limiting to cap turbine output.
+* **PoorMansModule shared firmware foundation added**, giving module-class devices the same BLE, Wi-Fi/WebSocket, identity, debug, schedule, device-name, factory-reset, and battery telemetry configuration foundation used by the throttle firmware.
+* **Scheduled command execution expanded across supported firmware images** so module and turbine firmware can also run their configured ON and OFF commands when schedule conditions are met.
+* **Shared command handling standardized** so version, identity, connection status, IP, time, debug, async notification, grace enable/disable, Wi-Fi, LED timing, schedule, and INA219 configuration behave more consistently across supported firmware images.
+* **Manual time support added** so devices can report current time with `T?` and accept a manually supplied Unix timestamp with `T=<time>`, helping scheduled operation when network time is not available.
+* **Backup WebSocket handshake support added** so a secondary controller connection can be marked as backup without taking over the active control path.
+* **BLE command processing reliability improved** by queueing received commands and reporting overflow instead of processing commands directly inside the BLE write callback.
+* **Battery telemetry delivery reliability improved** by pacing queued telemetry lines over BLE/WebSocket, reducing dropped or crowded battery-status updates.
+
 ### Version 1.12.7
-* Fixed telemerty queueing where sometimes TF wouldnt be sent.
+* Fixed telemetry queueing so `TF` battery telemetry updates are sent more reliably.
 
 
 ### Version 1.12.6
-* Added new G command that disables the grace shutdown
+* Added `G0` / `G1` grace-shutdown control commands so grace shutdown can be disabled or re-enabled at runtime.
 
 ### Version 1.12.5
-* CV40 defaults to 1000mV
+* Changed `CV40` battery-disconnect threshold default to `1000 mV`.
 
 ### Version 1.12.4
-* Telemetry changes and efficiency modifications
+* Improved telemetry efficiency and reduced unnecessary background work.
 
 ### Version 1.12.3
 * **Scheduled operating mode** added, allowing the controller to automatically turn activity on and off at user-configured times on selected days.
@@ -22,7 +37,7 @@
 * **Safer scheduled behavior** added by requiring a complete and valid schedule before autonomous operation can activate, helping prevent accidental or partial schedule setups from taking effect.
 * **More reliable unattended operation** added by temporarily suppressing disconnect grace, BLE recovery escalation, and pending reboot-after-stop behavior while scheduled autonomous mode is active.
 * **Persistent schedule settings** added so schedule enablement, days, times, and commands are saved and restored after reboot.
-* **Support for consisting** added firmware support for MU trains (Multiple unit Consisting).
+* **Firmware support for app-managed consisting improved** so the MAUI app can coordinate multiple throttle controllers for MU / consist operation while each firmware device continues to handle its own safe throttle, direction, connection, and state-reporting behavior.
 
 ### Version 1.12.1
 * **INA219 telemetry sampling default** changed from `250 ms` to `500 ms`, reducing background sensor polling frequency so battery monitoring stays lighter-weight relative to throttle-control work.
@@ -49,10 +64,10 @@
 * **Hardware-state readback support added for `DUAL_INPT`** so debug and verification logic can interpret forward, reverse, stop, and throttle percentage correctly when either two-pin channel is being PWM-driven.
 
 ### Version 1.10.9
-* **Websocket Hardeniong** Enhanced the code that handles the WiFi Websocket transport for stronger connectivity
+* **WebSocket hardening** improved Wi-Fi WebSocket transport handling for stronger connectivity.
 
 ### Version 1.10.7
-* **Feathered Braking Bug Fix** The firmware now accurately re-establishes the remembered throttle of the speed does not reach 0
+* **Feathered braking bug fix** The firmware now accurately re-establishes the remembered throttle when speed does not reach `0`.
 * **Escalated BLE advertising recovery** added with a bounded hard-recovery path that triggers if normal BLE advertising restart and watchdog recovery do not restore scanability after disconnect.
 * **Safe deferred BLE recovery reboot** added so, when hard BLE recovery is required, the controller first forces a quick stop and only reboots after the locomotive has safely stopped.
 * **BLE hard-recovery cancellation during socket control** added so an active WebSocket control path suppresses BLE-forced reboot behavior instead of interrupting an otherwise valid control session.

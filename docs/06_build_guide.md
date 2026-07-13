@@ -1,8 +1,10 @@
 # Build Guide
 
-This guide walks through the complete **default IBT-2 / BTS7960 hardware assembly** of the Poor Man's Throttle.
+This guide walks through the complete **default IBT-2 / BTS7960 hardware assembly** for a **Poor Man's Throttle locomotive controller**.
 
-This document is intentionally **hardware-first**. It shows the standard **ESP32-WROOM-32 + IBT-2** build path that matches the firmware's default **DUAL_PWM** motor-driver mode and default pin assignments.
+This document is intentionally **hardware-first**. It shows the standard **ESP32-WROOM-32 + IBT-2** build path that matches the throttle firmware's default **DUAL_PWM** motor-driver mode and default pin assignments.
+
+The Poor Man's Throttle project now also includes other PMT device types, such as **Poor Man's Module** and **Poor Man's Turbine**, but those are not the scope of this hardware build guide. This page is specifically for the standard locomotive throttle build.
 
 The firmware also supports additional motor-driver interface types, but those alternate driver wiring patterns are **not** the main scope of this document. For this build guide, follow the IBT-2 wiring shown here unless you are intentionally building for a different supported driver type.
 
@@ -20,6 +22,7 @@ The build process follows these steps:
 5. Install optional noise suppression  
 6. Connect the locomotive motor  
 7. Perform the first power test
+8. Confirm the build in the smartphone app
 
 Beginner and advanced builders can follow the same steps.
 
@@ -52,8 +55,9 @@ Main Power Source
 
 # Supported Hardware Scope for This Guide
 
-This guide documents the **default firmware wiring path**:
+This guide documents the **default throttle firmware wiring path**:
 
+- **Device type:** Poor Man's Throttle locomotive controller  
 - **Controller target:** ESP32-WROOM-32  
 - **Default motor-driver mode:** DUAL_PWM  
 - **Typical driver board:** IBT-2 / BTS7960 style dual-PWM driver  
@@ -64,6 +68,8 @@ This guide documents the **default firmware wiring path**:
   - GPIO33 → L_EN  
 
 If you are using a different supported motor-driver type such as **PWM_DIR**, **PWM_BIDIR**, or **DUAL_INPT**, the firmware can support it, but the ESP32 wiring will differ from the IBT-2 example shown in this document.
+
+If you are building a **Poor Man's Turbine** or **Poor Man's Module**, do not use this page as your wiring guide. Those device types use different outputs and installation assumptions.
 
 ---
 
@@ -352,6 +358,8 @@ This sensor is **not required** for the basic build in this document. If used, i
 
 A low-voltage indicator output is also supported by firmware when that feature is configured.
 
+When installed and enabled, the smartphone app can display battery-related telemetry such as voltage, current, watts, and protection state. Low-voltage firmware behavior can help warn, limit, or stop output when configured, but builders should still use batteries, chargers, fuses, and protection practices appropriate for their battery chemistry.
+
 ---
 
 # Step 6 — Connect the Motor
@@ -409,21 +417,44 @@ Then power the system.
 
 ---
 
+# Step 8 — Confirm the Build in the Smartphone App
+
+After the firmware is installed and the hardware powers on, use the Poor Man's Throttle smartphone app to confirm the controller is visible and configured as a throttle.
+
+At a basic level, confirm:
+
+- the device appears during scan or known-device discovery
+- the app can connect to the controller
+- the controller reports as a throttle-style device
+- the motor-driver mode is **DUAL_PWM** for this IBT-2 build
+- the default pins match the wiring in this guide, unless you intentionally changed them
+- throttle, direction, stop, and brake behavior are tested gently before running at higher power
+
+If the app supports Wi-Fi / WebSocket backup for your setup, configure that only after the basic BLE connection and motor test work correctly.
+
+For app-managed MU / consist use, first verify each locomotive controller works correctly by itself before adding it to a consist.
+
+---
+
 ## Optional Hardware Expansion Notes
 
-The firmware can also support hardware expansion beyond the basic build, including:
+The firmware and app can also support hardware expansion beyond the basic build, including:
 
 - alternate supported motor-driver interface types
 - optional INA219 telemetry/protection wiring
 - configurable function / lighting outputs on additional pins
+- scheduled operation once the controller is configured
+- app-managed MU / consist operation using multiple working throttle controllers
 
 Those items are outside the main scope of this default IBT-2 assembly guide, but they are relevant for advanced custom installations.
+
+Poor Man's Turbine and Poor Man's Module builds are also outside the scope of this page because they do not follow the default IBT-2 locomotive motor-driver wiring path.
 
 ---
 
 # Build Complete
 
-You have completed the basic hardware build for the default **ESP32 + IBT-2** Poor Man's Throttle installation.
+You have completed the basic hardware build for the default **ESP32 + IBT-2** Poor Man's Throttle locomotive installation.
 
 Next document:
 

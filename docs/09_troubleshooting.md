@@ -1,10 +1,10 @@
 # Troubleshooting
 
-If the locomotive does not operate correctly, follow these troubleshooting steps.
+If a Poor Man's Throttle device does not operate correctly, follow these troubleshooting steps.
 
 Work through the checks slowly and carefully. Start with power and wiring, then check configuration, then check wireless control behavior.
 
-This troubleshooting guide has been refreshed against firmware **v1.12.1** so it reflects current firmware behavior and supported features.
+This troubleshooting guide has been refreshed for the current Poor Man's Throttle app and firmware platform, including throttle, module, and turbine-style devices.
 
 ---
 
@@ -16,7 +16,7 @@ If your project works in one direction but not the other, or behaves unpredictab
 
 [Check Your IBT-2 Board Before You Start](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md)
 
-> **Important:** Poor Man's Throttle no longer supports only IBT-2 style wiring. Firmware v1.12.1 supports multiple motor driver modes. If you are using a driver other than IBT-2/BTS7960, make sure the configured motor driver mode and GPIO pin assignments match your hardware.
+> **Important:** Poor Man's Throttle no longer supports only IBT-2 style wiring. Current throttle firmware supports multiple motor driver modes. If you are using a driver other than IBT-2/BTS7960, make sure the configured motor driver mode and GPIO pin assignments match your hardware.
 
 Supported driver styles in current firmware include:
 - **DUAL_PWM** - example: IBT-2 / BTS7960
@@ -25,6 +25,18 @@ Supported driver styles in current firmware include:
 - **DUAL_INPT** - example: DRV8833 / TB6612FNG style
 
 A wiring layout that is correct for one driver mode can fail completely in another mode.
+
+## Know Which PMT Device You Are Troubleshooting
+
+Poor Man's Throttle now includes more than one kind of PMT device. The first troubleshooting question is: **what firmware/device type are you working with?**
+
+| Device Type | What It Controls | Common Troubleshooting Focus |
+|---|---|---|
+| Poor Man's Throttle | Locomotive motor, lights, battery telemetry, and train behavior | Motor driver wiring, direction, throttle, BLE/Wi-Fi connection, battery protection |
+| Poor Man's Module | Module-style device foundation | Power, BLE/Wi-Fi connection, configuration, schedule, telemetry |
+| Poor Man's Turbine | ESC-style turbine/fan/blower output | ESC signal wiring, common ground, calibration, output limits, battery protection |
+
+Do not troubleshoot a turbine or module as if it were an IBT-2 locomotive throttle. The connection and configuration foundation is shared, but the output hardware is different.
 
 ---
 
@@ -85,20 +97,21 @@ The AI has access to the app and firmware behavior and is intended to help with 
 
 - the ESP32 is not powered
 - the phone is not scanning correctly
-- the train name changed
+- the train/device name changed
 - BLE advertising did not recover after a disconnect
 - the controller rebooted after a safe-stop recovery event
+- the device is a module or turbine and you are looking in the wrong app flow
 
 ### What to Know
 
-The firmware advertises using either the default firmware name or the configured train name. After disconnects, the firmware attempts to restart advertising automatically. If advertising does not recover, the firmware can escalate to a safe stop and reboot sequence.
+The firmware advertises using either the default firmware/device name or the configured train/device name. After disconnects, the firmware attempts to restart advertising automatically. If advertising does not recover, the firmware can escalate to a safe stop and reboot sequence.
 
 ### Checks
 
 | Check | Action |
 |-----|-------|
 | ESP32 status LED | If the onboard LED is blinking, the controller is powered but not currently under active control |
-| Device name | Check for the configured train name, not only the default device name |
+| Device name | Check for the configured train/device name, not only the default device name |
 | Recent disconnect | Power cycle if the device stopped appearing after a difficult disconnect or failed reconnect |
 | Phone BLE cache | Toggle Bluetooth off/on or force the app to rescan |
 | Distance / interference | Move closer and reduce RF interference |
@@ -112,7 +125,9 @@ The firmware advertises using either the default firmware name or the configured
 - command path not fully initialized yet
 - control session was interrupted and a forced-stop latch is still in effect until reconnect
 - you are connected to the wrong device
+- the app opened the wrong device type flow
 - handshake or startup sequence did not complete in the app
+- BLE and WebSocket status are not both understood
 
 ### What to Know
 
@@ -141,7 +156,7 @@ In current firmware, motion commands are gated by the control session state. A r
 
 ### What to Know
 
-Firmware v1.12.1 supports Wi-Fi / WebSocket as a **secondary or failover control path**. It only starts when Wi-Fi is enabled and configured.
+Current firmware supports Wi-Fi / WebSocket as a **secondary, backup, or failover control path**. It only starts when Wi-Fi is enabled and configured.
 
 ### Checks
 
@@ -152,6 +167,8 @@ Firmware v1.12.1 supports Wi-Fi / WebSocket as a **secondary or failover control
 | IP address | Confirm the locomotive obtained an IP address |
 | WebSocket port | Confirm the client is using the configured port |
 | Same network | Make sure the phone or client is on the same network |
+| Known-device information | If using a saved device/IP, confirm the saved network address is still valid |
+| WebSocket diagnostics | Enable or review app WebSocket logs if the app provides them |
 
 ### Tip
 
@@ -159,7 +176,49 @@ If BLE works but WebSocket does not, the motor side may be fine and the issue ma
 
 ---
 
-# Motor Does Not Move
+# Device Appears in the App but Opens the Wrong Screen
+
+### Possible Causes
+
+- the wrong firmware image is installed
+- the app has stale remembered information for the device
+- the device is advertising an unexpected identity
+- the app has not refreshed known-device information yet
+
+### Checks
+
+| Check | Action |
+|-----|-------|
+| Firmware type | Confirm whether the device is Throttle, Module, or Turbine firmware |
+| App flow | Make sure you are opening the matching control/configuration screen |
+| Known devices | Forget or refresh the remembered device if stale information appears to be used |
+| Firmware version | Confirm the installed firmware is compatible with the app version |
+
+---
+
+# Known Device or Auto-Connect Does Not Work
+
+### Possible Causes
+
+- the device IP address changed
+- Wi-Fi is disabled or credentials changed
+- the device is on a different network than the phone
+- the app remembered an old device name or address
+- BLE discovery is unavailable and the saved WebSocket path is stale
+
+### Checks
+
+| Check | Action |
+|-----|-------|
+| Power and Wi-Fi | Verify the PMT device is powered and joined to the expected network |
+| Same network | Confirm the phone is on the same Wi-Fi network |
+| IP address | Reconnect over BLE and check the current reported IP address |
+| Known-device entry | Remove and rediscover the device if the saved entry is stale |
+| Auto-connect setting | Confirm auto-connect is enabled if you expect the app to connect automatically |
+
+---
+
+# Locomotive Motor Does Not Move
 
 ### Possible Causes
 
@@ -193,7 +252,7 @@ A train that powers on but refuses to move is not always a wiring failure. In cu
 
 ---
 
-# Motor Runs Only One Direction
+# Locomotive Motor Runs Only One Direction
 
 ### Possible Causes
 
@@ -223,7 +282,7 @@ A train that powers on but refuses to move is not always a wiring failure. In cu
 
 ---
 
-# Motor Runs the Wrong Direction
+# Locomotive Motor Runs the Wrong Direction
 
 ### Possible Causes
 
@@ -243,7 +302,7 @@ A train that powers on but refuses to move is not always a wiring failure. In cu
 
 ---
 
-# Motor Runs Immediately at Full Speed
+# Locomotive Motor Runs Immediately at Full Speed
 
 ### Possible Causes
 
@@ -300,7 +359,7 @@ Current firmware does **not** instantly slam from forward to reverse while movin
 
 ### What to Know
 
-Firmware v1.12.1 supports multiple motion styles:
+Current throttle firmware supports multiple motion styles:
 - **instant**
 - **quick ramp**
 - **momentum**
@@ -318,6 +377,34 @@ The train may therefore behave differently from a direct on/off throttle, especi
 | Start behavior | If the motor hesitates at low speed, review start-kick and minimum-start settings |
 | Battery voltage | Check for low-voltage limiting if INA219 protection is enabled |
 | Stop expectation | Brake commands intentionally feel different from simple stop commands |
+
+---
+
+# MU / Consist Behavior Is Wrong
+
+### Possible Causes
+
+- one locomotive in the consist is not connected
+- one locomotive has the wrong direction configuration
+- one locomotive has different momentum, ramp, or start behavior
+- the app has stale throttle names or remembered device information
+- one controller is being limited by battery protection
+
+### What to Know
+
+Consisting is managed by the smartphone app. Each locomotive controller still controls its own motor, safety behavior, connection state, battery protection, and configured direction behavior.
+
+If a consist behaves incorrectly, troubleshoot each locomotive by itself first.
+
+### Checks
+
+| Check | Action |
+|-----|-------|
+| Individual locomotive test | Run each locomotive alone before running the consist |
+| Direction | Confirm each locomotive moves forward when commanded forward by itself |
+| Names | Refresh stale throttle names if the app shows old names |
+| Battery protection | Check whether one locomotive is being limited or shut down |
+| Motion settings | Compare ramp, brake, and start settings between locomotives |
 
 ---
 
@@ -342,6 +429,35 @@ The firmware maintains a grace period after control loss. If control does not re
 | Expect stop after loss | Treat this as safety behavior, not automatically as a fault |
 | Reconnect after stop | Reconnect cleanly before testing motion again |
 | Power cycle if needed | If the device is no longer discoverable after a recovery event, power cycle and reconnect |
+
+---
+
+# Scheduled Operation Does Not Run
+
+### Possible Causes
+
+- schedule is not enabled
+- active days are not selected
+- ON or OFF time is incomplete
+- ON or OFF command is blank or invalid
+- the controller does not have a valid current time
+- the schedule was configured for the wrong device
+
+### What to Know
+
+Scheduled operation requires a complete schedule and a valid current time. Depending on setup, the device may get time from the network or from the app/device configuration flow.
+
+For locomotive throttles, scheduled operation can allow autonomous start/stop behavior during the configured window. For module or turbine devices, scheduled commands only make sense if the configured commands are valid for that device type.
+
+### Checks
+
+| Check | Action |
+|-----|-------|
+| Schedule enabled | Confirm scheduling is turned on |
+| Days | Confirm the current day is selected |
+| Time | Confirm the controller has current time |
+| Commands | Confirm ON and OFF commands match the device type |
+| Manual test | Run the ON/OFF commands manually before trusting the schedule |
 
 ---
 
@@ -396,6 +512,33 @@ If INA219 support is enabled, the firmware can:
 | INA219 wiring | Verify SDA, SCL, address, and sensor presence |
 | Protection thresholds | Review warning, limit, shutdown, recovery, and disconnect settings |
 | Low-voltage LED | If configured, use it as an additional clue that protection is active |
+
+---
+
+# Poor Man's Turbine Output Does Not Work
+
+### Possible Causes
+
+- turbine firmware is not installed
+- ESC or turbine output hardware is not powered
+- ESC signal wire is on the wrong GPIO pin
+- ESP32 and ESC do not share a common ground
+- ESC calibration has not been performed
+- output limits are set too low
+- low-voltage shutdown or limiting is active
+- the app is connected to the wrong device type
+
+### Checks
+
+| Check | Action |
+|-----|-------|
+| Firmware type | Confirm the device is running Poor Man's Turbine firmware |
+| Power | Verify the ESC/turbine power source is connected and appropriate |
+| Signal pin | Confirm the configured ESC PWM pin matches the wiring |
+| Common ground | Confirm ESP32 ground and ESC signal ground are tied together |
+| Calibration | Run the app's ESC calibration flow if the ESC has not learned endpoints |
+| Output limits | Check minimum output, full output, quick output, and governor/limit settings |
+| Battery protection | Verify INA219 protection is not forcing output off or capping output |
 
 ---
 
@@ -482,6 +625,7 @@ This can help distinguish a control-link problem from a motor power problem.
 - the wrong locomotive was edited
 - the device rebooted before testing was repeated
 - the value changed was not relevant to the current hardware mode
+- app backup/restore data was copied to the wrong device type
 
 ### Checks
 
@@ -491,6 +635,7 @@ This can help distinguish a control-link problem from a motor power problem.
 | Match the driver mode | Confirm you changed the CVs for the active motor driver style |
 | Restart test | Reconnect and test again after configuration changes |
 | NVS assumptions | Remember settings are persisted, so stale configuration from earlier testing may still be active |
+| Backup/restore | Confirm backup or copied settings came from a compatible device type |
 
 ---
 
@@ -499,12 +644,14 @@ This can help distinguish a control-link problem from a motor power problem.
 Carefully re-inspect the wiring and compare it to the reference material for the exact hardware mode you are using.
 
 Then check:
-- motor driver mode
+- device type and installed firmware
+- motor driver mode for locomotive throttle builds
 - GPIO assignments
 - direction behavior
 - low-voltage protection settings
 - BLE / Wi-Fi connection state
 - function-output direction gating
+- turbine ESC signal / common ground / calibration, if applicable
 - battery voltage under load
 
 Compare your wiring and settings to the reference tables in the appendices.
