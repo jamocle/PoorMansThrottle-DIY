@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>MU Consist Speed Matching</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.88);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#14804a;
+      --success-soft:rgba(20,128,74,.08);
+      --shadow:0 16px 42px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1080px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top,#fff 0%,#f5f5f7 52%,#ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+    }
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:22px 16px 64px}
+    .hero{text-align:center;padding:10px 4px 20px}
+    .eyebrow{
+      display:inline-block;padding:6px 12px;border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);background:rgba(255,255,255,.78);
+      color:var(--accent);font-size:.86rem;font-weight:600;backdrop-filter:blur(10px)
+    }
+    h1{margin:16px 0 10px;font-size:clamp(2rem,7vw,3.9rem);line-height:1.04;letter-spacing:-.04em}
+    .subhead{max-width:860px;margin:0 auto;color:var(--muted);font-size:clamp(1rem,2.8vw,1.2rem)}
+    .section{
+      margin-top:26px;background:var(--surface);border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px);overflow:hidden
+    }
+    .section-header{padding:24px 22px 0}
+    h2{margin:0 0 10px;font-size:clamp(1.35rem,4vw,2.1rem);letter-spacing:-.025em;line-height:1.1}
+    h3{margin:0 0 8px;font-size:1.15rem;letter-spacing:-.015em}
+    .section-header p{margin:0 0 18px;color:var(--muted)}
+    .content{padding:22px 22px 30px}
+    p{margin:0 0 16px}
+    .image-grid,.card-grid,.steps{display:grid;gap:14px}
+    .image-grid{
+      padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.93),rgba(248,248,250,.9));
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line)
+    }
+    .image-card,.card,.step{
+      background:var(--surface-solid);border:1px solid #e5e5ea;border-radius:22px;
+      box-shadow:0 10px 20px rgba(0,0,0,.06)
+    }
+    .image-card{overflow:hidden}
+    .image-card img{display:block;width:100%;height:auto;background:#fff}
+    .caption{padding:12px 14px 14px;color:var(--muted);font-size:.95rem;border-top:1px solid #ececf1}
+    .card{padding:18px}
+    .step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{
+      flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+      background:var(--accent-soft);color:var(--accent);font-weight:700
+    }
+    .label{
+      display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;
+      background:var(--accent-soft);color:var(--accent);font-size:.82rem;font-weight:600
+    }
+    .callout{
+      margin-top:18px;padding:16px 18px;border-radius:18px;background:var(--success-soft);
+      border-left:4px solid var(--success);color:#175537
+    }
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.95rem}
+    @media (min-width:760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .image-grid,.card-grid,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .image-card.wide{grid-column:1/-1}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">MU Consisting Upgrade</div>
+      <h1>Real-time speed matching for every locomotive in the consist.</h1>
+      <p class="subhead">
+        The newest MU Consisting feature lets you build a custom power curve for each locomotive,
+        so mixed models can accelerate, decelerate, stop, and brake together instead of fighting one another.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>The old problem: a tug-of-war inside the consist</h2>
+        <p>
+          Different locomotive models use different motors, gear ratios, and power curves. Two engines can receive the same
+          throttle command and still move at very different speeds. When those locomotives are coupled together, the faster one
+          pushes while the slower one drags, creating uneven tractive effort and unnecessary strain.
+        </p>
+      </div>
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Before</span>
+            <h3>Same throttle, different result</h3>
+            <p>A throttle value of 20 might barely move one locomotive while another is already running too fast.</p>
+          </div>
+          <div class="card">
+            <span class="label">Now</span>
+            <h3>Each locomotive gets its own profile</h3>
+            <p>A per-consist speed curve changes the output sent to each locomotive so every engine contributes more evenly.</p>
+          </div>
+        </div>
+        <div class="callout">
+          The goal is steady tractive effort: every locomotive pulls its share instead of pushing or dragging against the others.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>How real-time speed matching works</h2>
+        <p>
+          The matching screen shows a master throttle and a separate response curve for each locomotive in the consist.
+          As the master throttle moves, a line on each graph shows the current point in the power band and the output that will
+          be sent to that locomotive.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="speedmap1.png" alt="Full consist speed matching screen with the master throttle and locomotive power curves." />
+          <figcaption class="caption">
+            The full matching screen combines the master throttle with each locomotive's individual response curve.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="speedmap2.png" alt="Consist speed matching screen showing multiple locomotive profiles." />
+          <figcaption class="caption">
+            Review multiple locomotive profiles together while matching the consist across the throttle range.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="speedmap4.png" alt="GScaleThrottle power curve showing the mapped output at the current master throttle setting." />
+          <figcaption class="caption">
+            At master speed 20, GScaleThrottle maps to output 45. Use this value and the locomotive's actual movement for comparison.
+          </figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="speedmap5.png" alt="Train 7 power curve showing a different mapped output at the same master throttle setting." />
+          <figcaption class="caption">
+            At the same master speed 20, Train 7 maps to output 8. Adjust either curve until both locomotives travel together.
+          </figcaption>
+        </figure>
+        <figure class="image-card wide">
+          <img src="speedmap3.png" alt="Consist configuration screen showing momentum, stop, brake, and drive ramp settings." />
+          <figcaption class="caption">
+            Consist momentum can also be tuned by changing drive, stop, and brake ramp times.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          Each circular point on the graph represents an adjustable speed point. Move a point down to slow a locomotive at that
+          part of the throttle range, or move it up to increase its output. Adjust the faster locomotive, the slower locomotive,
+          or both until they travel together.
+        </p>
+        <p>
+          The best way to compare one locomotive to another is to look at the two locomotive cards side by side at the same master
+          throttle setting. In the example above, each card shows how that locomotive maps the same master input to its own output,
+          making it easy to spot which locomotive needs to be sped up or slowed down.
+        </p>
+        <p>
+          The curve is attached to the consist, so the same locomotive can use a different profile when it is part of another consist.
+        </p>
+
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Live switch</span>
+            <h3>Preview or control in real time</h3>
+            <p>
+              When <strong>Live is ON</strong>, the master throttle sends real-time commands to the locomotives and the displayed
+              outputs are applied immediately. When <strong>Live is OFF</strong>, the screen is only a preview of the graph and no
+              commands are sent to the locomotives.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Separate curves by consist direction</span>
+            <h3>Use one curve or two</h3>
+            <p>
+              This switch enables a second power curve for the locomotive. With it off, the same curve is used in both directions.
+              With it on, you can create one curve for consist-forward operation and another for consist-reverse operation, which is
+              useful when a motor performs differently in forward and reverse.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Reset</span>
+            <h3>Return to a standard linear curve</h3>
+            <p>
+              The Reset button restores the selected power curve to the default straight-line graph. This removes all custom power
+              adjustments for that curve and returns output to a standard one-to-one response.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Recommended matching procedure</h2>
+        <p>The most accurate results come from observing the locomotives together on the same track while they are uncoupled.</p>
+      </div>
+      <div class="content">
+        <div class="steps">
+          <div class="step"><div class="step-number">1</div><div><h3>Place them on the track</h3><p>Put all locomotives on the same track, uncoupled, so their movement is easy to compare.</p></div></div>
+          <div class="step"><div class="step-number">2</div><div><h3>Start with two</h3><p>Match the first two engines before adding the next locomotive, then repeat.</p></div></div>
+          <div class="step"><div class="step-number">3</div><div><h3>Enable Live mode</h3><p>Turn on Live when you are ready for the matching screen to send commands to the locomotives.</p></div></div>
+          <div class="step"><div class="step-number">4</div><div><h3>Begin slowly</h3><p>Move the master throttle up from zero and watch how the locomotives behave relative to one another.</p></div></div>
+          <div class="step"><div class="step-number">5</div><div><h3>Adjust the graph</h3><p>Lower points for a locomotive that is too fast or raise them for one that is too slow.</p></div></div>
+          <div class="step"><div class="step-number">6</div><div><h3>Work through the range</h3><p>Repeat at several speeds so the locomotives remain matched from startup through higher-speed operation.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Customize the momentum of the entire consist</h2>
+        <p>
+          Speed matching controls how each locomotive responds relative to the master throttle. Momentum settings control
+          how quickly the whole consist changes speed.
+        </p>
+      </div>
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Enable momentum</span>
+            <h3>Turn consist momentum on or off</h3>
+            <p>
+              The Enable Momentum switch controls whether momentum behavior is active for the consist. When it is off, the consist
+              responds without the configured ramp timing. When it is on, the Drive, Stop, and Brake times below are used.
+            </p>
+          </div>
+          <div class="card"><span class="label">Drive ramp</span><h3>Control acceleration</h3><p>Set how long the consist takes to ramp toward a new drive command.</p></div>
+          <div class="card"><span class="label">Stop ramp</span><h3>Control normal stopping</h3><p>Adjust how quickly the consist ramps down when a standard stop command is used.</p></div>
+          <div class="card"><span class="label">Brake ramp</span><h3>Control braking behavior</h3><p>Define a separate braking time so brake commands can feel different from an ordinary stop.</p></div>
+          <div class="card"><span class="label">Per-consist control</span><h3>Different trains, different behavior</h3><p>Each consist can be tuned for its own locomotive mix, train weight, and operating style.</p></div>
+        </div>
+        <div class="callout">
+          The result is fully customizable control over your consist: matched locomotive output, smoother acceleration,
+          controlled braking, and more even pulling power across every engine.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">MU Consist Speed Matching gives every locomotive the opportunity to pull its weight.</div>
+  </main>
+</body>
+</html>
