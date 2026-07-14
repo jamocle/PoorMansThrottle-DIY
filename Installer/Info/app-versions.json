@@ -124,6 +124,13 @@
             "description": "PMT 2.0 introduces a new module ecosystem—starting with PoorMansTurbine for ESC-driven high-speed fan tools like track blowers—and lays the foundation for future plugins such as switches, lights, and layout sound.",
             "info": "2.0_modules.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "2.0.1",
+            "title": "MU Consisting Speed Matching",
+            "description": "PMT 2.1 introduces the ability to match the speed of locomotives in a consist, allowing for smoother operation and better performance.",
+            "info": "consist_speed_matching.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }
