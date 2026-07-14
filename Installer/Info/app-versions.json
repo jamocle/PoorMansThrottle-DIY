@@ -126,7 +126,7 @@
             "show-again": "2026-04-24 16:24:04"
         },
         {
-            "version": "2.0.1",
+            "version": "2.1.0",
             "title": "MU Consisting Speed Matching",
             "description": "PMT 2.1 introduces the ability to match the speed of locomotives in a consist, allowing for smoother operation and better performance.",
             "info": "consist_speed_matching.html",
