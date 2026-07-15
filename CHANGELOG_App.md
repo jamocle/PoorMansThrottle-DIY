@@ -2,6 +2,19 @@
 
 ## Smartphone App:
 
+### Version 2.2.0
+* **Custom in-app splash screen added** so PMT can show a persaonal splash screen after platform starts.
+* **Splash screen appearance controls added** under Global Settings > Appearance, between Language and Colors, with settings for enabling the custom splash, choosing the splash image, picking the background color, setting the display time, selecting the animation, and testing the result in-app.
+* **Custom splash image upload added** so users can choose a square image from their device photo library. Non-square images are rejected with a localized warning so the splash image remains predictable across screen sizes.
+* **Splash screen preview added** so users can test the exact configured splash screen from Global Settings without restarting the app.
+* **Splash animation options added** with None, From Singularity, and From Infinity choices. From Infinity is the default, and the splash animation runs for 500 ms while the overall splash display time remains user configurable.
+* **Splash display timing defaults updated** so new installations use a 4000 ms custom splash display time, with a 500 ms minimum enforced in configuration.
+* **Custom splash persistence added** so splash settings and the uploaded image are stored as app-owned persisted configuration data and included in backup/admin support flows.
+* **Admin System Files support added for custom splash settings** so the custom splash JSON can be viewed, edited, deleted, and included in AI Context export. The large image Base64 field is hidden in the editor while preserving the uploaded image unless the filename is intentionally cleared.
+* **Scan startup behavior improved** so scan is no longer cancelled just because auto-connect starts or the scan page briefly disappears during startup navigation.
+* **Scan button behavior improved** so the Scan button remains enabled while scanning, changes to Cancel Scan, and only shows Scan cancelled when the user explicitly cancels the scan.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 2.1.1
 * **Android system bar color matching fixed** so the top Android status-bar area now follows the app's selected Brand Background color instead of showing the platform default color.
 * **Appearance theme updates improved** so changing the Brand Background color in Global Settings > Appearance also updates Android system chrome.
