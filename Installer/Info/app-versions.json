@@ -131,6 +131,13 @@
             "description": "PMT 2.1 introduces the ability to match the speed of locomotives in a consist, allowing for smoother operation and better performance.",
             "info": "consist_speed_matching.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "2.2.0",
+            "title": "Make the App Yours",
+            "description": "PMT introduces the ability to customize the app's appearance startup livery to match your personal railroad theme.",
+            "info": "splash.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }

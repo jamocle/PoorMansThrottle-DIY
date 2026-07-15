@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Custom In-App Splash Screen</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.88);
+      --surface-solid:#ffffff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#14804a;
+      --success-soft:rgba(20,128,74,.08);
+      --shadow:0 16px 42px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1080px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top,#fff 0%,#f5f5f7 52%,#ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:22px 16px 64px}
+    .hero{text-align:center;padding:10px 4px 20px}
+    .eyebrow{
+      display:inline-block;padding:6px 12px;border-radius:999px;
+      border:1px solid rgba(0,113,227,.18);background:rgba(255,255,255,.78);
+      color:var(--accent);font-size:.86rem;font-weight:600;backdrop-filter:blur(10px)
+    }
+    h1{margin:16px 0 10px;font-size:clamp(2rem,7vw,3.9rem);line-height:1.04;letter-spacing:-.04em}
+    .subhead{max-width:860px;margin:0 auto;color:var(--muted);font-size:clamp(1rem,2.8vw,1.2rem)}
+    .section{
+      margin-top:26px;background:var(--surface);border:1px solid rgba(255,255,255,.76);
+      border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(18px);overflow:hidden
+    }
+    .section-header{padding:24px 22px 0}
+    h2{margin:0 0 10px;font-size:clamp(1.35rem,4vw,2.1rem);letter-spacing:-.025em;line-height:1.1}
+    h3{margin:0 0 8px;font-size:1.15rem;letter-spacing:-.015em}
+    .section-header p{margin:0 0 18px;color:var(--muted)}
+    .content{padding:22px 22px 30px}
+    p{margin:0 0 16px}
+    .image-grid,.card-grid,.steps{display:grid;gap:14px}
+    .image-grid{
+      padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.93),rgba(248,248,250,.9));
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line)
+    }
+    .image-card,.card,.step{
+      background:var(--surface-solid);border:1px solid #e5e5ea;border-radius:22px;
+      box-shadow:0 10px 20px rgba(0,0,0,.06)
+    }
+    .image-card{overflow:hidden}
+    .image-card img{display:block;width:100%;height:auto;background:#fff}
+    .caption{padding:12px 14px 14px;color:var(--muted);font-size:.95rem;border-top:1px solid #ececf1}
+    .card{padding:18px}
+    .step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{
+      flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+      background:var(--accent-soft);color:var(--accent);font-weight:700
+    }
+    .label{
+      display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;
+      background:var(--accent-soft);color:var(--accent);font-size:.82rem;font-weight:600
+    }
+    .callout{
+      margin-top:18px;padding:16px 18px;border-radius:18px;background:var(--success-soft);
+      border-left:4px solid var(--success);color:#175537
+    }
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.95rem}
+    @media (min-width:760px){
+      .wrap{padding:32px 24px 72px}
+      .section-header{padding:30px 28px 0}
+      .content{padding:28px 28px 34px}
+      .image-grid,.card-grid,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">It's Your Railroad, Isn't it? Make the App YOURS!</div>
+      <h1>Make the app feel like your railroad.</h1>
+      <p class="subhead">
+        The new Custom Splash Screen feature lets you choose the image, background color, display time,
+        and entrance animation shown when the app starts.
+      </p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>A personalized startup experience</h2>
+        <p>
+          The app can now show a configurable in-app splash screen after the normal device launch screen and before the existing startup flow.
+          Turn it on for a branded, personalized welcome screen, or turn it off to continue directly into the app.
+        </p>
+      </div>
+
+      <div class="image-grid">
+        <figure class="image-card">
+          <img src="splash.png" alt="Appearance settings showing the configurable custom splash screen options." />
+          <figcaption class="caption">
+            Configure the splash image, background color, display time, animation, and preview directly from Appearance settings.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="splash2.png" alt="Custom model railroad splash screen preview with a blue background and locomotive image." />
+          <figcaption class="caption">
+            A custom splash can feature your own square image and selected background color for a more personal startup experience.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <div class="card">
+            <span class="label">Enable or disable</span>
+            <h3>You control whether it appears</h3>
+            <p>
+              Use the Enable Custom Splash switch to turn the feature on or off. When disabled, the app skips the custom splash and continues normally.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Custom image</span>
+            <h3>Choose your own square image</h3>
+            <p>
+              Select a photo or logo from your device. Images must be square so they display consistently across different phones and screen sizes.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Background color</span>
+            <h3>Match your theme</h3>
+            <p>
+              Pick the background color that surrounds the image, allowing the splash to match your railroad, club, or preferred app theme.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Display time</span>
+            <h3>Choose how long it remains visible</h3>
+            <p>
+              Set the splash duration in milliseconds. The default is 4000 ms, with a minimum supported time of 500 ms.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Animation</span>
+            <h3>Select how the splash appears</h3>
+            <p>
+              Choose no animation, have the splash grow outward from the center with From Singularity,
+              or have it scale inward from an oversized view with From Infinity.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">Test button</span>
+            <h3>Preview it before restarting</h3>
+            <p>
+              Tap Test Splash Screen to see the current image, color, timing, and animation without restarting the app.
+              When the preview ends, you return to the same settings screen.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout">
+          The selected image is displayed centered and aspect-fit, so it keeps its original shape without stretching or distortion.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>How to set it up</h2>
+        <p>Everything is available from <strong>Global Settings → Appearance → Custom Splash Screen</strong>.</p>
+      </div>
+
+      <div class="content">
+        <div class="steps">
+          <div class="step"><div class="step-number">1</div><div><h3>Enable the feature</h3><p>Turn on Enable Custom Splash to reveal the available options.</p></div></div>
+          <div class="step"><div class="step-number">2</div><div><h3>Choose a square image</h3><p>Tap Upload and select the image you want to use from your device.</p></div></div>
+          <div class="step"><div class="step-number">3</div><div><h3>Pick the background</h3><p>Select a background color that complements your image.</p></div></div>
+          <div class="step"><div class="step-number">4</div><div><h3>Set the timing</h3><p>Choose how long the splash should remain visible during startup.</p></div></div>
+          <div class="step"><div class="step-number">5</div><div><h3>Choose the animation</h3><p>Select None, From Singularity, or From Infinity.</p></div></div>
+          <div class="step"><div class="step-number">6</div><div><h3>Preview it</h3><p>Use Test Splash Screen to confirm the look before your next app launch.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Custom Splash Screen gives every PMT user a simple way to make the app feel more personal from the moment it opens.
+    </div>
+  </main>
+</body>
+</html>
