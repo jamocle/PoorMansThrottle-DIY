@@ -2,6 +2,24 @@
 
 ## Smartphone App:
 
+### Version 2.1.1
+* **Android system bar color matching fixed** so the top Android status-bar area now follows the app's selected Brand Background color instead of showing the platform default color.
+* **Appearance theme updates improved** so changing the Brand Background color in Global Settings > Appearance also updates Android system chrome.
+* **Information and Help version awareness added** so help items for features newer than the installed app version now identify the required version and warn users before opening the article.
+* **Startup version checks improved for iOS** so the app compares the installed version with the App Store version, shows both versions, and can send the user to the App Store when an update or current GA version is available.
+* **Startup version messaging improved for Android** so the app still uses the existing PMT installer version file, but now shows the installed version, current GA version, and clearer update or pre-release guidance.
+* **Admin persistence tools expanded** so System Files, Known Devices, Prefs, and AI Context expose more app-owned persisted information, including known device identities, Poor Man's Turbine dial tap behavior, and indexed scan-version notice state.
+* **Admin cleanup behavior hardened** so deleting device-owned persisted data uses relationship-aware cleanup instead of leaving orphaned device state behind.
+* **Known Devices admin details expanded** with additional remembered identity information such as the last observed device name.
+* **AI Context export improved** so the Copy action includes the expanded known preferences and app-owned persisted files needed for support and troubleshooting.
+* **Consist speed-match locomotive cards improved** so locomotive curve cards can collapse into a compact header, giving small screens more room while keeping live output and direction information visible.
+* **Consist speed-match graph pop-out added** so a selected locomotive curve can expand into the card-list area for more precise editing, with a quick control to return to the normal card list.
+* **Consist speed-match graph labels improved** so the expanded graph shows aligned point values and clear Input and Output axis labels without changing the underlying curve behavior.
+* **Consist live curve editing improved** so changing a speed-match curve while live mode is active immediately sends the updated output command when the edit affects the locomotive's current throttle output.
+* **Consist curve live mode default changed** so live mode starts enabled on the curve screen and can be turned off by the user when needed.
+* **Localization updated** for the new version-warning, update-check, admin persistence, and graph label messages across supported languages.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 2.0.0
 * **App support for Poor Man's Turbine added** so PMT can discover, connect to, configure, and control Poor Man's Turbine firmware in addition to train throttle controllers.
 * **New turbine control screen added** with a dedicated turbine output dial, stop control, live output readback, and a saved governor limit so users can cap the maximum turbine output from the app.
