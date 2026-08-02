@@ -4,12 +4,12 @@
         {
             "label": "v2.0.0",
             "manifest": "manifest-2.0.0.json",
-            "selected": false
+            "selected": true
         },
         {
             "label": "v1.12.7",
             "manifest": "manifest-1.12.7.json",
-            "selected": true
+            "selected": false
         },
         {
             "label": "v1.12.5",
@@ -29,7 +29,7 @@
         {
             "label": "v1.12.1",
             "manifest": "manifest-1.12.1.json",
-            "selected": true
+            "selected": false
         },
         {
             "label": "v1.11.0",
