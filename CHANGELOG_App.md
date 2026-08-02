@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 2.5.5
+* **Record while you Run** Watch what you record while you can still control your locomotive with the camera overlay.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 2.2.0
 * **Custom in-app splash screen added** so PMT can show a persaonal splash screen after platform starts.
 * **Splash screen appearance controls added** under Global Settings > Appearance, between Language and Colors, with settings for enabling the custom splash, choosing the splash image, picking the background color, setting the display time, selecting the animation, and testing the result in-app.

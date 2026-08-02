@@ -138,6 +138,13 @@
             "description": "PMT introduces the ability to customize the app's appearance startup livery to match your personal railroad theme.",
             "info": "splash.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "2.5.5",
+            "title": "Record While You Control",
+            "description": "You can now record video and control your locomotive at the same time with the camera overlay.",
+            "info": "camera_overlay.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }
