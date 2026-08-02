@@ -3,7 +3,7 @@
 ## Smartphone App:
 
 ### Version 2.5.6
-* **Record while you Run** Watch what you record while you can still control your locomotive with the camera overlay.
+* **Record while you Run** Watch what you record while you control your locomotive with the camera overlay.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.2.0
