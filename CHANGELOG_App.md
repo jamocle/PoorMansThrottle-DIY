@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 2.5.7
+* **Android camera bug fixed** The app would not show the preview on some Android devices..
+* **Updated to latest SDK's** Allows for making PMT More Better.
+
 ### Version 2.5.6
 * **Record while you Run** Watch what you record while you control your locomotive with the camera overlay.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
