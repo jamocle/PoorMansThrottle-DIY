@@ -1,26 +1,26 @@
-# Blunami BLU-4408 vs. Poor Man’s Throttle v3.0
+# "Big-Boy" Systems Controller vs. Poor Man’s Throttle v3.0
 
-> **Comparison scope:** This document compares the SoundTraxx Blunami BLU-4408 platform and app with Poor Man’s Throttle (PMT) v3.0.  
-> For Blunami, “No” should be read as “not supported or not documented in the current BLU-4408 / Blunami feature set” where applicable.
+> **Comparison scope:** This document compares the "Big-Boy" Systems platform and app with Poor Man’s Throttle (PMT) v3.0.  
+> For "Big-Boy" Systems, “No” should be read as “not supported or not documented in the current "Big-Boy" Systems feature set” where applicable.
 
 ---
 
 ## 1. Hardware Platform & Cost
 
-| Feature | Blunami BLU-4408 | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
-| **Hardware architecture** | 🔒 **Proprietary SoundTraxx hardware/platform** | ✅ **Based on the Espressif ESP32 architecture family** |
+| **Hardware architecture** | 🔒 **Proprietary Big-Boy hardware/platform** | ✅ **Based on the Espressif ESP32 architecture family** |
 | **Uses widely available general-purpose hardware** | ❌ **No — proprietary decoder hardware** | ✅ **Yes — ESP32-family hardware is widely available; you may already have compatible boards lying around** |
 | **Hardware ecosystem** | 🔒 **Closed/proprietary** | ✅ **Commodity ESP32-based architecture with selectable supporting hardware** |
 | **Software / firmware cost** | 💰 **Commercial product** | ✅ **FREE** |
-| **Cost to get started** | 💰💰💰💰 **$$$$ — purchase BLU-4408 decoder** | ✅ **FREE software/firmware; build from inexpensive commodity hardware** |
-| **Reuse hardware you may already own** | ❌ Typically requires purchasing the BLU-4408 | ✅ **Yes — compatible ESP32 hardware may already be in your parts bin** |
+| **Cost to get started** | 💰💰💰💰 **$$$$ — purchase Big-Boy decoder** | ✅ **FREE software/firmware; build from inexpensive commodity hardware** |
+| **Reuse hardware you may already own** | ❌ Typically requires purchasing the Big-Boy | ✅ **Yes — compatible ESP32 hardware may already be in your parts bin** |
 
 ---
 
 ## 2. App & Full-Layout Ecosystem
 
-| Feature | Blunami BLU-4408 / App | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems / App | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Floating camera video while controlling locomotive** | ❌ **No** | ✅ **Yes — floating camera overlay while throttle remains operational** |
 | **Full layout ecosystem from one app** | ❌ **No — locomotive-decoder focused** | ✅ **Yes** |
@@ -78,7 +78,7 @@
 
 ## 3. Updates, Development & User Influence
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **User-installable locomotive firmware updates** | ❌ **No documented user firmware-update mechanism** | ✅ **Yes** |
 | **Frequent firmware releases** | ❌ Vendor controlled | ✅ **Daily/weekly as development requires** |
@@ -96,7 +96,7 @@
 
 ## 4. Connectivity, Wi-Fi, Failover & API
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Wi-Fi as primary locomotive-control transport** | ❌ **No** | ✅ **Yes** |
 | **Wi-Fi locomotive control** | ❌ **No** | ✅ **Yes** |
@@ -121,10 +121,10 @@
 
 ## 5. Crowdsourced & Shareable Audio Ecosystem
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Professionally recorded sounds** | ✅ **Yes** | ⚠️ **Crowdsourced** |
-| **Crowdsourced locomotive audio library** | ❌ **No** | ✅ **Yes** |
+| **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **Yes** |
 | **Users contribute locomotive sound files** | ❌ No arbitrary user-audio ecosystem | ✅ **Yes** |
 | **Share sound files with other users** | ❌ No | ✅ **Yes** |
 | **Download community-created locomotive sounds** | ❌ No | ✅ **Yes** |
@@ -144,7 +144,7 @@
 
 ## 6. Core Sound Architecture
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Steam and Diesel sound architectures available simultaneously** | ❌ No runtime cross-profile system documented | ✅ **Yes** |
 | **Real-time Steam ↔ Diesel switching** | ❌ No | ✅ **Yes** |
@@ -170,7 +170,7 @@
 
 ## 7. Custom Function / FX Audio
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Attach custom sound files to Functions (FX)** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
 | **Import arbitrary WAV as an FX sound** | ❌ None | ✅ **Yes** |
@@ -191,7 +191,7 @@
 
 ## 8. Diesel Sound
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **User-created prime mover** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **User-created horn** | ❌ No arbitrary WAV import | ✅ **Yes** |
@@ -219,7 +219,7 @@
 
 ## 9. Steam Sound
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **User-created chuff/exhaust WAVs** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **User-created whistle WAVs** | ❌ No arbitrary WAV import | ✅ **Yes** |
@@ -244,7 +244,7 @@
 
 ## 10. Audio Processing & Amplifier
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Audio system accepts arbitrary user WAV library** | ❌ No | ✅ **Yes** |
 | **Audio system works with crowdsourced sound sets** | ❌ No | ✅ **Yes** |
@@ -264,7 +264,7 @@
 
 ## 11. Motor Power & Large-Scale / Multi-Locomotive Capability
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **48A standard installation** | ❌ **No — 4A max stall current** | ✅ **Yes — 48A standard recipe** |
 | **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
@@ -279,18 +279,18 @@
 | **Forward/reverse** | ✅ Yes | ✅ Yes |
 | **Variable speed** | ✅ Yes | ✅ Yes |
 
-> **Technical note:** BLU-4408’s limitation is **4A aggregate maximum motor stall current**. Parallel motors are not inherently prohibited if their total load remains within that rating.
+> **Technical note:** Big-Boy’s limitation is **4A aggregate maximum motor stall current**. Parallel motors are not inherently prohibited if their total load remains within that rating.
 
 ---
 
 ## 12. Motor Control & Speed Curves
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Interactive graphical speed-curve editor** | ❌ Conventional decoder speed-table configuration | ✅ **Yes — graphical and interactive** |
 | **Replaceable motor-control power stage** | ❌ No | ✅ **Yes** |
 | **User-selectable motor-driver architecture** | ❌ No | ✅ **Yes** |
-| **Advanced motor control** | ✅ Hyperdrive2/Tsunami2 architecture | ✅ PMT motor control |
+| **Advanced motor control** | ✅ Big-Boy architecture | ✅ PMT motor control |
 | **Back-EMF control** | ✅ Yes | ✅ **Yes — requires INA219 or compatible micro board** |
 | **Low-speed control** | ✅ Yes | ✅ Yes |
 | **Acceleration momentum** | ✅ Yes | ✅ Yes |
@@ -304,7 +304,7 @@
 
 ## 13. Braking & Driving Realism
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Feathered braking** | ❌ **No** | ✅ **Yes — Expert Throttle** |
 | **Continuous proportional operator brake control** | ❌ No feathered-brake equivalent | ✅ **Yes — Expert Throttle; supported by firmware** |
@@ -323,7 +323,7 @@
 
 ## 14. Lighting & Physical Functions
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Function-output architecture expandable through modules** | ❌ Fixed eight outputs | ✅ **Yes** |
 | **Output hardware independently selectable** | ❌ Fixed decoder | ✅ **Yes** |
@@ -344,7 +344,7 @@
 
 ## 15. Configuration, Backup & Locomotive Management
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Real-time Steam/Diesel type selection by CV** | ❌ No | ✅ **Yes** |
 | **Locomotive templates** | ❌ No equivalent PMT template architecture | ✅ **Yes** |
@@ -366,7 +366,7 @@
 
 ## 16. Operating Modes & Multi-Locomotive Control
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Wi-Fi-only locomotive operation** | ❌ No | ✅ **Yes** |
 | **Network-controlled locomotive operation** | ❌ No IP transport | ✅ **Yes** |
@@ -383,7 +383,7 @@
 
 ## 17. Hardware Specifications
 
-| Feature | Blunami BLU-4408 | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **48A standard motor installation** | ❌ No | ✅ **Yes** |
 | **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
@@ -402,7 +402,7 @@
 
 ## 18. Telemetry, Sensors & Expansion
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **General-purpose sensor expansion** | ❌ Not a general modular platform | ✅ **Yes** |
 | **User-installable control modules** | ❌ Fixed decoder architecture | ✅ **Poor Man’s Modules** |
@@ -419,7 +419,7 @@
 
 ## 19. Platform Extensibility
 
-| Feature | Blunami | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **User firmware modification** | ❌ No | ⚠️ **Yes — NDA + approval required** |
 | **Community firmware contribution** | ❌ No public model | ⚠️ **Yes — NDA + approval required** |
@@ -442,7 +442,7 @@
 
 # Highest-Impact Differentiators
 
-| Feature | Blunami BLU-4408 | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **Hardware architecture** | 🔒 **Proprietary** | ✅ **Espressif ESP32 family** |
 | **Software / firmware cost** | 💰 Commercial | ✅ **FREE** |
@@ -470,7 +470,7 @@
 | **User-supplied locomotive WAV files** | ❌ | ✅ **YES** |
 | **Custom audio files attached to FX** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
 | **Potential custom FX sounds** | ❌ **NONE** | ✅ **EFFECTIVELY UNLIMITED** |
-| **Crowdsourced locomotive audio** | ❌ | ✅ **YES** |
+| **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **YES** |
 | **Share/download community sound sets** | ❌ | ✅ **YES** |
 | **Frequent firmware/app development** | Vendor release cycle | ✅ **DAILY/WEEKLY** |
 | **User-requested features regularly implemented** | Vendor roadmap | ✅ **YES** |
@@ -494,6 +494,6 @@
 
 ## Summary
 
-**Blunami BLU-4408** is a sophisticated proprietary commercial locomotive sound/motor decoder with Bluetooth control, extensive factory sound libraries, advanced motor control, braking, lighting, CV configuration, and strong locomotive-focused app features.
+**"Big-Boy" Systems** is a sophisticated proprietary commercial locomotive sound/motor decoder with Bluetooth control, extensive factory sound libraries, advanced motor control, braking, lighting, CV configuration, and strong locomotive-focused app features.
 
 **Poor Man’s Throttle v3.0** is an ESP32-family, free software/firmware platform designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.
