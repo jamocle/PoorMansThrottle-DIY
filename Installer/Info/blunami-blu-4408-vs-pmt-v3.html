@@ -498,6 +498,8 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>Integrated diagnostic terminal</strong></td><td>❌ <strong>No</strong></td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Send direct firmware/CV commands from app terminal</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Test commands without leaving application</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
+<tr><td><strong>Scripting subsystem for autonomous running of commands and effects</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
+<tr><td><strong>Scheduling subsystem for running commands / scripts at specific times</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Built-in help system</strong></td><td>❌ No equivalent integrated help system documented</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>BLE and Wi-Fi devices controlled from same application</strong></td><td>❌ Bluetooth only</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Application manages communication failover</strong></td><td>❌ No secondary wireless transport</td><td>✅ <strong>Yes — BLE ↔ Wi-Fi/WebSockets</strong></td></tr>
@@ -518,7 +520,7 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>Actual locomotive speed display</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Target-speed display</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Voltage display/telemetry</strong></td><td>✅ Yes</td><td>✅ Yes with compatible telemetry hardware</td></tr>
-<tr><td><strong>Wireless signal-strength display</strong></td><td>✅ RSSI</td><td>✅ Yes</td></tr>
+<tr><td><strong>Wireless signal-strength display</strong></td><td>✅ RSSI</td><td>❌ No</td></tr>
 <tr><td><strong>Stop-All / emergency-stop control</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Wireless CV editing</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Locomotive naming</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
@@ -596,6 +598,7 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><th scope="col">Feature</th><th scope="col">Blunami</th><th scope="col">Poor Man’s Throttle v3.0</th></tr>
 </thead>
 <tbody>
+<tr><td><strong>Professionally recorded sounds</strong></td><td>✅ <strong>Yes</strong></td><td>⚠️ <strong>Crowdsourced</strong></td></tr>
 <tr><td><strong>Crowdsourced locomotive audio library</strong></td><td>❌ <strong>No</strong></td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Users contribute locomotive sound files</strong></td><td>❌ No arbitrary user-audio ecosystem</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Share sound files with other users</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
@@ -698,7 +701,7 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>Idle sound</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Notch-based engine sound</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>RPM/notch changes</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
-<tr><td><strong>Load-reactive exhaust</strong></td><td>✅ DDE</td><td>✅ Yes</td></tr>
+<tr><td><strong>Load-reactive exhaust</strong></td><td>✅ DDE</td><td>⚠️ <strong>Requires INA219 child board</strong></td></tr>
 <tr><td><strong>Horn</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Multiple horns</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Bell</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
@@ -758,9 +761,9 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>User can fundamentally replace audio content</strong></td><td>❌ Manufacturer library</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Digital audio mixing</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Master volume</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
-<tr><td><strong>Individual sound volume</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
-<tr><td><strong>Audio shaping / EQ</strong></td><td>✅ Yes</td><td>✅ DSP capable</td></tr>
-<tr><td><strong>Reverb/audio processing</strong></td><td>✅ Yes</td><td>✅ DSP capable</td></tr>
+<tr><td><strong>Individual sound volume</strong></td><td>✅ Yes</td><td>⚠️ <strong>Not yet — coming soon</strong></td></tr>
+<tr><td><strong>Audio shaping / EQ</strong></td><td>✅ Yes</td><td>⚠️ <strong>Yes — not configurable</strong></td></tr>
+<tr><td><strong>Reverb/audio processing</strong></td><td>✅ Yes</td><td>⚠️ <strong>Yes — not configurable</strong></td></tr>
 <tr><td><strong>Dynamic audio processing</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Sound priority management</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Standard amplifier recipe</strong></td><td><strong>3W / 8Ω</strong></td><td>✅ <strong>4W / 4Ω or 8Ω</strong></td></tr>
@@ -925,6 +928,7 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>Network-controlled locomotive operation</strong></td><td>❌ No IP transport</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Battery/dead-rail operation</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Traditional DC operation</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
+<tr><td><strong>Tri-mode capable</strong></td><td>⚠️ <strong>Controller and battery; DC rail power and controller</strong></td><td>✅ <strong>Controller and battery; DC rail power and controller; controller between DC and rails</strong></td></tr>
 <tr><td><strong>DCC operation</strong></td><td>✅ Yes</td><td>❌ PMT is not a DCC decoder</td></tr>
 <tr><td><strong>Bluetooth operation without DCC</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 <tr><td><strong>Multiple-locomotive control</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
@@ -948,7 +952,7 @@ For Blunami, “No” should be read as “not supported or not documented in th
 <tr><td><strong>Up to 10 locomotives wired in parallel</strong></td><td>❌ No 48A-class capability</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Replaceable motor-power stage</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
 <tr><td><strong>Selectable motor hardware</strong></td><td>❌ No</td><td>✅ <strong>Yes</strong></td></tr>
-<tr><td><strong>Maximum motor stall rating</strong></td><td><strong>4A</strong></td><td>Driver dependent</td></tr>
+<tr><td><strong>Maximum motor stall rating</strong></td><td><strong>BLU 4A</strong></td><td><strong>48A</strong> (driver dependent)</td></tr>
 <tr><td><strong>Standard PMT motor recipe</strong></td><td>—</td><td><strong>48A</strong></td></tr>
 <tr><td><strong>Physical function outputs</strong></td><td><strong>8</strong></td><td>Hardware/module dependent</td></tr>
 <tr><td><strong>Function-output current</strong></td><td><strong>400mA each</strong></td><td>Hardware dependent</td></tr>

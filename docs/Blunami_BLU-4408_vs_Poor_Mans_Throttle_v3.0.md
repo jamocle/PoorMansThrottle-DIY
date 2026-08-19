@@ -44,6 +44,8 @@
 | **Integrated diagnostic terminal** | ❌ **No** | ✅ **Yes** |
 | **Send direct firmware/CV commands from app terminal** | ❌ No | ✅ **Yes** |
 | **Test commands without leaving application** | ❌ No | ✅ **Yes** |
+| **Scripting subsystem for autonomous running of commands and effects** | ❌ No | ✅ **Yes** |
+| **Scheduling subsystem for running commands / scripts at specific times** | ❌ No | ✅ **Yes** |
 | **Built-in help system** | ❌ No equivalent integrated help system documented | ✅ **Yes** |
 | **BLE and Wi-Fi devices controlled from same application** | ❌ Bluetooth only | ✅ **Yes** |
 | **Application manages communication failover** | ❌ No secondary wireless transport | ✅ **Yes — BLE ↔ Wi-Fi/WebSockets** |
@@ -64,7 +66,7 @@
 | **Actual locomotive speed display** | ✅ Yes | ✅ Yes |
 | **Target-speed display** | ✅ Yes | ✅ Yes |
 | **Voltage display/telemetry** | ✅ Yes | ✅ Yes with compatible telemetry hardware |
-| **Wireless signal-strength display** | ✅ RSSI | ✅ Yes |
+| **Wireless signal-strength display** | ✅ RSSI | ❌ No |
 | **Stop-All / emergency-stop control** | ✅ Yes | ✅ Yes |
 | **Wireless CV editing** | ✅ Yes | ✅ Yes |
 | **Locomotive naming** | ✅ Yes | ✅ Yes |
@@ -121,6 +123,7 @@
 
 | Feature | Blunami | Poor Man’s Throttle v3.0 |
 |---|---|---|
+| **Professionally recorded sounds** | ✅ **Yes** | ⚠️ **Crowdsourced** |
 | **Crowdsourced locomotive audio library** | ❌ **No** | ✅ **Yes** |
 | **Users contribute locomotive sound files** | ❌ No arbitrary user-audio ecosystem | ✅ **Yes** |
 | **Share sound files with other users** | ❌ No | ✅ **Yes** |
@@ -202,7 +205,7 @@
 | **Idle sound** | ✅ Yes | ✅ Yes |
 | **Notch-based engine sound** | ✅ Yes | ✅ Yes |
 | **RPM/notch changes** | ✅ Yes | ✅ Yes |
-| **Load-reactive exhaust** | ✅ DDE | ✅ Yes |
+| **Load-reactive exhaust** | ✅ DDE | ⚠️ **Requires INA219 child board** |
 | **Horn** | ✅ Yes | ✅ Yes |
 | **Multiple horns** | ✅ Yes | ✅ Yes |
 | **Bell** | ✅ Yes | ✅ Yes |
@@ -248,9 +251,9 @@
 | **User can fundamentally replace audio content** | ❌ Manufacturer library | ✅ **Yes** |
 | **Digital audio mixing** | ✅ Yes | ✅ Yes |
 | **Master volume** | ✅ Yes | ✅ Yes |
-| **Individual sound volume** | ✅ Yes | ✅ Yes |
-| **Audio shaping / EQ** | ✅ Yes | ✅ DSP capable |
-| **Reverb/audio processing** | ✅ Yes | ✅ DSP capable |
+| **Individual sound volume** | ✅ Yes | ⚠️ **Not yet — coming soon** |
+| **Audio shaping / EQ** | ✅ Yes | ⚠️ **Yes — not configurable** |
+| **Reverb/audio processing** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Dynamic audio processing** | ✅ Yes | ✅ Yes |
 | **Sound priority management** | ✅ Yes | ✅ Yes |
 | **Standard amplifier recipe** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
@@ -369,6 +372,7 @@
 | **Network-controlled locomotive operation** | ❌ No IP transport | ✅ **Yes** |
 | **Battery/dead-rail operation** | ✅ Yes | ✅ Yes |
 | **Traditional DC operation** | ✅ Yes | ✅ Yes |
+| **Tri-mode capable** | ⚠️ **Controller and battery; DC rail power and controller** | ✅ **Controller and battery; DC rail power and controller; controller between DC and rails** |
 | **DCC operation** | ✅ Yes | ❌ PMT is not a DCC decoder |
 | **Bluetooth operation without DCC** | ✅ Yes | ✅ Yes |
 | **Multiple-locomotive control** | ✅ Yes | ✅ Yes |
@@ -385,7 +389,7 @@
 | **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
 | **Replaceable motor-power stage** | ❌ No | ✅ **Yes** |
 | **Selectable motor hardware** | ❌ No | ✅ **Yes** |
-| **Maximum motor stall rating** | **4A** | Driver dependent |
+| **Maximum motor stall rating** | **BLU 4A** | **48A** (driver dependent) |
 | **Standard PMT motor recipe** | — | **48A** |
 | **Physical function outputs** | **8** | Hardware/module dependent |
 | **Function-output current** | **400mA each** | Hardware dependent |
