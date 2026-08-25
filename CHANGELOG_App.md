@@ -1,6 +1,13 @@
 # Changelog — PoorMansThrottle
 
 ## Smartphone App:
+### Version 3.0.0
+* **Terminal Fixes** 
+ ** The terminal now allows exit of the screen when connectivity is dropped.
+ ** The terminal now enters script mode if the send button is pressed with no command.
+ ** The terminal now allows scripts to run when in WebSocket connected state and no BLE.
+* **Backup and Restore Refined** The app now has a more refined backup and restore system for hardware configuration.
+* **Startup Restore Sensing** The app now senses when a firmware update occurred and prompts the user if they wish to apply the latest backup (if stored) to the firmware.
 
 ### Version 2.5.7
 * **Android camera bug fixed** The app would not show the preview on some Android devices..
