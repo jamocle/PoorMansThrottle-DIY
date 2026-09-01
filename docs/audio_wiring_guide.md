@@ -718,8 +718,7 @@ The audio behavior follows the pattern CV, not the FX number itself.
 
 For patterns `103` and `104`:
 
-- set the pattern first
-- then set that function's pin/track CV
+- set the pattern and that function's pin/track CV; their write order does not matter
 - use a track number from `1..9999`
 - verify the corresponding four-digit WAV exists under the active `/diesel` or `/steam` root
 
