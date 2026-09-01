@@ -1,5 +1,7 @@
 # Draft Installation Guide: ESP32-S3 PMTPlayer Sound Wiring
 
+**Firmware source baseline:** PMT `3.0.0`
+
 ## Purpose
 
 This guide explains how to wire the sound-only hardware for an ESP32-S3 Poor Man’s Throttle sound setup using the default GPIOs in the firmware.
@@ -91,6 +93,31 @@ The firmware defaults for the ESP32-S3 sound wiring are:
 
 If you use these default pins, you do not need to change these GPIO CVs.
 
+### Select the PMTPlayer Backend Before Pin Overrides
+
+`CV401` selects the audio backend:
+
+| CV401 | Backend |
+|---:|---|
+| `0` | None |
+| `2` | PMTPlayer Diesel |
+| `3` | PMTPlayer Steam |
+
+For this ESP32-S3 PMTPlayer wiring, select `CV401=2` for Diesel or `CV401=3` for Steam **before** manually changing `CV403` through `CV409`.
+
+When firmware changes from a non-PMTPlayer backend to `2` or `3`, it applies the PMTPlayer backend preset, including the board-profile audio pins. That preset can overwrite earlier manual pin/tuning values. Switching later between `CV401=2` and `CV401=3` while already in the PMTPlayer family preserves the PMTPlayer pin/tuning configuration.
+
+Recommended configuration order:
+
+```text
+CV400=0
+CV401=2    # Diesel; use CV401=3 for Steam
+# If needed, apply custom CV403..CV409 values here.
+CV400=1
+```
+
+Audio is disabled by default (`CV400=0`).
+
 ---
 
 ## Wiring Table: ESP32-S3 to Micro SD Adapter
@@ -174,7 +201,7 @@ A missing common ground can cause the SD card or amplifier to behave unpredictab
 
 ## If You Do Not Use the Default GPIOs
 
-If you wire the SD card or MAX98357 to different GPIOs, update the matching CVs.
+If you wire the SD card or MAX98357 to different GPIOs, first select the intended PMTPlayer backend with `CV401=2` (Diesel) or `CV401=3` (Steam), then update the matching pin CVs. Selecting the backend after custom pin writes can reapply the backend preset and replace those custom values.
 
 ### SD Card GPIO CVs
 

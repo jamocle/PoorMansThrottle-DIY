@@ -2,7 +2,7 @@
 
 This appendix contains the firmware-backed wiring reference for the Poor Man's Throttle system.
 
-This version has been refreshed against firmware **v1.12.1** and reflects the hardware control styles, default pin mappings, and optional wiring paths currently supported by the firmware.
+This version has been refreshed against firmware **v3.0.0** and reflects the current Classic ESP32-WROOM and ESP32-S3-WROOM-1-N16R8 board profiles.
 
 Use these tables to verify wiring during assembly or troubleshooting.
 
@@ -24,16 +24,16 @@ Use these tables to verify wiring during assembly or troubleshooting.
 
 # Supported Motor Driver Modes and Default ESP32 Pin Mapping
 
-| Driver Mode | Typical Boards | Firmware Default Pins | Notes |
-|------------|----------------|-----------------------|-------|
-| DUAL_PWM | IBT-2, BTS7960 style boards | GPIO25 = FWD PWM, GPIO26 = REV PWM, GPIO27 = ENA, GPIO33 = ENB | Best match for the original PMT wiring style and heavy-current installs |
-| PWM_DIR | Cytron MD10C style boards | GPIO25 = PWM, GPIO26 = DIR | One PWM line plus one direction line |
-| PWM_BIDIR | L298N style boards | GPIO25 = PWM/EN, GPIO26 = FWD logic, GPIO27 = REV logic | One PWM enable plus two direction logic pins |
-| DUAL_INPT | DRV8833 style boards | GPIO25 = IN1, GPIO26 = IN2 | PWM is applied to the active side internally by firmware |
+| Driver Mode | Typical Boards | Classic ESP32-WROOM Defaults | ESP32-S3-WROOM-1-N16R8 Defaults |
+|------------|----------------|------------------------------|---------------------------------|
+| DUAL_PWM | IBT-2, BTS7960 style boards | GPIO25 FWD, GPIO26 REV, GPIO27 ENA, GPIO33 ENB | GPIO6 FWD, GPIO7 REV, GPIO4 ENA, GPIO5 ENB |
+| PWM_DIR | Cytron MD10C style boards | GPIO25 PWM, GPIO26 DIR | GPIO6 PWM, GPIO7 DIR |
+| PWM_BIDIR | L298N style boards | GPIO25 PWM/EN, **GPIO27 FWD**, **GPIO33 REV** | GPIO6 PWM/EN, GPIO4 FWD, GPIO5 REV |
+| DUAL_INPT | DRV8833 style boards | GPIO25 IN1, GPIO26 IN2 | GPIO6 IN1, GPIO7 IN2 |
 
 ---
 
-# ESP32 to IBT-2 Motor Driver Wiring (DUAL_PWM Default)
+# Classic ESP32-WROOM to IBT-2 Motor Driver Wiring (DUAL_PWM Default)
 
 | From ESP32 | To IBT-2 | Purpose |
 |------------|----------|---------|
@@ -48,7 +48,7 @@ This is the original and most common Poor Man's Throttle wiring pattern.
 
 ---
 
-# ESP32 to PWM_DIR Driver Wiring (Default)
+# Classic ESP32-WROOM to PWM_DIR Driver Wiring (Default)
 
 Use this pattern for drivers that expect **one PWM input** and **one direction input**.
 
@@ -63,15 +63,15 @@ Use this pattern for drivers that expect **one PWM input** and **one direction i
 
 ---
 
-# ESP32 to PWM_BIDIR Driver Wiring (L298N-Style Default)
+# Classic ESP32-WROOM to PWM_BIDIR Driver Wiring (L298N-Style Default)
 
 Use this pattern for drivers that expect **one PWM/enable input** and **two direction logic inputs**.
 
 | From ESP32 | To Driver | Purpose |
 |------------|-----------|---------|
 | GPIO25 | EN / PWM | Speed control |
-| GPIO26 | IN1 / FWD | Forward logic |
-| GPIO27 | IN2 / REV | Reverse logic |
+| GPIO27 | IN1 / FWD | Forward logic |
+| GPIO33 | IN2 / REV | Reverse logic |
 | GND | GND | Shared ground |
 | 5V / VIN* | Logic VCC* | Driver logic reference if required by the board |
 
@@ -79,7 +79,7 @@ Use this pattern for drivers that expect **one PWM/enable input** and **two dire
 
 ---
 
-# ESP32 to DUAL_INPT Driver Wiring (DRV8833-Style Default)
+# Classic ESP32-WROOM to DUAL_INPT Driver Wiring (DRV8833-Style Default)
 
 Use this pattern for drivers with **two motor-control inputs** and no separate direction pin.
 
@@ -148,23 +148,23 @@ This separate 5V controller supply helps keep the ESP32 stable when the motor st
 
 # Optional INA219 Voltage Monitoring Wiring
 
-Firmware v1.12.1 supports optional **INA219 telemetry and low-voltage protection**.
+Firmware v3.0.0 supports optional **INA219 telemetry and low-voltage protection**.
 
 ## INA219 default firmware pins
 
-| Firmware Setting | Default |
-|------------------|---------|
-| SDA | GPIO21 |
-| SCL | GPIO22 |
-| I2C Address | 0x40 (decimal 64) |
-| Low-voltage LED pin | Unassigned by default |
+| Firmware Setting | Classic ESP32-WROOM | ESP32-S3-WROOM-1-N16R8 |
+|------------------|---------------------|--------------------------|
+| SDA / CV31 | GPIO16 | GPIO17 |
+| SCL / CV32 | GPIO17 | GPIO18 |
+| I2C Address / CV33 | 0x40 (decimal 64) | 0x40 (decimal 64) |
+| Low-voltage LED / CV42 | Unassigned (`0`) | Unassigned (`0`) |
 
 ## INA219 wiring
 
 | From ESP32 | To INA219 | Purpose |
 |------------|-----------|---------|
-| GPIO21 | SDA | I2C data |
-| GPIO22 | SCL | I2C clock |
+| Configured CV31 pin | SDA | I2C data |
+| Configured CV32 pin | SCL | I2C clock |
 | 3.3V or board-appropriate VCC* | VCC | INA219 power |
 | GND | GND | Shared ground |
 
@@ -199,15 +199,15 @@ Notes:
 
 # Optional Function Output Wiring
 
-Firmware v1.12.1 supports up to **12 configurable function outputs** for lights or other switched low-current accessories.
+Firmware v3.0.0 rev215 provides **12 configurable FX slots**. A slot can drive a physical output or invoke an audio pattern.
 
 ## Function names used by firmware
 
-| Function Slot | Default Name | Default Direction Mode | Default Pin |
-|---------------|--------------|------------------------|-------------|
-| F1 | Headlight | FWD | Unassigned |
-| F2 | ReverseLgt | REV | Unassigned |
-| F3-F12 | FX3 through FX12 | BOTH | Unassigned |
+| Function Slot | Default Name | Default Direction Mode | Classic Default Pin | S3 Default Pin | Default Pattern |
+|---------------|--------------|------------------------|--------------------:|---------------:|-----------------|
+| F1 | Headlight | FWD | GPIO4 | GPIO15 | `0` (None) |
+| F2 | ReverseLgt | REV | GPIO5 | GPIO16 | `0` (None) |
+| F3-F12 | FX3 through FX12 | BOTH | `0` | `0` | `0` (None) |
 
 ## Basic function output wiring
 
@@ -217,33 +217,45 @@ Firmware v1.12.1 supports up to **12 configurable function outputs** for lights 
 | Accessory return | GND | Return path |
 
 Notes:
-- Function pins are **unassigned by default** in current firmware.
-- A function must have a valid **pin** and **pattern** configured before it can be activated.
-- The firmware blocks use of **GPIO2** for function outputs because GPIO2 is the onboard status LED.
-- Active function outputs must not share the same GPIO pin.
+- F1/F2 have board-profile pin defaults, but all FX pattern defaults are `0`, so those pins are not activated as functions until a pattern is configured.
+- Physical patterns (`1..99`) require a valid, non-conflicting output GPIO.
+- Audio patterns (`100..199`) do not use the same GPIO rule. Bell/horn/cab-chatter need no function GPIO; custom audio patterns `103`/`104` reuse the function pin CV as a PMTPlayer track number `1..9999`.
+- The onboard status LED is reserved by the firmware and must not be reused as a physical function output.
 
 ## Supported function output patterns
 
-| Pattern | Meaning |
-|---------|---------|
-| SOLID | Constant ON when active |
-| DBL_BLNK | Double blink |
-| FRED | Single blink then double blink style pattern |
-| BLINK+ | Phase-based blink |
-| BLINK- | Opposite-phase blink |
+| Numeric Pattern | Meaning | Legacy text accepted |
+|---:|---|---|
+| `0` | None / unconfigured | — |
+| `1` | Constant ON when active | `SOLID`, `LED_SOLID` |
+| `2` | Double blink | `DBL_BLNK`, `LED_DBL_BLNK` |
+| `3` | FRED pattern | `FRED`, `LED_FRED` |
+| `4` | Phase-based blink | `BLINK+`, `LED_BLINK+` |
+| `5` | Opposite-phase blink | `BLINK-`, `LED_BLINK-` |
+| `100` | Audio bell | `AUDIO_BELL` |
+| `101` | Audio horn | `AUDIO_HORN` |
+| `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |
+| `103` | PMTPlayer custom one-shot | `AUDIO_CUSTOM`, `CUSTOM` |
+| `104` | PMTPlayer custom replay / loop | `AUDIO_CUSTOM_REPLAY` and accepted aliases |
 
 ---
 
 # Output-Capable GPIOs Commonly Used by Firmware
 
-The firmware accepts these ESP32 GPIOs as runtime output-capable pins:
+Runtime output validation is board-profile specific.
+
+**Classic ESP32-WROOM allow-list:**
 
 `0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33`
 
+**ESP32-S3-WROOM-1-N16R8 allow-list:**
+
+`1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 33, 34, 38, 39, 40, 41, 42, 47`
+
 Practical PMT notes:
-- **GPIO2** is reserved in practice for the onboard status LED.
-- The default motor control mappings center around **GPIO25, GPIO26, GPIO27, and GPIO33**.
-- **GPIO21 and GPIO22** are the default INA219 I2C pins.
+- A pin being in the firmware allow-list does not guarantee it is appropriate for every attached board or peripheral.
+- Classic motor defaults center on GPIO25/26/27/33; S3 motor defaults center on GPIO4/5/6/7.
+- INA219 defaults are Classic GPIO16/17 and S3 GPIO17/18, not the generic Arduino 21/22 convention.
 
 ---
 

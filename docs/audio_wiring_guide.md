@@ -114,22 +114,32 @@ This is the recommended simple bring-up configuration:
 
 #### Shared audio CVs
 
-| CV | Name | Meaning | Possible values | Suggested value |
+| CV | Name | Meaning | Possible values | DFPlayer bring-up value |
 |---:|---|---|---|---:|
 | 400 | `AUDIO_ENABLE` | Enables audio subsystem | `0 = off`, `1 = on` | `0` during wiring, then `1` |
-| 401 | `AUDIO_BACKEND_TYPE` | Selects audio backend | `0 = None`, `1 = DFPlayer` | `1` |
-| 402 | `AUDIO_TX_PIN` | ESP32 TX pin used to send serial to sound board RX | `-1 = unused`, valid GPIO number otherwise | `17` |
-| 403 | `AUDIO_RX_PIN` | ESP32 RX pin used to receive serial from sound board TX | `-1 = unused`, valid GPIO number otherwise | `16` |
-| 404 | `AUDIO_BUSY_PIN` | Optional BUSY input from sound board | `-1 = unused`, valid GPIO number otherwise | `-1` |
-| 405 | `AUDIO_VOLUME` | Global audio volume | `0..30` | `20` |
-| 406 | `AUDIO_DEFAULT_PRIORITY` | Default priority for generic audio requests | `0..255` | `20` |
-| 407 | `AUDIO_DEFAULT_CONFLICT_POLICY` | How single-stream conflicts are handled | `0 = IgnoreLowerPriority`, `1 = InterruptThenResume`, `2 = ReplaceSameGroup` | `1` |
-| 408 | `AUDIO_STARTUP_DELAY_MS` | Delay after backend init | `0` or greater | `0` |
-| 409 | `AUDIO_SHUTDOWN_DELAY_MS` | Delay before shutdown completes | `0` or greater | `0` |
-| 410 | `AUDIO_AMP_ENABLE_PIN` | Optional amp enable control pin | `-1 = unused`, valid GPIO number otherwise | `-1` |
-| 411 | `AUDIO_AMP_MUTE_PIN` | Optional amp mute control pin | `-1 = unused`, valid GPIO number otherwise | `-1` |
-| 412 | `AUDIO_AMP_STANDBY_PIN` | Optional amp standby control pin | `-1 = unused`, valid GPIO number otherwise | `-1` |
-| 413 | `AUDIO_FAULT_PIN` | Optional amp fault/status input pin | `-1 = unused`, valid GPIO number otherwise | `-1` |
+| 401 | `AUDIO_BACKEND_TYPE` | Selects backend | `0 = None`, `1 = DFPlayer`, `2 = PMTPlayer Diesel`, `3 = PMTPlayer Steam` | `1` |
+| 402 | `AUDIO_VOLUME` | Global audio volume | `0..30` | `15` |
+| 403 | `AUDIO_BACKEND_SLOT1` | DFPlayer TX pin / PMTPlayer SD CS | backend-specific signed value | `21` |
+| 404 | `AUDIO_SD_SPI_SCK_PIN` | PMTPlayer SD SPI SCK override | `-1` or valid output GPIO | `-1` |
+| 405 | `AUDIO_SD_SPI_MISO_PIN` | PMTPlayer SD SPI MISO override | `-1` or valid input GPIO | `-1` |
+| 406 | `AUDIO_SD_SPI_MOSI_PIN` | PMTPlayer SD SPI MOSI override | `-1` or valid output GPIO | `-1` |
+| 407 | `AUDIO_BACKEND_SLOT2` | DFPlayer RX pin / PMTPlayer I2S BCLK | backend-specific signed value | `13` |
+| 408 | `AUDIO_BACKEND_SLOT3` | DFPlayer BUSY pin / PMTPlayer I2S LRCLK | backend-specific signed value | `-1` for bring-up without BUSY |
+| 409 | `AUDIO_BACKEND_TUNING1` | DFPlayer loop-restart trim (ms) / PMTPlayer I2S DIN | backend-specific value | `250` |
+| 410 | `AUDIO_DEFAULT_PRIORITY` | Default priority for generic audio requests | `0..255` | `30` |
+| 411 | `AUDIO_DEFAULT_CONFLICT_POLICY` | Conflict policy | `0 = IgnoreLowerPriority`, `1 = InterruptThenResume`, `2 = ReplaceSameGroup` | `1` |
+| 412 | `AUDIO_STARTUP_DELAY_MS` | Delay after backend init | `0` or greater | `0` |
+| 413 | `AUDIO_SHUTDOWN_DELAY_MS` | Delay before shutdown completes | `0` or greater | `0` |
+| 414 | `AUDIO_AMP_ENABLE_PIN` | Optional amp enable control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
+| 415 | `AUDIO_AMP_MUTE_PIN` | Optional amp mute control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
+| 416 | `AUDIO_AMP_STANDBY_PIN` | Optional amp standby control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
+| 417 | `AUDIO_FAULT_PIN` | Optional amp fault/status input pin | `-1 = unused`, valid GPIO otherwise | `-1` |
+
+> **Classic ESP32 meaning of `CV404–CV406 = -1`:** the `-1` values are deliberate sentinel defaults, not missing wiring. When all three remain `-1`, `PmtCardReader` does not remap the SPI bus and uses the existing Arduino/core `SPI` defaults. On the Classic ESP32-WROOM hardware used by PMT, the effective pins are **SCK GPIO18**, **MISO GPIO19**, and **MOSI GPIO23**. `CV403` still supplies the SD chip-select pin (Classic PMTPlayer default `GPIO21`).
+>
+> Therefore the Classic PMTPlayer defaults should be read as: `CV404=-1` **→ SCK GPIO18**, `CV405=-1` **→ MISO GPIO19**, `CV406=-1` **→ MOSI GPIO23**.
+>
+> On ESP32-S3 PMTPlayer builds, these CVs are explicit rather than sentinel values: `CV404=11`, `CV405=8`, `CV406=9`.
 
 #### Function CVs for bell and horn
 
@@ -160,24 +170,30 @@ Enter these after wiring:
 ```text
 CV400=0
 CV401=1
-CV402=17
-CV403=16
+CV402=15
+CV403=21
 CV404=-1
-CV405=20
-CV406=20
-CV407=1
-CV408=0
-CV409=0
-CV410=-1
-CV411=-1
-CV412=-1
-CV413=-1
+CV405=-1
+CV406=-1
+CV407=13
+CV408=-1
+CV409=250
+CV410=30
+CV411=1
+CV412=0
+CV413=0
+CV414=-1
+CV415=-1
+CV416=-1
+CV417=-1
 CV165=0
 CV166=AUDIO_BELL
 CV172=0
 CV173=AUDIO_HORN
 CV400=1
 ```
+
+For this DFPlayer setup, `CV404–CV406` are not used by the backend. They are still shown at `-1` because that is the neutral value applied by the DFPlayer preset. If the backend is changed to PMTPlayer on Classic hardware, those same stored values mean **use Arduino/core SPI defaults: GPIO18 / GPIO19 / GPIO23 for SCK / MISO / MOSI**.
 
 ---
 
@@ -238,27 +254,29 @@ The following grounds must be tied together:
 
 ### 2. Suggested UART wiring
 
-For the current recommended setup:
+For the current recommended DFPlayer setup:
 
-- `CV402 = 17` means ESP32 `GPIO17` is used as audio TX
-- `CV403 = 16` means ESP32 `GPIO16` is used as audio RX
+- `CV403 = 21` means ESP32 `GPIO21` is used as DFPlayer TX
+- `CV407 = 13` means ESP32 `GPIO13` is used as DFPlayer RX
 
 That means:
 
 ```text
-ESP32 GPIO17  -> DFPlayer RX
-ESP32 GPIO16  <- DFPlayer TX
+ESP32 GPIO21  -> DFPlayer RX
+ESP32 GPIO13  <- DFPlayer TX
 ```
 
 ### 3. BUSY pin is optional
 
-For first bring-up, do not wire BUSY.
+For first DFPlayer bring-up, do not wire BUSY.
 
-Use:
+`CV408` is the DFPlayer BUSY slot in the current CV map, so use:
 
 ```text
-CV404=-1
+CV408=-1
 ```
+
+Do **not** use `CV404` for DFPlayer BUSY. `CV404` is the PMTPlayer SD SCK override CV.
 
 ### 4. Amplifier control pins are optional
 
@@ -267,10 +285,10 @@ For first bring-up, do not wire amp enable/mute/standby/fault pins.
 Use:
 
 ```text
-CV410=-1
-CV411=-1
-CV412=-1
-CV413=-1
+CV414=-1
+CV415=-1
+CV416=-1
+CV417=-1
 ```
 
 ### 5. If using an external amplifier, start with no MCU control
@@ -312,20 +330,29 @@ This diagram matches the recommended CV table above.
 ```text
 Recommended CVs:
 CV401=1
-CV402=17
-CV403=16
+CV402=15
+CV403=21
 CV404=-1
-CV405=20
-CV407=1
-CV410=-1
-CV411=-1
-CV412=-1
-CV413=-1
+CV405=-1
+CV406=-1
+CV407=13
+CV408=-1
+CV409=250
+CV410=30
+CV411=1
+CV412=0
+CV413=0
+CV414=-1
+CV415=-1
+CV416=-1
+CV417=-1
 CV165=0
 CV166=AUDIO_BELL
 CV172=0
 CV173=AUDIO_HORN
 ```
+
+`CV404=-1`, `CV405=-1`, and `CV406=-1` are neutral/unused for this DFPlayer example. On Classic PMTPlayer they mean **GPIO18 / GPIO19 / GPIO23** for SCK / MISO / MOSI.
 
 ### Recommended wiring with optional amplifier
 
@@ -429,6 +456,10 @@ CV410?
 CV411?
 CV412?
 CV413?
+CV414?
+CV415?
+CV416?
+CV417?
 ```
 
 ### 2. Confirm function pin and pattern CV values for the chosen FX functions
@@ -454,24 +485,30 @@ CV173=AUDIO_HORN
 ```text
 CV400=0
 CV401=1
-CV402=17
-CV403=16
+CV402=15
+CV403=21
 CV404=-1
-CV405=20
-CV406=20
-CV407=1
-CV408=0
-CV409=0
-CV410=-1
-CV411=-1
-CV412=-1
-CV413=-1
+CV405=-1
+CV406=-1
+CV407=13
+CV408=-1
+CV409=250
+CV410=30
+CV411=1
+CV412=0
+CV413=0
+CV414=-1
+CV415=-1
+CV416=-1
+CV417=-1
 CV165=0
 CV166=AUDIO_BELL
 CV172=0
 CV173=AUDIO_HORN
 CV400=1
 ```
+
+For this DFPlayer setup, `CV404–CV406` are not used by the backend. They are still shown at `-1` because that is the neutral value applied by the DFPlayer preset. If the backend is changed to PMTPlayer on Classic hardware, those same stored values mean **use Arduino/core SPI defaults: GPIO18 / GPIO19 / GPIO23 for SCK / MISO / MOSI**.
 
 ### 4. Verify bell and horn commands
 
@@ -598,18 +635,21 @@ Meaning:
 | Backend | DFPlayer |
 | Audio enable during wiring | `0` |
 | Audio enable after wiring | `1` |
-| ESP32 TX pin | `17` |
-| ESP32 RX pin | `16` |
-| Busy pin | `-1` |
-| Volume | `20` |
-| Default priority | `20` |
-| Conflict policy | `1` |
-| Startup delay | `0` |
-| Shutdown delay | `0` |
-| Amp enable pin | `-1` |
-| Amp mute pin | `-1` |
-| Amp standby pin | `-1` |
-| Fault pin | `-1` |
+| DFPlayer TX (`CV403`) | `GPIO21` |
+| DFPlayer RX (`CV407`) | `GPIO13` |
+| DFPlayer BUSY (`CV408`) | `-1` for bring-up without BUSY |
+| Volume (`CV402`) | `15` |
+| Default priority (`CV410`) | `30` |
+| Conflict policy (`CV411`) | `1` |
+| Startup delay (`CV412`) | `0` |
+| Shutdown delay (`CV413`) | `0` |
+| Amp enable (`CV414`) | `-1` |
+| Amp mute (`CV415`) | `-1` |
+| Amp standby (`CV416`) | `-1` |
+| Fault (`CV417`) | `-1` |
+| Classic PMTPlayer SD SCK (`CV404`) | `-1` stored → effective `GPIO18` |
+| Classic PMTPlayer SD MISO (`CV405`) | `-1` stored → effective `GPIO19` |
+| Classic PMTPlayer SD MOSI (`CV406`) | `-1` stored → effective `GPIO23` |
 | Bell function used in this guide | `FX3` |
 | Horn function used in this guide | `FX4` |
 | FX choice | User-selectable; this guide uses `FX3`/`FX4` as the example |

@@ -1,5 +1,7 @@
 # INA219 Wiring & Configuration (ESP32 Throttle)
 
+**Firmware source baseline:** PMT `3.0.0`, revision `215`
+
 ## Overview
 
 The INA219 is a current and voltage sensor used to monitor:
@@ -22,14 +24,21 @@ The INA219 communicates with the ESP32 using I²C.
 
 ## Default ESP32 → INA219 Connections
 
-| Function | ESP32 Pin | INA219 Pin |
-|----------|-----------|------------|
-| SDA | GPIO 21 | SDA |
-| SCL | GPIO 22 | SCL |
-| Power | 3.3V preferred | VCC |
-| Ground | GND | GND |
+PMT uses **board-profile defaults**, not the generic Arduino ESP32 I²C pins:
 
-Use 3.3V for VCC when possible with an ESP32. Many INA219 modules also work from 5V, but 3.3V keeps the I²C pullups safer for ESP32 logic.
+| Board profile | SDA / CV31 | SCL / CV32 |
+|---|---:|---:|
+| Classic ESP32-WROOM | GPIO16 | GPIO17 |
+| ESP32-S3-WROOM-1-N16R8 | GPIO17 | GPIO18 |
+
+Power wiring is common to both profiles:
+
+| Function | INA219 Pin |
+|---|---|
+| Power | VCC |
+| Ground | GND |
+
+Use 3.3V for VCC when possible with an ESP32. Many INA219 modules also work from 5V, but verify the breakout's I²C pull-up voltage before doing so.
 
 All devices must share the same GND.
 
@@ -63,8 +72,8 @@ Battery + ------> VIN+        VIN- ----+----> Motor Driver POWER INPUT (+)
 ESP32 3.3V -----> VCC                  |
 ESP32 GND ------> GND ----------------+----> Common GND
                 |                      |
-ESP32 GPIO21 ---> SDA                  |
-ESP32 GPIO22 ---> SCL                  |
+ESP32 CV31 pin --> SDA                  |
+ESP32 CV32 pin --> SCL                  |
                 +----------------------+
 
 Battery - ---------------------------------> Motor Driver POWER INPUT (-)
@@ -132,14 +141,14 @@ Example:
 | CV | Setting             | Default | What It Does                                   | If Set to 0                                                        |
 | -- | ------------------- | ------- | ---------------------------------------------- | ------------------------------------------------------------------ |
 | 30 | Enable INA219       | 0       | Turns INA219 monitoring on/off                 | No readings, warnings, limiting, shutdown, or disconnect detection |
-| 31 | SDA Pin             | 21      | Sets I²C data pin                              | If incorrect, INA219 will not communicate                          |
-| 32 | SCL Pin             | 22      | Sets I²C clock pin                             | If incorrect, INA219 will not communicate                          |
+| 31 | SDA Pin             | Classic `16`; S3 `17` | Sets I²C data pin                    | If incorrect, INA219 will not communicate                          |
+| 32 | SCL Pin             | Classic `17`; S3 `18` | Sets I²C clock pin                   | If incorrect, INA219 will not communicate                          |
 | 33 | I²C Address         | 64      | Selects INA219 address                         | Address 0 is invalid; wrong address makes sensor appear missing    |
 | 36 | Warn Voltage        | 0       | Shows low voltage warning                      | No early warning                                                   |
 | 37 | Limit Voltage       | 0       | Reduces throttle when voltage is low           | No automatic throttle reduction                                    |
 | 38 | Shutdown Voltage    | 0       | Stops motor to protect battery                 | No low-voltage shutdown                                            |
-| 40 | Disconnect Voltage  | 0       | Detects battery disconnect or voltage collapse | No disconnect detection                                            |
-| 41 | Throttle Cap (%)    | 25      | Max throttle allowed during voltage limiting   | 0 means no movement when limiting is active                        |
+| 40 | Disconnect Voltage  | 1000 mV | Detects battery disconnect or voltage collapse | `0` disables disconnect detection                                  |
+| 41 | Throttle Cap (%)    | 25      | Throttle-only cap while voltage limiting is active | 0 means no movement when limiting is active                    |
 | 42 | Low Voltage LED Pin | 0       | Optional physical low-voltage LED output       | No physical LED; app can still show status                         |
 
 Do not set CV42 to GPIO2. GPIO2 is already used as the controller status LED.

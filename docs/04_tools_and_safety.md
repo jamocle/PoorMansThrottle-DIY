@@ -2,7 +2,7 @@
 
 This document lists the tools needed to build the Poor Man's Throttle and the most important safety practices to follow during wiring, power-up, testing, and installation.
 
-This version has been refreshed against the current firmware behavior for **Poor Man's Throttle firmware v1.12.1** on **ESP32-WROOM-32**. The firmware supports multiple motor driver control styles, optional INA219 low-voltage monitoring, BLE control, and optional Wi-Fi/WebSocket control, so the safety guidance below has been updated to match that broader scope.
+This version has been refreshed against **Poor Man's Throttle firmware v3.0.0**. The current firmware includes Classic ESP32-WROOM and ESP32-S3-WROOM-1-N16R8 board profiles, multiple motor driver control styles, optional INA219 low-voltage monitoring, BLE control, and optional Wi-Fi/WebSocket control, so the safety guidance below is intended to be read with the board profile actually installed.
 
 Builders may choose a **beginner build style** or an **advanced build style** depending on their experience and installation goals.
 

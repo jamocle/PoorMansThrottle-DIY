@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 2.0.0  
+**Firmware Version:** 3.0.0 
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -23,7 +23,7 @@ This is a protocol reference, not a beginner setup guide. It intentionally docum
 
 # Device Types Covered
 
-PMT firmware 2.0.0 uses a shared protocol foundation across more than one device type.
+PMT firmware 3.0.0 uses a shared protocol foundation across more than one device type.
 
 | Device type | Purpose | Protocol scope |
 |---|---|---|
@@ -64,13 +64,15 @@ Command characteristics:
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
-| Debug on/off | Yes | Yes | Yes |
+| Debug / SD logging control | Yes | Yes | Yes |
 | Async state notify control | Yes | Yes | Yes |
 | Grace shutdown runtime override | Yes | Yes | Yes |
+| Persist-only CV staging (`PS`) | Yes | Yes | Yes |
 | Throttle motion commands | Yes | No | No |
 | Hardware/stored throttle state query | Yes | No | No |
 | Periodic throttle debug commands | Yes | No | No |
-| Function output commands | Yes | No | No |
+| Function / FX commands | Yes | No | No |
+| Audio record / diagnostic commands | Yes | No | No |
 | Turbine output commands | No | No | Yes |
 | Shared CVs | Yes | Yes | Yes |
 | Throttle CVs | Yes | No | No |
@@ -202,10 +204,10 @@ V
 Example response:
 
 ```text
-ACK:V2.0.0
+ACK:V3.0.0
 ```
 
-`V` is ACK-wrapped.
+`V` is ACK-wrapped. The firmware revision is not included in the `V` reply.
 
 ---
 
@@ -313,26 +315,83 @@ Notes:
 
 ---
 
-## Debug Logging
+## Debug and SD Logging
 
-Enable debug:
+Enable debug and persist the debug startup override:
 
 ```text
 D1
 ```
 
-Disable debug:
+Enable debug and request SD logging:
+
+```text
+D2
+```
+
+Disable debug/logging and clear the persisted startup overrides:
 
 ```text
 D0
 ```
 
-Responses:
+Responses are ACK-wrapped, for example:
 
 ```text
 ACK:D1
+ACK:D2
 ACK:D0
 ```
+
+Notes:
+
+* `D1` keeps debug enabled across reboot until `D0` clears the startup override.
+* `D2` enables debug immediately and requests SD logging. The SD-log startup override is persisted only when the logger is actually usable/writable.
+* A build/runtime resource guard can deny the SD logging portion of `D2`; debug event generation remains enabled.
+* `D0` disables runtime debug/SD logging and clears their persisted startup overrides.
+* `D0`, `D1`, and `D2` are allowed before the identity handshake.
+
+---
+
+## Persist-Only CV Staging
+
+Query staging mode:
+
+```text
+PS?
+```
+
+Response:
+
+```text
+A:PS=0
+```
+
+or:
+
+```text
+A:PS=1
+```
+
+Enable persist-only staging:
+
+```text
+PS1
+```
+
+Disable persist-only staging:
+
+```text
+PS0
+```
+
+Notes:
+
+* `PS1` is runtime-only. Subsequent CV writes are validated and persisted but are **not applied live**.
+* Staged CV values require reboot before they become the live configuration.
+* `PS0` does not retroactively apply staged values. If staged writes are pending, reboot is still required.
+* `CV8` retains its reset/restart trigger semantics rather than behaving as a normal staged CV.
+* `PS?`, `PS0`, and `PS1` require the identity handshake.
 
 ---
 
@@ -391,6 +450,7 @@ Notes:
 * Reboot restores the default grace behavior.
 * `G0` clears any active grace countdown.
 * These commands are shared across supported firmware images, but the visible effect depends on the device's disconnect behavior.
+* `G0` / `G1` require the identity handshake.
 
 ---
 
@@ -591,8 +651,53 @@ ERR:FX<n>=<value>
 
 Notes:
 
-* Function output configuration is controlled by the function CV block starting at `CV150`.
+* Function/FX configuration is controlled by the function CV block starting at `CV150`.
+* Numeric patterns `1..99` are physical/LED patterns; `100..199` are audio patterns.
+* Bell/Horn/Cab-Chatter audio patterns do not require a physical function GPIO. Custom audio patterns `103`/`104` reuse the function pin CV as a PMTPlayer track number `1..9999`.
 * Direction-gated functions can be forced off automatically when the active direction does not match their configured direction rule.
+
+---
+
+## Audio Track-Length Recording
+
+Throttle firmware supports:
+
+```text
+A?
+```
+
+and an explicit track list:
+
+```text
+A? N=202,211,212,213
+```
+
+Track numbers in `N=` must be comma-separated integers from `1..9999`. Without `N=`, the firmware selects its current backend/application manifest.
+
+The command requires audio to be enabled and the active audio service to provide BUSY-signal support. Recording is asynchronous. Completion includes:
+
+```text
+AR:DONE
+ACK:A?
+```
+
+Errors use both an `AR:ERR` line and an `ERR:A?` line, for example `BUSY`, `AUDIO-OFF`, `BUSY-PIN`, `FORMAT`, or `START`.
+
+This command requires the identity handshake.
+
+## Audio Diagnostic Marker
+
+```text
+AM
+```
+
+Alias:
+
+```text
+AUDIOMARK
+```
+
+The command emits an audio diagnostic marker when the active backend/service supports it and returns an ACK for the original command. It requires the identity handshake.
 
 ---
 
@@ -782,7 +887,7 @@ Notes:
 
 # CV Command Format
 
-CV commands require authorization.
+CV commands require authorization. Under normal mode they apply to live runtime and persistence as implemented by the owning CV handler. When `PS1` is active, set commands are persisted without live apply and require reboot.
 
 Query:
 
@@ -865,8 +970,8 @@ Valid range:
 | CV | Purpose | Value format |
 |---|---|---|
 | `CV30` | INA219 enable | `0` or `1` |
-| `CV31` | INA219 SDA pin | valid runtime-capable pin |
-| `CV32` | INA219 SCL pin | valid runtime-capable pin |
+| `CV31` | INA219 SDA pin | board-profile runtime pin; default Classic `16`, S3 `17` |
+| `CV32` | INA219 SCL pin | board-profile runtime pin; default Classic `17`, S3 `18` |
 | `CV33` | INA219 I2C address | `64..79` decimal (`0x40..0x4F`) |
 | `CV34` | Sample interval ms | `50..60000` |
 | `CV35` | Publish interval ms | `100..60000` |
@@ -890,9 +995,9 @@ Notes:
 | CV | Purpose | Value format |
 |---|---|---|
 | `CV300` | Schedule enable | `0` or `1` |
-| `CV301` | Weekday bitmask | `0..127` |
-| `CV302` | Schedule ON time | UTC `HH:MM` |
-| `CV303` | Schedule OFF time | UTC `HH:MM` |
+| `CV301` | Weekday bitmask | `0..127`; `0` stores no selected days |
+| `CV302` | Schedule ON time | strict `HH:MM` on the CV14-adjusted firmware clock |
+| `CV303` | Schedule OFF time | strict `HH:MM` on the CV14-adjusted firmware clock |
 | `CV304` | Schedule ON command | non-empty command string |
 | `CV305` | Schedule OFF command | non-empty command string |
 
@@ -910,11 +1015,54 @@ Weekday bit mapping:
 
 Notes:
 
-* `CV302` and `CV303` must use strict 24-hour `HH:MM` time.
+* `CV302` and `CV303` must use strict 24-hour `HH:MM` time. Firmware first applies `CV14` to the received UTC epoch and then evaluates the schedule against that adjusted runtime clock; `CV14=0` therefore behaves as raw UTC.
 * The schedule does not support crossing midnight.
 * Schedule validation requires schedule enabled, at least one day selected, valid ON/OFF times, `ON < OFF`, and non-empty ON/OFF commands.
 * Scheduled commands are executed through the same command pipeline as external commands.
 * The configured ON/OFF commands are allowed to run internally for autonomous schedule execution.
+
+---
+
+## Shared Audio CVs
+
+CV400–CV429 are accepted and persisted by the shared CV handler on Throttle, Module, and Turbine. **Locomotive audio runtime behavior is Throttle-owned**; storing these values on Module/Turbine does not by itself create locomotive audio playback.
+
+| CV | Purpose | Values / effective default |
+|---:|---|---|
+| `CV400` | Audio enable | `0/1` / `0` |
+| `CV401` | Backend | `0=None`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam` / `2` |
+| `CV402` | Master volume | `0..30` / `15` |
+| `CV403` | PMTPlayer SD CS; Classic `21`, S3 `10` before backend-specific preset changes |
+| `CV404` | PMTPlayer SD SCK | Classic default `-1` **means Arduino/core default SCK, effective GPIO18**; S3 default `11` |
+| `CV405` | PMTPlayer SD MISO | Classic default `-1` **means Arduino/core default MISO, effective GPIO19**; S3 default `8` |
+| `CV406` | PMTPlayer SD MOSI | Classic default `-1` **means Arduino/core default MOSI, effective GPIO23**; S3 default `9` |
+| `CV407` | PMTPlayer BCLK; Classic `13`, S3 `12` |
+| `CV408` | PMTPlayer LRCLK; Classic `12`, S3 `13` |
+| `CV409` | PMTPlayer DIN; board default `14` |
+| `CV410` | Default priority | `0..100` / `30` |
+| `CV411` | Conflict policy | configure `0..2` / `1`; `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup` |
+| `CV412` | Startup delay ms | `0..10000` / `0` |
+| `CV413` | Shutdown delay ms | `0..10000` / `0` |
+| `CV414` | Amp enable pin | `-1` or valid output / `-1` |
+| `CV415` | Amp mute pin | `-1` or valid output / `-1` |
+| `CV416` | Amp standby pin | `-1` or valid output / `-1` |
+| `CV417` | Audio fault input pin | `-1` or valid input / `-1` |
+| `CV418` | PMTAudio profile | `0..3` / `3`; 0 Conservative, 1 Balanced, 2 Loud, 3 Explicit |
+| `CV419` | PMTAudio WAV gain | `1..12` / `1` |
+| `CV420` | Output headroom % | `50..100` / `100` |
+| `CV421` | Limiter/loudness mode | `0..10` / `10` |
+| `CV422` | Speaker size profile | `0..2` / `2`; setting it also refreshes CV421 (`0→3`, `1/2→10`) |
+| `CV423` | Max active voices | `0..255`; `0` resolves to board default; default Classic `3`, S3 `13` |
+| `CV424` | Overlap mode | effective `0..2` / `1` |
+| `CV425` | Async overlap start | `0/1` / `1` |
+| `CV426` | Start prime bytes | `0..16384` / `12288` |
+| `CV427` | Overlap prime bytes | `0..16384` / `0` |
+| `CV428` | Mixer attenuation % | `25..100` / `100` |
+| `CV429` | Clip telemetry | `0/1`; effective `0` in normal builds, verbose-audio-diagnostics only |
+
+Backend selection order matters: `CV401=1` applies the DFPlayer preset. Selecting `2`/`3` from a non-PMTPlayer backend applies the PMTPlayer preset. Switching between `2` and `3` while already in the PMTPlayer family preserves PMTPlayer-family pin/tuning CVs. Select `CV401` **before** custom backend-specific CV403–CV409 values.
+
+Writing any advanced PMTAudio CV from CV419 through CV429 moves CV418 to `3` (Explicit).
 
 ---
 
@@ -934,12 +1082,17 @@ These CVs apply to **Poor Man's Throttle** locomotive firmware.
 | `CV7` | Async state interval while changing | `50..10000` ms |
 | `CV9` | Kick config | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
 | `CV41` | Low-voltage throttle cap percent | `0..100` |
+| `CV43` | Locomotive background audio enable | `0/1`, default `0` |
+| `CV98` | Steam chuff-rate low anchors | 12 digits; default `010510152025` |
+| `CV99` | Steam chuff-rate high anchors | 12 digits; default `355065809000` |
 
 Example `CV9`:
 
 ```text
 CV9=25,300,80,15
 ```
+
+CV98/CV99 are PMTPlayer-Steam moving-chuff **cadence** curves only. CV98 maps speeds `1,5,10,15,20,25`; CV99 maps `35,50,65,80,90,100`. Each anchor is two digits: `01..99` = 1..99%, `00` = 100%. Firmware linearly interpolates the anchors and accepts non-monotonic curves. These CVs do not change locomotive speed.
 
 ---
 
@@ -971,6 +1124,8 @@ CV9=25,300,80,15
 
 Notes:
 
+* Classic defaults: CV100/101/102/103=`25/26/27/33`, CV104/105=`25/26`, CV106/107/108=`25/27/33`.
+* S3 defaults: CV100/101/102/103=`6/7/4/5`, CV104/105=`6/7`, CV106/107/108=`6/4/5`.
 * Invalid GPIO assignments return `ERR:<original-command>`.
 * Runtime pin changes place outputs in a safe state and reinitialize the selected driver interface.
 
@@ -1007,11 +1162,21 @@ Examples:
 
 Pattern values:
 
-* `SOLID`
-* `DBL_BLNK`
-* `FRED`
-* `BLINK+`
-* `BLINK-`
+| Numeric | Meaning | Legacy text accepted |
+|---:|---|---|
+| `0` | None | — |
+| `1` | LED solid | `SOLID`, `LED_SOLID` |
+| `2` | LED double blink | `DBL_BLNK`, `LED_DBL_BLNK` |
+| `3` | FRED | `FRED`, `LED_FRED` |
+| `4` | LED blink+ | `BLINK+`, `LED_BLINK+` |
+| `5` | LED blink- | `BLINK-`, `LED_BLINK-` |
+| `100` | Audio bell | `AUDIO_BELL` |
+| `101` | Audio horn | `AUDIO_HORN` |
+| `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |
+| `103` | Audio custom one-shot | `AUDIO_CUSTOM`, `CUSTOM` |
+| `104` | Audio custom replay/loop | `AUDIO_CUSTOM_REPLAY` and accepted aliases |
+
+Values `1..99` are reserved for physical/LED patterns and `100..199` for audio FX. Queries return numeric values. Physical patterns use the pin CV as GPIO. Bell/Horn/Cab-Chatter do not require a function GPIO. Custom audio `103/104` uses the pin CV as a PMTPlayer track number `1..9999`.
 
 Direction values:
 
@@ -1026,9 +1191,10 @@ App flags:
 
 Default function notes:
 
-* FX1 default name is `Headlight`, direction `FWD`.
-* FX2 default name is `ReverseLgt`, direction `REV`.
-* FX3..FX12 default to direction `BOTH`.
+* FX1 default name is `Headlight`, direction `FWD`, pin Classic `4` / S3 `15`.
+* FX2 default name is `ReverseLgt`, direction `REV`, pin Classic `5` / S3 `16`.
+* FX3..FX12 default to direction `BOTH` and pin `0`.
+* Every FX pattern defaults to `0` (None), so default F1/F2 pin assignments are inactive until a pattern is configured.
 
 ---
 
@@ -1045,7 +1211,7 @@ Some CV numbers overlap with throttle firmware, but the meaning is device-specif
 | `CV5` | Quick output percent for `FQ100` | `0..100` | `0` |
 | `CV9` | Ramp-to-full-output duration | `100..60000` ms | `4000` |
 | `CV41` | Low-voltage limit cap percent | `0..100` | `25` |
-| `CV100` | ESC PWM output pin | valid runtime-capable pin | `25` |
+| `CV100` | ESC PWM output pin | valid runtime-capable pin | Classic `25`; S3 `6` |
 
 Notes:
 
@@ -1087,7 +1253,7 @@ Notes:
 
 When a valid schedule is configured and system time is valid, supported firmware can enter autonomous schedule mode.
 
-A schedule is considered active when current UTC time is within the configured operating window for an enabled day.
+A schedule is considered active when the **CV14-adjusted firmware clock** is within the configured operating window for an enabled day. Firmware applies CV14 to the received UTC epoch before schedule evaluation.
 
 Important behavior:
 
@@ -1144,8 +1310,12 @@ Runtime override:
 | `IP?` | Shared | IP address query |
 | `T?` | Shared | Current time query |
 | `T=<unix>` | Shared | Manual time set |
-| `D1` | Shared | Debug on |
-| `D0` | Shared | Debug off |
+| `D1` | Shared | Debug on + persist debug startup override |
+| `D2` | Shared | Debug on + request SD logging |
+| `D0` | Shared | Debug/logging off + clear startup overrides |
+| `PS?` | Shared | Query persist-only staging mode |
+| `PS1` | Shared | Enable persist-only CV staging for this runtime |
+| `PS0` | Shared | Disable persist-only staging; staged values still require reboot |
 | `A1` | Shared | Enable async `A:` state updates |
 | `A0` | Shared | Disable async `A:` state updates |
 | `G1` | Shared | Enable grace shutdown for this boot |
@@ -1161,7 +1331,10 @@ Runtime override:
 | `??` | Throttle | Stored state query |
 | `P0` | Throttle | Periodic mismatch debug only |
 | `P1` | Throttle | Periodic debug always |
-| `FX<n>=0/1` | Throttle | Function output off/on |
+| `FX<n>=0/1` | Throttle | Function / FX off/on |
+| `A?` | Throttle | Record track lengths using current default manifest |
+| `A? N=<list>` | Throttle | Record lengths for explicit track IDs `1..9999` |
+| `AM` / `AUDIOMARK` | Throttle | Emit audio diagnostic marker |
 | `F?` | Turbine | Requested turbine output query |
 | `F<n>` | Turbine | Ramp turbine output |
 | `F<n>*` | Turbine | Immediate turbine output |
@@ -1186,18 +1359,19 @@ These are not commands. They may appear asynchronously at runtime.
 
 ---
 
-# What Changed from the Older 1.12.x Reference
+# Current 3.0.0 rev215 Reconciliation
 
-This reference has been updated for the current PMT 2.0.0 firmware family.
+This reference is reconciled to PMT firmware **3.0.0**.
 
-Major documentation changes:
+Key current-source additions reflected here include:
 
-* Updated the document from throttle-only to the PMT device family.
-* Added Poor Man's Module protocol scope.
-* Added Poor Man's Turbine commands and CVs.
-* Added backup socket authorization with `IB,<token>`.
-* Added current time query/set documentation with `T?` and `T=<unix-time>`.
-* Added `CV14` UTC offset documentation.
-* Clarified that some CV numbers are device-specific and can mean different things on throttle vs turbine firmware.
-* Corrected the identity flow so `I` requests identity and `I?` checks authorization state.
-* Clarified shared vs throttle-only vs turbine-only command availability.
+* exact pre-handshake command gating, including `D2`
+* persist-only CV staging commands `PS?`, `PS1`, `PS0`
+* persistent debug startup override behavior and SD logging request semantics
+* CV43 locomotive background audio
+* CV98/CV99 steam moving-chuff cadence curves
+* shared audio CV400–CV429 and backend-preset behavior
+* numeric LED/audio FX patterns, including custom PMTPlayer track patterns
+* Throttle `A?` track-length recording and `AM` / `AUDIOMARK`
+* board-profile pin/default differences for Classic ESP32-WROOM and ESP32-S3-WROOM-1-N16R8
+* schedule evaluation against the CV14-adjusted firmware clock

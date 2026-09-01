@@ -542,41 +542,51 @@ If INA219 support is enabled, the firmware can:
 
 ---
 
-# Lights or Function Outputs Do Not Work
+# Lights or Function / FX Effects Do Not Work
 
 ### Possible Causes
 
-- no GPIO pin assigned to the function
-- pin is not valid for runtime output
-- function pattern not configured
-- direction gating prevents the output from being active in the current direction
-- another function is trying to use the same pin
+- function pattern is not configured
+- direction gating prevents the FX from being active in the current direction
+- for a physical LED pattern, no valid GPIO is assigned
+- for a physical LED pattern, another active function is using the same pin
+- for an audio pattern, audio is disabled or the selected backend is not usable
+- for custom audio, the function pin/track CV is not a valid PMTPlayer track number
 - LED wiring expects a higher voltage or includes a resistor sized for 12V or 5V use
 
 ### What to Know
 
-Current firmware supports up to **12 function outputs**. Outputs can be configured with:
-- a name
-- a GPIO pin
-- a pattern
-- a direction mode of **BOTH**, **FWD**, or **REV**
+Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family and values `100..199` are the audio family.
 
-Supported patterns include:
-- **SOLID**
-- **DBL_BLNK**
-- **FRED**
-- **BLINK+**
-- **BLINK-**
+Implemented values are:
+
+- `1` = LED solid
+- `2` = LED double blink
+- `3` = FRED
+- `4` = LED blink+
+- `5` = LED blink-
+- `100` = audio bell
+- `101` = audio horn
+- `102` = audio cab chatter
+- `103` = custom audio one-shot
+- `104` = custom audio replay / loop
+
+Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted. Queries return numeric pattern values.
+
+Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`).
 
 ### Checks
 
 | Check | Action |
 |-----|-------|
-| Pin assignment | Confirm the function has a valid GPIO pin assigned |
-| Pattern | Make sure a pattern has actually been configured |
+| Pattern | Query the function's pattern CV and confirm the expected numeric pattern is configured |
 | Direction gating | Test in the direction where the function is allowed |
-| Duplicate pin use | Make sure two active functions are not sharing one GPIO pin |
-| LED wiring | Check LED polarity and resistor assumptions for 3.3V GPIO operation |
+| Physical FX pin | For patterns `1..99`, confirm a valid, non-conflicting output GPIO is assigned |
+| LED wiring | For physical FX, check LED polarity and resistor assumptions for 3.3V GPIO operation |
+| Audio enable | For patterns `100..199`, confirm `CV400=1` |
+| Audio backend | Confirm `CV401` selects the intended backend (`1` DFPlayer, `2` PMTPlayer Diesel, `3` PMTPlayer Steam) |
+| Audio volume | Confirm `CV402` is not zero |
+| Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
 
 ---
 

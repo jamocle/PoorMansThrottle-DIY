@@ -137,7 +137,7 @@
 | **Community-created FX sounds** | ❌ No arbitrary import | ✅ **Yes** |
 | **Record your own locomotive and install it** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **Distribute complete locomotive sound sets** | ❌ No | ✅ **Yes** |
-| **Potential sound library size** | Large but manufacturer-defined | ✅ **Effectively unlimited through crowdsourcing** |
+| **Potential sound library size** | Large but manufacturer-defined | ✅ **Community-expandable; PMTPlayer addresses track IDs `0001`–`9999` within the active sound root, subject to storage/content limits** |
 | **Sound ecosystem independent of manufacturer releases** | ❌ No | ✅ **Yes** |
 
 ---
@@ -177,7 +177,7 @@
 | **Assign personal recording to an FX function** | ❌ No | ✅ **Yes** |
 | **User-created FX library** | ❌ No arbitrary files | ✅ **Yes** |
 | **Locomotive-specific custom FX audio** | ❌ No arbitrary files | ✅ **Yes** |
-| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Effectively unlimited** |
+| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Track IDs `1`–`9999` are addressable for custom PMTPlayer FX within the active sound root; 12 FX slots can be configured at once** |
 | **Replace FX sound with another user WAV** | ❌ No | ✅ **Yes** |
 | **Add FX audio without recompiling firmware** | ❌ No arbitrary WAV support | ✅ **Yes** |
 | **Crowdsource FX sounds** | ❌ No | ✅ **Yes** |

@@ -3,6 +3,8 @@ Here’s a **ESP32 GPIO capability table** (based on the classic ESP32-WROOM / D
 ⭐ = *primary / most typical use for that pin*
 ⚠️ = caution (boot strapping, input-only, or special behavior)
 
+> **PMT firmware note — v3.0.0:** This appendix describes **generic Classic ESP32 hardware capabilities**. Labels such as “Default I²C SDA/SCL” below are generic ESP32/Arduino conventions, **not Poor Man's Throttle CV defaults**. PMT uses board-profile defaults for INA219: Classic ESP32-WROOM uses `CV31=16` / `CV32=17`; ESP32-S3-WROOM-1-N16R8 uses `CV31=17` / `CV32=18`.
+
 ---
 
 ## ESP32 GPIO Function Table

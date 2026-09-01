@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 2.0.0  
+**Firmware Version:** 3.0.0 
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -142,6 +142,55 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV303** | All | Schedule OFF Time | Strict `HH:MM` UTC / unset | Scheduled OFF boundary time. Query returns `ERR` when unset. |
 | **CV304** | All | Schedule ON Command | Command text / blank | Command executed at the scheduled ON boundary. Query returns `ERR` when blank. |
 | **CV305** | All | Schedule OFF Command | Command text / blank | Command executed at the scheduled OFF boundary. Query returns `ERR` when blank. |
+
+## Shared Audio CVs
+
+The `CV400–CV429` bank is handled by the shared CV layer. Operational locomotive audio behavior is owned by the Throttle audio path.
+
+| CV | Purpose | Values / Default | Backend-specific meaning |
+| ---: | --- | --- | --- |
+| **CV400** | Audio Enable | `0`, `1` / `0` | Enables the audio subsystem. |
+| **CV401** | Audio Backend | `0..3` / `2` | `0=None`, `1=DFPlayer`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam`. |
+| **CV402** | Audio Volume | `0..30` / `15` | Shared volume setting. |
+| **CV403** | Backend Slot 1 | board/backend-specific | DFPlayer TX. PMTPlayer SD CS. Classic PMTPlayer default `GPIO21`; S3 default `GPIO10`. |
+| **CV404** | PMTPlayer SD SCK | Classic `-1`; S3 `11` | **Classic `-1` means use Arduino/core default SPI SCK, effective GPIO18.** |
+| **CV405** | PMTPlayer SD MISO | Classic `-1`; S3 `8` | **Classic `-1` means use Arduino/core default SPI MISO, effective GPIO19.** |
+| **CV406** | PMTPlayer SD MOSI | Classic `-1`; S3 `9` | **Classic `-1` means use Arduino/core default SPI MOSI, effective GPIO23.** |
+| **CV407** | Backend Slot 2 | board/backend-specific | DFPlayer RX. PMTPlayer I2S BCLK. |
+| **CV408** | Backend Slot 3 | board/backend-specific | DFPlayer BUSY. PMTPlayer I2S LRCLK. |
+| **CV409** | Backend Tuning 1 | backend-specific | DFPlayer loop-restart trim in ms. PMTPlayer I2S DIN. |
+| **CV410** | Default Audio Priority | integer / `30` | Default priority for generic audio requests. |
+| **CV411** | Conflict Policy | effective `0..2` / `1` | `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup`. |
+| **CV412** | Startup Delay | ms / `0` | Backend startup delay. |
+| **CV413** | Shutdown Delay | ms / `0` | Backend shutdown delay. |
+| **CV414** | Amplifier Enable Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
+| **CV415** | Amplifier Mute Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
+| **CV416** | Amplifier Standby Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
+| **CV417** | Fault Input Pin | `-1` or valid input GPIO / `-1` | Optional amplifier fault/status input. |
+| **CV418** | PMTPlayer Profile | backend-specific / `3` | PMTPlayer profile selection. |
+| **CV419** | PMTPlayer WAV Gain | backend-specific / `1` | PMTPlayer WAV gain control. |
+| **CV420** | PMTPlayer Output Headroom | percent / `100` | Output headroom percentage. |
+| **CV421** | PMTPlayer Limiter Mode | backend-specific / `10` | Limiter/loudness profile. |
+| **CV422** | PMTPlayer Speaker Size | backend-specific / `2` | Speaker-size profile selection. |
+| **CV423** | PMTPlayer Max Active Voices | `0..255` / board default | `0` resolves to the board default; current clean defaults are Classic `3`, S3 `13`. |
+| **CV424** | PMTPlayer Overlap Mode | effective `0..2` / `1` | PMTPlayer overlap policy. |
+| **CV425** | PMTPlayer Async Overlap Start | `0`, `1` / `1` | Enables asynchronous overlap start. |
+| **CV426** | PMTPlayer Start Prime Bytes | integer / `12288` | Initial stream priming target. |
+| **CV427** | PMTPlayer Overlap Prime Bytes | integer / `0` | Overlap stream priming target. |
+| **CV428** | PMTPlayer Mixer Attenuation | percent / `100` | Mixer attenuation percentage. |
+| **CV429** | PMTPlayer Clip Telemetry | `0`, `1` / `1` stored | Diagnostic clip telemetry control; runtime availability depends on diagnostic build configuration. |
+
+### Classic `-1` SPI sentinel behavior
+
+For Classic ESP32-WROOM PMTPlayer, `CV404`, `CV405`, and `CV406` intentionally store `-1`. In `PmtCardReader`, explicit `SPI.begin(sck, miso, mosi, cs)` remapping occurs only when **all three values are non-negative**. With the Classic `-1/-1/-1` defaults, PMT leaves the global Arduino `SPI` bus on its core defaults and opens the SD card using the configured chip-select pin.
+
+| CV | Stored Classic default | Effective Classic pin |
+|---:|---:|---:|
+| `CV404` | `-1` | SCK `GPIO18` |
+| `CV405` | `-1` | MISO `GPIO19` |
+| `CV406` | `-1` | MOSI `GPIO23` |
+
+The `-1` values mean **use the Arduino/core default SPI mapping**, not “no SD connection.”
 
 ---
 

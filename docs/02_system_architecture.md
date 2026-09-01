@@ -398,15 +398,17 @@ Power Source ───────────────► Motor Driver / ESC
 
 ---
 
-# Function Output Architecture
+# Function / FX Architecture
 
-The throttle firmware includes support for configurable function outputs.
+The throttle firmware includes **12 configurable FX slots**. An FX slot can represent a physical output such as a light, or an audio action.
 
-These can be used for locomotive accessories such as:
+Typical uses include:
 
 * headlight
 * reverse light
 * additional lighting effects
+* bell, horn, or cab-chatter audio
+* user-selected custom PMTPlayer audio
 * other switched accessory outputs
 
 ## Function Behavior
@@ -414,29 +416,42 @@ These can be used for locomotive accessories such as:
 Each function can be configured with:
 
 * a name
-* an assigned GPIO pin
-* an output pattern
+* a pin/track field
+* a numeric pattern
 * a direction rule
+* app flags
 
-## Supported Output Patterns
+The meaning of the pin/track field depends on the pattern. For physical LED patterns, it is a GPIO. For `AUDIO_CUSTOM` / `AUDIO_CUSTOM_REPLAY`, the same CV stores a PMTPlayer track number from `1..9999`. Bell, horn, and cab-chatter audio patterns do not require a physical function GPIO.
 
-The firmware includes several output pattern types, including:
+## Supported Pattern Families
 
-* solid
-* double blink
-* FRED-style pattern
-* blink plus
-* blink minus
+Current pattern values are:
+
+| Value | Meaning |
+|---:|---|
+| `0` | None / unconfigured |
+| `1` | LED solid |
+| `2` | LED double blink |
+| `3` | FRED |
+| `4` | LED blink+ |
+| `5` | LED blink- |
+| `100` | Audio bell |
+| `101` | Audio horn |
+| `102` | Audio cab chatter |
+| `103` | Audio custom one-shot |
+| `104` | Audio custom replay / loop |
+
+Values `1..99` are reserved for physical/LED patterns and `100..199` for audio patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted, but CV queries report numeric values.
 
 ## Direction Awareness
 
-Function outputs can also be gated by locomotive direction:
+FX behavior can also be gated by locomotive direction:
 
 * forward only
 * reverse only
 * both directions
 
-This makes the architecture capable of supporting more realistic lighting and accessory behavior than a simple always-on output design.
+For physical patterns, activation additionally requires a valid non-conflicting output GPIO. Audio FX instead use the active audio configuration and, for custom patterns, the configured track number.
 
 ---
 
