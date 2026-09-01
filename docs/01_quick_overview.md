@@ -191,7 +191,7 @@ The locomotive motor and the ESP32 controller have different electrical needs.
 
 The motor usually requires higher voltage and higher current.
 
-The ESP32 requires a stable low-voltage supply, typically **3 - 5V** into the development board power input.
+For the PMT development-board builds in these guides, power the ESP32 from a **stable regulated 5V supply through the board's USB/VIN-style power input**. Do not feed 5V into a 3.3V GPIO or 3.3V rail.
 
 Keeping the logic/controller power path separate from the motor power path improves reliability and helps protect the controller from motor noise and voltage dips.
 

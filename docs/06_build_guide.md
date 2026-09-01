@@ -350,8 +350,8 @@ The firmware also supports an **optional INA219 sensor** for voltage, current, a
 Default firmware values for this optional add-on are:
 
 - **INA219 disabled by default**
-- **SDA default pin:** GPIO21
-- **SCL default pin:** GPIO22
+- **SDA default pin for this Classic ESP32-WROOM build:** GPIO16 (`CV31=16`)
+- **SCL default pin for this Classic ESP32-WROOM build:** GPIO17 (`CV32=17`)
 - **Default I2C address:** 0x40
 
 This sensor is **not required** for the basic build in this document. If used, it should be wired as an optional add-on and configured in firmware/app settings.

@@ -205,9 +205,9 @@ Firmware v3.0.0 rev215 provides **12 configurable FX slots**. A slot can drive a
 
 | Function Slot | Default Name | Default Direction Mode | Classic Default Pin | S3 Default Pin | Default Pattern |
 |---------------|--------------|------------------------|--------------------:|---------------:|-----------------|
-| F1 | Headlight | FWD | GPIO4 | GPIO15 | `0` (None) |
-| F2 | ReverseLgt | REV | GPIO5 | GPIO16 | `0` (None) |
-| F3-F12 | FX3 through FX12 | BOTH | `0` | `0` | `0` (None) |
+| FX1 | Headlight | FWD | GPIO4 | GPIO15 | `0` (None) |
+| FX2 | ReverseLgt | REV | GPIO5 | GPIO16 | `0` (None) |
+| FX3-FX12 | FX3 through FX12 | BOTH | `0` | `0` | `0` (None) |
 
 ## Basic function output wiring
 
@@ -217,7 +217,7 @@ Firmware v3.0.0 rev215 provides **12 configurable FX slots**. A slot can drive a
 | Accessory return | GND | Return path |
 
 Notes:
-- F1/F2 have board-profile pin defaults, but all FX pattern defaults are `0`, so those pins are not activated as functions until a pattern is configured.
+- FX1/FX2 have board-profile pin defaults, but all FX pattern defaults are `0`, so those pins are not activated as functions until a pattern is configured.
 - Physical patterns (`1..99`) require a valid, non-conflicting output GPIO.
 - Audio patterns (`100..199`) do not use the same GPIO rule. Bell/horn/cab-chatter need no function GPIO; custom audio patterns `103`/`104` reuse the function pin CV as a PMTPlayer track number `1..9999`.
 - The onboard status LED is reserved by the firmware and must not be reused as a physical function output.

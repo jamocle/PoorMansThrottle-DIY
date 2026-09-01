@@ -24,8 +24,8 @@ Here’s a **ESP32 GPIO capability table** (based on the classic ESP32-WROOM / D
 | 17   | ⭐           |        |        | ⭐   |        |       |     | ⭐ TX2 | UART2 TX               |
 | 18   | ⭐           |        |        | ⭐   |        |       | ⭐   |       | VSPI CLK               |
 | 19   | ⭐           |        |        | ⭐   |        |       | ⭐   |       | VSPI MISO              |
-| 21   | ⭐           |        |        | ⭐   |        | ⭐ SDA |     |       | Default I²C SDA        |
-| 22   | ⭐           |        |        | ⭐   |        | ⭐ SCL |     |       | Default I²C SCL        |
+| 21   | ⭐           |        |        | ⭐   |        | ⭐ SDA |     |       | Generic Arduino I²C SDA convention — not PMT INA219 default |
+| 22   | ⭐           |        |        | ⭐   |        | ⭐ SCL |     |       | Generic Arduino I²C SCL convention — not PMT INA219 default |
 | 23   | ⭐           |        |        | ⭐   |        |       | ⭐   |       | VSPI MOSI              |
 | 25   | ⭐           | ADC2   | ⭐ DAC1 | ⭐   |        |       |     |       | DAC output             |
 | 26   | ⭐           | ADC2   | ⭐ DAC2 | ⭐   |        |       |     |       | DAC output             |
@@ -72,9 +72,10 @@ Use these first for projects:
 
   * GPIO **0, 4, 12–15, 27, 32, 33**
 
-* **Default I²C**:
+* **Generic Arduino Classic ESP32 I²C convention (not PMT INA219 defaults)**:
 
   * SDA = **21**, SCL = **22**
+  * PMT INA219 defaults are Classic **16/17** and S3 **17/18**.
 
 * **SPI (default VSPI)**:
 

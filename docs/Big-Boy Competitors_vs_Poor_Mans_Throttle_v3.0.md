@@ -57,7 +57,7 @@
 | **Graphical MU/consist speed matching** | ⚠️ Limited Low / Medium / High adjustment points with +/- controls | ✅ **Yes — graphical interactive matching** |
 | **Real-time MU speed-matching adjustments** | ⚠️ Limited adjustment model | ✅ **Yes — real-time graphical adjustment while operating** |
 | **Graphically visualize relationships between locomotives in consist** | ❌ No equivalent interactive system | ✅ **Yes** |
-| **Number of simultaneously defined consists** | **4 consists** | ✅ **Unlimited** |
+| **Number of simultaneously defined consists** | **4 consists** | ✅ **App-managed consists/MUs; no maximum** |
 | **Yard/switching reduced-speed mode** | ✅ **Yes — ½-speed Switching Mode** | ✅ **Yes — Yard Switching Mode** |
 | **Control multiple locomotives from one app** | ✅ Multi-Train | ✅ Yes |
 | **Create consists/MUs** | ✅ Yes | ✅ Yes |
@@ -81,7 +81,7 @@
 | Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
 | **User-installable locomotive firmware updates** | ❌ **No documented user firmware-update mechanism** | ✅ **Yes** |
-| **Frequent firmware releases** | ❌ Vendor controlled | ✅ **Daily/weekly as development requires** |
+| **Firmware development cadence** | ❌ Vendor controlled | ✅ **Actively developed** |
 | **Rapid firmware bug fixes** | ❌ Vendor release cycle | ✅ **Yes** |
 | **Rapid addition of new firmware capabilities** | ❌ Vendor controlled | ✅ **Yes** |
 | **User-suggested features regularly implemented** | ❌ Manufacturer roadmap determines implementation | ✅ **Yes — regularly added** |
@@ -89,7 +89,7 @@
 | **Users can modify firmware** | ❌ Proprietary | ⚠️ **Yes — NDA and approval required** |
 | **Community firmware contributions** | ❌ No public contribution model | ⚠️ **Yes — NDA and approval required** |
 | **User-accessible firmware source** | ❌ No | ⚠️ **Controlled access — NDA/approval requirements apply** |
-| **App update cadence** | ⚠️ **Periodic — typically weeks/months between releases** | ✅ **Daily/weekly when development requires** |
+| **App update cadence** | ⚠️ **Periodic — vendor controlled** | ⚠️ **Continual** |
 | **Active app development** | ✅ Yes | ✅ Yes |
 
 ---
@@ -266,15 +266,15 @@
 
 | Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
-| **48A standard installation** | ❌ **No — 4A max stall current** | ✅ **Yes — 48A standard recipe** |
-| **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
-| **High-current multi-locomotive architecture** | ❌ Fixed 4A output | ✅ **Yes** |
-| **Motor power independently scalable from controller** | ❌ Integrated/fixed | ✅ **Yes** |
+| **Firmware-defined motor current rating** | **4A stall rating shown for the compared product** | ⚠️ **If using the IBT2 motor driver its 46A rated** |
+| **Number of locomotives that may share one power stage** | 1 | ✅ **Not firmware-defined; depends on motor driver (tested > 10)** |
+| **High-current motor architecture** | Integrated power stage | ✅ **Motor-power hardware is separate from the ESP32 controller** |
+| **Motor power independently scalable from controller** | ❌ Integrated/fixed | ✅ **Yes, by choosing suitable external motor hardware** |
 | **Replace motor driver without replacing controller** | ❌ No | ✅ **Yes** |
-| **Selectable motor-driver hardware** | ❌ No | ✅ **Yes** |
-| **Scale amperage by changing motor driver** | ❌ No | ✅ **Yes** |
-| **Motor load beyond 4A aggregate** | ❌ No | ✅ **Yes** |
-| **Standard maximum motor capability** | **4A stall** | **48A standard installation** |
+| **Selectable motor-driver hardware** | ❌ No | ✅ **Yes — firmware supports multiple control interfaces** |
+| **Scale motor current capability by changing motor hardware** | ❌ Integrated/fixed | ✅ **Hardware dependent; verify the actual driver's safe continuous/stall ratings** |
+| **Motor load beyond a specific current** | Product rating dependent | ⚠️ **Not determined by firmware** |
+| **Maximum PMT motor capability** | Product-defined | ⚠️ **Driver/power/wiring dependent; no firmware amperage value** |
 | **Direct motor control** | ✅ Yes | ✅ Yes |
 | **Forward/reverse** | ✅ Yes | ✅ Yes |
 | **Variable speed** | ✅ Yes | ✅ Yes |
@@ -291,7 +291,7 @@
 | **Replaceable motor-control power stage** | ❌ No | ✅ **Yes** |
 | **User-selectable motor-driver architecture** | ❌ No | ✅ **Yes** |
 | **Advanced motor control** | ✅ Big-Boy architecture | ✅ PMT motor control |
-| **Back-EMF control** | ✅ Yes | ✅ **Yes — requires INA219 or compatible micro board** |
+| **Back-EMF control** | ✅ Yes | ❌ No  |
 | **Low-speed control** | ✅ Yes | ✅ Yes |
 | **Acceleration momentum** | ✅ Yes | ✅ Yes |
 | **Deceleration momentum** | ✅ Yes | ✅ Yes |
@@ -385,12 +385,12 @@
 
 | Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
 |---|---|---|
-| **48A standard motor installation** | ❌ No | ✅ **Yes** |
-| **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
+| **Firmware-defined motor current** | ⚠️ 4A | ✅ **46A** |
+| **Parallel-locomotive count** | 0 recommended for G Scale| ⚠️ **Tested 10 with IBT2** |
 | **Replaceable motor-power stage** | ❌ No | ✅ **Yes** |
 | **Selectable motor hardware** | ❌ No | ✅ **Yes** |
-| **Maximum motor stall rating** | **BLU 4A** | **48A** (driver dependent) |
-| **Standard PMT motor recipe** | — | **48A** |
+| **Maximum motor stall rating** | **4A** | ⚠️ **IBT2 - 46A** |
+| **Standard PMT motor recipe** | — | ⚠️ **IBT2** |
 | **Physical function outputs** | **8** | Hardware/module dependent |
 | **Function-output current** | **400mA each** | Hardware dependent |
 | **Audio amplifier** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
@@ -454,7 +454,7 @@
 | **Feathered braking** | ❌ | ✅ **YES — EXPERT THROTTLE** |
 | **Graphical interactive MU speed matching** | ❌ Limited Low/Medium/High +/- | ✅ **YES** |
 | **Interactive graphical speed curves** | ❌ Conventional speed-table configuration | ✅ **YES** |
-| **Number of consists** | **4** | ✅ **UNLIMITED** |
+| **Number of consists** | **4** | ✅ **App-managed; no fixed maximum established** |
 | **Multilingual app** | ❌ | ✅ **YES** |
 | **Integrated terminal** | ❌ | ✅ **YES** |
 | **Built-in help system** | ❌ No equivalent | ✅ **YES** |
@@ -463,16 +463,15 @@
 | **BLE ↔ Wi-Fi failover** | ❌ | ✅ **YES** |
 | **WebSocket control** | ❌ | ✅ **YES** |
 | **Computer/API control** | ❌ | ✅ **YES** |
-| **48A standard installation** | ❌ **4A MAX** | ✅ **48A** |
-| **Up to 10 locomotives wired in parallel** | ❌ | ✅ **YES** |
-| **Steam + Diesel simultaneously available** | ❌ | ✅ **YES** |
+| **Firmware-defined motor amperage** | 4A | ⚠️ **46A** |
+| **Steam + Diesel sound families available for selection for one installation** | ❌ | ✅ **YES** |
 | **Real-time Steam ↔ Diesel CV switching** | ❌ | ✅ **YES** |
 | **User-supplied locomotive WAV files** | ❌ | ✅ **YES** |
 | **Custom audio files attached to FX** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
-| **Potential custom FX sounds** | ❌ **NONE** | ✅ **EFFECTIVELY UNLIMITED** |
+| **Potential custom FX sounds** | ❌ **NONE** | ✅ **Track IDs 1–9999; 12 FX slots configurable at one time** |
 | **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **YES** |
 | **Share/download community sound sets** | ❌ | ✅ **YES** |
-| **Frequent firmware/app development** | Vendor release cycle | ✅ **DAILY/WEEKLY** |
+| **Firmware/app development** | Vendor release cycle | ✅ **Active development** |
 | **User-requested features regularly implemented** | Vendor roadmap | ✅ **YES** |
 | **User firmware modification** | ❌ | ⚠️ **YES — NDA + APPROVAL REQUIRED** |
 | **Replaceable/scalable motor driver** | ❌ | ✅ **YES** |

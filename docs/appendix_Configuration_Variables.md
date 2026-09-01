@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.0.0 
+**Firmware Version:** 3.0.0
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 2.0.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 3.0.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -90,6 +90,7 @@ A:CV2=25
 
 * Invalid CV values return `ERR:<command>`.
 * Most CV changes are saved automatically after a short delay.
+* `PS1` enables persist-only staging: valid CV writes are saved but not applied live. `PS0` leaves staging mode, but already staged values still require a reboot before they take effect. Use `PS?` to check the mode.
 * Some CV changes reinitialize network services, telemetry services, outputs, or pins.
 * Pin CVs accept only the firmware's allowed runtime GPIO list.
 * Wi-Fi password `CV12` is **set-only**. Querying it returns `ERR`.
@@ -106,7 +107,7 @@ A:CV2=25
 | **All** | Shared CV available on Throttle, Module, and Turbine firmware. |
 | **Throttle** | Available only on locomotive throttle firmware. |
 | **Turbine** | Available only on PoorMansTurbine firmware. |
-| **Module** | Available only on module firmware. In 2.0.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
+| **Module** | Available only on module firmware. In firmware 3.0.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
 
 ---
 
@@ -125,8 +126,8 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
 | **CV30** | All | INA219 Enable | `0`, `1` / `0` | Enables or disables optional INA219 battery telemetry. Disabled by default. |
-| **CV31** | All where pin adapter exists | INA219 SDA Pin | Allowed runtime GPIO / `21` | I²C SDA pin used by the INA219. |
-| **CV32** | All where pin adapter exists | INA219 SCL Pin | Allowed runtime GPIO / `22` | I²C SCL pin used by the INA219. |
+| **CV31** | All where pin adapter exists | INA219 SDA Pin | Classic `16`; S3 `17` | I²C SDA pin used by the INA219. |
+| **CV32** | All where pin adapter exists | INA219 SCL Pin | Classic `17`; S3 `18` | I²C SCL pin used by the INA219. |
 | **CV33** | All | INA219 I²C Address | `64 – 79` / `64` | Decimal I²C address. `64` corresponds to `0x40`. |
 | **CV34** | All | INA219 Sample Interval | `50 – 60000 ms` / `500` | How often the firmware samples INA219 measurements. |
 | **CV35** | All | INA219 Publish Interval | `100 – 60000 ms` / `10000` | How often battery telemetry is published while enabled. |
@@ -137,48 +138,48 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV40** | All | Disconnect Threshold | `0 – 50000 mV` / `1000` | Threshold used to infer a disconnected or collapsed battery/supply. `0` disables this threshold. |
 | **CV42** | All where pin adapter exists | Low-Voltage LED Pin | Allowed runtime GPIO or `0` / `0` | Optional LED output used to indicate low-voltage state. `0` means unassigned. |
 | **CV300** | All | Schedule Enable | `0`, `1` / `0` | Enables or disables scheduled operation. |
-| **CV301** | All | Schedule Weekday Bitmask | `1 – 127` / `0` | Day mask using Sunday=`1`, Monday=`2`, Tuesday=`4`, Wednesday=`8`, Thursday=`16`, Friday=`32`, Saturday=`64`. |
-| **CV302** | All | Schedule ON Time | Strict `HH:MM` UTC / unset | Scheduled ON boundary time. Query returns `ERR` when unset. |
-| **CV303** | All | Schedule OFF Time | Strict `HH:MM` UTC / unset | Scheduled OFF boundary time. Query returns `ERR` when unset. |
+| **CV301** | All | Schedule Weekday Bitmask | `0 – 127` / `0` | Day mask using Sunday=`1`, Monday=`2`, Tuesday=`4`, Wednesday=`8`, Thursday=`16`, Friday=`32`, Saturday=`64`. |
+| **CV302** | All | Schedule ON Time | Strict `HH:MM` / unset | Scheduled ON boundary on the **CV14-adjusted firmware clock**. Query returns `ERR` when unset. |
+| **CV303** | All | Schedule OFF Time | Strict `HH:MM` / unset | Scheduled OFF boundary on the **CV14-adjusted firmware clock**. Query returns `ERR` when unset. |
 | **CV304** | All | Schedule ON Command | Command text / blank | Command executed at the scheduled ON boundary. Query returns `ERR` when blank. |
 | **CV305** | All | Schedule OFF Command | Command text / blank | Command executed at the scheduled OFF boundary. Query returns `ERR` when blank. |
 
 ## Shared Audio CVs
 
-The `CV400–CV429` bank is handled by the shared CV layer. Operational locomotive audio behavior is owned by the Throttle audio path.
+The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
 
-| CV | Purpose | Values / Default | Backend-specific meaning |
+| CV | Purpose | Values / Default | What it means |
 | ---: | --- | --- | --- |
-| **CV400** | Audio Enable | `0`, `1` / `0` | Enables the audio subsystem. |
-| **CV401** | Audio Backend | `0..3` / `2` | `0=None`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam`. |
-| **CV402** | Audio Volume | `0..30` / `15` | Shared volume setting. |
-| **CV403** | Backend Slot 1 | PMTPlayer SD CS. Classic PMTPlayer default `GPIO21`; S3 default `GPIO10`. |
-| **CV404** | PMTPlayer SD SCK | Classic `-1`; S3 `11` | **Classic `-1` means use Arduino/core default SPI SCK, effective GPIO18.** |
-| **CV405** | PMTPlayer SD MISO | Classic `-1`; S3 `8` | **Classic `-1` means use Arduino/core default SPI MISO, effective GPIO19.** |
-| **CV406** | PMTPlayer SD MOSI | Classic `-1`; S3 `9` | **Classic `-1` means use Arduino/core default SPI MOSI, effective GPIO23.** |
-| **CV407** | Backend Slot 2 | PMTPlayer I2S BCLK. |
-| **CV408** | Backend Slot 3 | PMTPlayer I2S LRCLK. |
-| **CV409** | Backend Tuning 1 | PMTPlayer I2S DIN. |
-| **CV410** | Default Audio Priority | integer / `30` | Default priority for generic audio requests. |
-| **CV411** | Conflict Policy | effective `0..2` / `1` | `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup`. |
-| **CV412** | Startup Delay | ms / `0` | Backend startup delay. |
-| **CV413** | Shutdown Delay | ms / `0` | Backend shutdown delay. |
-| **CV414** | Amplifier Enable Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
-| **CV415** | Amplifier Mute Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
-| **CV416** | Amplifier Standby Pin | `-1` or valid output GPIO / `-1` | Optional amplifier control. |
+| **CV400** | Audio Enable | `0`, `1` / `0` | `0` disables audio; `1` enables it. |
+| **CV401** | PMTPlayer Sound Mode | `0`, `2`, `3` / `2` | `0=None`, `2=Diesel`, `3=Steam`. For PMTPlayer, select `2` or `3` before changing custom audio pins or tuning values. |
+| **CV402** | Master Volume | `0..30` / `15` | Overall PMTPlayer volume. |
+| **CV403** | SD Chip Select (CS) | Classic `21`; S3 `10` | GPIO used for the microSD CS signal. |
+| **CV404** | SD SCK | Classic `-1`; S3 `11` | **Classic `-1` means use the Arduino/core default SPI SCK, effective GPIO18.** |
+| **CV405** | SD MISO | Classic `-1`; S3 `8` | **Classic `-1` means use the Arduino/core default SPI MISO, effective GPIO19.** |
+| **CV406** | SD MOSI | Classic `-1`; S3 `9` | **Classic `-1` means use the Arduino/core default SPI MOSI, effective GPIO23.** |
+| **CV407** | I2S BCLK | Classic `13`; S3 `12` | Bit-clock pin to the MAX98357A amplifier. |
+| **CV408** | I2S LRCLK / WS | Classic `12`; S3 `13` | Left/right word-clock pin to the MAX98357A amplifier. |
+| **CV409** | I2S DIN | `14` | Digital-audio data pin to the MAX98357A amplifier. |
+| **CV410** | Default Audio Priority | `0..100` / `30` | Default priority for audio requests. |
+| **CV411** | Conflict Policy | `0..2` / `1` | `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup`. |
+| **CV412** | Startup Delay | `0..10000 ms` / `0` | Delay after audio startup. |
+| **CV413** | Shutdown Delay | `0..10000 ms` / `0` | Delay before audio shutdown completes. |
+| **CV414** | Amplifier Enable Pin | `-1` or valid output GPIO / `-1` | Optional amplifier enable control. |
+| **CV415** | Amplifier Mute Pin | `-1` or valid output GPIO / `-1` | Optional amplifier mute control. |
+| **CV416** | Amplifier Standby Pin | `-1` or valid output GPIO / `-1` | Optional amplifier standby control. |
 | **CV417** | Fault Input Pin | `-1` or valid input GPIO / `-1` | Optional amplifier fault/status input. |
-| **CV418** | PMTPlayer Profile | backend-specific / `3` | PMTPlayer profile selection. |
-| **CV419** | PMTPlayer WAV Gain | backend-specific / `1` | PMTPlayer WAV gain control. |
-| **CV420** | PMTPlayer Output Headroom | percent / `100` | Output headroom percentage. |
-| **CV421** | PMTPlayer Limiter Mode | backend-specific / `10` | Limiter/loudness profile. |
-| **CV422** | PMTPlayer Speaker Size | backend-specific / `2` | Speaker-size profile selection. |
-| **CV423** | PMTPlayer Max Active Voices | `0..255` / board default | `0` resolves to the board default; current clean defaults are Classic `3`, S3 `13`. |
-| **CV424** | PMTPlayer Overlap Mode | effective `0..2` / `1` | PMTPlayer overlap policy. |
-| **CV425** | PMTPlayer Async Overlap Start | `0`, `1` / `1` | Enables asynchronous overlap start. |
-| **CV426** | PMTPlayer Start Prime Bytes | integer / `12288` | Initial stream priming target. |
-| **CV427** | PMTPlayer Overlap Prime Bytes | integer / `0` | Overlap stream priming target. |
-| **CV428** | PMTPlayer Mixer Attenuation | percent / `100` | Mixer attenuation percentage. |
-| **CV429** | PMTPlayer Clip Telemetry | `0`, `1` / `1` stored | Diagnostic clip telemetry control; runtime availability depends on diagnostic build configuration. |
+| **CV418** | PMTPlayer Profile | `0..3` / `3` | `0=Conservative`, `1=Balanced`, `2=Loud`, `3=use the explicit advanced CV values below. |
+| **CV419** | WAV Gain | `1..12` / `1` | PMTPlayer WAV gain. |
+| **CV420** | Output Headroom | `50..100%` / `100` | Output headroom percentage. |
+| **CV421** | Limiter / Loudness Mode | `0..10` / `10` | PMTPlayer limiter/loudness setting. |
+| **CV422** | Speaker Size Profile | `0..2` / `2` | `0=large`, `1=medium`, `2=small`. |
+| **CV423** | Maximum Active Voices | `0..255` / board default | `0` means use the board default; current defaults are Classic `3`, S3 `13`. |
+| **CV424** | Overlap Mode | effective `0..2` / `1` | PMTPlayer overlap behavior. |
+| **CV425** | Async Overlap Start | `0`, `1` / `1` | Enables asynchronous overlap start. |
+| **CV426** | Start Prime Bytes | `0..16384` / `12288` | Initial audio-buffer priming target. |
+| **CV427** | Overlap Prime Bytes | `0..16384` / `0` | Overlap-stream priming target. |
+| **CV428** | Mixer Attenuation | `25..100%` / `100` | Mixer attenuation percentage. |
+| **CV429** | Clip Telemetry | `0`, `1` / `1` stored | Diagnostic request. Normal non-verbose builds force the effective runtime behavior off. |
 
 ### Classic `-1` SPI sentinel behavior
 
@@ -208,15 +209,18 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV7** | Async Notify, Changing | `50 – 10000 ms` / `500` | State update interval while throttle is changing or ramping. |
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
-| **CV100** | Dual PWM Forward Pin | Allowed runtime GPIO / `25` | Forward PWM pin for `DUAL_PWM`. |
-| **CV101** | Dual PWM Reverse Pin | Allowed runtime GPIO / `26` | Reverse PWM pin for `DUAL_PWM`. |
-| **CV102** | Dual PWM Enable A | Allowed runtime GPIO / `27` | Enable pin A for `DUAL_PWM`. |
-| **CV103** | Dual PWM Enable B | Allowed runtime GPIO / `33` | Enable pin B for `DUAL_PWM`. |
-| **CV104** | Two-Pin A | Allowed runtime GPIO / `25` | Shared two-pin control input A. Used as PWM in `PWM_DIR` and as input A in `DUAL_INPT`. |
-| **CV105** | Two-Pin B | Allowed runtime GPIO / `26` | Shared two-pin control input B. Used as direction in `PWM_DIR` and as input B in `DUAL_INPT`. |
-| **CV106** | PWM_BIDIR PWM / Enable Pin | Allowed runtime GPIO / `25` | PWM/enable pin for `PWM_BIDIR`. |
-| **CV107** | PWM_BIDIR Forward Pin | Allowed runtime GPIO / `26` | Forward logic pin for `PWM_BIDIR`. |
-| **CV108** | PWM_BIDIR Reverse Pin | Allowed runtime GPIO / `27` | Reverse logic pin for `PWM_BIDIR`. |
+| **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
+| **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
+| **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
+| **CV100** | Dual PWM Forward Pin | Classic `25`; S3 `6` | Forward PWM pin for `DUAL_PWM`. |
+| **CV101** | Dual PWM Reverse Pin | Classic `26`; S3 `7` | Reverse PWM pin for `DUAL_PWM`. |
+| **CV102** | Dual PWM Enable A | Classic `27`; S3 `4` | Enable pin A for `DUAL_PWM`. |
+| **CV103** | Dual PWM Enable B | Classic `33`; S3 `5` | Enable pin B for `DUAL_PWM`. |
+| **CV104** | Two-Pin A | Classic `25`; S3 `6` | Shared two-pin control input A. Used as PWM in `PWM_DIR` and as input A in `DUAL_INPT`. |
+| **CV105** | Two-Pin B | Classic `26`; S3 `7` | Shared two-pin control input B. Used as direction in `PWM_DIR` and as input B in `DUAL_INPT`. |
+| **CV106** | PWM_BIDIR PWM / Enable Pin | Classic `25`; S3 `6` | PWM/enable pin for `PWM_BIDIR`. |
+| **CV107** | PWM_BIDIR Forward Pin | Classic `27`; S3 `4` | Forward logic pin for `PWM_BIDIR`. |
+| **CV108** | PWM_BIDIR Reverse Pin | Classic `33`; S3 `5` | Reverse logic pin for `PWM_BIDIR`. |
 
 ---
 
@@ -248,7 +252,7 @@ Turbine output is controlled with `F` commands, not locomotive throttle commands
 
 # Module-Specific CVs
 
-In firmware 2.0.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
+In firmware 3.0.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
 
 Use the **Shared CVs** table for Module configuration.
 
@@ -256,17 +260,25 @@ Use the **Shared CVs** table for Module configuration.
 
 # Allowed GPIOs for Runtime Pin Assignment
 
-The firmware does **not** accept every ESP32 GPIO for runtime pin assignment.
+Runtime pin validation is **board-profile specific**. Do not copy a Classic pin list onto an S3 build.
 
-The currently allowed runtime output/PWM GPIO list is:
+**Classic ESP32-WROOM output-capable runtime list:**
 
 ```text
 0, 1, 2, 3, 4, 5, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
 ```
 
-If a pin value outside the allowed list is written to a pin CV, the firmware returns `ERR:<command>`.
+**ESP32-S3-WROOM-1-N16R8 output-capable runtime list:**
 
-**Builder note:** Even if firmware allows a pin, confirm the physical ESP32 development board exposes that pin safely for your hardware. Some ESP32 pins have boot, flash, serial, or board-specific behavior.
+```text
+1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 21, 33, 34, 38, 39, 40, 41, 42, 47
+```
+
+Different CVs can use different validation rules. For example, an input CV may accept an input-capable pin that an output CV does not.
+
+If a pin value is not valid for that CV and board profile, the firmware returns `ERR:<command>`.
+
+**Builder note:** Firmware acceptance does not guarantee a pin is convenient or safe for every attached board. Check the wiring guide for the selected PMT board profile before moving hardware pins.
 
 ---
 
@@ -287,21 +299,21 @@ The INA219 is the **sensor**. The warning, limiting, shutdown, recovery, and LED
 
 ## INA219 Defaults
 
-| Setting | Default |
-| --- | ---: |
-| INA219 enabled | `0` / disabled |
-| SDA | `21` |
-| SCL | `22` |
-| I²C address | `64` (`0x40`) |
-| Sample interval | `500 ms` |
-| Publish interval | `10000 ms` |
-| Warn threshold | `0` |
-| Limit threshold | `0` |
-| Shutdown threshold | `0` |
-| Recovery threshold | `0` |
-| Disconnect threshold | `1000 mV` |
-| Low-voltage output cap | `25%` on Throttle/Turbine where supported |
-| Low-voltage LED pin | `0` / unassigned |
+| Setting | Classic ESP32-WROOM | ESP32-S3-WROOM-1-N16R8 |
+| --- | ---: | ---: |
+| INA219 enabled | `0` / disabled | `0` / disabled |
+| SDA (`CV31`) | GPIO16 | GPIO17 |
+| SCL (`CV32`) | GPIO17 | GPIO18 |
+| I²C address | `64` (`0x40`) | `64` (`0x40`) |
+| Sample interval | `500 ms` | `500 ms` |
+| Publish interval | `10000 ms` | `10000 ms` |
+| Warn threshold | `0` | `0` |
+| Limit threshold | `0` | `0` |
+| Shutdown threshold | `0` | `0` |
+| Recovery threshold | `0` | `0` |
+| Disconnect threshold | `1000 mV` | `1000 mV` |
+| Low-voltage output cap | `25%` on Throttle/Turbine where supported | `25%` on Throttle/Turbine where supported |
+| Low-voltage LED pin | `0` / unassigned | `0` / unassigned |
 
 ## INA219 Async Telemetry Format
 
@@ -371,7 +383,7 @@ These are **starting-point recommendations**, not absolute battery-protection ru
 
 # Scheduling / Autonomous Operation
 
-The schedule subsystem allows supported firmware to run configured commands at configured UTC times on selected days.
+The schedule subsystem allows supported firmware to run configured commands at selected times and days using the **CV14-adjusted firmware clock**.
 
 ## Schedule Requirements
 
@@ -379,13 +391,15 @@ A schedule is considered fully configured only when all of the following are tru
 
 * `CV300=1`
 * `CV301` contains at least one enabled day bit
-* `CV302` is a valid UTC `HH:MM`
-* `CV303` is a valid UTC `HH:MM`
+* `CV302` is a valid 24-hour `HH:MM`
+* `CV303` is a valid 24-hour `HH:MM`
 * `CV302` is earlier than `CV303`
 * `CV304` is non-empty
 * `CV305` is non-empty
 
 Schedules that cross midnight are not supported in this firmware generation.
+
+**How CV14 affects schedule time:** The device receives/sets a UTC epoch, applies the offset stored in `CV14`, and then evaluates `CV302`/`CV303` against that adjusted clock. If `CV14=0`, schedule times behave as raw UTC. If `CV14=-5`, a schedule time of `08:00` means 08:00 on the firmware's UTC-5 adjusted clock.
 
 ## Weekday Bitmask
 
@@ -421,8 +435,8 @@ CV305=FQ0
 In this example:
 
 * schedule is enabled Monday through Friday
-* `F50` runs at 08:00 UTC
-* `FQ0` runs at 17:00 UTC
+* `F50` runs at 08:00 on the CV14-adjusted firmware clock
+* `FQ0` runs at 17:00 on the CV14-adjusted firmware clock
 
 ## Example Turbine Schedule
 
@@ -438,8 +452,8 @@ CV305=F0
 In this example:
 
 * schedule is enabled Saturday and Sunday
-* turbine output ramps to 75 at 10:00 UTC
-* turbine output ramps to 0 at 10:30 UTC
+* turbine output ramps to 75 at 10:00 on the CV14-adjusted firmware clock
+* turbine output ramps to 0 at 10:30 on the CV14-adjusted firmware clock
 
 ---
 
@@ -447,7 +461,7 @@ In this example:
 
 Throttle firmware supports **12 function outputs** with per-function configuration.
 
-Each function uses a 7-CV block. In firmware 2.0.0, the first five CVs in each block are implemented.
+Each function uses a 7-CV block. In firmware 3.0.0 revision 215, the first five CVs in each block are implemented; the last two positions remain reserved.
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -482,7 +496,11 @@ Factory defaults:
 * FX2 = `ReverseLgt`
 * FX3 through FX12 = `FX3` through `FX12`
 
-## Function Pin CVs
+## Function Pin / Track CVs
+
+The meaning of the function's pin CV depends on the selected pattern.
+
+For a physical/LED pattern (`1..99`), the value is a GPIO number. `0` means unassigned.
 
 Examples:
 
@@ -491,19 +509,29 @@ CV151=4
 CV158=5
 ```
 
-Pin `0` means **unassigned**.
+For custom PMTPlayer audio patterns `103` and `104`, the same CV stores a **track number from 1..9999** instead of a GPIO.
+
+Bell, horn, and cab-chatter patterns (`100`, `101`, `102`) do not need a physical FX GPIO.
 
 ## Function Pattern CVs
 
-Allowed values:
+Current pattern values:
 
-```text
-SOLID
-DBL_BLNK
-FRED
-BLINK+
-BLINK-
-```
+| Value | Meaning | Legacy text accepted |
+|---:|---|---|
+| `0` | None / unconfigured | — |
+| `1` | LED solid | `SOLID`, `LED_SOLID` |
+| `2` | LED double blink | `DBL_BLNK`, `LED_DBL_BLNK` |
+| `3` | FRED | `FRED`, `LED_FRED` |
+| `4` | LED blink+ | `BLINK+`, `LED_BLINK+` |
+| `5` | LED blink- | `BLINK-`, `LED_BLINK-` |
+| `100` | Audio bell | `AUDIO_BELL` |
+| `101` | Audio horn | `AUDIO_HORN` |
+| `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |
+| `103` | PMTPlayer custom one-shot | `AUDIO_CUSTOM`, `CUSTOM` |
+| `104` | PMTPlayer custom replay / loop | `AUDIO_CUSTOM_REPLAY` and accepted aliases |
+
+Values `1..99` are reserved for physical/LED patterns. Values `100..199` are reserved for audio patterns. Queries return numeric values.
 
 `BLINK+` and `BLINK-` use the timing configured by `CV20`.
 
@@ -559,7 +587,7 @@ Rules:
 * valid function numbers are `1 – 12`
 * `FXn=1` activates the function
 * `FXn=0` deactivates the function
-* activation requires a non-zero pin, valid pattern, valid GPIO, and no conflicting active use of the pin
+* physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track CV
 
 **Electrical note:** ESP32 GPIO pins are low-current logic outputs. Use appropriate resistors, drivers, transistors, MOSFETs, or LED modules for your load. Do not assume a GPIO pin can safely power an LED, lamp, relay, smoke unit, or accessory directly.
 

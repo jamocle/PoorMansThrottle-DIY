@@ -83,7 +83,7 @@ After installation:
 4. Open the PMT smartphone app and scan for the throttle.
 
 What to expect:
-- The firmware target is an ESP32-WROOM-32 based controller.
+- Use the firmware build that matches your controller board profile: **Classic ESP32-WROOM** or **ESP32-S3-WROOM-1-N16R8**. Do not flash a build intended for the other board profile.
 - By default, the BLE advertising name is `GScaleThrottle`.
 - If a train name has already been stored in controller settings, the advertised BLE name may appear as that configured train name instead.
 - The onboard status LED behavior is firmware-controlled and board-dependent in color. The firmware uses a status LED on GPIO2 with a blinking search pattern while disconnected and a solid-on state when a control connection is active.

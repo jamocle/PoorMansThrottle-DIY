@@ -255,7 +255,7 @@ Many INA219 boards have A0 and A1 solder jumpers.
 
 Leave pads open for the default address.
 
-Bridge both pads for A0 or A1 with a small amount of solder to change the address.
+To change the address, bridge the **two pads of the A0 jumper** and/or the **two pads of the A1 jumper** with a small amount of solder. Do not solder A0 to A1.
 
 Example:
 

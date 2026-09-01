@@ -25,7 +25,7 @@ Speaker
 
 This guide covers:
 
-- PMTPlayer Diesel and PMTPlayer Steam backend selection
+- PMTPlayer Diesel and PMTPlayer Steam sound-mode selection
 - microSD SPI wiring
 - MAX98357A I2S wiring
 - Classic ESP32-WROOM defaults
@@ -37,13 +37,22 @@ This guide covers:
 
 This guide does not cover motor-driver wiring, INA219 wiring, or general lighting-output wiring.
 
+## Start Here — the four things to know
+
+1. Choose your board: **Classic ESP32-WROOM** or **ESP32-S3-WROOM-1-N16R8**.
+2. Choose the sound mode: `CV401=2` for Diesel or `CV401=3` for Steam.
+3. Wire the microSD card to `CV403..CV406` and the MAX98357A to `CV407..CV409` using the board table below.
+4. On Classic, `CV404=-1`, `CV405=-1`, and `CV406=-1` are **not missing pins**. They mean SCK GPIO18, MISO GPIO19, and MOSI GPIO23.
+
+If you only need to wire the hardware, follow **Default PMTPlayer wiring**, **Wiring the microSD adapter**, and **Wiring the MAX98357A** first. The later CV sections are for configuration and troubleshooting.
+
 ---
 
-## PMTPlayer backend selection
+## PMTPlayer sound-mode selection
 
 `CV401` selects the active PMTPlayer sound family:
 
-| CV401 | Backend | Active sound root |
+| CV401 | Sound mode | Active sound root |
 |---:|---|---|
 | `2` | PMTPlayer Diesel | `/diesel` |
 | `3` | PMTPlayer Steam | `/steam` |
@@ -59,7 +68,7 @@ so audio starts disabled and the default PMTPlayer family is Diesel.
 
 ### Set CV401 before custom PMTPlayer pin/tuning overrides
 
-When the firmware changes from a non-PMTPlayer backend into PMTPlayer, selecting `CV401=2` or `CV401=3` applies the PMTPlayer board preset, including the PMTPlayer pin and tuning CVs.
+When you select PMTPlayer for the first time, the firmware loads the PMTPlayer defaults for your board, including its audio pins and tuning values.
 
 Therefore, for a new setup:
 
@@ -284,9 +293,9 @@ Keep the branches short and avoid daisy-chaining the amplifier ground through th
 | `CV404` | SD SCK | `-1` or valid output GPIO | Classic `-1` → GPIO18, S3 `11` |
 | `CV405` | SD MISO | `-1` or valid input GPIO | Classic `-1` → GPIO19, S3 `8` |
 | `CV406` | SD MOSI | `-1` or valid output GPIO | Classic `-1` → GPIO23, S3 `9` |
-| `CV407` | I2S BCLK | backend-specific pin value | Classic `13`, S3 `12` |
-| `CV408` | I2S LRCLK / WS | backend-specific pin value | Classic `12`, S3 `13` |
-| `CV409` | I2S DIN | backend-specific pin value | `14` |
+| `CV407` | I2S BCLK | board-profile pin value | Classic `13`, S3 `12` |
+| `CV408` | I2S LRCLK / WS | board-profile pin value | Classic `12`, S3 `13` |
+| `CV409` | I2S DIN | board-profile pin value | `14` |
 | `CV410` | Default audio priority | `0..100` | `30` |
 | `CV411` | Conflict policy | effective `0..2` | `1` |
 | `CV412` | Startup delay | `0..10000 ms` | `0` |
@@ -350,7 +359,7 @@ When `CV418` is `0`, `1`, or `2`, firmware applies the profile's related PMTPlay
 
 # Sound-card directory and file naming
 
-PMTPlayer builds a track path from the selected backend family.
+PMTPlayer builds a track path from the selected Diesel or Steam sound mode.
 
 For Diesel:
 
@@ -491,7 +500,7 @@ depending on `CV401`.
 
 ## Classic ESP32-WROOM — Diesel
 
-Set the backend first, then explicitly establish the Classic PMTPlayer pin values:
+Set the PMTPlayer sound mode first, then explicitly establish the Classic PMTPlayer pin values:
 
 ```text
 CV400=0
@@ -626,7 +635,7 @@ MOSI = GPIO23
 5. Power the documented MAX98357A from 5V.
 6. Connect the speaker to the MAX98357A speaker output.
 7. Insert the prepared SD card.
-8. Keep `CV400=0` while selecting and configuring the backend.
+8. Keep `CV400=0` while selecting and configuring the PMTPlayer sound mode.
 9. Set `CV401=2` for Diesel or `CV401=3` for Steam.
 10. Set or verify the board-specific `CV403..CV409` values.
 11. Set `CV400=1`.
@@ -748,7 +757,7 @@ LRCLK -> GPIO13   CV408=13
 DIN   -> GPIO14   CV409=14
 ```
 
-## Backend selection
+## Sound-mode selection
 
 ```text
 CV401=2 -> PMTPlayer Diesel -> /diesel/####.wav

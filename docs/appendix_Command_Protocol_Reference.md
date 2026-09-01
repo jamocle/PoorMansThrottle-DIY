@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.0.0 
+**Firmware Version:** 3.0.0
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -141,8 +141,6 @@ I:<device-id>
 ```
 
 ---
-
-```
 
 Backup WebSocket connection:
 
@@ -1032,13 +1030,13 @@ CV400–CV429 are accepted and persisted by the shared CV handler on Throttle, M
 | `CV400` | Audio enable | `0/1` / `0` |
 | `CV401` | Backend | `0=None`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam` / `2` |
 | `CV402` | Master volume | `0..30` / `15` |
-| `CV403` | PMTPlayer SD CS; Classic `21`, S3 `10` before backend-specific preset changes |
+| `CV403` | PMTPlayer SD CS | Classic `21`, S3 `10` before sound-mode preset changes |
 | `CV404` | PMTPlayer SD SCK | Classic default `-1` **means Arduino/core default SCK, effective GPIO18**; S3 default `11` |
 | `CV405` | PMTPlayer SD MISO | Classic default `-1` **means Arduino/core default MISO, effective GPIO19**; S3 default `8` |
 | `CV406` | PMTPlayer SD MOSI | Classic default `-1` **means Arduino/core default MOSI, effective GPIO23**; S3 default `9` |
-| `CV407` | PMTPlayer BCLK; Classic `13`, S3 `12` |
-| `CV408` | PMTPlayer LRCLK; Classic `12`, S3 `13` |
-| `CV409` | PMTPlayer DIN; board default `14` |
+| `CV407` | PMTPlayer I2S BCLK | Classic `13`, S3 `12` |
+| `CV408` | PMTPlayer I2S LRCLK / WS | Classic `12`, S3 `13` |
+| `CV409` | PMTPlayer I2S DIN | `14` on both current board profiles |
 | `CV410` | Default priority | `0..100` / `30` |
 | `CV411` | Conflict policy | configure `0..2` / `1`; `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup` |
 | `CV412` | Startup delay ms | `0..10000` / `0` |
@@ -1194,7 +1192,7 @@ Default function notes:
 * FX1 default name is `Headlight`, direction `FWD`, pin Classic `4` / S3 `15`.
 * FX2 default name is `ReverseLgt`, direction `REV`, pin Classic `5` / S3 `16`.
 * FX3..FX12 default to direction `BOTH` and pin `0`.
-* Every FX pattern defaults to `0` (None), so default F1/F2 pin assignments are inactive until a pattern is configured.
+* Every FX pattern defaults to `0` (None), so default FX1/FX2 pin assignments are inactive until a pattern is configured.
 
 ---
 

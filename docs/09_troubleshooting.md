@@ -550,7 +550,7 @@ If INA219 support is enabled, the firmware can:
 - direction gating prevents the FX from being active in the current direction
 - for a physical LED pattern, no valid GPIO is assigned
 - for a physical LED pattern, another active function is using the same pin
-- for an audio pattern, audio is disabled or the selected backend is not usable
+- for an audio pattern, audio is disabled or the selected PMTPlayer sound mode is not usable
 - for custom audio, the function pin/track CV is not a valid PMTPlayer track number
 - LED wiring expects a higher voltage or includes a resistor sized for 12V or 5V use
 
@@ -584,7 +584,7 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 | Physical FX pin | For patterns `1..99`, confirm a valid, non-conflicting output GPIO is assigned |
 | LED wiring | For physical FX, check LED polarity and resistor assumptions for 3.3V GPIO operation |
 | Audio enable | For patterns `100..199`, confirm `CV400=1` |
-| Audio backend | Confirm `CV401` selects the intended backend (`2` PMTPlayer Diesel, `3` PMTPlayer Steam) |
+| PMTPlayer sound mode | Confirm `CV401` selects the intended sound mode (`2` Diesel, `3` Steam) |
 | Audio volume | Confirm `CV402` is not zero |
 | Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
 

@@ -70,12 +70,19 @@ Typical example boards:
 * IBT-20
 * other dual-PWM high-current drivers
 
-Typical ESP32 control pins in the default firmware layout:
+Firmware defaults depend on the ESP32 board profile:
 
+**Classic ESP32-WROOM**
 * GPIO25 → forward PWM
 * GPIO26 → reverse PWM
 * GPIO27 → enable A
 * GPIO33 → enable B
+
+**ESP32-S3-WROOM-1-N16R8**
+* GPIO6 → forward PWM
+* GPIO7 → reverse PWM
+* GPIO4 → enable A
+* GPIO5 → enable B
 
 This is often the best fit for heavier train loads and higher-current installations.
 
@@ -88,10 +95,15 @@ Typical example boards:
 * Cytron MD10C
 * similar PWM + direction style drivers
 
-Typical ESP32 control pins in the default firmware layout:
+Firmware defaults depend on the ESP32 board profile:
 
+**Classic ESP32-WROOM**
 * GPIO25 → PWM
 * GPIO26 → DIR
+
+**ESP32-S3-WROOM-1-N16R8**
+* GPIO6 → PWM
+* GPIO7 → DIR
 
 This is a clean and simple wiring style when using a driver designed around a dedicated direction input.
 
@@ -106,11 +118,17 @@ Typical example boards:
 * TB6612FNG
 * similar H-bridge boards
 
-Typical ESP32 control pins in the default firmware layout:
+Firmware defaults depend on the ESP32 board profile:
 
+**Classic ESP32-WROOM**
 * GPIO25 → PWM / EN
-* GPIO26 → forward logic
-* GPIO27 → reverse logic
+* GPIO27 → forward logic
+* GPIO33 → reverse logic
+
+**ESP32-S3-WROOM-1-N16R8**
+* GPIO6 → PWM / EN
+* GPIO4 → forward logic
+* GPIO5 → reverse logic
 
 This is common on inexpensive H-bridge boards.
 
@@ -123,10 +141,15 @@ Typical example boards:
 * DRV8833
 * similar two-input H-bridge drivers
 
-Typical ESP32 control pins in the default firmware layout:
+Firmware defaults depend on the ESP32 board profile:
 
+**Classic ESP32-WROOM**
 * GPIO25 → input A
 * GPIO26 → input B
+
+**ESP32-S3-WROOM-1-N16R8**
+* GPIO6 → input A
+* GPIO7 → input B
 
 This is a compact option for smaller driver boards.
 
@@ -210,11 +233,14 @@ This adds installation considerations:
 * thoughtful placement so battery or supply leads are routed cleanly through the measurement path
 * service access if the sensor or wiring needs troubleshooting later
 
-Default INA219-related assumptions include:
+Default INA219 wiring is board-profile specific:
 
-* SDA default pin: GPIO21
-* SCL default pin: GPIO22
-* default I2C address: `0x40`
+| Board profile | SDA (`CV31`) | SCL (`CV32`) |
+|---|---:|---:|
+| Classic ESP32-WROOM | GPIO16 | GPIO17 |
+| ESP32-S3-WROOM-1-N16R8 | GPIO17 | GPIO18 |
+
+The default I2C address is `0x40` (`CV33=64`) on both profiles.
 
 The INA219 is optional. The basic locomotive throttle build, module build, and turbine build can all be planned without it unless you want telemetry or low-voltage behavior.
 
