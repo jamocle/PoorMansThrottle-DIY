@@ -121,11 +121,9 @@ System Awareness
 
 Locomotive Feature Control
 
-1. Sound Trigger Outputs
-    Provide output triggers that can activate external sound boards or audio modules, such as DFPlayer Mini-style sound boards. These triggers could support common locomotive sounds such as horn, bell, whistle, brake squeal, or prime-mover effects.
-2. Expanded Function Output Presets
+1. Expanded Function Output Presets
     Add easier app presets for common lighting and accessory output setups.
-3. Function Output Test Mode
+2. Function Output Test Mode
     Provide a safer app workflow for testing function outputs one at a time during installation.
 
 Module and Accessory Control

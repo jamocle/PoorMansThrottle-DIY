@@ -1,318 +1,445 @@
-# Poor Man's Throttle Audio Wiring Guide
+# Poor Man's Throttle PMTPlayer Audio Wiring Guide
+
+**Firmware baseline:** 3.0.0, revision 215
 
 ## Purpose
 
-This guide shows a **recommended first-time wiring setup** for the current audio implementation:
+This guide covers the **PMTPlayer** audio implementation used by Poor Man's Throttle.
 
-- **ESP32 throttle**
-- **DFPlayer-style sound board**
-- **optional external amplifier**
-- **speaker(s)**
+PMTPlayer uses the ESP32 itself as the audio engine:
 
-It also includes the audio CVs, function-output CVs, definitions, possible values, and recommended starting values.
+```text
+microSD card
+    |
+    | SPI
+    v
+ESP32 / PMTPlayer
+    |
+    | I2S
+    v
+MAX98357A
+    |
+    v
+Speaker
+```
+
+This guide covers:
+
+- PMTPlayer Diesel and PMTPlayer Steam backend selection
+- microSD SPI wiring
+- MAX98357A I2S wiring
+- Classic ESP32-WROOM defaults
+- ESP32-S3-WROOM-1-N16R8 defaults
+- PMTPlayer audio CVs
+- audio-file location and naming
+- bell, horn, and custom FX audio mapping
+- recommended PMTPlayer bring-up and troubleshooting
+
+This guide does not cover motor-driver wiring, INA219 wiring, or general lighting-output wiring.
 
 ---
 
-## Current implementation summary
+## PMTPlayer backend selection
 
-The current implementation supports:
+`CV401` selects the active PMTPlayer sound family:
 
-- Shared audio board configuration through CVs
-- DFPlayer backend
-- Hard-coded locomotive audio track mapping in `PoorMansThrottle`
-- Bell is shown using `FX3` in this guide
-- Horn is shown using `FX4` in this guide
-- Users may choose different FX numbers if they prefer
+| CV401 | Backend | Active sound root |
+|---:|---|---|
+| `2` | PMTPlayer Diesel | `/diesel` |
+| `3` | PMTPlayer Steam | `/steam` |
 
-### Current hard-coded audio track map
-
-| Function | Track(s) |
-|---|---:|
-| Prime mover idle | 1 |
-| Prime mover notch 1..8 | 2..9 |
-| Steam idle / hiss | 101 |
-| Steam/chuff speed bands | 102..106 |
-| Horn | 201 |
-| Bell | 202 |
-
-### Current function mapping
-
-The firmware does not make `FX3` or `FX4` audio functions by command name alone. The link is the function **pattern CV**.
-
-For this guide's example:
-
-```text
-CV166=AUDIO_BELL
-CV173=AUDIO_HORN
-```
-
-That means:
-
-```text
-FX3 becomes bell because FX3's pattern CV, CV166, is AUDIO_BELL.
-FX4 becomes horn because FX4's pattern CV, CV173, is AUDIO_HORN.
-```
-
-| Function command | Required pattern CV | Audio behavior | Track |
-|---|---|---|---:|
-| `FX3=1` | `CV166=AUDIO_BELL` | Bell on / loop bell | 202 |
-| `FX3=0` | `CV166=AUDIO_BELL` | Bell off / stop bell group | 202 |
-| `FX4=1` | `CV173=AUDIO_HORN` | Horn on / play or loop horn | 201 |
-| `FX4=0` | `CV173=AUDIO_HORN` | Horn off / stop horn group | 201 |
-
-### User-selectable FX choice
-
-The FX choice is a user decision. The selected FX becomes bell or horn by setting that FX function's pattern CV.
-
-This guide uses:
-
-```text
-FX3 = bell
-FX4 = horn
-```
-
-as the recommended example because it leaves `FX1` and `FX2` available for other common functions such as lights.
-
-However, users may choose different FX numbers for bell and horn if desired. The important rule is that the firmware/audio mapping and the user's terminal/app commands must agree.
-
-Examples:
-
-| User preference | Bell command | Bell pattern CV | Horn command | Horn pattern CV |
-|---|---|---|---|---|
-| Recommended example used in this guide | `FX3` | `CV166=AUDIO_BELL` | `FX4` | `CV173=AUDIO_HORN` |
-| Use the first two functions | `FX1` | `CV152=AUDIO_BELL` | `FX2` | `CV159=AUDIO_HORN` |
-| Keep lower functions for lights/accessories | `FX5` | `CV180=AUDIO_BELL` | `FX6` | `CV187=AUDIO_HORN` |
-| Any other preferred pair | user-selected FX | chosen FX pattern CV = `AUDIO_BELL` | user-selected FX | chosen FX pattern CV = `AUDIO_HORN` |
-
-If a chosen FX function should be audio-only, set that FX function's physical output pin CV to `0`.
-
-For this document, all examples continue using:
-
-```text
-FX3 = bell
-FX4 = horn
-```
-
-
----
-
-## Recommended first-time setup
-
-This is the recommended simple bring-up configuration:
-
-- DFPlayer backend
-- No BUSY pin
-- No MCU-controlled amp pins
-- Bell shown on `FX3` for this example
-- Horn shown on `FX4` for this example
-- User may choose other FX numbers if desired
-- UART pins:
-  - `GPIO17` = ESP32 TX -> DFPlayer RX
-  - `GPIO16` = ESP32 RX <- DFPlayer TX
-
-### Recommended CV values
-
-#### Shared audio CVs
-
-| CV | Name | Meaning | Possible values | DFPlayer bring-up value |
-|---:|---|---|---|---:|
-| 400 | `AUDIO_ENABLE` | Enables audio subsystem | `0 = off`, `1 = on` | `0` during wiring, then `1` |
-| 401 | `AUDIO_BACKEND_TYPE` | Selects backend | `0 = None`, `1 = DFPlayer`, `2 = PMTPlayer Diesel`, `3 = PMTPlayer Steam` | `1` |
-| 402 | `AUDIO_VOLUME` | Global audio volume | `0..30` | `15` |
-| 403 | `AUDIO_BACKEND_SLOT1` | DFPlayer TX pin / PMTPlayer SD CS | backend-specific signed value | `21` |
-| 404 | `AUDIO_SD_SPI_SCK_PIN` | PMTPlayer SD SPI SCK override | `-1` or valid output GPIO | `-1` |
-| 405 | `AUDIO_SD_SPI_MISO_PIN` | PMTPlayer SD SPI MISO override | `-1` or valid input GPIO | `-1` |
-| 406 | `AUDIO_SD_SPI_MOSI_PIN` | PMTPlayer SD SPI MOSI override | `-1` or valid output GPIO | `-1` |
-| 407 | `AUDIO_BACKEND_SLOT2` | DFPlayer RX pin / PMTPlayer I2S BCLK | backend-specific signed value | `13` |
-| 408 | `AUDIO_BACKEND_SLOT3` | DFPlayer BUSY pin / PMTPlayer I2S LRCLK | backend-specific signed value | `-1` for bring-up without BUSY |
-| 409 | `AUDIO_BACKEND_TUNING1` | DFPlayer loop-restart trim (ms) / PMTPlayer I2S DIN | backend-specific value | `250` |
-| 410 | `AUDIO_DEFAULT_PRIORITY` | Default priority for generic audio requests | `0..255` | `30` |
-| 411 | `AUDIO_DEFAULT_CONFLICT_POLICY` | Conflict policy | `0 = IgnoreLowerPriority`, `1 = InterruptThenResume`, `2 = ReplaceSameGroup` | `1` |
-| 412 | `AUDIO_STARTUP_DELAY_MS` | Delay after backend init | `0` or greater | `0` |
-| 413 | `AUDIO_SHUTDOWN_DELAY_MS` | Delay before shutdown completes | `0` or greater | `0` |
-| 414 | `AUDIO_AMP_ENABLE_PIN` | Optional amp enable control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
-| 415 | `AUDIO_AMP_MUTE_PIN` | Optional amp mute control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
-| 416 | `AUDIO_AMP_STANDBY_PIN` | Optional amp standby control pin | `-1 = unused`, valid GPIO otherwise | `-1` |
-| 417 | `AUDIO_FAULT_PIN` | Optional amp fault/status input pin | `-1 = unused`, valid GPIO otherwise | `-1` |
-
-> **Classic ESP32 meaning of `CV404–CV406 = -1`:** the `-1` values are deliberate sentinel defaults, not missing wiring. When all three remain `-1`, `PmtCardReader` does not remap the SPI bus and uses the existing Arduino/core `SPI` defaults. On the Classic ESP32-WROOM hardware used by PMT, the effective pins are **SCK GPIO18**, **MISO GPIO19**, and **MOSI GPIO23**. `CV403` still supplies the SD chip-select pin (Classic PMTPlayer default `GPIO21`).
->
-> Therefore the Classic PMTPlayer defaults should be read as: `CV404=-1` **→ SCK GPIO18**, `CV405=-1` **→ MISO GPIO19**, `CV406=-1` **→ MOSI GPIO23**.
->
-> On ESP32-S3 PMTPlayer builds, these CVs are explicit rather than sentinel values: `CV404=11`, `CV405=8`, `CV406=9`.
-
-#### Function CVs for bell and horn
-
-The throttle function CVs are indexed. In the verified throttle layout, `FX3` physical output pin is `CV165`, `FX3` pattern is `CV166`, `FX4` physical output pin is `CV172`, and `FX4` pattern is `CV173`.
-
-This guide uses function commands `FX3` and `FX4` as the example bell/horn pair. Users may choose different FX numbers. For a clean audio-only setup, whichever function outputs are chosen for bell/horn should not drive physical output pins unless you intentionally want that.
-
-| CV | Name | Meaning | Possible values | Suggested value |
-|---:|---|---|---|---:|
-| 165 | `FX3_PIN` | Physical output pin for function 3 | `0 = no physical output`, valid GPIO number otherwise | `0` |
-| 166 | `FX3_PATTERN` | Behavior pattern for function 3 | LED patterns or audio patterns such as `AUDIO_BELL` | `AUDIO_BELL` |
-| 172 | `FX4_PIN` | Physical output pin for function 4 | `0 = no physical output`, valid GPIO number otherwise | `0` |
-| 173 | `FX4_PATTERN` | Behavior pattern for function 4 | LED patterns or audio patterns such as `AUDIO_HORN` | `AUDIO_HORN` |
-
-Suggested function use for this guide's example:
-
-| Function | Purpose | Suggested physical pin CV | Required pattern CV |
-|---|---|---:|---:|
-| `FX3` | Bell audio | `CV165=0` | `CV166=AUDIO_BELL` |
-| `FX4` | Horn audio | `CV172=0` | `CV173=AUDIO_HORN` |
-
-> Note: `CV165` and `CV172` apply only to this guide's example choice of `FX3` and `FX4`. If you choose different FX numbers, use the physical output pin CVs for those chosen FX functions instead. Set the chosen function pin CVs to `0` for audio-only use, or assign valid output pins if you intentionally want the functions to also drive hardware outputs.
-
-### Recommended first terminal setup
-
-Enter these after wiring:
+The clean-reset firmware default is:
 
 ```text
 CV400=0
-CV401=1
-CV402=15
+CV401=2
+```
+
+so audio starts disabled and the default PMTPlayer family is Diesel.
+
+### Set CV401 before custom PMTPlayer pin/tuning overrides
+
+When the firmware changes from a non-PMTPlayer backend into PMTPlayer, selecting `CV401=2` or `CV401=3` applies the PMTPlayer board preset, including the PMTPlayer pin and tuning CVs.
+
+Therefore, for a new setup:
+
+1. disable audio with `CV400=0`
+2. select Diesel or Steam with `CV401`
+3. apply any custom `CV403..CV429` values
+4. enable audio with `CV400=1`
+
+Switching between `CV401=2` and `CV401=3` while already in the PMTPlayer family preserves the existing PMTPlayer CV values and changes the selected sound root.
+
+---
+
+# Default PMTPlayer wiring
+
+## Classic ESP32-WROOM
+
+| Function | CV | Stored default | Effective Classic connection |
+|---|---:|---:|---:|
+| microSD CS | `CV403` | `21` | GPIO21 |
+| microSD SCK | `CV404` | `-1` | GPIO18 |
+| microSD MISO | `CV405` | `-1` | GPIO19 |
+| microSD MOSI | `CV406` | `-1` | GPIO23 |
+| MAX98357A I2S BCLK | `CV407` | `13` | GPIO13 |
+| MAX98357A I2S LRCLK / WS / LRC | `CV408` | `12` | GPIO12 |
+| MAX98357A I2S DIN | `CV409` | `14` | GPIO14 |
+
+### What `CV404=-1`, `CV405=-1`, and `CV406=-1` mean on Classic
+
+The Classic `-1` values are intentional sentinel values. They do **not** mean the SD signals are unused.
+
+`PmtCardReader` explicitly remaps SPI only when SCK, MISO, and MOSI are all non-negative. With the Classic defaults:
+
+```text
+CV404=-1
+CV405=-1
+CV406=-1
+```
+
+PMT leaves the global Arduino `SPI` object on the Classic ESP32 core defaults.
+
+Therefore:
+
+```text
+CV404=-1  -> SCK  GPIO18
+CV405=-1  -> MISO GPIO19
+CV406=-1  -> MOSI GPIO23
+```
+
+`CV403` still explicitly supplies the SD chip-select pin:
+
+```text
+CV403=21 -> SD CS GPIO21
+```
+
+So the complete effective Classic PMTPlayer SD wiring is:
+
+```text
+SD CS    -> GPIO21
+SD SCK   -> GPIO18
+SD MISO  -> GPIO19
+SD MOSI  -> GPIO23
+```
+
+---
+
+## ESP32-S3-WROOM-1-N16R8
+
+The S3 profile explicitly assigns all PMTPlayer SPI and I2S pins.
+
+| Function | CV | S3 default |
+|---|---:|---:|
+| microSD CS | `CV403` | GPIO10 |
+| microSD SCK | `CV404` | GPIO11 |
+| microSD MISO | `CV405` | GPIO8 |
+| microSD MOSI | `CV406` | GPIO9 |
+| MAX98357A I2S BCLK | `CV407` | GPIO12 |
+| MAX98357A I2S LRCLK / WS / LRC | `CV408` | GPIO13 |
+| MAX98357A I2S DIN | `CV409` | GPIO14 |
+
+Unlike Classic, the S3 defaults do not use `-1` for the SD bus.
+
+---
+
+# Wiring the microSD adapter
+
+PMTPlayer reads WAV files from the SD card over SPI.
+
+## Classic ESP32-WROOM
+
+| SD adapter signal | Connect to |
+|---|---:|
+| CS | GPIO21 |
+| SCK / CLK | GPIO18 |
+| MISO / DO | GPIO19 |
+| MOSI / DI | GPIO23 |
+| GND | ESP32 GND |
+
+The stored Classic CV values are:
+
+```text
 CV403=21
 CV404=-1
 CV405=-1
 CV406=-1
+```
+
+Remember that the three `-1` values resolve to the effective Classic SPI pins GPIO18 / GPIO19 / GPIO23.
+
+## ESP32-S3-WROOM-1-N16R8
+
+| SD adapter signal | Connect to |
+|---|---:|
+| CS | GPIO10 |
+| SCK / CLK | GPIO11 |
+| MISO / DO | GPIO8 |
+| MOSI / DI | GPIO9 |
+| GND | ESP32-S3 GND |
+
+The S3 CV values are:
+
+```text
+CV403=10
+CV404=11
+CV405=8
+CV406=9
+```
+
+For the WWZMDiB Micro SD / TF Card Adapter Mini Reader Module documented in the PMT installation material, VCC is connected to **3.3V**.
+
+Use short, clean wiring for the SD signals. Poor contacts, long jumper wires, and noisy shared return paths can destabilize SD reads.
+
+---
+
+# Wiring the MAX98357A
+
+PMTPlayer sends PCM audio from the ESP32 to the MAX98357A over I2S.
+
+## Classic ESP32-WROOM
+
+| MAX98357A signal | Connect to |
+|---|---:|
+| BCLK | GPIO13 |
+| LRC / LRCLK / WS | GPIO12 |
+| DIN | GPIO14 |
+| GND | ESP32 GND |
+| VIN / VCC | 5V power |
+| Speaker + | speaker positive |
+| Speaker - | speaker negative |
+
+The matching PMTPlayer CVs are:
+
+```text
 CV407=13
-CV408=-1
-CV409=250
-CV410=30
-CV411=1
-CV412=0
-CV413=0
-CV414=-1
-CV415=-1
-CV416=-1
-CV417=-1
-CV165=0
-CV166=AUDIO_BELL
-CV172=0
-CV173=AUDIO_HORN
-CV400=1
+CV408=12
+CV409=14
 ```
 
-For this DFPlayer setup, `CV404–CV406` are not used by the backend. They are still shown at `-1` because that is the neutral value applied by the DFPlayer preset. If the backend is changed to PMTPlayer on Classic hardware, those same stored values mean **use Arduino/core SPI defaults: GPIO18 / GPIO19 / GPIO23 for SCK / MISO / MOSI**.
+## ESP32-S3-WROOM-1-N16R8
+
+| MAX98357A signal | Connect to |
+|---|---:|
+| BCLK | GPIO12 |
+| LRC / LRCLK / WS | GPIO13 |
+| DIN | GPIO14 |
+| GND | ESP32-S3 GND |
+| VIN / VCC | 5V power |
+| Speaker + | speaker positive |
+| Speaker - | speaker negative |
+
+The matching PMTPlayer CVs are:
+
+```text
+CV407=12
+CV408=13
+CV409=14
+```
+
+The PMT installation material specifies **5V** power for the MAX98357A. Do not connect its power input to the ESP32 3.3V pin.
+
+The speaker connects to the MAX98357A speaker output, not directly to the ESP32.
 
 ---
 
-## Wiring overview
+# I2S wiring length and grounding
 
-There are two common wiring paths.
+The PMTPlayer hardware diagnostics identified the physical audio path as sensitive to wiring and ground-return layout.
 
-### Option A - DFPlayer directly to a speaker
+Keep these MAX98357A signal wires very short:
 
-Use this for the simplest setup.
+- BCLK
+- LRCLK / WS / LRC
+- DIN
+
+The existing PMTPlayer installation guide recommends keeping these signal leads typically **under 1 inch** where practical.
+
+All modules still require a common electrical ground, but avoid routing the SD-card return current and MAX98357A return through the same long breadboard ground path.
+
+The PMTPlayer hardware root-cause testing found audible popping from shared SD/amplifier ground-return coupling. The successful physical correction used a dedicated MAX98357A ground return to an ESP32 ground point while the SD subsystem retained its own return path.
+
+Practical layout:
 
 ```text
-ESP32                    DFPlayer                    Speaker
------                    --------                    -------
-GPIO17 (TX)   ---------> RX
-GPIO16 (RX)   <--------- TX
-GND           ---------> GND
-5V supply     ---------> VCC
-
-SPK1          -------------------------------------> Speaker terminal 1
-SPK2          -------------------------------------> Speaker terminal 2
+ESP32 GND -------- SD adapter GND
+     |
+     +------------- MAX98357A GND
 ```
 
-### Option B - DFPlayer to external amplifier to speaker
+Keep the branches short and avoid daisy-chaining the amplifier ground through the SD-card breadboard return.
 
-Use this when you want an external amplifier.
+---
+
+# PMTPlayer audio CVs
+
+## Core PMTPlayer hardware and service CVs
+
+| CV | Meaning | Valid / effective values | Clean PMTPlayer default |
+|---:|---|---|---|
+| `CV400` | Audio enable | `0=off`, `1=on` | `0` |
+| `CV401` | PMTPlayer family | `2=Diesel`, `3=Steam` | `2` |
+| `CV402` | Master volume | `0..30` | `15` |
+| `CV403` | SD CS | board-specific | Classic `21`, S3 `10` |
+| `CV404` | SD SCK | `-1` or valid output GPIO | Classic `-1` → GPIO18, S3 `11` |
+| `CV405` | SD MISO | `-1` or valid input GPIO | Classic `-1` → GPIO19, S3 `8` |
+| `CV406` | SD MOSI | `-1` or valid output GPIO | Classic `-1` → GPIO23, S3 `9` |
+| `CV407` | I2S BCLK | backend-specific pin value | Classic `13`, S3 `12` |
+| `CV408` | I2S LRCLK / WS | backend-specific pin value | Classic `12`, S3 `13` |
+| `CV409` | I2S DIN | backend-specific pin value | `14` |
+| `CV410` | Default audio priority | `0..100` | `30` |
+| `CV411` | Conflict policy | effective `0..2` | `1` |
+| `CV412` | Startup delay | `0..10000 ms` | `0` |
+| `CV413` | Shutdown delay | `0..10000 ms` | `0` |
+| `CV414` | Optional amp enable pin | `-1` or valid output GPIO | `-1` |
+| `CV415` | Optional amp mute pin | `-1` or valid output GPIO | `-1` |
+| `CV416` | Optional amp standby pin | `-1` or valid output GPIO | `-1` |
+| `CV417` | Optional fault input pin | `-1` or valid input GPIO | `-1` |
+
+Conflict-policy values are:
 
 ```text
-ESP32                    DFPlayer                    Amplifier                   Speaker
------                    --------                    ---------                   -------
-GPIO17 (TX)   ---------> RX
-GPIO16 (RX)   <--------- TX
-GND           ---------> GND
-5V supply     ---------> VCC
-
-DAC_R or DAC_L --------> Audio IN
-GND -------------------> Audio GND
-
-Amp power + -----------> Amplifier VCC / VIN
-Amp GND ---------------> Amplifier GND
-
-Amplifier speaker OUT --> Speaker terminal 1
-Amplifier speaker OUT --> Speaker terminal 2
+0 = IgnoreLowerPriority
+1 = InterruptThenResume
+2 = ReplaceSameGroup
 ```
 
 ---
 
-## Important wiring notes
+## PMTPlayer tuning CVs
 
-### 1. Common ground is required
+| CV | Meaning | Accepted / effective range | Clean default |
+|---:|---|---|---:|
+| `CV418` | PMTPlayer profile | `0..3` | `3` |
+| `CV419` | WAV gain | `1..12` | `1` |
+| `CV420` | Output headroom | `50..100 %` | `100` |
+| `CV421` | Limiter mode | `0..10` | `10` |
+| `CV422` | Speaker size profile | `0=large`, `1=medium`, `2=small` | `2` |
+| `CV423` | Maximum active voices | `0..255`; `0` resolves to board default | Classic `3`, S3 `13` |
+| `CV424` | Overlap mode | effective `0..2` | `1` |
+| `CV425` | Async overlap start | `0` or `1` | `1` |
+| `CV426` | Start-prime bytes | `0..16384` | `12288` |
+| `CV427` | Overlap-prime bytes | `0..16384` | `0` |
+| `CV428` | Mixer attenuation | `25..100 %` | `100` |
+| `CV429` | Clip telemetry request | `0` or `1` | `1` stored |
 
-The following grounds must be tied together:
+`CV418` profile meanings are:
 
-- ESP32 ground
-- DFPlayer ground
-- amplifier ground if an amplifier is used
-- power supply ground
+| CV418 | Profile |
+|---:|---|
+| `0` | Conservative |
+| `1` | Balanced |
+| `2` | Loud |
+| `3` | Explicit advanced CVs |
 
-### 2. Suggested UART wiring
+When `CV418` is `0`, `1`, or `2`, firmware applies the profile's related PMTPlayer settings. Writing an individual advanced PMTPlayer CV marks the profile explicit (`CV418=3`).
 
-For the current recommended DFPlayer setup:
+`CV423=0` means “board default.” The firmware resolves that to a non-zero value: Classic `3`, S3 `13`.
 
-- `CV403 = 21` means ESP32 `GPIO21` is used as DFPlayer TX
-- `CV407 = 13` means ESP32 `GPIO13` is used as DFPlayer RX
-
-That means:
+`CV424` effective modes are:
 
 ```text
-ESP32 GPIO21  -> DFPlayer RX
-ESP32 GPIO13  <- DFPlayer TX
+0 = none
+1 = selected-overlap
+2 = general-loop
 ```
 
-### 3. BUSY pin is optional
+`CV429` is diagnostic. Normal non-verbose builds force its effective runtime behavior off even if the stored request is `1`.
 
-For first DFPlayer bring-up, do not wire BUSY.
+---
 
-`CV408` is the DFPlayer BUSY slot in the current CV map, so use:
+# Sound-card directory and file naming
+
+PMTPlayer builds a track path from the selected backend family.
+
+For Diesel:
 
 ```text
-CV408=-1
+/diesel/####.wav
 ```
 
-Do **not** use `CV404` for DFPlayer BUSY. `CV404` is the PMTPlayer SD SCK override CV.
-
-### 4. Amplifier control pins are optional
-
-For first bring-up, do not wire amp enable/mute/standby/fault pins.
-
-Use:
+For Steam:
 
 ```text
-CV414=-1
-CV415=-1
-CV416=-1
-CV417=-1
+/steam/####.wav
 ```
 
-### 5. If using an external amplifier, start with no MCU control
+The track number is formatted as four decimal digits.
 
-The current recommended first setup is:
-
-- Audio control handled by serial only
-- Amplifier powered normally
-- No amp enable/mute GPIO control from the ESP32
-
-This keeps the first wiring and test sequence simple.
-
-### 6. The chosen FX functions can be audio-only
-
-This guide uses `FX3` and `FX4`. For audio-only bell and horn behavior with this example, configure:
+Examples:
 
 ```text
+/diesel/0202.wav
+/steam/0202.wav
+```
+
+Changing `CV401` between Diesel and Steam changes the active root. The same logical track number therefore resolves under the selected family.
+
+---
+
+# Current PMTPlayer locomotive audio examples
+
+The throttle layer owns locomotive sound meaning; PMTPlayer owns the actual WAV playback, mixing, transitions, and voice allocation.
+
+Current source includes these PMTPlayer track roles:
+
+| Sound | Track(s) |
+|---|---:|
+| Prime-mover startup | `0090` |
+| Prime-mover shutdown | `0091` |
+| Prime-mover idle | `0100` |
+| Diesel notch family | starts at `0101` |
+| Bell | `0202` |
+| Horn intro | `0211` |
+| Horn sustain | `0212` |
+| Horn release | `0213` |
+| Cab chatter range | starts at `0300` |
+
+The current horn behavior is a managed three-part PMTPlayer lifecycle using intro, sustain, and release assets rather than a single horn file.
+
+Steam has additional stationary-idle, moving-bed, chuff, and brake-squeal assets managed by the throttle audio scheduler.
+
+---
+
+# Function / FX audio mapping
+
+Any FX slot can be assigned an audio pattern. The function number itself does not hard-code bell or horn behavior.
+
+Current audio patterns are:
+
+| Pattern | Meaning |
+|---:|---|
+| `100` | Audio Bell |
+| `101` | Audio Horn |
+| `102` | Audio Cab Chatter |
+| `103` | Audio Custom one-shot |
+| `104` | Audio Custom replay / loop |
+
+Legacy text aliases such as `AUDIO_BELL` and `AUDIO_HORN` are accepted, but pattern queries return numeric values.
+
+## Example: FX3 bell and FX4 horn
+
+The throttle CV layout gives:
+
+```text
+FX3 pin/track CV = CV165
+FX3 pattern CV   = CV166
+
+FX4 pin/track CV = CV172
+FX4 pattern CV   = CV173
+```
+
+For audio-only bell and horn:
+
+```text
+CV166=100
 CV165=0
-CV166=AUDIO_BELL
+
+CV173=101
 CV172=0
-CV173=AUDIO_HORN
 ```
 
-This keeps the example `FX3` and `FX4` functions from driving physical output pins while still allowing the audio logic to respond to:
+Then:
 
 ```text
 FX3=1
@@ -321,125 +448,123 @@ FX4=1
 FX4=0
 ```
 
----
+drives the configured PMTPlayer bell/horn behavior.
 
-## Recommended wiring diagram using the suggested values
+Bell, horn, and cab-chatter patterns do not require a physical FX GPIO.
 
-This diagram matches the recommended CV table above.
+## Custom PMTPlayer audio
+
+For pattern `103` or `104`, the function's pin CV is repurposed as the PMTPlayer track number.
+
+Valid custom track numbers are:
 
 ```text
-Recommended CVs:
-CV401=1
+1..9999
+```
+
+Set the pattern **before** setting the track number because changing the pattern resets the same FX slot's pin/track value to `0`.
+
+Example using FX5:
+
+```text
+CV180=103
+CV179=450
+```
+
+This selects custom one-shot track `0450.wav` from the currently active PMTPlayer root:
+
+```text
+/diesel/0450.wav
+```
+
+or:
+
+```text
+/steam/0450.wav
+```
+
+depending on `CV401`.
+
+---
+
+# Recommended first-time PMTPlayer setup
+
+## Classic ESP32-WROOM — Diesel
+
+Set the backend first, then explicitly establish the Classic PMTPlayer pin values:
+
+```text
+CV400=0
+CV401=2
 CV402=15
+
 CV403=21
 CV404=-1
 CV405=-1
 CV406=-1
+
 CV407=13
-CV408=-1
-CV409=250
-CV410=30
-CV411=1
-CV412=0
-CV413=0
-CV414=-1
-CV415=-1
-CV416=-1
-CV417=-1
-CV165=0
-CV166=AUDIO_BELL
-CV172=0
-CV173=AUDIO_HORN
+CV408=12
+CV409=14
+
+CV400=1
 ```
 
-`CV404=-1`, `CV405=-1`, and `CV406=-1` are neutral/unused for this DFPlayer example. On Classic PMTPlayer they mean **GPIO18 / GPIO19 / GPIO23** for SCK / MISO / MOSI.
-
-### Recommended wiring with optional amplifier
+Effective Classic SD pins:
 
 ```text
-ESP32 Throttle Board
---------------------
-GPIO17 (TX) -----------------------------------------> DFPlayer RX
-GPIO16 (RX) <----------------------------------------- DFPlayer TX
-GND -------------------------------------------------> DFPlayer GND
-5V --------------------------------------------------> DFPlayer VCC
-
-DFPlayer
---------
-DAC_R or DAC_L -------------------------------------> Amplifier Audio IN
-GND ------------------------------------------------> Amplifier Audio GND
-
-Amplifier
----------
-Power IN + -----------------------------------------> 5V or amplifier supply +
-Power GND ------------------------------------------> Common GND
-Speaker OUT + --------------------------------------> Speaker +
-Speaker OUT - --------------------------------------> Speaker -
-
-Common Ground
--------------
-ESP32 GND
-DFPlayer GND
-Amplifier GND
-Power Supply GND
-All connected together
+CS   GPIO21
+SCK  GPIO18
+MISO GPIO19
+MOSI GPIO23
 ```
 
-### Recommended wiring without amplifier
+I2S pins:
 
 ```text
-ESP32 Throttle Board
---------------------
-GPIO17 (TX) -----------------------------------------> DFPlayer RX
-GPIO16 (RX) <----------------------------------------- DFPlayer TX
-GND -------------------------------------------------> DFPlayer GND
-5V --------------------------------------------------> DFPlayer VCC
+BCLK  GPIO13
+LRCLK GPIO12
+DIN   GPIO14
+```
 
-DFPlayer Speaker Output
------------------------
-SPK1 ------------------------------------------------> Speaker +
-SPK2 ------------------------------------------------> Speaker -
+For Steam, use the same hardware values and select:
+
+```text
+CV401=3
 ```
 
 ---
 
-## Which output to use on the sound board
+## ESP32-S3-WROOM-1-N16R8 — Diesel
 
-### If you are not using an external amplifier
+```text
+CV400=0
+CV401=2
+CV402=15
 
-Use the sound board's speaker output.
+CV403=10
+CV404=11
+CV405=8
+CV406=9
 
-Typical DFPlayer labels are:
+CV407=12
+CV408=13
+CV409=14
 
-- `SPK1`
-- `SPK2`
+CV400=1
+```
 
-### If you are using an external amplifier
+For Steam, use:
 
-Use the sound board's line-level / DAC output, not the speaker output.
-
-Typical DFPlayer labels may include:
-
-- `DAC_R`
-- `DAC_L`
-- `GND`
-
-For a mono amp, use one DAC channel and ground, according to the amplifier's input requirements.
-
-### Do not do both at once
-
-For initial setup, choose one path:
-
-- either direct speaker output
-- or line output into an amplifier
-
-Do not feed a bridged speaker output into a line input amplifier.
+```text
+CV401=3
+```
 
 ---
 
-## What to verify in the terminal
+# Verification commands
 
-### 1. Confirm audio CV values
+After configuration, query:
 
 ```text
 CV400?
@@ -460,200 +585,179 @@ CV414?
 CV415?
 CV416?
 CV417?
+CV418?
+CV419?
+CV420?
+CV421?
+CV422?
+CV423?
+CV424?
+CV425?
+CV426?
+CV427?
+CV428?
+CV429?
 ```
 
-### 2. Confirm function pin and pattern CV values for the chosen FX functions
+For Classic, it is correct for the terminal to report:
 
 ```text
-CV165?
-CV166?
-CV172?
-CV173?
-```
-
-For this guide's `FX3`/`FX4` audio-only example, expected values are:
-
-```text
-CV165=0
-CV166=AUDIO_BELL
-CV172=0
-CV173=AUDIO_HORN
-```
-
-### 3. Set the recommended values
-
-```text
-CV400=0
-CV401=1
-CV402=15
-CV403=21
 CV404=-1
 CV405=-1
 CV406=-1
-CV407=13
-CV408=-1
-CV409=250
-CV410=30
-CV411=1
-CV412=0
-CV413=0
-CV414=-1
-CV415=-1
-CV416=-1
-CV417=-1
-CV165=0
-CV166=AUDIO_BELL
-CV172=0
-CV173=AUDIO_HORN
-CV400=1
 ```
 
-For this DFPlayer setup, `CV404–CV406` are not used by the backend. They are still shown at `-1` because that is the neutral value applied by the DFPlayer preset. If the backend is changed to PMTPlayer on Classic hardware, those same stored values mean **use Arduino/core SPI defaults: GPIO18 / GPIO19 / GPIO23 for SCK / MISO / MOSI**.
-
-### 4. Verify bell and horn commands
-
-These commands use this guide's example mapping. This mapping requires `CV166=AUDIO_BELL` and `CV173=AUDIO_HORN`. If you chose different FX numbers, use your chosen FX commands and matching pattern CVs instead.
+Those stored values still mean:
 
 ```text
-FX3=1
-FX3=0
-FX4=1
-FX4=0
+SCK  = GPIO18
+MISO = GPIO19
+MOSI = GPIO23
 ```
-
-Expected behavior:
-
-- `FX3=1` -> bell track `202`
-- `FX3=0` -> bell stops
-- `FX4=1` -> horn track `201`
-- `FX4=0` -> horn stops
-
-### 5. Verify priority behavior
-
-On a single DFPlayer, the current conflict model is:
-
-- horn overrides bell
-- bell overrides prime mover/chuff
-- lower-priority desired sounds resume when higher-priority sounds end
-
-Recommended priority test:
-
-```text
-FX3=1
-FX4=1
-FX4=0
-FX3=0
-```
-
-Expected behavior:
-
-- `FX3=1` -> bell starts
-- `FX4=1` -> horn interrupts bell
-- `FX4=0` -> bell resumes if still active
-- `FX3=0` -> bell stops
-
-### 6. Verify throttle audio behavior
-
-As throttle increases, the throttle sketch should request:
-
-- prime mover tracks `1..9`
-- steam/chuff tracks `101..106`
 
 ---
 
-## Suggested bring-up sequence
+# Basic bring-up sequence
 
-1. Wire ESP32 to DFPlayer UART and power.
-2. Leave BUSY and amp control pins unconnected.
-3. If using an external amp, wire DFPlayer line out to amp input.
-4. If not using an amp, wire DFPlayer speaker output directly to a speaker.
-5. Power the system.
-6. In the terminal, configure the recommended CVs.
-7. Confirm `CV165=0` and `CV172=0` for audio-only `FX3` and `FX4`.
-8. Enable audio with `CV400=1`.
-9. Test `FX3` and `FX4`.
-10. Test throttle changes.
+1. Power the system off.
+2. Connect the SD adapter to the correct board-profile SPI pins.
+3. Connect MAX98357A BCLK, LRCLK/WS, and DIN to the correct I2S pins.
+4. Connect all grounds, using a clean/dedicated amplifier ground return where practical.
+5. Power the documented MAX98357A from 5V.
+6. Connect the speaker to the MAX98357A speaker output.
+7. Insert the prepared SD card.
+8. Keep `CV400=0` while selecting and configuring the backend.
+9. Set `CV401=2` for Diesel or `CV401=3` for Steam.
+10. Set or verify the board-specific `CV403..CV409` values.
+11. Set `CV400=1`.
+12. Query the CVs to verify the stored configuration.
+13. Test a configured bell, horn, or other PMTPlayer audio FX.
+14. Test throttle audio behavior.
 
 ---
 
-## Troubleshooting checklist
+# Troubleshooting
 
-### No sound at all
+## No sound
 
 Check:
 
 - `CV400=1`
-- `CV401=1`
-- `CV402` and `CV403` match actual wiring
-- `CV165=0` and `CV172=0` if using this guide's `FX3`/`FX4` audio-only example; use the matching function pin CVs if you chose different FX numbers
-- `CV166=AUDIO_BELL` and `CV173=AUDIO_HORN` if using this guide's `FX3`/`FX4` example; use the matching pattern CVs if you chose different FX numbers
-- common ground exists
-- sound board has valid power
-- SD card / audio files are present on the sound board
-- speaker or amp wiring is correct
+- `CV401=2` or `CV401=3`
+- `CV402` is not `0`
+- SD wiring matches `CV403..CV406`
+- I2S wiring matches `CV407..CV409`
+- the SD card is present
+- the selected `/diesel` or `/steam` directory contains the required WAV files
+- MAX98357A has power
+- speaker is connected to the MAX98357A output
+- all devices share a valid ground reference
 
-### Terminal commands work but no sound
+## Classic SD card is not detected
 
-Check:
-
-- TX/RX wires are not reversed incorrectly
-- DFPlayer has power
-- audio files exist with the expected numbering
-- volume is not set too low
-- if using amp, verify the amp is powered
-- if using amp, verify you used a line/DAC output instead of speaker output
-
-### Distorted sound
-
-Check:
-
-- power supply quality
-- speaker impedance and suitability for the chosen output path
-- amplifier gain
-- source output path selection
-- grounding
-
-### Unexpected audio priority behavior
-
-Remember the current single-stream default is:
+Confirm the distinction between stored CVs and effective wiring:
 
 ```text
-CV407=1
+CV403=21 -> CS GPIO21
+CV404=-1 -> SCK GPIO18
+CV405=-1 -> MISO GPIO19
+CV406=-1 -> MOSI GPIO23
 ```
 
-Meaning:
+Do not interpret `-1` as “leave the wire disconnected.”
 
-- higher-priority sound interrupts lower-priority sound
-- desired lower-priority sound resumes after the higher-priority sound ends
+## S3 SD card is not detected
+
+Verify:
+
+```text
+CV403=10
+CV404=11
+CV405=8
+CV406=9
+```
+
+and confirm the physical wiring matches those values.
+
+## Audio clicks, pops, or breaks up
+
+Check the physical audio path before changing DSP settings:
+
+- shorten BCLK, LRCLK/WS, and DIN wiring
+- avoid long breadboard signal paths
+- check MAX98357A power integrity
+- check the common-ground topology
+- avoid sharing a long SD/amplifier ground-return path
+- inspect SD wiring and contacts
+
+The PMTPlayer diagnostic history specifically identified shared SD/amplifier ground-return coupling as a real source of audible popping.
+
+## Bell or horn command does nothing
+
+Check the chosen FX pattern CV.
+
+For the FX3/FX4 example:
+
+```text
+CV166=100
+CV173=101
+```
+
+The audio behavior follows the pattern CV, not the FX number itself.
+
+## Custom audio does not play
+
+For patterns `103` and `104`:
+
+- set the pattern first
+- then set that function's pin/track CV
+- use a track number from `1..9999`
+- verify the corresponding four-digit WAV exists under the active `/diesel` or `/steam` root
 
 ---
 
-## Recommended first-time values summary
+# Quick wiring summary
 
-| Item | Suggested value |
-|---|---|
-| Backend | DFPlayer |
-| Audio enable during wiring | `0` |
-| Audio enable after wiring | `1` |
-| DFPlayer TX (`CV403`) | `GPIO21` |
-| DFPlayer RX (`CV407`) | `GPIO13` |
-| DFPlayer BUSY (`CV408`) | `-1` for bring-up without BUSY |
-| Volume (`CV402`) | `15` |
-| Default priority (`CV410`) | `30` |
-| Conflict policy (`CV411`) | `1` |
-| Startup delay (`CV412`) | `0` |
-| Shutdown delay (`CV413`) | `0` |
-| Amp enable (`CV414`) | `-1` |
-| Amp mute (`CV415`) | `-1` |
-| Amp standby (`CV416`) | `-1` |
-| Fault (`CV417`) | `-1` |
-| Classic PMTPlayer SD SCK (`CV404`) | `-1` stored → effective `GPIO18` |
-| Classic PMTPlayer SD MISO (`CV405`) | `-1` stored → effective `GPIO19` |
-| Classic PMTPlayer SD MOSI (`CV406`) | `-1` stored → effective `GPIO23` |
-| Bell function used in this guide | `FX3` |
-| Horn function used in this guide | `FX4` |
-| FX choice | User-selectable; this guide uses `FX3`/`FX4` as the example |
-| Bell physical output pin | `CV165=0` |
-| Bell pattern mapping | `CV166=AUDIO_BELL` |
-| Horn physical output pin | `CV172=0` |
-| Horn pattern mapping | `CV173=AUDIO_HORN` |
+## Classic ESP32-WROOM
+
+```text
+microSD
+CS    -> GPIO21   CV403=21
+SCK   -> GPIO18   CV404=-1  (Arduino/core default)
+MISO  -> GPIO19   CV405=-1  (Arduino/core default)
+MOSI  -> GPIO23   CV406=-1  (Arduino/core default)
+
+MAX98357A
+BCLK  -> GPIO13   CV407=13
+LRCLK -> GPIO12   CV408=12
+DIN   -> GPIO14   CV409=14
+```
+
+## ESP32-S3-WROOM-1-N16R8
+
+```text
+microSD
+CS    -> GPIO10   CV403=10
+SCK   -> GPIO11   CV404=11
+MISO  -> GPIO8    CV405=8
+MOSI  -> GPIO9    CV406=9
+
+MAX98357A
+BCLK  -> GPIO12   CV407=12
+LRCLK -> GPIO13   CV408=13
+DIN   -> GPIO14   CV409=14
+```
+
+## Backend selection
+
+```text
+CV401=2 -> PMTPlayer Diesel -> /diesel/####.wav
+CV401=3 -> PMTPlayer Steam  -> /steam/####.wav
+```
+
+## Audio enable
+
+```text
+CV400=0 -> disabled
+CV400=1 -> enabled
+```

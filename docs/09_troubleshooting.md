@@ -584,7 +584,7 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 | Physical FX pin | For patterns `1..99`, confirm a valid, non-conflicting output GPIO is assigned |
 | LED wiring | For physical FX, check LED polarity and resistor assumptions for 3.3V GPIO operation |
 | Audio enable | For patterns `100..199`, confirm `CV400=1` |
-| Audio backend | Confirm `CV401` selects the intended backend (`1` DFPlayer, `2` PMTPlayer Diesel, `3` PMTPlayer Steam) |
+| Audio backend | Confirm `CV401` selects the intended backend (`2` PMTPlayer Diesel, `3` PMTPlayer Steam) |
 | Audio volume | Confirm `CV402` is not zero |
 | Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
 

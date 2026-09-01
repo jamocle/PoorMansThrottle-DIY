@@ -1060,7 +1060,7 @@ CV400–CV429 are accepted and persisted by the shared CV handler on Throttle, M
 | `CV428` | Mixer attenuation % | `25..100` / `100` |
 | `CV429` | Clip telemetry | `0/1`; effective `0` in normal builds, verbose-audio-diagnostics only |
 
-Backend selection order matters: `CV401=1` applies the DFPlayer preset. Selecting `2`/`3` from a non-PMTPlayer backend applies the PMTPlayer preset. Switching between `2` and `3` while already in the PMTPlayer family preserves PMTPlayer-family pin/tuning CVs. Select `CV401` **before** custom backend-specific CV403–CV409 values.
+Backend selection order matters: Selecting `2`/`3` from a non-PMTPlayer backend applies the PMTPlayer preset. Switching between `2` and `3` while already in the PMTPlayer family preserves PMTPlayer-family pin/tuning CVs. Select `CV401` **before** custom backend-specific CV403–CV409 values.
 
 Writing any advanced PMTAudio CV from CV419 through CV429 moves CV418 to `3` (Explicit).
 

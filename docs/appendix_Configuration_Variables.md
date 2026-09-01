@@ -150,15 +150,15 @@ The `CV400–CV429` bank is handled by the shared CV layer. Operational locomoti
 | CV | Purpose | Values / Default | Backend-specific meaning |
 | ---: | --- | --- | --- |
 | **CV400** | Audio Enable | `0`, `1` / `0` | Enables the audio subsystem. |
-| **CV401** | Audio Backend | `0..3` / `2` | `0=None`, `1=DFPlayer`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam`. |
+| **CV401** | Audio Backend | `0..3` / `2` | `0=None`, `2=PMTPlayer Diesel`, `3=PMTPlayer Steam`. |
 | **CV402** | Audio Volume | `0..30` / `15` | Shared volume setting. |
-| **CV403** | Backend Slot 1 | board/backend-specific | DFPlayer TX. PMTPlayer SD CS. Classic PMTPlayer default `GPIO21`; S3 default `GPIO10`. |
+| **CV403** | Backend Slot 1 | PMTPlayer SD CS. Classic PMTPlayer default `GPIO21`; S3 default `GPIO10`. |
 | **CV404** | PMTPlayer SD SCK | Classic `-1`; S3 `11` | **Classic `-1` means use Arduino/core default SPI SCK, effective GPIO18.** |
 | **CV405** | PMTPlayer SD MISO | Classic `-1`; S3 `8` | **Classic `-1` means use Arduino/core default SPI MISO, effective GPIO19.** |
 | **CV406** | PMTPlayer SD MOSI | Classic `-1`; S3 `9` | **Classic `-1` means use Arduino/core default SPI MOSI, effective GPIO23.** |
-| **CV407** | Backend Slot 2 | board/backend-specific | DFPlayer RX. PMTPlayer I2S BCLK. |
-| **CV408** | Backend Slot 3 | board/backend-specific | DFPlayer BUSY. PMTPlayer I2S LRCLK. |
-| **CV409** | Backend Tuning 1 | backend-specific | DFPlayer loop-restart trim in ms. PMTPlayer I2S DIN. |
+| **CV407** | Backend Slot 2 | PMTPlayer I2S BCLK. |
+| **CV408** | Backend Slot 3 | PMTPlayer I2S LRCLK. |
+| **CV409** | Backend Tuning 1 | PMTPlayer I2S DIN. |
 | **CV410** | Default Audio Priority | integer / `30` | Default priority for generic audio requests. |
 | **CV411** | Conflict Policy | effective `0..2` / `1` | `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup`. |
 | **CV412** | Startup Delay | ms / `0` | Backend startup delay. |
