@@ -8,6 +8,7 @@
  ** The terminal now allows scripts to run when in WebSocket connected state and no BLE.
 * **Backup and Restore Refined** The app now has a more refined backup and restore system for hardware configuration.
 * **Startup Restore Sensing** The app now senses when a firmware update occurred and prompts the user if they wish to apply the latest backup (if stored) to the firmware.
+* **FX LED mode information expanded for firmware 3.0.0** to cover the fourteen newly added FX function-output patterns: `DITCH+`, `DITCH-`, `STROBE+`, `STROBE-`, `ROTARY+`, `ROTARY-`, `MARS+`, `MARS-`, `GYRALITE+`, `GYRALITE-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`. The paired `+` / `-` warning-light modes are half-cycle phase shifted, while the simulated lamp/beacon modes include PWM-based brightness effects such as smooth sweeps, flicker, dynamo variation, and incandescent warm-up.
 
 ### Version 2.5.7
 * **Android camera bug fixed** The app would not show the preview on some Android devices..

@@ -3,6 +3,12 @@
 ## Firmware:
 
 
+### Version 3.0.0
+* **FX LED pattern support expanded from 5 to 19 patterns** with fourteen new function-output lighting modes: `DITCH+`, `DITCH-`, `STROBE+`, `STROBE-`, `ROTARY+`, `ROTARY-`, `MARS+`, `MARS-`, `GYRALITE+`, `GYRALITE-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`.
+* **Paired warning-light FX modes added** for ditch lights, strobes, rotary beacons, Mars lights, and Gyralites. Each `-` variant is shifted by half of the effect cycle relative to its matching `+` variant so paired outputs can run out of phase.
+* **PWM-based simulated lighting effects added** for `ROTARY+/-`, `MARS+/-`, `GYRALITE+/-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`, providing smooth brightness changes, flicker, beacon-style motion, dynamo warm-up/variation, and incandescent warm-up behavior instead of simple binary on/off output.
+* **FX pattern values expanded** so the new LED modes use function pattern values `6` through `19`, while the existing `SOLID`, `DBL_BLNK`, `FRED`, `BLINK+`, and `BLINK-` modes remain values `1` through `5`.
+
 ### Version 2.0.0
 * **Shared firmware versioning expanded across the Poor Man’s firmware family**, with Throttle, Module, and Turbine firmware now reporting the shared `2.0.0` firmware version.
 * **PoorMansTurbine firmware added**, providing ESC-style output control for turbine, smoke, fan, or similar accessory modules using a standard servo-style PWM signal.
