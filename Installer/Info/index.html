@@ -434,6 +434,30 @@
       return value !== null && value !== undefined && String(value).trim() !== '';
     }
 
+    function addCacheBuster(url) {
+      const cacheBustedUrl = new URL(url, window.location.href);
+      cacheBustedUrl.searchParams.set('cb', Date.now().toString());
+      return cacheBustedUrl.href;
+    }
+
+    function updateLinkCacheBuster(event) {
+      const link = event.target.closest('a.open-link');
+      if (!link) {
+        return;
+      }
+
+      const href = link.getAttribute('href');
+      if (!hasText(href)) {
+        return;
+      }
+
+      link.href = addCacheBuster(href);
+    }
+
+    document.addEventListener('click', updateLinkCacheBuster, true);
+    document.addEventListener('auxclick', updateLinkCacheBuster, true);
+    document.addEventListener('contextmenu', updateLinkCacheBuster, true);
+
     function createCard(item) {
       const version = hasText(item.version) ? String(item.version).trim() : 'Unknown';
       const title = hasText(item.title) ? String(item.title).trim() : '';
