@@ -2087,4 +2087,3 @@ Official Audacity manual pages used to verify the workflow:
 
 ---
 
-**End of first draft**
