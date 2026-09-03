@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>PMT 3.0 Quick Audio Guide</title><style>
+:root{
+ --surface:rgba(255,255,255,.9);--surface-solid:#fff;--text:#1d1d1f;--muted:#6e6e73;
+ --line:#d2d2d7;--accent:#0071e3;--accent-soft:rgba(0,113,227,.08);--gold:#a66800;
+ --gold-soft:rgba(166,104,0,.10);--success:#147a43;--success-soft:rgba(20,122,67,.08);
+ --warn:#9a5b00;--warn-soft:rgba(154,91,0,.09);--shadow:0 16px 44px rgba(0,0,0,.08);
+ --radius:26px;--max:1100px
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+ background:radial-gradient(circle at top,#fff 0%,#f5f5f7 48%,#ececf1 100%);color:var(--text);
+ line-height:1.58;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+a{color:var(--accent)}
+.wrap{width:min(100%,var(--max));margin:0 auto;padding:22px 16px 68px}
+.hero{text-align:center;padding:12px 4px 22px}
+.eyebrow{display:inline-block;padding:6px 12px;border-radius:999px;border:1px solid rgba(166,104,0,.24);
+ background:rgba(255,255,255,.82);color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em}
+h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);line-height:1.03;letter-spacing:-.045em}
+.hero .lead{max-width:900px;margin:0 auto;color:var(--muted);font-size:clamp(1.04rem,2.8vw,1.24rem)}
+.hero-image{margin-top:24px;border-radius:28px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.18);background:#111}
+.hero-image img{display:block;width:100%;height:auto}
+.section{margin-top:26px;background:var(--surface);border:1px solid rgba(255,255,255,.78);border-radius:var(--radius);
+ box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+.section-header{padding:26px 22px 0}.section-header h2{margin:0 0 10px;font-size:clamp(1.45rem,4vw,2.25rem);line-height:1.1;letter-spacing:-.03em}
+.section-header p{color:var(--muted);margin:0 0 20px}
+.content{padding:22px}
+.guide-choice{display:grid;gap:14px}.guide-choice a{text-decoration:none;color:inherit;background:#fff;border:1px solid #e5e5ea;
+ border-radius:22px;padding:18px;box-shadow:0 10px 22px rgba(0,0,0,.055)}
+.guide-choice strong{display:block;color:var(--accent);font-size:1.08rem;margin-bottom:5px}
+.graphic-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.graphic{min-height:125px;border-radius:20px;padding:16px;color:#fff;display:flex;flex-direction:column;justify-content:flex-end;
+ position:relative;overflow:hidden}.graphic:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 20%,rgba(255,255,255,.28),transparent 28%),linear-gradient(135deg,rgba(0,0,0,.03),rgba(0,0,0,.3))}
+.graphic>*{position:relative}.graphic .icon{font-size:2rem;margin-bottom:auto}.graphic strong{font-size:1.02rem}.graphic span{font-size:.87rem;opacity:.9}
+.g1{background:linear-gradient(135deg,#0b5fa5,#041d35)}.g2{background:linear-gradient(135deg,#8a5300,#3b2200)}.g3{background:linear-gradient(135deg,#157547,#063a25)}
+.doc{padding:24px 22px 34px}
+.doc h1{font-size:2rem;text-align:left}.doc h2{margin:32px 0 12px;font-size:clamp(1.35rem,3.5vw,2rem);line-height:1.12;letter-spacing:-.025em}
+.doc h3{margin:24px 0 9px;font-size:1.18rem}.doc h4{margin:18px 0 7px}.doc p{margin:0 0 14px}
+.doc blockquote{margin:18px 0;padding:16px 18px;background:var(--gold-soft);border-left:4px solid var(--gold);border-radius:0 16px 16px 0}
+.doc code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;background:#f2f2f5;border-radius:6px;padding:.1em .35em}
+.doc pre{background:#f2f2f5;border:1px solid #e3e3e8;border-radius:14px;padding:14px;overflow:auto}
+.doc pre code{background:none;padding:0}
+.doc ul,.doc ol{padding-left:22px}.doc li{margin-bottom:7px}
+.table-wrap,.doc table{width:100%}
+.doc table{border-collapse:collapse;margin:16px 0;border:1px solid #e5e5ea;border-radius:16px;overflow:hidden;display:table}
+.doc th,.doc td{padding:10px 11px;border-bottom:1px solid #e8e8ed;text-align:left;vertical-align:top}
+.doc th{font-size:.87rem;color:var(--muted);background:#fafafa}.doc tr:last-child td{border-bottom:0}
+.back{margin-top:22px;display:grid;gap:12px}.back a{display:block;text-decoration:none;background:#fff;border:1px solid #e5e5ea;border-radius:20px;padding:16px;box-shadow:0 8px 18px rgba(0,0,0,.045)}
+.footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+@media(min-width:760px){.wrap{padding:34px 24px 76px}.section-header{padding:32px 30px 0}.content,.doc{padding:28px 30px 36px}.guide-choice{grid-template-columns:repeat(2,minmax(0,1fr))}.back{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.graphic-strip{grid-template-columns:1fr}.doc table{display:block;overflow-x:auto}}
+</style></head>
+<body><main class="wrap">
+<section class="hero"><div class="eyebrow">PMT 3.0 • QUICK GUIDE</div><h1>Make PMT-ready audio without the long read.</h1><p class="lead">A fast reference for users who already know basic audio editing and want the exact PMT WAV format, filenames, sound roles, loop rules, durations, and export workflow.</p>
+<div class="hero-image"><img src="pmt-v3-audio-hero.png" alt="Poor Man's Throttle Version 3 audio system"></div></section>
+
+    <section class="section">
+      <div class="section-header"><h2>Choose the right guide</h2><p>Both guides contain the same PMT rules; the difference is how much explanation you want.</p></div>
+      <div class="content guide-choice">
+        <a href="audio-guide-quick.html"><strong>Quick Audio Guide →</strong>Best when you already know Audacity and need PMT filenames, formats, durations, and loop rules fast.</a>
+        <a href="audio-guide-complete.html"><strong>Complete Audio Creation Guide →</strong>Best when you want the full walkthrough, sound-design guidance, Steam chuffs, Diesel notches, and detailed Audacity steps.</a>
+      </div>
+    </section>
+    <section class="section">
+      <div class="content">
+        <div class="graphic-strip">
+          <div class="graphic g1"><div class="icon">〰️</div><strong>Author the sound</strong><span>Trim clean source audio and preserve natural character.</span></div>
+          <div class="graphic g2"><div class="icon">↻</div><strong>Make loops disappear</strong><span>Steady backgrounds and sustains should repeat seamlessly.</span></div>
+          <div class="graphic g3"><div class="icon">0000</div><strong>Name it exactly</strong><span>Four-digit WAV filenames in /diesel or /steam.</span></div>
+        </div>
+      </div>
+    </section>
+<section class="section"><div class="doc"><p>This is the short version of the PMT audio-authoring guide. It assumes you already know the basics of opening, selecting, trimming, and exporting audio in Audacity.</p>
+<hr />
+<h1>1. The PMT Audio Format</h1>
+<p>For best results, make <strong>every PMT sound</strong>:</p>
+<table>
+<thead>
+<tr>
+  <th>Setting</th>
+  <th>Use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>File type</td>
+  <td>WAV</td>
+</tr>
+<tr>
+  <td>Encoding</td>
+  <td>Signed 16-bit PCM</td>
+</tr>
+<tr>
+  <td>Channels</td>
+  <td>Mono</td>
+</tr>
+<tr>
+  <td>Sample rate</td>
+  <td><strong>22,050 Hz</strong></td>
+</tr>
+<tr>
+  <td>Bit depth</td>
+  <td><strong>16-bit</strong></td>
+</tr>
+<tr>
+  <td>PCM bitrate</td>
+  <td><strong>352.8 kbps</strong></td>
+</tr>
+<tr>
+  <td>Compression</td>
+  <td>None</td>
+</tr>
+<tr>
+  <td>Filename</td>
+  <td>Four digits, such as <code>0090.wav</code></td>
+</tr>
+</tbody>
+</table>
+<p>PMTPlayer accepts sample rates from <strong>8,000 through 48,000 Hz</strong>, but <strong>22,050 Hz mono, 16-bit PCM WAV</strong> is the recommended authoring standard.</p>
+<p>Do not use stereo, 24-bit, 32-bit float, MP3, AAC, OGG, FLAC, ADPCM, or another compressed WAV format.</p>
+<hr />
+<h1>2. Folder and Filename Rules</h1>
+<p>PMT sounds go in:</p>
+<pre><code class="language-text">/diesel
+/steam
+</code></pre>
+<p>Track numbers always use four digits:</p>
+<pre><code class="language-text">0080.wav
+0090.wav
+0100.wav
+0202.wav
+0300.wav
+</code></pre>
+<p>Not:</p>
+<pre><code class="language-text">80.wav
+90.wav
+100.wav
+</code></pre>
+<p>The same track number can contain different sounds in the diesel and steam folders.</p>
+<p>Example:</p>
+<pre><code class="language-text">/diesel/0212.wav = &quot;HOOOOOOONK&quot;
+/steam/0212.wav  = &quot;TOOOOOOOOOT&quot;
+</code></pre>
+<hr />
+<h1>3. Three Audio Types</h1>
+<h2>One-shot</h2>
+<p>Plays once and ends naturally.</p>
+<p>Examples:</p>
+<ul>
+<li>startup;</li>
+<li>shutdown;</li>
+<li>chuff;</li>
+<li>steam event;</li>
+<li>horn release;</li>
+<li>cab chatter.</li>
+</ul>
+<p>Trim unnecessary silence, but keep the natural sound tail.</p>
+<hr />
+<h2>Loop</h2>
+<p>Repeats while PMT needs it.</p>
+<p>Examples:</p>
+<ul>
+<li>diesel idle;</li>
+<li>diesel notches;</li>
+<li>steam background;</li>
+<li>horn sustain;</li>
+<li>brake sustain.</li>
+</ul>
+<p>The loop point should not be obvious.</p>
+<p>Good:</p>
+<p><strong>&quot;rrrrrrrrrrrrrrrrrrrr&quot;</strong></p>
+<p>Bad:</p>
+<p><strong>&quot;rrrrrr—CLICK—rrrrrr—CLICK&quot;</strong></p>
+<hr />
+<h2>Start / Sustain / Release</h2>
+<p>Some effects use three files:</p>
+<pre><code class="language-text">START -&gt; SUSTAIN -&gt; RELEASE
+</code></pre>
+<p>Example horn:</p>
+<pre><code class="language-text">0211.wav    0212.wav         0213.wav
+&quot;HWAH-&quot;  + &quot;HOOOOOOONK&quot;  + &quot;-oooooff&quot;
+</code></pre>
+<p>The sustain file is normally the loop.</p>
+<hr />
+<h1>4. Diesel Files</h1>
+<p>Place these in:</p>
+<pre><code class="language-text">/diesel
+</code></pre>
+<table>
+<thead>
+<tr>
+  <th>File</th>
+  <th>Purpose</th>
+  <th>Expected sound</th>
+  <th style="text-align:right">Recommended length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>0080.wav</code></td>
+  <td>Brake start</td>
+  <td><strong>&quot;SKREE-&quot;</strong></td>
+  <td style="text-align:right">0.10–0.40 s</td>
+</tr>
+<tr>
+  <td><code>0081.wav</code></td>
+  <td>Brake sustain loop</td>
+  <td><strong>&quot;EEEEEEEE&quot;</strong></td>
+  <td style="text-align:right">0.4–1.5 s</td>
+</tr>
+<tr>
+  <td><code>0082.wav</code></td>
+  <td>Brake release</td>
+  <td><strong>&quot;eeee...ssst&quot;</strong></td>
+  <td style="text-align:right">0.2–0.8 s</td>
+</tr>
+<tr>
+  <td><code>0090.wav</code></td>
+  <td>Engine startup</td>
+  <td><strong>&quot;rrr...RRR...VROOM...RUM&quot;</strong></td>
+  <td style="text-align:right">4–10 s</td>
+</tr>
+<tr>
+  <td><code>0091.wav</code></td>
+  <td>Engine shutdown</td>
+  <td><strong>&quot;RUM-rum...putt...stop&quot;</strong></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td><code>0100.wav</code></td>
+  <td>Idle / Notch 0 loop</td>
+  <td><strong>&quot;RUM...RUM...RUM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0101.wav</code></td>
+  <td>Notch 1 loop</td>
+  <td><strong>&quot;rum-RUM-rum-RUM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0102.wav</code></td>
+  <td>Notch 2 loop</td>
+  <td><strong>&quot;RUM-RUM-RUM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0103.wav</code></td>
+  <td>Notch 3 loop</td>
+  <td><strong>&quot;RRUM-RRUM-RRUM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0104.wav</code></td>
+  <td>Notch 4 loop</td>
+  <td><strong>&quot;RRRAAM-RRRAAM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0105.wav</code></td>
+  <td>Notch 5 loop</td>
+  <td><strong>&quot;RRAAAAMMMMM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0106.wav</code></td>
+  <td>Notch 6 loop</td>
+  <td><strong>&quot;RRRRAAAAMMMM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0107.wav</code></td>
+  <td>Notch 7 loop</td>
+  <td><strong>&quot;WAAARRR-RRRAAAM&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0108.wav</code></td>
+  <td>Notch 8 loop</td>
+  <td><strong>&quot;WAAAAARRRRR!&quot;</strong></td>
+  <td style="text-align:right">2–6 s</td>
+</tr>
+<tr>
+  <td><code>0202.wav</code></td>
+  <td>Bell loop</td>
+  <td><strong>&quot;DINGgggg...&quot;</strong></td>
+  <td style="text-align:right">0.8–1.6 s</td>
+</tr>
+<tr>
+  <td><code>0211.wav</code></td>
+  <td>Horn start</td>
+  <td><strong>&quot;HWAH-&quot;</strong></td>
+  <td style="text-align:right">0.15–0.50 s</td>
+</tr>
+<tr>
+  <td><code>0212.wav</code></td>
+  <td>Horn sustain loop</td>
+  <td><strong>&quot;HOOOOOOONK&quot;</strong></td>
+  <td style="text-align:right">0.5–2.0 s</td>
+</tr>
+<tr>
+  <td><code>0213.wav</code></td>
+  <td>Horn release</td>
+  <td><strong>&quot;-oooooff...&quot;</strong></td>
+  <td style="text-align:right">0.25–1.0 s</td>
+</tr>
+<tr>
+  <td><code>0300.wav+</code></td>
+  <td>Cab chatter</td>
+  <td><strong>&quot;psshht...copy that...&quot;</strong></td>
+  <td style="text-align:right">1–8 s</td>
+</tr>
+</tbody>
+</table>
+<h2>Diesel notch rule</h2>
+<p>Each notch file should contain a <strong>steady engine state</strong>.</p>
+<p>Do not take one recording of an engine accelerating through several speeds and cut arbitrary pieces from it.</p>
+<p>Whenever possible, sample the actual locomotive while it is holding each real notch.</p>
+<p>The files should become progressively stronger from <code>0100.wav</code> through <code>0108.wav</code>, not simply louder copies of one file.</p>
+<hr />
+<h1>5. Steam Stationary Files</h1>
+<p>Place these in:</p>
+<pre><code class="language-text">/steam
+</code></pre>
+<table>
+<thead>
+<tr>
+  <th>File</th>
+  <th>Purpose</th>
+  <th>Expected sound</th>
+  <th style="text-align:right">Recommended length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>0080.wav</code></td>
+  <td>Brake start</td>
+  <td><strong>&quot;SKREE-&quot;</strong></td>
+  <td style="text-align:right">0.10–0.40 s</td>
+</tr>
+<tr>
+  <td><code>0081.wav</code></td>
+  <td>Brake sustain loop</td>
+  <td><strong>&quot;EEEEEEEE&quot;</strong></td>
+  <td style="text-align:right">0.4–1.5 s</td>
+</tr>
+<tr>
+  <td><code>0082.wav</code></td>
+  <td>Brake release</td>
+  <td><strong>&quot;eeee...ssst&quot;</strong></td>
+  <td style="text-align:right">0.2–0.8 s</td>
+</tr>
+<tr>
+  <td><code>0093.wav</code></td>
+  <td>Stationary steam event</td>
+  <td><strong>&quot;PSSSSHHHH!&quot;</strong></td>
+  <td style="text-align:right"><strong>2.0 s minimum; 4–10 s recommended</strong></td>
+</tr>
+<tr>
+  <td><code>0094.wav</code></td>
+  <td>Steam event release</td>
+  <td><strong>&quot;pssshhh...sss...&quot;</strong></td>
+  <td style="text-align:right">0.5–2.5 s</td>
+</tr>
+<tr>
+  <td><code>0095.wav</code></td>
+  <td>Stopped steam background loop</td>
+  <td><strong>&quot;sssshhhhhhhh...&quot;</strong></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td><code>0190.wav</code></td>
+  <td>Moving steam background loop</td>
+  <td><strong>&quot;hhhhhh-sssshh-rrrrhh&quot;</strong></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td><code>0202.wav</code></td>
+  <td>Bell loop</td>
+  <td><strong>&quot;DINGgggg...&quot;</strong></td>
+  <td style="text-align:right">0.8–1.6 s</td>
+</tr>
+<tr>
+  <td><code>0211.wav</code></td>
+  <td>Whistle start</td>
+  <td><strong>&quot;TWOO-&quot;</strong></td>
+  <td style="text-align:right">0.15–0.50 s</td>
+</tr>
+<tr>
+  <td><code>0212.wav</code></td>
+  <td>Whistle sustain loop</td>
+  <td><strong>&quot;TOOOOOOOOOT&quot;</strong></td>
+  <td style="text-align:right">0.5–2.0 s</td>
+</tr>
+<tr>
+  <td><code>0213.wav</code></td>
+  <td>Whistle release</td>
+  <td><strong>&quot;-oooooot...pssh&quot;</strong></td>
+  <td style="text-align:right">0.25–1.0 s</td>
+</tr>
+<tr>
+  <td><code>0300.wav+</code></td>
+  <td>Cab chatter</td>
+  <td><strong>&quot;psshht...clear ahead...&quot;</strong></td>
+  <td style="text-align:right">1–8 s</td>
+</tr>
+</tbody>
+</table>
+<h2><code>0093.wav</code></h2>
+<p><code>0093.wav</code> must be at least:</p>
+<p><strong>2.0 seconds</strong></p>
+<p>A <strong>4–10 second</strong> file is recommended because it gives PMT more useful stationary-steam material.</p>
+<p>The useful sound should begin near the start of the file. Do not put two seconds of silence before the steam event.</p>
+<hr />
+<h1>6. Steam Chuffs</h1>
+<p>PMT uses <strong>48 separate chuff files</strong>.</p>
+<p>Each speed band has:</p>
+<ul>
+<li>four chuff sets;</li>
+<li>four wheel phases per set;</li>
+<li>phases at 0°, 90°, 180°, and 270°.</li>
+</ul>
+<p>PMT steps through the four phases and changes sound sets so the locomotive does not repeat exactly the same four chuffs forever.</p>
+<h2>Low-speed chuffs</h2>
+<pre><code class="language-text">0100.wav through 0115.wav
+</code></pre>
+<p>Expected:</p>
+<p><strong>&quot;CHUFF!&quot;</strong></p>
+<p>Recommended:</p>
+<p><strong>0.25–0.55 seconds each</strong></p>
+<hr />
+<h2>Medium-speed chuffs</h2>
+<pre><code class="language-text">0120.wav through 0135.wav
+</code></pre>
+<p>Expected:</p>
+<p><strong>&quot;Chuff!&quot;</strong></p>
+<p>or:</p>
+<p><strong>&quot;CHFF!&quot;</strong></p>
+<p>Recommended:</p>
+<p><strong>0.16–0.35 seconds each</strong></p>
+<hr />
+<h2>High-speed chuffs</h2>
+<pre><code class="language-text">0140.wav through 0155.wav
+</code></pre>
+<p>Expected:</p>
+<p><strong>&quot;CHFF!&quot;</strong></p>
+<p>or:</p>
+<p><strong>&quot;TCHFF!&quot;</strong></p>
+<p>Recommended:</p>
+<p><strong>0.10–0.22 seconds each</strong></p>
+<hr />
+<h2>Chuff authoring rules</h2>
+<p>Choose clean individual exhaust beats.</p>
+<p>Keep:</p>
+<ul>
+<li>the attack;</li>
+<li>the body;</li>
+<li>a short natural tail.</li>
+</ul>
+<p>Do not add artificial silence after the chuff.</p>
+<p>Bad:</p>
+<pre><code class="language-text">CHUFF!...................[silence]
+</code></pre>
+<p>Better:</p>
+<pre><code class="language-text">CHUFF!
+</code></pre>
+<p>with its natural short exhaust tail.</p>
+<p>Within each group of four, the chuffs should sound like the same locomotive at the same general load, with small natural differences.</p>
+<hr />
+<h1>7. Steam Moving Background — <code>0190.wav</code></h1>
+<p><code>0190.wav</code> is the continuous moving steam background.</p>
+<p>Expected:</p>
+<p><strong>&quot;hhhhhh—sssshh—rrrrhhhhh&quot;</strong></p>
+<p>Think of it as the moving locomotive sound underneath the individual chuffs:</p>
+<ul>
+<li>rushing air;</li>
+<li>running gear;</li>
+<li>steam texture;</li>
+<li>low mechanical movement.</li>
+</ul>
+<p>Recommended:</p>
+<p><strong>3–8 seconds</strong></p>
+<p>It must loop smoothly.</p>
+<p>The current runtime uses <strong><code>0190.wav</code> only</strong> for the normal continuous moving-bed system.</p>
+<p>You do not need to create <code>0191.wav</code> or <code>0192.wav</code> for this system.</p>
+<hr />
+<h1>8. Bell — <code>0202.wav</code></h1>
+<p>Expected:</p>
+<p><strong>&quot;DINGgggggg...&quot;</strong></p>
+<p>Recommended:</p>
+<p><strong>0.8–1.6 seconds per bell cycle</strong></p>
+<p>The file loops while the bell is active.</p>
+<p>Include:</p>
+<ol>
+<li>the strike;</li>
+<li>the ring;</li>
+<li>its natural decay;</li>
+<li>enough spacing for the next looped strike to sound believable.</li>
+</ol>
+<p>The loop should sound like:</p>
+<pre><code class="language-text">DINGgggg...... | DINGgggg...... | DINGgggg......
+</code></pre>
+<p>Do not cut the ringing tail off sharply.</p>
+<hr />
+<h1>9. Horn / Whistle</h1>
+<p>These use:</p>
+<pre><code class="language-text">0211.wav = start
+0212.wav = sustain loop
+0213.wav = release
+</code></pre>
+<h2>Diesel</h2>
+<pre><code class="language-text">0211 = &quot;HWAH-&quot;
+0212 = &quot;HOOOOOOONK&quot;
+0213 = &quot;-oooooff...&quot;
+</code></pre>
+<h2>Steam</h2>
+<pre><code class="language-text">0211 = &quot;TWOO-&quot;
+0212 = &quot;TOOOOOOOOOT&quot;
+0213 = &quot;-oooooot...pssh&quot;
+</code></pre>
+<p>Recommended lengths:</p>
+<table>
+<thead>
+<tr>
+  <th>File</th>
+  <th style="text-align:right">Length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>0211.wav</code></td>
+  <td style="text-align:right">0.15–0.50 s</td>
+</tr>
+<tr>
+  <td><code>0212.wav</code></td>
+  <td style="text-align:right">0.5–2.0 s</td>
+</tr>
+<tr>
+  <td><code>0213.wav</code></td>
+  <td style="text-align:right">0.25–1.0 s</td>
+</tr>
+</tbody>
+</table>
+<p>The important part is making <code>0212.wav</code> loop smoothly.</p>
+<hr />
+<h1>10. Cab Chatter</h1>
+<p>Cab chatter begins at:</p>
+<pre><code class="language-text">0300.wav
+</code></pre>
+<p>and can continue through:</p>
+<pre><code class="language-text">0399.wav
+</code></pre>
+<p>Examples:</p>
+<p><strong>&quot;psshht...copy that...&quot;</strong></p>
+<p><strong>&quot;ksssh...clear ahead...&quot;</strong></p>
+<p><strong>&quot;dispatcher to engine...&quot;</strong></p>
+<p>Recommended:</p>
+<p><strong>1–8 seconds each</strong></p>
+<h2>Important numbering rule</h2>
+<p>Cab chatter filenames must be continuous.</p>
+<p>Good:</p>
+<pre><code class="language-text">0300.wav
+0301.wav
+0302.wav
+0303.wav
+</code></pre>
+<p>Bad:</p>
+<pre><code class="language-text">0300.wav
+0301.wav
+0302.wav
+0304.wav
+</code></pre>
+<p>If <code>0303.wav</code> is missing, PMT stops discovering cab-chatter tracks at that gap.</p>
+<hr />
+<h1>11. Which Files Must Loop Well?</h1>
+<h2>Diesel</h2>
+<pre><code class="language-text">0100.wav
+0101.wav
+0102.wav
+0103.wav
+0104.wav
+0105.wav
+0106.wav
+0107.wav
+0108.wav
+</code></pre>
+<h2>Steam</h2>
+<pre><code class="language-text">0095.wav
+0190.wav
+</code></pre>
+<h2>Both locomotive types</h2>
+<pre><code class="language-text">0081.wav    brake sustain
+0202.wav    bell
+0212.wav    horn/whistle sustain
+</code></pre>
+<p>Any custom audio configured as a repeating sound must also loop well.</p>
+<hr />
+<h1>12. Audacity Fast Workflow</h1>
+<h2>1. Import</h2>
+<pre><code class="language-text">File &gt; Import &gt; Audio...
+</code></pre>
+<p>or drag the source file into Audacity.</p>
+<hr />
+<h2>2. Find the sound</h2>
+<p>Select the clean section you want.</p>
+<p>Examples:</p>
+<ul>
+<li><strong>&quot;DING&quot;</strong> for the bell;</li>
+<li><strong>&quot;CHUFF!&quot;</strong> for a steam exhaust beat;</li>
+<li><strong>&quot;RUM-RUM-RUM&quot;</strong> for diesel idle;</li>
+<li><strong>&quot;HOOOOONK&quot;</strong> for horn sustain.</li>
+</ul>
+<hr />
+<h2>3. Trim</h2>
+<p>Use:</p>
+<pre><code class="language-text">Edit &gt; Remove Special &gt; Trim Audio
+</code></pre>
+<p>Windows/Linux shortcut:</p>
+<pre><code class="language-text">Ctrl + T
+</code></pre>
+<p>Remove unnecessary lead-in and trailing dead air.</p>
+<hr />
+<h2>4. Convert to mono</h2>
+<p>Use:</p>
+<pre><code class="language-text">Tracks &gt; Mix &gt; Mix Stereo Down to Mono
+</code></pre>
+<p>Listen afterward to make sure the sound did not become weak due to phase cancellation.</p>
+<hr />
+<h2>5. Fix clicks</h2>
+<p>Use very short fades where needed:</p>
+<pre><code class="language-text">Effect &gt; Fading &gt; Fade In
+Effect &gt; Fading &gt; Fade Out
+</code></pre>
+<p>Do not use a slow fade on an attack such as:</p>
+<p><strong>&quot;CHUFF!&quot;</strong></p>
+<p>or:</p>
+<p><strong>&quot;DING!&quot;</strong></p>
+<p>unless that is actually how the source should sound.</p>
+<hr />
+<h2>6. Test loops</h2>
+<p>For loop files, use Audacity loop playback.</p>
+<p>Press:</p>
+<pre><code class="language-text">L
+</code></pre>
+<p>to control looping, then play the loop repeatedly.</p>
+<p>Listen for:</p>
+<ul>
+<li>clicks;</li>
+<li>jumps in level;</li>
+<li>sudden pitch changes;</li>
+<li>repeating clanks or other obvious events;</li>
+<li>an obvious restart.</li>
+</ul>
+<p>Adjust the loop boundaries until the transition disappears.</p>
+<p>Choosing boundaries near waveform zero crossings can help reduce clicks.</p>
+<hr />
+<h2>7. Normalize</h2>
+<p>A useful PMT starting point is:</p>
+<pre><code class="language-text">Effect &gt; Volume and Compression &gt; Normalize...
+</code></pre>
+<p>Set peak amplitude to approximately:</p>
+<pre><code class="language-text">-3.0 dB
+</code></pre>
+<p>This is an authoring recommendation, not a firmware requirement.</p>
+<p>Listen afterward. Do not rely on the number alone.</p>
+<hr />
+<h1>13. Export from Audacity</h1>
+<p>Use:</p>
+<pre><code class="language-text">File &gt; Export Audio...
+</code></pre>
+<p>Set:</p>
+<table>
+<thead>
+<tr>
+  <th>Setting</th>
+  <th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Format</td>
+  <td>WAV</td>
+</tr>
+<tr>
+  <td>Channels</td>
+  <td>Mono</td>
+</tr>
+<tr>
+  <td>Sample Rate</td>
+  <td><strong>22050 Hz</strong></td>
+</tr>
+<tr>
+  <td>Encoding</td>
+  <td><strong>Signed 16-bit PCM</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Then use the exact PMT filename:</p>
+<pre><code class="language-text">0090.wav
+0202.wav
+0212.wav
+</code></pre>
+<hr />
+<h1>14. Fast Sampling Examples</h1>
+<h2>Diesel startup — <code>0090.wav</code></h2>
+<p>Find:</p>
+<p><strong>&quot;rrr...rrr...VROOM...RUM-RUM&quot;</strong></p>
+<p>Keep the cranking, engine catch, and transition into running.</p>
+<p>Do not include a long idle afterward.</p>
+<hr />
+<h2>Diesel notch</h2>
+<p>Find several seconds of a steady engine state:</p>
+<p><strong>&quot;RRRRAAAAMMMMM&quot;</strong></p>
+<p>Trim 2–6 seconds and make it loop.</p>
+<hr />
+<h2>Bell — <code>0202.wav</code></h2>
+<p>Find one clean:</p>
+<p><strong>&quot;DINGgggg...&quot;</strong></p>
+<p>Keep the strike and useful natural decay.</p>
+<hr />
+<h2>Horn / whistle</h2>
+<p>Find:</p>
+<p><strong>&quot;HWAH-HOOOOOOONK-oooooff&quot;</strong></p>
+<p>Split it into:</p>
+<pre><code class="language-text">0211 = attack
+0212 = steady sustain
+0213 = release
+</code></pre>
+<p>Make <code>0212.wav</code> loop cleanly.</p>
+<hr />
+<h2>Steam chuff</h2>
+<p>Find one clean:</p>
+<p><strong>&quot;CHUFF!&quot;</strong></p>
+<p>Trim close to the pressure attack and natural tail.</p>
+<p>Do not pad it with silence.</p>
+<hr />
+<h2>Steam moving bed — <code>0190.wav</code></h2>
+<p>Find steady:</p>
+<p><strong>&quot;sssshhhh-rrrrhhhh&quot;</strong></p>
+<p>without a large individual <strong>&quot;CHUFF!&quot;</strong></p>
+<p>Take 3–8 seconds and make it loop.</p>
+<hr />
+<h1>15. Quick Duration Reference</h1>
+<p>These are <strong>recommended authoring ranges</strong>, not exact PMT hardware durations.</p>
+<table>
+<thead>
+<tr>
+  <th>File / Range</th>
+  <th style="text-align:right">Recommended length</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td><code>0080.wav</code></td>
+  <td style="text-align:right">0.10–0.40 s</td>
+</tr>
+<tr>
+  <td><code>0081.wav</code></td>
+  <td style="text-align:right">0.4–1.5 s</td>
+</tr>
+<tr>
+  <td><code>0082.wav</code></td>
+  <td style="text-align:right">0.2–0.8 s</td>
+</tr>
+<tr>
+  <td><code>0090.wav</code></td>
+  <td style="text-align:right">4–10 s</td>
+</tr>
+<tr>
+  <td><code>0091.wav</code></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td><code>0093.wav</code></td>
+  <td style="text-align:right"><strong>2.0 s minimum; 4–10 s recommended</strong></td>
+</tr>
+<tr>
+  <td><code>0094.wav</code></td>
+  <td style="text-align:right">0.5–2.5 s</td>
+</tr>
+<tr>
+  <td><code>0095.wav</code></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td>Diesel <code>0100–0108</code></td>
+  <td style="text-align:right">2–6 s each</td>
+</tr>
+<tr>
+  <td>Steam <code>0100–0115</code></td>
+  <td style="text-align:right">0.25–0.55 s each</td>
+</tr>
+<tr>
+  <td>Steam <code>0120–0135</code></td>
+  <td style="text-align:right">0.16–0.35 s each</td>
+</tr>
+<tr>
+  <td>Steam <code>0140–0155</code></td>
+  <td style="text-align:right">0.10–0.22 s each</td>
+</tr>
+<tr>
+  <td><code>0190.wav</code></td>
+  <td style="text-align:right">3–8 s</td>
+</tr>
+<tr>
+  <td><code>0202.wav</code></td>
+  <td style="text-align:right">0.8–1.6 s</td>
+</tr>
+<tr>
+  <td><code>0211.wav</code></td>
+  <td style="text-align:right">0.15–0.50 s</td>
+</tr>
+<tr>
+  <td><code>0212.wav</code></td>
+  <td style="text-align:right">0.5–2.0 s</td>
+</tr>
+<tr>
+  <td><code>0213.wav</code></td>
+  <td style="text-align:right">0.25–1.0 s</td>
+</tr>
+<tr>
+  <td><code>0300–0399.wav</code></td>
+  <td style="text-align:right">1–8 s each</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>16. Final Checklist</h1>
+<p>Before copying a file to the SD card:</p>
+<ul>
+<li>[ ] correct <code>/diesel</code> or <code>/steam</code> folder;</li>
+<li>[ ] four-digit filename;</li>
+<li>[ ] <code>.wav</code>;</li>
+<li>[ ] mono;</li>
+<li>[ ] 22,050 Hz;</li>
+<li>[ ] signed 16-bit PCM;</li>
+<li>[ ] no clipping;</li>
+<li>[ ] no unnecessary silence at the beginning;</li>
+<li>[ ] natural ending for one-shot sounds;</li>
+<li>[ ] seamless transition for loop sounds;</li>
+<li>[ ] reasonable loudness compared with the rest of the sound set.</li>
+</ul>
+<h2>Export recipe</h2>
+<pre><code class="language-text">WAV
+Mono
+22050 Hz
+Signed 16-bit PCM
+</code></pre>
+<p>If those four settings and the filename are correct, you have handled the most important technical requirements.</p>
+<hr />
+</div></section>
+<section class="section"><div class="content back">
+<a href="soundfinally.html"><strong>← PMT 3.0 Audio Overview</strong><br>Hardware, board recommendations, sound features, and BOM recipes.</a>
+<a href="audio-guide-complete.html"><strong>Open the Complete Guide →</strong><br>More detailed editing and sound-design instructions.</a>
+</div></section>
+<div class="footer-note">Poor Man's Throttle 3.0 — real sound, open customization, and your railroad your way.</div>
+</main></body></html>

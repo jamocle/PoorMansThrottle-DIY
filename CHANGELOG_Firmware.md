@@ -4,10 +4,12 @@
 
 
 ### Version 3.0.0
+* **PMT Goes Vocal** Major locomotive audio system added — Firmware 3.0.0 introduces a full motion-aware sound engine with native ESP32-S3 PMTPlayer / SD-WAV audio playback, including support for playing custom user-provided WAV sound files. The system provides throttle-synchronized diesel prime-mover startup, shutdown, idle, and notch sounds; speed-responsive steam chuffs, moving sound beds, and stationary boiler/idle sounds; managed horn/whistle, bell, and brake-squeal effects; randomized cab chatter; and custom FX-triggered sounds. The audio engine adds priority-based multi-voice playback, smooth loop and notch transitions, crossfades, overlap handling, dynamic mix/headroom management, limiter and speaker-profile tuning, and extensive CV-based audio configuration—allowing users to combine PMT’s locomotive-responsive sound engine with their own custom WAV audio.
 * **FX LED pattern support expanded from 5 to 19 patterns** with fourteen new function-output lighting modes: `DITCH+`, `DITCH-`, `STROBE+`, `STROBE-`, `ROTARY+`, `ROTARY-`, `MARS+`, `MARS-`, `GYRALITE+`, `GYRALITE-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`.
 * **Paired warning-light FX modes added** for ditch lights, strobes, rotary beacons, Mars lights, and Gyralites. Each `-` variant is shifted by half of the effect cycle relative to its matching `+` variant so paired outputs can run out of phase.
 * **PWM-based simulated lighting effects added** for `ROTARY+/-`, `MARS+/-`, `GYRALITE+/-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`, providing smooth brightness changes, flicker, beacon-style motion, dynamo warm-up/variation, and incandescent warm-up behavior instead of simple binary on/off output.
 * **FX pattern values expanded** so the new LED modes use function pattern values `6` through `19`, while the existing `SOLID`, `DBL_BLNK`, `FRED`, `BLINK+`, and `BLINK-` modes remain values `1` through `5`.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.0.0
 * **Shared firmware versioning expanded across the Poor Man’s firmware family**, with Throttle, Module, and Turbine firmware now reporting the shared `2.0.0` firmware version.
