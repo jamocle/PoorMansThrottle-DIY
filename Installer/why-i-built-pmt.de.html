@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Warum ich PMT entwickelt habe</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0071e3;
+      --line: #d2d2d7;
+      --max-width: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 96px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 20px auto 0;
+      font-size: 1.25rem;
+      color: var(--muted);
+    }
+
+    .donation-callout {
+      margin: 40px auto 0;
+      max-width: 760px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .donation-callout p {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .venmo-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .venmo-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .venmo-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .venmo-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .content {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 56px;
+    }
+
+    .lead-quote {
+      margin: 0 0 36px;
+      font-size: 1.55rem;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+
+    .me {
+      display: block;
+      margin-top: 14px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0 0 24px;
+      font-size: 1.08rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-break {
+      margin: 40px 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .emphasis {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pull-line {
+      margin: 36px 0;
+      font-size: 1.5rem;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .support-block {
+      margin-top: 44px;
+      padding-top: 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .support-block h2 {
+      margin: 0 0 18px;
+      font-size: 2rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+
+    .final-ask {
+      margin-top: 28px;
+      font-size: 1.12rem;
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(var(--max-width), calc(100% - 24px));
+        padding: 40px 0 56px;
+      }
+
+      .content {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+
+      .lead-quote,
+      .pull-line {
+        font-size: 1.3rem;
+      }
+
+      .intro {
+        font-size: 1.1rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .donation-callout {
+        padding: 20px;
+      }
+
+      .venmo-qr {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Poor Man’s Throttle</p>
+      <h1>Warum ich PMT entwickelt habe</h1>
+      <p class="intro">
+        Ein kostengünstiges drahtloses Fahrreglersystem, das die Steuerung von Modelleisenbahnen für die Menschen, die dieses Hobby lieben, zugänglicher, unkomplizierter und erschwinglicher machen soll.
+      </p>
+
+      <div class="donation-callout">
+        <p>
+          Wenn Poor Man’s Throttle Ihnen geholfen, Sie inspiriert, Ihnen Geld gespart oder dieses Hobby für Sie zugänglicher gemacht hat, würde ich mich sehr über Ihre Unterstützung freuen.
+        </p>
+
+        <div class="venmo-qr-wrap">
+          <img src="jamocle.jpeg" alt="Venmo-QR-Code für @Jamocle" class="venmo-qr" />
+          <div class="venmo-caption">
+            Auf Venmo spenden: <span class="venmo-handle-inline">@Jamocle</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <p class="lead-quote">
+        Poor Man’s Throttle wird nicht von einem Unternehmen, einem finanzierten Start-up oder einem Team mit Budget entwickelt. Es wird von einer einzigen Person gebaut, die ein Problem in der Modelleisenbahn-Community sieht und beschließt, etwas dagegen zu tun.
+        <span class="me">Ich.</span>
+      </p>
+
+      <p>
+        Dieses Projekt ist wirklich ein Ein-Personen-Team. Alles daran stammt von mir: die Firmware, der App-Code, die technische Entwicklung, die Dokumentation, die Videos, die Tests, die Fehlersuche, die Updates und der Support, die es zu etwas Echtem und Nutzbarem machen.
+      </p>
+
+      <p>
+        Ich habe Poor Man’s Throttle entwickelt, weil ich weiß, wie teuer dieses Hobby sein kann. Ich weiß, wie schnell sich die Kosten summieren. Ich weiß, wie es sich anfühlt, nach einer besseren Möglichkeit zum Fahren von Zügen zu suchen und dann festzustellen, dass die kommerzielle Lösung mit einem Preis verbunden ist, der sie unerreichbar macht. Für viele Modellbahner sind Marken-Fahrregler und proprietäre Systeme schlicht zu teuer, um sie zu rechtfertigen.
+      </p>
+
+      <p>
+        Das fühlt sich für mich immer noch nicht richtig an.
+      </p>
+
+      <hr class="section-break" />
+
+      <p>
+        Ich glaube, dass es einen anderen Weg geben sollte. Einen praktischen Weg. Einen erschwinglichen Weg. Einen Weg für Modellbahner, die bereit sind zu bauen, zu lernen und selbst etwas zu schaffen, aber kein kleines Vermögen ausgeben sollten, nur um eine gleichmäßige drahtlose Steuerung genießen zu können. Ich glaube, es sollte möglich sein, leicht verfügbare Hardware, durchdachte Technik und sorgfältiges Design zu etwas zu verbinden, das Menschen tatsächlich nutzen können.
+      </p>
+
+      <p>
+        Aus dieser Überzeugung entstand <span class="emphasis">Poor Man’s Throttle</span>.
+      </p>
+
+      <p>
+        Oberflächlich betrachtet mag es einfach wirken: Smartphone-Steuerung, ein ESP32, ein günstiger Motortreiber und eine kostengünstige Möglichkeit, eine Lokomotive drahtlos zu fahren. Doch jeder, der schon einmal etwas Bedeutungsvolles gebaut hat, kennt die Wahrheit. Was von außen einfach aussieht, ist oft das Ergebnis enormer, unsichtbarer Arbeit im Hintergrund. Einfachheit braucht Zeit. Einfachheit braucht viele Iterationen. Einfachheit muss erarbeitet werden.
+      </p>
+
+      <p class="pull-line">Ich mache das, damit Sie es nicht tun müssen.</p>
+
+      <p>
+        Poor Man’s Throttle ist nicht über Nacht entstanden. Es ist kein schnelles Experiment, das zufällig funktioniert. Dahinter steckt eine langjährige, fortlaufende Investition an Zeit, Energie, Ausdauer und Sorgfalt. Es braucht technische Entwicklung. Es braucht Tests. Es braucht Fehlstarts, Irrwege, Überarbeitungen, neues Nachdenken und Neuaufbau. Es braucht Zeit, um die Hardware praxistauglich, die Steuerung sinnvoll und die Dokumentation so klar zu machen, dass andere ihr folgen können.
+      </p>
+
+      <p>
+        Wenn Menschen eine Projektseite, eine funktionierende App, einen Firmware-Build oder eine Videodemonstration sehen, sehen sie das Ergebnis. Was sie nicht immer sehen, ist der Berg an Arbeit dahinter. Sie sehen nicht die Stunden, die in die Fehlersuche bei hartnäckigen Problemen, das Verfeinern von Code, das Umschreiben von Erklärungen, das Verbessern von Anleitungen oder den Versuch fließen, die nächste Version besser als die letzte zu machen. Sie sehen nicht, wie viel Aufwand nötig ist, damit sich etwas für jemanden, der es zum ersten Mal sieht, zugänglich anfühlt.
+      </p>
+
+      <p>
+        Aber diese Arbeit ist real. Tatsächlich steckt genau dort der größte Teil der Arbeit.
+      </p>
+
+      <hr class="section-break" />
+
+      <p>
+        Ich habe die Firmware entwickelt, damit andere nicht bei null anfangen müssen. Ich habe an der App gearbeitet, damit andere eine nutzbare Oberfläche statt nur einer Idee haben. Ich habe den technischen Ansatz ausgearbeitet, damit andere einem bereits durchdachten Weg folgen können. Ich habe die Dokumentation geschrieben, damit andere sich nicht mühsam vortasten müssen. Ich habe unterstützendes Material erstellt und Hilfe angeboten, weil ein Projekt erst dann wirklich nützlich ist, wenn Menschen damit tatsächlich erfolgreich sein können.
+      </p>
+
+      <p>
+        Ich mache das, weil ich der Modelleisenbahn-Community etwas zurückgeben möchte.
+      </p>
+
+      <p>
+        Dieses Hobby war schon immer voller Bastler, Tüftler, Macher und Menschen, die Züge einfach so sehr lieben, dass sie immer weiterlernen. Aber selbst der leidenschaftlichste Modellbahner hat Grenzen, und eine der größten Grenzen ist für viele der Preis. Kommerzielle Systeme können hervorragend sein, sind aber nicht immer zugänglich. Für manche Modellbahner sind sie völlig außer Reichweite. Für andere lassen sie sich nur schwer rechtfertigen, wenn ohnehin schon viele andere Ausgaben um Aufmerksamkeit konkurrieren.
+      </p>
+
+      <p>
+        Deshalb bedeutet mir dieses Projekt so viel. Bei Poor Man’s Throttle geht es nicht nur darum, Geld zu sparen, auch wenn das wichtig ist. Es geht darum, Funktionen zugänglicher zu machen. Es geht darum zu zeigen, dass man kein teures proprietäres Ökosystem brauchen sollte, nur um bessere Steuerung, drahtlosen Betrieb und ein moderneres Erlebnis genießen zu können.
+      </p>
+
+      <p>
+        Für Dead-Rail-Modellbahner bietet dieses Projekt einen kostengünstigen drahtlosen Weg mit leicht verfügbaren Komponenten und gängigen Akkuoptionen. Für klassische DC-Nutzer bietet es durch PWM-Motorsteuerung und Smartphone-Bedienung eine deutliche Verbesserung. Für die breitere DIY-Modelleisenbahn-Community steht es für noch mehr: einen verständlichen, flexiblen und erschwinglichen Weg nach vorn.
+      </p>
+
+      <section class="support-block">
+        <h2>Bitte unterstützen Sie die Arbeit hinter PMT</h2>
+
+        <p>
+          Ein Projekt wie dieses trägt sich nicht von selbst. Jede Verbesserung braucht mehr Zeit. Jede Klarstellung braucht zusätzlichen Aufwand. Jedes Update erfordert weitere Tests. Jede beantwortete Frage, jedes behobene Problem, jede verbesserte Anleitung, jedes erstellte Video und jede verfeinerte Codezeile kommen aus derselben Quelle.
+        </p>
+
+        <p><span class="emphasis">Ich.</span></p>
+
+        <p>
+          Deshalb bitte ich um Ihre Unterstützung.
+        </p>
+
+        <p>
+          Wenn Poor Man’s Throttle Ihnen geholfen, Ihnen Geld gespart, Ihr eigenes Projekt ermöglicht oder Ihnen etwas beigebracht hat oder wenn Sie einfach schätzen, wofür es steht, würde ich mich sehr über eine Spende an mein Venmo freuen: <span class="emphasis">@Jamocle</span>.
+        </p>
+
+        <p>
+          Ihre Spende ist mehr als ein Trinkgeld. Sie ist Anerkennung. Sie ist Ermutigung. Sie ist Unterstützung für die bereits investierten Stunden und für die Stunden, die noch vor mir liegen. Sie hilft dabei, die weitere Arbeit an Firmware, App, Dokumentation, Videos und Support zu ermöglichen, die dieses Projekt am Leben halten und weiter verbessern.
+        </p>
+
+        <p>
+          Vor allem hilft sie dabei, die Arbeit eines Einzelnen aufrechtzuerhalten, die zum Nutzen anderer entstanden ist.
+        </p>
+
+        <p>
+          Ich übernehme die Komplexität, damit Sie mit etwas Bewährtem beginnen können. Ich investiere die Stunden in Lernen, Testen, Scheitern, Verbessern, Dokumentieren und Neuaufbauen, damit Sie einen klareren Weg haben. Ich baue dies, weil ich glaube, dass die Community jetzt eine erschwingliche Option verdient und nicht erst dann, wenn ein Unternehmen entscheidet, dass sich damit genug Gewinn erzielen lässt.
+        </p>
+
+        <p>
+          Das ist Arbeit. Echte Arbeit. Qualifizierte Arbeit. Zeitaufwendige Arbeit. Und all das kommt von einer einzigen Person.
+        </p>
+
+        <p class="final-ask">
+          Wenn Sie glauben, dass diese Arbeit Unterstützung verdient, wäre ich Ihnen für Ihre Hilfe sehr dankbar. Bitte erwägen Sie eine Spende an
+          <span class="emphasis">@Jamocle</span>.
+        </p>
+
+        <p>
+          Danke, dass Sie hier sind. Danke, dass Ihnen dieses Hobby am Herzen liegt. Und aufrichtig danke dafür, dass Sie die Arbeit eines Ein-Personen-Teams unterstützen, das versucht, der Modelleisenbahn-Community etwas Bedeutungsvolles zurückzugeben.
+        </p>
+      </section>
+    </section>
+
+    <footer>
+      Poor Man’s Throttle — entwickelt, um die drahtlose Steuerung von Modelleisenbahnen zugänglicher zu machen.
+    </footer>
+  </main>
+</body>
+
+</html>

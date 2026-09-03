@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="nl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waarom ik PMT heb gebouwd</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0071e3;
+      --line: #d2d2d7;
+      --max-width: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 96px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 20px auto 0;
+      font-size: 1.25rem;
+      color: var(--muted);
+    }
+
+    .donation-callout {
+      margin: 40px auto 0;
+      max-width: 760px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .donation-callout p {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .venmo-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .venmo-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .venmo-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .venmo-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .content {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 56px;
+    }
+
+    .lead-quote {
+      margin: 0 0 36px;
+      font-size: 1.55rem;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+
+    .me {
+      display: block;
+      margin-top: 14px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0 0 24px;
+      font-size: 1.08rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-break {
+      margin: 40px 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .emphasis {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pull-line {
+      margin: 36px 0;
+      font-size: 1.5rem;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .support-block {
+      margin-top: 44px;
+      padding-top: 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .support-block h2 {
+      margin: 0 0 18px;
+      font-size: 2rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+
+    .final-ask {
+      margin-top: 28px;
+      font-size: 1.12rem;
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(var(--max-width), calc(100% - 24px));
+        padding: 40px 0 56px;
+      }
+
+      .content {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+
+      .lead-quote,
+      .pull-line {
+        font-size: 1.3rem;
+      }
+
+      .intro {
+        font-size: 1.1rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .donation-callout {
+        padding: 20px;
+      }
+
+      .venmo-qr {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Poor Man’s Throttle</p>
+      <h1>Waarom ik PMT heb gebouwd</h1>
+      <p class="intro">
+        Een betaalbaar draadloos regelingssysteem dat is ontworpen om de besturing van modeltreinen toegankelijker, gebruiksvriendelijker en goedkoper te maken voor mensen die van deze hobby houden.
+      </p>
+
+      <div class="donation-callout">
+        <p>
+          Als Poor Man’s Throttle u heeft geholpen, geïnspireerd, geld heeft bespaard of deze hobby toegankelijker voor u heeft gemaakt, zou ik uw steun oprecht waarderen.
+        </p>
+
+        <div class="venmo-qr-wrap">
+          <img src="jamocle.jpeg" alt="Venmo-QR-code voor @Jamocle" class="venmo-qr" />
+          <div class="venmo-caption">
+            Doneren via Venmo: <span class="venmo-handle-inline">@Jamocle</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="content">
+      <p class="lead-quote">
+        Poor Man’s Throttle wordt niet gebouwd door een bedrijf, een gefinancierde startup of een team met een budget. Het wordt gebouwd door één persoon die een probleem in de modelspoorgemeenschap ziet en besluit er iets aan te doen.
+        <span class="me">Ik.</span>
+      </p>
+
+      <p>
+        Dit project is echt een team van één persoon. Elk onderdeel komt van mij: de firmware, de app-code, de techniek, de documentatie, de video’s, het testen, het oplossen van problemen, de updates en de ondersteuning die helpen om het echt en bruikbaar te maken.
+      </p>
+
+      <p>
+        Ik heb Poor Man’s Throttle gemaakt omdat ik weet hoe duur deze hobby kan zijn. Ik weet hoe snel de kosten oplopen. Ik weet hoe het voelt om een betere manier te willen om treinen te laten rijden, om vervolgens te ontdekken dat de commerciële oplossing een prijskaartje heeft waardoor die buiten bereik ligt. Voor veel hobbyisten zijn merkregelaars en propriëtaire systemen simpelweg te duur om te rechtvaardigen.
+      </p>
+
+      <p>
+        Dat voelt voor mij nog steeds niet goed.
+      </p>
+
+      <hr class="section-break" />
+
+      <p>
+        Ik vind dat er een andere weg moet zijn. Een praktische weg. Een betaalbare weg. Een weg voor hobbyisten die willen bouwen, leren en creëren, maar geen klein fortuin zouden moeten uitgeven alleen om van soepele draadloze bediening te genieten. Ik vind dat het mogelijk moet zijn om toegankelijke hardware, doordachte techniek en zorgvuldig ontwerp samen te brengen tot iets dat mensen daadwerkelijk kunnen gebruiken.
+      </p>
+
+      <p>
+        Die overtuiging werd <span class="emphasis">Poor Man’s Throttle</span>.
+      </p>
+
+      <p>
+        Op het eerste gezicht lijkt het misschien eenvoudig: bediening via een smartphone, een ESP32, een goedkope motordriver en een betaalbare manier om een locomotief draadloos te laten rijden. Maar iedereen die ooit iets betekenisvols heeft gebouwd, kent de waarheid. Wat er aan de buitenkant eenvoudig uitziet, is vaak het resultaat van enorm veel onzichtbaar werk eronder. Eenvoud kost tijd. Eenvoud vraagt om iteratie. Eenvoud moet worden verdiend.
+      </p>
+
+      <p class="pull-line">Ik doe dit zodat u dat niet hoeft te doen.</p>
+
+      <p>
+        Poor Man’s Throttle is niet van de ene op de andere dag ontstaan. Het is geen snel experiment dat toevallig werkt. Het komt voort uit een langdurige, voortdurende investering van tijd, energie, doorzettingsvermogen en zorg. Het vraagt om techniek. Het vraagt om testen. Het vraagt om valse starts, verkeerde afslagen, revisies, heroverwegingen en opnieuw bouwen. Het kost tijd om de hardware praktisch te maken, de bedieningservaring nuttig en de documentatie duidelijk genoeg zodat anderen ermee verder kunnen.
+      </p>
+
+      <p>
+        Wanneer mensen een projectpagina, een werkende app, een firmwarebuild of een videodemonstratie zien, zien ze het resultaat. Wat ze niet altijd zien, is de berg werk erachter. Ze zien niet de uren die worden besteed aan het debuggen van hardnekkige problemen, het verfijnen van code, het herschrijven van uitleg, het verbeteren van instructies of het proberen de volgende versie beter te maken dan de vorige. Ze zien niet hoeveel moeite het kost om iets toegankelijk te laten aanvoelen voor iemand die het voor het eerst ziet.
+      </p>
+
+      <p>
+        Maar dat werk is echt. Sterker nog, daar zit het grootste deel van het werk.
+      </p>
+
+      <hr class="section-break" />
+
+      <p>
+        Ik heb de firmware gebouwd zodat anderen niet vanaf nul hoeven te beginnen. Ik heb aan de app gewerkt zodat anderen een bruikbare interface hebben in plaats van alleen een idee. Ik heb de technische aanpak ontwikkeld zodat anderen een al doordachte route kunnen volgen. Ik heb de documentatie geschreven zodat anderen niet op goed geluk vooruit hoeven te zoeken. Ik heb ondersteunend materiaal gemaakt en hulp aangeboden, omdat een project pas echt nuttig is wanneer mensen er daadwerkelijk succesvol mee kunnen werken.
+      </p>
+
+      <p>
+        Ik doe dit omdat ik iets terug wil geven aan de modelspoorgemeenschap.
+      </p>
+
+      <p>
+        Deze hobby heeft altijd vol gezeten met bouwers, knutselaars, makers en mensen die simpelweg genoeg van treinen houden om te blijven leren. Maar zelfs de meest gepassioneerde hobbyist heeft grenzen, en voor veel mensen is een van de grootste grenzen de prijs. Commerciële systemen kunnen uitstekend zijn, maar ze zijn niet altijd toegankelijk. Voor sommige hobbyisten liggen ze volledig buiten bereik. Voor anderen zijn ze moeilijk te rechtvaardigen wanneer er al zoveel andere uitgaven om aandacht vragen.
+      </p>
+
+      <p>
+        Daarom betekent dit project zoveel voor mij. Poor Man’s Throttle draait niet alleen om geld besparen, al is dat belangrijk. Het gaat erom mogelijkheden toegankelijker te maken. Het gaat erom te laten zien dat u geen duur propriëtair ecosysteem nodig zou moeten hebben om betere bediening, draadloos gebruik en een modernere ervaring te krijgen.
+      </p>
+
+      <p>
+        Voor dead-rail-bouwers biedt dit project een betaalbare draadloze route met goed verkrijgbare componenten en gangbare accuopties. Voor traditionele DC-gebruikers biedt het een duidelijke verbetering dankzij PWM-motorregeling en bediening via een smartphone. Voor de bredere DIY-modelspoorgemeenschap staat het voor iets nog groters: een begrijpelijke, flexibele en betaalbare weg vooruit.
+      </p>
+
+      <section class="support-block">
+        <h2>Steun het werk achter PMT</h2>
+
+        <p>
+          Een project als dit houdt zichzelf niet in stand. Elke verbetering kost meer tijd. Elke verduidelijking kost meer moeite. Elke update vraagt om meer tests. Elke beantwoorde vraag, elk opgelost probleem, elke verbeterde handleiding, elke gemaakte video en elke verfijnde regel code komen allemaal uit dezelfde bron.
+        </p>
+
+        <p><span class="emphasis">Ik.</span></p>
+
+        <p>
+          Daarom vraag ik om uw steun.
+        </p>
+
+        <p>
+          Als Poor Man’s Throttle u heeft geholpen, geld heeft bespaard, uw eigen project mogelijk heeft gemaakt, u iets heeft geleerd of als u gewoon waardeert waar het voor staat, zou ik een donatie aan mijn Venmo enorm waarderen: <span class="emphasis">@Jamocle</span>.
+        </p>
+
+        <p>
+          Uw donatie is meer dan een fooi. Het is erkenning. Het is aanmoediging. Het is steun voor de uren die al zijn geïnvesteerd en de uren die nog voor ons liggen. Het helpt het voortdurende werk aan de firmware, de app, de documentatie, de video’s en de ondersteuning mogelijk te maken die dit project levend houden en verder verbeteren.
+        </p>
+
+        <p>
+          Maar bovenal helpt het een eenmansinspanning in stand te houden die is gebouwd ten behoeve van anderen.
+        </p>
+
+        <p>
+          Ik neem de complexiteit op me zodat u kunt beginnen met iets dat zich al heeft bewezen. Ik besteed de uren aan leren, testen, falen, verfijnen, documenteren en opnieuw bouwen zodat u een duidelijker pad hebt. Ik bouw dit omdat ik geloof dat de gemeenschap nu een betaalbare optie verdient, en niet pas als een bedrijf besluit dat er genoeg winst in zit.
+        </p>
+
+        <p>
+          Dit is werk. Echt werk. Vakwerk. Tijdrovend werk. En het komt allemaal van één persoon.
+        </p>
+
+        <p class="final-ask">
+          Als u vindt dat dit werk steun verdient, zou ik u zeer dankbaar zijn voor uw hulp. Overweeg alstublieft een donatie aan
+          <span class="emphasis">@Jamocle</span>.
+        </p>
+
+        <p>
+          Bedankt dat u hier bent. Bedankt dat u om deze hobby geeft. En oprecht bedankt dat u het werk steunt van een eenmansteam dat probeert iets waardevols terug te geven aan de modelspoorgemeenschap.
+        </p>
+      </section>
+    </section>
+
+    <footer>
+      Poor Man’s Throttle — gebouwd om draadloze besturing van modeltreinen toegankelijker te maken.
+    </footer>
+  </main>
+</body>
+
+</html>
