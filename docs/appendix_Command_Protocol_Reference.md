@@ -1081,6 +1081,7 @@ These CVs apply to **Poor Man's Throttle** locomotive firmware.
 | `CV9` | Kick config | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
 | `CV41` | Low-voltage throttle cap percent | `0..100` |
 | `CV43` | Locomotive background audio enable | `0/1`, default `0` |
+| `CV90` | Motor PWM frequency curve | 2, 4, 6, or 12 digits; `01..40` kHz per value; default `202020202020` |
 | `CV98` | Steam chuff-rate low anchors | 12 digits; default `010510152025` |
 | `CV99` | Steam chuff-rate high anchors | 12 digits; default `355065809000` |
 
@@ -1092,7 +1093,53 @@ CV9=25,300,80,15
 
 CV98/CV99 are PMTPlayer-Steam moving-chuff **cadence** curves only. CV98 maps speeds `1,5,10,15,20,25`; CV99 maps `35,50,65,80,90,100`. Each anchor is two digits: `01..99` = 1..99%, `00` = 100%. Firmware linearly interpolates the anchors and accepts non-monotonic curves. These CVs do not change locomotive speed.
 
+### CV90 Motor PWM Frequency Curve
+
+CV90 controls the motor PWM switching frequency across effective mapped-throttle anchors `1,10,25,50,75,100%`.
+
+Each value is a two-digit frequency in kHz from `01` through `40`. The canonical stored/readback form contains six values:
+
+```text
+CV90=AABBCCDDEEFF
+```
+
+Default:
+
+```text
+CV90=202020202020
+```
+
+Accepted shorthand forms are expanded before storage:
+
+```text
+CV90=20
+-> CV90=202020202020
+
+CV90=2030
+-> CV90=202020303030
+
+CV90=203040
+-> CV90=202030304040
+```
+
+Expansion rules:
+
+```text
+A           -> A A A A A A
+A B         -> A A A B B B
+A B C       -> A A B B C C
+A B C D E F -> A B C D E F
+```
+
+Only numeric values with lengths `2`, `4`, `6`, or `12` are accepted. Every two-digit frequency must be `01..40`.
+
+Firmware linearly interpolates frequency between the six anchors. CV90 changes PWM **frequency only**; motor PWM resolution remains 10 bits and existing throttle/duty behavior continues to be governed by the normal motion logic, CV2/CV3 mapping, CV9 start assist, and safety limits.
+
+A CV90 write can be applied while the motor is active. CV90 query/readback always returns the canonical 12-digit form.
+
 ---
+
+
 
 ## Throttle Motor Pin CVs
 

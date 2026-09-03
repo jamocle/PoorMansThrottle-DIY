@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Poor Man's Throttle 3.0 introduces real locomotive audio, user-uploaded WAV sounds, community sound sharing, included Steam and Diesel sound packs, and support for Classic ESP32 and ESP32-S3 hardware." />
+  <title>Poor Man's Throttle 3.0 — Now With Real Audio</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.9);--surface-solid:#fff;--text:#1d1d1f;--muted:#6e6e73;
+      --line:#d2d2d7;--accent:#0071e3;--accent-soft:rgba(0,113,227,.08);--gold:#a66800;
+      --gold-soft:rgba(166,104,0,.10);--success:#147a43;--success-soft:rgba(20,122,67,.08);
+      --warn:#9a5b00;--warn-soft:rgba(154,91,0,.09);--danger:#b42318;--danger-soft:rgba(180,35,24,.07);
+      --shadow:0 16px 44px rgba(0,0,0,.08);--radius:26px;--max:1100px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top,#fff 0%,#f5f5f7 48%,#ececf1 100%);color:var(--text);
+      line-height:1.58;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:22px 16px 68px}
+    .hero{text-align:center;padding:12px 4px 22px}
+    .eyebrow{display:inline-block;padding:6px 12px;border-radius:999px;border:1px solid rgba(166,104,0,.24);
+      background:rgba(255,255,255,.82);color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em}
+    h1{margin:16px auto 10px;max-width:900px;font-size:clamp(2.15rem,7vw,4.25rem);line-height:1.02;
+      letter-spacing:-.045em;font-weight:750}
+    .hero .lead{max-width:880px;margin:0 auto;color:var(--muted);font-size:clamp(1.04rem,2.8vw,1.28rem)}
+    .hero strong{color:var(--text)}
+    .section{margin-top:26px;background:var(--surface);border:1px solid rgba(255,255,255,.78);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+    .section-header{padding:26px 22px 0}
+    h2{margin:0 0 10px;font-size:clamp(1.45rem,4vw,2.25rem);line-height:1.1;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.17rem;letter-spacing:-.015em}
+    p{margin:0 0 16px}.section-header p{color:var(--muted);margin-bottom:20px}.content{padding:22px}
+    .hero-image{margin-top:24px;background:#111;border-radius:28px;overflow:hidden;box-shadow:0 22px 60px rgba(0,0,0,.18)}
+    .hero-image img{display:block;width:100%;height:auto}
+    .image-grid,.card-grid,.grade-grid{display:grid;gap:14px}
+    .image-grid{padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,248,250,.9));
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .image-card,.card,.grade-card{background:var(--surface-solid);border:1px solid #e5e5ea;border-radius:22px;
+      box-shadow:0 10px 22px rgba(0,0,0,.055)}
+    .image-card{overflow:hidden}.image-card img{display:block;width:100%;height:auto}
+    .hardware-image{display:flex;flex-direction:column}
+    .hardware-image img{
+      width:100%;
+      height:320px;
+      object-fit:contain;
+      padding:20px;
+      background:#fff;
+    }
+    .caption{padding:12px 14px 14px;border-top:1px solid #ececf1;color:var(--muted);font-size:.94rem}
+    .card,.grade-card{padding:18px}
+    .label{display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);
+      color:var(--accent);font-size:.81rem;font-weight:700}
+    .label.gold{background:var(--gold-soft);color:var(--gold)} .label.green{background:var(--success-soft);color:var(--success)}
+    .label.red{background:var(--danger-soft);color:var(--danger)}
+    .callout{margin-top:18px;padding:17px 19px;border-radius:18px;background:var(--gold-soft);
+      border-left:4px solid var(--gold);color:#684309}
+    .disclosure{margin-top:18px;padding:18px 20px;border-radius:20px;background:var(--warn-soft);
+      border:1px solid rgba(154,91,0,.18)}
+    .disclosure-title{display:block;color:#744400;margin-bottom:7px;font-weight:700}.inline-emphasis{display:inline!important;font-weight:800;color:#744400}
+    .sound-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+    .sound-tags span{padding:7px 11px;border-radius:999px;background:#f2f2f5;border:1px solid #e2e2e7;
+      font-size:.92rem;font-weight:600}
+    .grade-card .big-grade{font-size:3rem;line-height:1;font-weight:800;letter-spacing:-.05em;margin:4px 0 10px}
+    .grade-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 0;border-top:1px solid #ececf1}
+    .grade-row:first-of-type{border-top:0}.grade-a{color:#147a43;font-weight:800}.grade-b{color:#986000;font-weight:800}
+    .grade-f{color:#b42318;font-weight:800}.mini{color:var(--muted);font-size:.94rem}
+    .free-banner{margin-top:18px;padding:22px;border-radius:22px;text-align:center;background:linear-gradient(135deg,#161616,#2c2c2e);
+      color:#fff;box-shadow:0 14px 32px rgba(0,0,0,.14)}
+    .free-banner strong{display:block;font-size:clamp(1.45rem,5vw,2.4rem);line-height:1.1;letter-spacing:-.03em;margin-bottom:8px}
+    .free-banner span{color:#e4e4e7}
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+    @media(min-width:760px){.wrap{padding:34px 24px 76px}.section-header{padding:32px 30px 0}.content{padding:28px 30px 34px}
+      .image-grid,.card-grid,.grade-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">POOR MAN'S THROTTLE 3.0</div>
+      <h1>Now your locomotives don't just move. They come alive.</h1>
+      <p class="lead"><strong>Version 3.0 brings real audio to Poor Man's Throttle.</strong>
+        Horns, bells, cab chatter, steam, diesel, custom WAV files, and a community-driven sound ecosystem —
+        all controlled from the same PMT experience.</p>
+      <div class="hero-image">
+        <img src="pmt-v3-audio-hero.png" alt="Poor Man's Throttle Version 3.0 audio announcement with locomotive and PMT app." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>This is the release that changes the conversation.</h2>
+        <p>PMT has always been about proving that powerful model railroad control does not have to be locked behind expensive proprietary systems.
+        Version 3.0 takes another major step: full locomotive sound joins the ecosystem.</p>
+      </div>
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label gold">REAL AUDIO</span>
+            <h3>Sound is now part of the throttle</h3>
+            <p>Add the sounds that give a locomotive personality: horns, bells, cab chatter, steam effects, diesel effects,
+            and practically anything else you can put into a WAV file.</p>
+          </article>
+          <article class="card">
+            <span class="label green">NO WALLED GARDEN</span>
+            <h3>Your sounds. Your railroad.</h3>
+            <p>PMT does not limit you to a tiny fixed catalog. Upload your own audio, assign it to functions, and build the sound experience
+            that fits your locomotive, railroad, era, or imagination.</p>
+          </article>
+        </div>
+        <div class="sound-tags"><span>Cab Chatter</span><span>Horn</span><span>Bell</span><span>Steam Sounds</span><span>Diesel Sounds</span><span>Custom WAV Audio</span></div>
+        <div class="callout">Want the National Anthem to play when your locomotive rolls out of the yard? Assign the WAV to a function and do it.
+        That is the point: the sound library is limited far more by your imagination than by PMT.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Crowd-sourced sound, not a closed sound catalog.</h2>
+        <p>Version 3.0 is built around an open idea: railroaders should be able to create sounds, use them, and share them with one another.</p>
+      </div>
+      <div class="content">
+        <div class="card-grid">
+          <article class="card"><span class="label">UPLOAD</span><h3>Bring your own audio</h3><p>Add your own WAV files and tie them to locomotive functions. Build a sound set around your exact prototype, your own recordings, or completely custom effects.</p></article>
+          <article class="card"><span class="label">SHARE</span><h3>Help grow the community library</h3><p>Share audio with other PMT users and benefit from sounds created by fellow model railroaders. More users means more variety and a richer ecosystem for everyone.</p></article>
+          <article class="card"><span class="label">START FAST</span><h3>Steam and Diesel packs included</h3><p>You do not have to build everything from scratch. PMT 3.0 includes starter Steam and Diesel sound packs so you can get running with sound quickly and customize from there.</p></article>
+          <article class="card"><span class="label">EXPAND</span><h3>Virtually unlimited custom sounds</h3><p>Any suitable WAV can become a function sound. That opens the door to railroad audio, announcements, ambient effects, comedy, custom cues, and things traditional fixed sound systems were never designed to do.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Choose your ESP32.</h2>
+        <p>
+          PMT 3.0 supports four practical board choices: the classic <strong>ESP32-WROOM-32</strong>,
+          <strong>ESP32-S3-N16R8</strong>, <strong>ESP32-S3-N8R8</strong>, and the
+          <strong>ESP32-S3-CAM development board with ESP32-S3-WROOM N16R8</strong>.
+          The S3 boards are the clear choice when sound is a priority.
+        </p>
+        <p>
+          <strong>The ESP32-S3-CAM N16R8 is the recommended PMT 3.0 audio board.</strong>
+          It gives you the S3 performance PMT audio benefits from while also including a microSD card slot directly on the board.
+          That means you do <strong>not</strong> need to buy or wire a separate SD reader module — just add the audio amplifier.
+          The onboard OV3660 camera is not used by PMT audio and can be removed if you do not want it installed.
+        </p>
+      </div>
+      <div class="image-grid">
+        <figure class="image-card hardware-image">
+          <img src="esp32-s3-cam-n16r8.png" alt="ESP32-S3-CAM development board with ESP32-S3-WROOM N16R8 module and built-in microSD card slot." />
+          <figcaption class="caption">
+            ESP32-S3-CAM N16R8 — <strong>the recommended PMT 3.0 audio board.</strong>
+            It combines S3 performance with a built-in microSD card slot, so <strong>no separate SD reader is required.</strong>
+            The onboard camera is not used by PMT audio and can be removed if you do not want it installed.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card hardware-image">
+          <img src="esp32-s3-n16r8.png" alt="Generic ESP32-S3-N16R8 development board." />
+          <figcaption class="caption">
+            Generic ESP32-S3-N16R8 — recommended for PMT audio. Pair it with a separate microSD reader and MAX98357 amplifier.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card hardware-image">
+          <img src="classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 development board." />
+          <figcaption class="caption">
+            Classic ESP32-WROOM-32 — supported, but it requires a separate microSD reader and MAX98357 amplifier.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card"><span class="label green">ESP32-S3</span><h3>13 or more voices</h3><p>The S3 platform can cache audio and support 13 or more voices, providing far more headroom for layered, responsive locomotive sound — especially important for Steam.</p></article>
+          <article class="card"><span class="label red">CLASSIC ESP32</span><h3>3 simultaneous voices</h3><p>The classic ESP32 was pushed hard to make audio fit. It works, but resources are tight. It can be a practical option for Diesel installations where the sound mix is less demanding.</p></article>
+        </div>
+        <div class="disclosure"><div class="disclosure-title">Full disclosure from the developer</div>
+          I spent hours squeezing every byte I could out of the classic ESP32 to make this work.
+          It is supported, but if sound matters to you, I highly recommend upgrading to an ESP32-S3.
+          The classic board can work well enough for Diesel, but I do <span class="inline-emphasis">NOT</span> recommend it for Steam sound.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>PMT 3.0 hardware report card</h2>
+        <p>A simple way to choose hardware based on the kind of locomotive sound you want to run.</p>
+      </div>
+      <div class="content">
+        <div class="grade-grid">
+          <article class="grade-card">
+            <span class="label green">ESP32-S3</span>
+            <div class="big-grade grade-a">A</div>
+            <div class="grade-row"><span>Diesel</span><span class="grade-a">A</span></div>
+            <div class="grade-row"><span>Steam</span><span class="grade-a">A</span></div>
+            <p class="mini">Recommended for both Diesel and Steam. More voices, cached audio, and substantially more breathing room.</p>
+          </article>
+          <article class="grade-card">
+            <span class="label red">CLASSIC ESP32</span>
+            <div class="big-grade grade-b">B− / F</div>
+            <div class="grade-row"><span>Diesel</span><span class="grade-b">B−</span></div>
+            <div class="grade-row"><span>Steam</span><span class="grade-f">F</span></div>
+            <p class="mini">Usable for lighter Diesel needs. Not recommended for Steam because of the heavier layered audio demands.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Three PMT 3.0 audio build recipes</h2>
+        <p>
+          Choose the recipe that matches the ESP32 you want to use. The important difference is storage:
+          the Classic ESP32 and generic S3 boards need a separate microSD reader, while the ESP32-S3-CAM has the microSD slot built in.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label green">RECIPE 1 — RECOMMENDED</span>
+            <h3>ESP32-S3-CAM — ESP32-S3-WROOM N16R8</h3>
+            <p><strong>This is the recommended PMT 3.0 audio recipe.</strong> It gives you S3-class audio performance with the simplest hardware layout.</p>
+            <ul class="feature-list">
+              <li><strong>ESP32-S3-CAM development board</strong> — main controller, PMT sound engine, and microSD storage interface all on one board.</li>
+              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — drives the speaker from PMT's digital audio output.</li>
+            </ul>
+            <p>
+              <strong>No separate microSD reader is required.</strong> The ESP32-S3-CAM already has the card slot on the board,
+              eliminating one module, extra wiring, and another part to mount in the locomotive.
+            </p>
+            <p class="mini">
+              The board includes an OV3660 camera, but PMT audio does not use the camera. It can be removed if you do not want it installed. For this application,
+              the important features are the N16R8 S3 hardware and the built-in microSD slot.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">RECIPE 2 — GENERIC S3</span>
+            <h3>Generic ESP32-S3-N16R8 or ESP32-S3-N8R8</h3>
+            <ul class="feature-list">
+              <li><strong>ESP32-S3-N16R8 or ESP32-S3-N8R8</strong> — excellent S3 controllers with more memory, cached audio, and much greater audio headroom than the Classic ESP32.</li>
+              <li><strong>WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V</strong> — external microSD storage for WAV files and sound packs.</li>
+              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — drives the speaker from the ESP32's digital I2S audio stream.</li>
+            </ul>
+            <p class="mini">
+              This is an excellent PMT 3.0 audio build and supports 13 or more voices, but it requires a separate microSD reader module.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label red">RECIPE 3 — CLASSIC</span>
+            <h3>Classic ESP32-WROOM-32</h3>
+            <ul class="feature-list">
+              <li><strong>Classic ESP32-WROOM-32</strong> — the main controller and PMT sound engine.</li>
+              <li><strong>WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V</strong> — provides microSD storage for WAV files and sound packs.</li>
+              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — converts PMT's digital audio into amplified speaker output.</li>
+            </ul>
+            <p class="mini">
+              This is the most resource-constrained build. It supports about 3 voices and is best suited to lighter Diesel sound use.
+              Steam sound is not recommended on the Classic board.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">COMMON AUDIO OUTPUT</span>
+            <h3>AITRIP MAX98357 I2S Class D Audio Amplifier</h3>
+            <p>
+              This is the final audio stage used in all three recipes. It takes the digital I2S stream from PMT and turns it into amplified speaker output.
+            </p>
+            <p>
+              It supports both <strong>4Ω and 8Ω speaker loads</strong> at approximately <strong>4 watts</strong>.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          <strong>Recommended PMT 3.0 build:</strong>
+          <strong>ESP32-S3-CAM N16R8 + MAX98357 amplifier.</strong>
+          It delivers the S3 performance recommended for Diesel and Steam while eliminating the separate microSD reader module.
+          Fewer parts, less wiring, and the cleanest PMT audio installation.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>The "Poor Man's" name was never about poor capability.</h2>
+        <p>Version 3.0 brings PMT into territory normally associated with premium model railroad ecosystems:
+        sophisticated control, consisting, lighting, modules, customization — and now real, flexible locomotive audio.</p>
+      </div>
+      <div class="content">
+        <p>The difference is philosophy. PMT is built to be accessible, DIY-friendly, extensible, and open to the community.
+        Instead of charging a premium for every new capability, the ecosystem keeps growing around hardware you can understand,
+        customize, and make your own.</p>
+        <div class="free-banner"><strong>Version 3.0: Real sound. Real flexibility. Still FREE.</strong>
+          <span>Upload it. Share it. Customize it. Run it. This is Poor Man's Throttle with audio — and the ecosystem just got a whole lot louder.</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">Poor Man's Throttle 3.0 — bringing powerful model railroad sound and control to the community without the premium-system price tag.</div>
+  </main>
+</body>
+</html>

@@ -380,6 +380,59 @@ The train may therefore behave differently from a direct on/off throttle, especi
 
 ---
 
+# Motor Buzz, Whine, or Low-Speed PWM Feel
+
+Current throttle firmware allows the motor PWM switching frequency to be tuned with **CV90**.
+
+The default is:
+
+```text
+CV90=202020202020
+```
+
+which keeps the motor at 20 kHz across the full throttle range.
+
+CV90 can use a fixed frequency:
+
+```text
+CV90=10
+```
+
+which expands to `101010101010`, or a changing frequency curve:
+
+```text
+CV90=051520
+```
+
+which expands to `050515152020`.
+
+The six canonical points correspond to effective mapped throttle values `1,10,25,50,75,100%`, and firmware interpolates between them.
+
+### What Frequency Changes Can Do
+
+Changing PWM frequency can alter:
+
+- audible motor buzz or whine
+- low-speed feel and smoothness
+- motor/driver heating
+- how a particular motor and driver respond under load
+
+Results depend on the motor and driver. Lower frequency does **not** guarantee more torque, and CV90 does not directly command torque or speed.
+
+### Checks
+
+| Check | Action |
+|---|---|
+| Return to known behavior | Set `CV90=20` or `CV90=202020202020` to restore 20 kHz everywhere |
+| Verify stored curve | Query CV90; readback is always the canonical 12-digit form |
+| Tune gradually | Change frequency in small steps and test motor sound, low-speed behavior, and temperature |
+| Separate frequency from duty | If start speed/output is wrong, also review CV2, CV3, and CV9 rather than treating CV90 as a duty-control setting |
+| Watch hardware temperature | Stop testing if the motor or driver becomes unusually hot |
+
+Valid CV90 frequency values are `01..40` kHz per curve point.
+
+---
+
 # MU / Consist Behavior Is Wrong
 
 ### Possible Causes

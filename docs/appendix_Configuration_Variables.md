@@ -210,6 +210,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
+| **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
 | **CV100** | Dual PWM Forward Pin | Classic `25`; S3 `6` | Forward PWM pin for `DUAL_PWM`. |
@@ -221,6 +222,57 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV106** | PWM_BIDIR PWM / Enable Pin | Classic `25`; S3 `6` | PWM/enable pin for `PWM_BIDIR`. |
 | **CV107** | PWM_BIDIR Forward Pin | Classic `27`; S3 `4` | Forward logic pin for `PWM_BIDIR`. |
 | **CV108** | PWM_BIDIR Reverse Pin | Classic `33`; S3 `5` | Reverse logic pin for `PWM_BIDIR`. |
+
+## CV90 — Motor PWM Frequency Curve
+
+CV90 controls the **motor PWM switching frequency**, not the commanded throttle percentage. The motor PWM resolution remains firmware-controlled at 10 bits.
+
+The canonical form contains six two-digit frequency values in **kHz** at effective mapped-throttle anchors:
+
+| Curve point | Throttle anchor |
+|---:|---:|
+| 1 | 1% |
+| 2 | 10% |
+| 3 | 25% |
+| 4 | 50% |
+| 5 | 75% |
+| 6 | 100% |
+
+Each two-digit frequency must be `01` through `40`, meaning **1 kHz through 40 kHz**. Firmware linearly interpolates the requested PWM frequency between the six anchors.
+
+The default is:
+
+```text
+CV90=202020202020
+```
+
+This selects 20 kHz at every point and preserves the historical fixed-20-kHz motor behavior.
+
+CV90 also accepts shorthand forms. Firmware expands them to the canonical 12-digit form:
+
+| Written value | Canonical value |
+|---|---|
+| `CV90=20` | `202020202020` |
+| `CV90=2030` | `202020303030` |
+| `CV90=203040` | `202030304040` |
+| `CV90=202020202020` | `202020202020` |
+
+The expansion rules are:
+
+```text
+A           -> A A A A A A
+A B         -> A A A B B B
+A B C       -> A A B B C C
+A B C D E F -> A B C D E F
+```
+
+Only 2-, 4-, 6-, and 12-digit numeric forms are valid. Invalid lengths or values outside `01..40` are rejected.
+
+CV90 query/readback returns the **canonical 12-digit value**, even when shorthand was written.
+
+Changing CV90 is live. If the locomotive is moving, firmware reapplies the appropriate frequency for the current effective mapped throttle while preserving the existing motor-duty command.
+
+PWM frequency is a motor/driver tuning control. Lower or higher frequencies can change motor sound, smoothness, heating, and low-speed behavior depending on the motor and driver. CV90 is **not a direct torque command** and does not replace CV2/CV3 duty mapping or CV9 start-kick behavior.
 
 ---
 

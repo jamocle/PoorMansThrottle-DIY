@@ -1,6 +1,21 @@
 {
     "versions": [
         {
+            "version": "3.0.0",
+            "title": "Let there be sound!",
+            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
+            "info": "soundfinally.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "1.1.0",
+            "title": "Let there be sound!",
+            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
+            "info": "soundfinally.html",
+            "show-again": "2026-04-24 16:24:04",
+            "info-only": true
+        },
+        {
             "version": "1.0.0",
             "title": "Hardware Installation",
             "description": "Various Motor Driver installation options supported by PMT",
