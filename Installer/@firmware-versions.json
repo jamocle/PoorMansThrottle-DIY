@@ -1,84 +1,113 @@
 {
-    "latest": "3.0.0",
-    "versions": [
+  "schemaVersion": 2,
+  "boards": {
+    "classic": {
+      "label": "Classic ESP32-WROOM-32",
+      "image": "Info/classic-esp32-wroom32.png",
+      "chipFamily": "ESP32",
+      "firmwareDirectory": "../firmware/{version}/",
+      "latest": "3.0.0",
+      "dropdownDefault": "2.0.0",
+      "parts": [
         {
-            "label": "v3.0.0",
-            "manifest": "manifest-3.0.0.json",
-            "selected": true
-        },{
-            "label": "v2.0.0",
-            "manifest": "manifest-2.0.0.json",
-            "selected": true
+          "file": "PoorMansThrottle.ino.bootloader.bin",
+          "offset": 4096
         },
         {
-            "label": "v1.12.7",
-            "manifest": "manifest-1.12.7.json",
-            "selected": false
+          "file": "PoorMansThrottle.ino.partitions.bin",
+          "offset": 32768
         },
         {
-            "label": "v1.12.5",
-            "manifest": "manifest-1.12.5.json",
-            "selected": false
+          "file": "boot_app0.bin",
+          "offset": 57344
         },
         {
-            "label": "v1.12.4",
-            "manifest": "manifest-1.12.4.json",
-            "selected": false
-        },
-        {
-            "label": "v1.12.3",
-            "manifest": "manifest-1.12.3.json",
-            "selected": false
-        },
-        {
-            "label": "v1.12.1",
-            "manifest": "manifest-1.12.1.json",
-            "selected": false
-        },
-        {
-            "label": "v1.11.0",
-            "manifest": "manifest-1.11.0.json",
-            "selected": false
-        },
-        {
-            "label": "v1.10.9",
-            "manifest": "manifest-1.10.9.json",
-            "selected": false
-        },
-        {
-            "label": "v1.10.7",
-            "manifest": "manifest-1.10.7.json",
-            "selected": false
-        },
-        {
-            "label": "v1.9.6",
-            "manifest": "manifest-1.9.6.json",
-            "selected": false
-        },
-        {
-            "label": "v1.9.3",
-            "manifest": "manifest-1.9.3.json",
-            "selected": false
-        },
-        {
-            "label": "v1.8.0",
-            "manifest": "manifest-1.8.0.json",
-            "selected": false
-        },
-        {
-            "label": "v1.6.2",
-            "manifest": "manifest-1.6.2.json",
-            "selected": false
-        },
-        {
-            "label": "v1.6.1",
-            "manifest": "manifest-1.6.1.json",
-            "selected": false
-        },
-        {
-            "label": "v1.7.1 Beta",
-            "manifest": "manifest-1.7.1.json",
-            "selected": false
+          "file": "PoorMansThrottle.ino.bin",
+          "offset": 65536
         }
-    ]
+      ],
+      "versions": [
+        {
+          "version": "3.0.0"
+        },
+        {
+          "version": "2.0.0"
+        },
+        {
+          "version": "1.12.7"
+        },
+        {
+          "version": "1.12.5"
+        },
+        {
+          "version": "1.12.4"
+        },
+        {
+          "version": "1.12.3"
+        },
+        {
+          "version": "1.12.1"
+        },
+        {
+          "version": "1.11.0"
+        },
+        {
+          "version": "1.10.9"
+        },
+        {
+          "version": "1.10.7"
+        },
+        {
+          "version": "1.9.6"
+        },
+        {
+          "version": "1.9.3"
+        },
+        {
+          "version": "1.8.0"
+        },
+        {
+          "version": "1.6.2"
+        },
+        {
+          "version": "1.6.1"
+        },
+        {
+          "version": "1.7.1",
+          "label": "v1.7.1 Beta"
+        }
+      ]
+    },
+    "s3": {
+      "label": "ESP32-S3-N16R8 (N8R8)",
+      "image": "Info/esp32-s3-n16r8.png",
+      "chipFamily": "ESP32-S3",
+      "firmwareDirectory": "../firmware/s3/{version}/",
+      "latest": "3.0.0",
+      "dropdownDefault": "3.0.0",
+      "parts": [
+        {
+          "file": "PoorMansThrottle.ino.bootloader.bin",
+          "offset": 0
+        },
+        {
+          "file": "PoorMansThrottle.ino.partitions.bin",
+          "offset": 32768
+        },
+        {
+          "file": "boot_app0.bin",
+          "offset": 57344
+        },
+        {
+          "file": "PoorMansThrottle.ino.bin",
+          "offset": 65536
+        }
+      ],
+      "versions": [
+        {
+          "version": "3.0.0"
+        }
+      ]
+    }
+  }
 }

@@ -63,28 +63,32 @@ a {
     border: 1px solid rgba(255, 255, 255, 0.72);
     box-shadow: var(--shadow);
     backdrop-filter: blur(18px);
-    padding: 20px 18px 24px;
-    margin-bottom: 24px;
+    padding: 18px;
+    margin-bottom: 16px;
 }
 
 .hero-grid {
     display: grid;
-    gap: 18px;
+    gap: 16px;
     align-items: center;
 }
 
 .brand-art {
+    width: min(100%, 300px);
+    justify-self: center;
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(248, 247, 245, 0.86));
     border: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 26px;
-    padding: 10px;
+    border-radius: 24px;
+    padding: 8px;
     box-shadow: var(--shadow-soft);
 }
 
 .header-image {
     display: block;
     width: 100%;
+    max-height: 220px;
     height: auto;
+    object-fit: contain;
     border-radius: 18px;
 }
 
@@ -103,7 +107,7 @@ a {
 
 h1 {
     margin: 14px 0 10px;
-    font-size: clamp(2.2rem, 7vw, 4.2rem);
+    font-size: clamp(2rem, 5.5vw, 3.45rem);
     line-height: 1.02;
     letter-spacing: -0.045em;
     font-weight: 760;
@@ -114,14 +118,14 @@ h1 {
     max-width: 700px;
     color: var(--muted);
     font-size: clamp(1rem, 2.8vw, 1.15rem);
-    line-height: 1.55;
+    line-height: 1.45;
 }
 
 .hero-meta {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 18px;
+    margin-top: 14px;
 }
 
 .pill {
@@ -138,7 +142,7 @@ h1 {
 }
 
 .section {
-    margin-top: 24px;
+    margin-top: 16px;
     border-radius: 30px;
     background: var(--panel);
     border: 1px solid rgba(255, 255, 255, 0.72);
@@ -146,6 +150,7 @@ h1 {
     backdrop-filter: blur(18px);
     overflow: hidden;
 }
+
 
 .section>summary,
 .subsection>summary {
@@ -638,11 +643,11 @@ code {
     }
 
     .hero {
-        padding: 26px 24px 28px;
+        padding: 20px;
     }
 
     .hero-grid {
-        grid-template-columns: 1.05fr 0.95fr;
+        grid-template-columns: minmax(0, 1fr) 300px;
     }
 
     .section-head {
@@ -705,3 +710,430 @@ code {
         animation: none !important;
     }
 }
+
+/* Firmware installer */
+.firmware-section-content {
+    padding-top: 2px;
+}
+
+.firmware-intro-card {
+    margin-top: 0;
+}
+
+.board-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.board-choice {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    border: 2px solid #e2ddd6;
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.board-choice:hover,
+.board-choice:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(123, 75, 31, 0.42);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.09);
+    outline: none;
+}
+
+.board-choice.is-selected {
+    border-color: var(--accent);
+    background: rgba(123, 75, 31, 0.06);
+    box-shadow: 0 0 0 4px rgba(123, 75, 31, 0.09), var(--shadow-soft);
+}
+
+.board-choice-image-shell {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 220px;
+    min-width: 0;
+    min-height: 0;
+    padding: 14px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: linear-gradient(180deg, #ffffff, #f5f3ef);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.board-choice-image {
+    display: block;
+    width: auto;
+    height: 180px;
+    max-width: none;
+    max-height: calc(100% - 20px);
+    object-fit: contain;
+    transform-origin: center;
+}
+
+.board-choice[data-board="classic"] .board-choice-image {
+    transform: rotate(90deg);
+}
+
+.board-choice[data-board="s3"] .board-choice-image {
+    transform: rotate(-90deg);
+}
+
+.board-choice-copy {
+    display: grid;
+    gap: 7px;
+    margin-top: 14px;
+}
+
+.board-choice-copy strong {
+    font-size: 1.12rem;
+    line-height: 1.25;
+}
+
+.board-choice-copy span {
+    color: var(--muted);
+    line-height: 1.45;
+}
+
+.board-choice-action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 14px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.board-choice.is-selected .board-choice-action {
+    background: var(--text);
+}
+
+.board-choice-help {
+    margin-top: 16px;
+}
+
+.firmware-board-panel {
+    margin-top: 14px;
+}
+
+.firmware-board-panel[hidden],
+.firmware-error-card[hidden] {
+    display: none !important;
+}
+
+.selected-board-layout {
+    display: grid;
+    grid-template-columns: 1fr 150px;
+    gap: 20px;
+    align-items: center;
+}
+
+.selected-board-image-shell {
+    display: grid;
+    place-items: center;
+    height: 170px;
+    padding: 10px;
+    border-radius: 22px;
+    background: linear-gradient(180deg, #ffffff, #f5f3ef);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.selected-board-image {
+    display: block;
+    width: auto;
+    height: 135px;
+    max-width: none;
+    max-height: calc(100% - 16px);
+    object-fit: contain;
+    transform-origin: center;
+}
+
+.selected-board-image[data-board="classic"] {
+    transform: rotate(90deg);
+}
+
+.selected-board-image[data-board="s3"] {
+    transform: rotate(-90deg);
+}
+
+.backup-warning-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: start;
+    border-width: 2px;
+    border-color: rgba(123, 75, 31, 0.28);
+    background: linear-gradient(180deg, #fffdf8, #ffffff);
+}
+
+.backup-warning-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 1.35rem;
+    font-weight: 800;
+}
+
+.os-help-grid,
+.install-choice-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.os-help-card,
+.install-choice {
+    border: 1px solid #e8e6e2;
+    border-radius: 18px;
+    background: #faf9f7;
+    padding: 15px;
+}
+
+.os-help-card {
+    display: grid;
+    gap: 6px;
+}
+
+.os-help-card strong,
+.install-choice strong {
+    color: var(--text);
+}
+
+.os-help-card span,
+.install-choice p {
+    color: var(--muted);
+    line-height: 1.5;
+}
+
+.firmware-checklist {
+    margin-top: 16px;
+}
+
+.install-choice p {
+    margin: 8px 0 0;
+}
+
+.recommended-choice {
+    border-color: rgba(55, 116, 73, 0.28);
+    background: rgba(55, 116, 73, 0.06);
+}
+
+.destructive-choice {
+    border-color: rgba(160, 61, 45, 0.26);
+    background: rgba(160, 61, 45, 0.05);
+}
+
+.firmware-install-option {
+    margin-top: 18px;
+    padding: 16px;
+    border: 1px solid #e8e6e2;
+    border-radius: 20px;
+    background: #faf9f7;
+}
+
+.firmware-install-option > div:first-child > strong {
+    font-size: 1.08rem;
+}
+
+.firmware-install-option-primary {
+    border-color: rgba(123, 75, 31, 0.2);
+    background: rgba(123, 75, 31, 0.04);
+}
+
+.firmware-install-action {
+    min-height: 48px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #ffffff;
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 10px 18px rgba(123, 75, 31, 0.22);
+}
+
+.firmware-install-action:hover,
+.firmware-install-action:focus-visible {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 24px rgba(123, 75, 31, 0.26);
+    outline: none;
+}
+
+.firmware-install-action-secondary {
+    background: var(--text);
+    box-shadow: 0 9px 18px rgba(29, 29, 31, 0.16);
+}
+
+.installer-message {
+    display: inline-block;
+    max-width: 520px;
+    color: var(--accent);
+    font-weight: 650;
+    line-height: 1.45;
+}
+
+.older-firmware-details,
+.firmware-help-details {
+    margin-top: 18px;
+}
+
+.older-firmware-details {
+    border: 1px solid #e8e6e2;
+    border-radius: 20px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.older-firmware-details > summary,
+.firmware-help-details > summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.older-firmware-details > summary::-webkit-details-marker,
+.firmware-help-details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.older-firmware-details > summary {
+    padding: 16px 48px 16px 16px;
+    position: relative;
+    font-weight: 700;
+}
+
+.older-firmware-details > summary::after {
+    content: "+";
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.25rem;
+    color: var(--muted);
+}
+
+.older-firmware-details[open] > summary::after {
+    content: "−";
+}
+
+.older-firmware-content {
+    padding: 0 16px 16px;
+}
+
+.numbered-install-steps {
+    padding-left: 1.45rem;
+}
+
+.firmware-help-details {
+    padding: 0;
+}
+
+.firmware-help-details > summary {
+    padding: 18px 56px 18px 18px;
+    position: relative;
+}
+
+.firmware-help-details > summary > span {
+    display: grid;
+    gap: 8px;
+}
+
+.firmware-help-details > summary::after {
+    content: "+";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.35rem;
+    color: var(--muted);
+}
+
+.firmware-help-details[open] > summary::after {
+    content: "−";
+}
+
+.firmware-help-content {
+    padding: 0 18px 18px;
+}
+
+.firmware-error-card {
+    border: 2px solid rgba(160, 61, 45, 0.3);
+    background: rgba(160, 61, 45, 0.05);
+}
+
+.firmware-preview-card {
+    border-color: rgba(123, 75, 31, 0.24);
+    background: rgba(123, 75, 31, 0.06);
+}
+
+@media (max-width: 760px) {
+    .hero {
+        border-radius: 24px;
+        padding: 16px;
+    }
+
+    .brand-art {
+        width: min(100%, 260px);
+    }
+
+    .header-image {
+        max-height: 190px;
+    }
+
+    .board-choice-grid,
+    .os-help-grid,
+    .install-choice-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .board-choice-image-shell {
+        height: 200px;
+    }
+
+    .selected-board-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .selected-board-image-shell {
+        height: 220px;
+    }
+
+    .backup-warning-card {
+        grid-template-columns: 1fr;
+    }
+
+    .backup-warning-icon {
+        width: 38px;
+        height: 38px;
+    }
+
+    .firmware-install-action {
+        width: 100%;
+    }
+
+    .install-button-wrap {
+        width: 100%;
+    }
+
+    esp-web-install-button {
+        width: 100%;
+    }
+}
+

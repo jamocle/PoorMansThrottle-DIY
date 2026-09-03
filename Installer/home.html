@@ -6,21 +6,8 @@
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <script>
-    (function () {
-      const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
-
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "styles.css?v=" + cacheBust;
-      document.head.appendChild(cssLink);
-
-      const appScript = document.createElement("script");
-      appScript.type = "module";
-      appScript.src = "app.js?v=" + cacheBust;
-      document.head.appendChild(appScript);
-    })();
-  </script>
+  <link rel="stylesheet" href="styles.css?v=20260903-4" />
+  <script type="module" src="app.js?v=20260903-4"></script>
 
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
 </head>
@@ -109,7 +96,7 @@
       </div>
     </details>
 
-    <details class="section">
+    <details class="section firmware-primary-section" id="firmwareInstallation">
       <summary>
         <span class="section-title">
           <img src="firmware.png" alt="" class="section-icon" />
@@ -117,80 +104,245 @@
         </span>
       </summary>
 
-      <div class="section-content">
-        <div class="card">
+      <div class="section-content firmware-section-content">
+        <div class="card firmware-intro-card">
           <div class="card-header">
             <div>
-              <div class="card-kicker">Recommended</div>
-              <h3>Install the latest firmware.</h3>
-            </div>
-          </div>
-
-          <p class="note note-strong">
-            <a class="doc-link prominent-link"
-              href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md" target="_blank"
-              rel="noopener noreferrer">
-              What’s new in the firmware → latest changes and features
-            </a>
-          </p>
-
-          <p class="note">
-            Use <strong>Chrome</strong> or <strong>Edge</strong> for flashing.
-            Use a <strong>data-capable USB cable</strong>.
-          </p>
-
-          <div class="row installer-row">
-            <div class="install-button-wrap">
-              <esp-web-install-button id="latestBtn" manifest=""></esp-web-install-button>
-            </div>
-            <span id="latestVersionLabel" class="meta-label"></span>
-          </div>
-
-          <p class="note warn">
-            If the device connects but doesn’t begin flashing, hold <strong>BOOT</strong>, click Install,
-            select the port, then release <strong>BOOT</strong> once “Erasing/Writing” begins.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-kicker">Optional</div>
-              <h3>Install an earlier firmware version.</h3>
-            </div>
-          </div>
-
-          <div class="row installer-row">
-            <label class="note note-label" for="fwSel">Version</label>
-            <select id="fwSel" aria-label="Select firmware version"></select>
-            <div class="install-button-wrap">
-              <esp-web-install-button id="olderBtn" manifest=""></esp-web-install-button>
+              <div class="card-kicker">Step 1</div>
+              <h3>Which ESP32 board do you have?</h3>
             </div>
           </div>
 
           <p class="note">
-            Useful if you want to roll back after testing a newer release.
+            Match your board to the picture below. Choosing the correct board is important because the
+            <strong>Classic ESP32-WROOM-32</strong> and <strong>ESP32-S3-N16R8 (N8R8)</strong> use different firmware.
+          </p>
+
+          <div class="board-choice-grid" id="boardChoiceGrid" aria-label="Choose your ESP32 board">
+            <button class="board-choice" type="button" data-board="classic" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 board" class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>Classic ESP32-WROOM-32</strong>
+                <span>Choose this if your board matches this picture.</span>
+              </span>
+              <span class="board-choice-action">I have this board</span>
+            </button>
+
+            <button class="board-choice" type="button" data-board="s3" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3-N16R8 (N8R8) board" class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>ESP32-S3-N16R8 (N8R8)</strong>
+                <span>Choose this if your board matches this picture.</span>
+              </span>
+              <span class="board-choice-action">I have this board</span>
+            </button>
+          </div>
+
+          <p class="note board-choice-help">
+            <strong>Not sure?</strong> Do not guess. Compare the board in your hand with both pictures before continuing.
           </p>
         </div>
 
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-kicker">Troubleshooting</div>
-              <h3>If installation does not go as expected.</h3>
+        <div id="firmwareLoadError" class="card firmware-error-card" hidden role="alert">
+          <div class="card-kicker">Installer problem</div>
+          <h3>Firmware information could not be loaded.</h3>
+          <p class="note">
+            Refresh this page and try again. If the message returns, please contact Poor Man's Throttle support before flashing.
+          </p>
+        </div>
+
+        <div id="boardInstallPanel" class="firmware-board-panel" hidden>
+          <div class="card selected-board-card">
+            <div class="selected-board-layout">
+              <div>
+                <div class="card-kicker">You selected</div>
+                <h3 id="selectedBoardName"></h3>
+                <p class="note">
+                  Make sure the board connected to your computer matches this picture before you install.
+                </p>
+              </div>
+              <div class="selected-board-image-shell">
+                <img id="selectedBoardImage" src="" alt="" class="selected-board-image" />
+              </div>
             </div>
           </div>
 
-          <ul class="list">
-            <li>Close Arduino Serial Monitor or anything else using the COM port.</li>
-            <li>
-              Windows: CP2102 usually works automatically. If not, install the Silicon Labs CP210x driver.
-              <a class="doc-link"
-                href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
-                target="_blank" rel="noopener noreferrer">Open CP210x driver</a>
-            </li>
-            <li>If you see repeated resets, run the latest install again.</li>
-          </ul>
+          <div class="card backup-warning-card">
+            <div class="backup-warning-icon" aria-hidden="true">!</div>
+            <div>
+              <div class="card-kicker">Before you install</div>
+              <h3>Back up your configuration first.</h3>
+              <p class="note note-strong">
+                Use the Poor Man's Throttle app to create a configuration backup before every firmware installation.
+                Normal updates are designed to keep your settings, but a backup gives you a safe recovery copy if
+                something unexpected happens.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 2</div>
+                <h3>Get your computer ready.</h3>
+              </div>
+            </div>
+
+            <div class="os-help-grid">
+              <div class="os-help-card">
+                <strong>Windows</strong>
+                <span>Use Google Chrome or Microsoft Edge.</span>
+              </div>
+              <div class="os-help-card">
+                <strong>Mac</strong>
+                <span>Use Google Chrome. Do not use Safari for firmware flashing.</span>
+              </div>
+            </div>
+
+            <ul class="list firmware-checklist">
+              <li>Use a <strong>USB data cable</strong>. Some USB cables only charge and cannot install firmware.</li>
+              <li>Plug the ESP32 directly into the computer when possible.</li>
+              <li>Close Arduino Serial Monitor or any other program that may be using the ESP32 USB/serial connection.</li>
+            </ul>
+          </div>
+
+          <div class="card preserve-settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 3</div>
+                <h3>Keep your settings unless you intentionally want to start over.</h3>
+              </div>
+            </div>
+
+            <div class="install-choice-grid">
+              <div class="install-choice recommended-choice">
+                <strong>Keep my settings — Recommended</strong>
+                <p>
+                  When ESP Web Tools asks about erasing the device, leave <strong>Erase device</strong>
+                  off/unchecked. The firmware will be updated without intentionally wiping your saved configuration.
+                </p>
+              </div>
+              <div class="install-choice destructive-choice">
+                <strong>Erase everything / Start fresh</strong>
+                <p>
+                  Only choose erase if you intentionally want to delete the saved configuration and start from a clean device.
+                  You will need to restore a backup or configure the throttle again.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card firmware-install-card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 4</div>
+                <h3>Install firmware.</h3>
+              </div>
+            </div>
+
+            <p class="note note-strong">
+              <a class="doc-link prominent-link"
+                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md" target="_blank"
+                rel="noopener noreferrer">
+                What’s new in the firmware → latest changes and features
+              </a>
+            </p>
+
+            <div class="firmware-install-option firmware-install-option-primary">
+              <div>
+                <strong>Install the latest firmware</strong>
+                <p class="note">Recommended for most users.</p>
+              </div>
+              <div class="row installer-row">
+                <div class="install-button-wrap">
+                  <esp-web-install-button id="latestBtn">
+                    <button slot="activate" class="firmware-install-action" type="button">Install Latest Firmware</button>
+                    <span slot="unsupported" class="installer-message">
+                      Use Chrome or Edge on Windows, or Chrome on Mac.
+                    </span>
+                    <span slot="not-allowed" class="installer-message">
+                      Firmware flashing requires this page to be opened securely using HTTPS.
+                    </span>
+                  </esp-web-install-button>
+                </div>
+                <span id="latestVersionLabel" class="meta-label"></span>
+              </div>
+            </div>
+
+            <details class="older-firmware-details">
+              <summary>Choose a specific firmware version</summary>
+              <div class="older-firmware-content">
+                <p class="note">
+                  Use this when you intentionally want a particular release, including rolling back after testing.
+                </p>
+                <div class="row installer-row">
+                  <label class="note note-label" for="fwSel">Version</label>
+                  <select id="fwSel" aria-label="Select firmware version"></select>
+                  <div class="install-button-wrap">
+                    <esp-web-install-button id="olderBtn">
+                      <button slot="activate" class="firmware-install-action firmware-install-action-secondary" type="button">
+                        Install Selected Version
+                      </button>
+                      <span slot="unsupported" class="installer-message">
+                        Use Chrome or Edge on Windows, or Chrome on Mac.
+                      </span>
+                      <span slot="not-allowed" class="installer-message">
+                        Firmware flashing requires this page to be opened securely using HTTPS.
+                      </span>
+                    </esp-web-install-button>
+                  </div>
+                </div>
+                <p id="dropdownDefaultNote" class="note"></p>
+              </div>
+            </details>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">What happens next</div>
+                <h3>Follow the installer one step at a time.</h3>
+              </div>
+            </div>
+
+            <ol class="list numbered-install-steps">
+              <li>Click the firmware install button above.</li>
+              <li>Choose the USB/serial device that represents your ESP32 and connect to it.</li>
+              <li>Confirm the installation.</li>
+              <li>For a normal update, keep <strong>Erase device</strong> off/unchecked.</li>
+              <li>Wait until ESP Web Tools says the installation has finished. Do not unplug the board while it is writing.</li>
+            </ol>
+          </div>
+
+          <details class="card firmware-help-details">
+            <summary>
+              <span>
+                <span class="card-kicker">Troubleshooting</span>
+                <strong>If the installer cannot start flashing</strong>
+              </span>
+            </summary>
+            <div class="firmware-help-content">
+              <ul class="list">
+                <li>Confirm you are using a USB <strong>data</strong> cable, not a charge-only cable.</li>
+                <li>Close Arduino Serial Monitor and other programs that might already be using the ESP32 connection.</li>
+                <li>
+                  If the device connects but flashing does not begin, hold <strong>BOOT</strong>, start the install and
+                  select the device. Release <strong>BOOT</strong> when erasing/writing begins.
+                </li>
+                <li>
+                  On Windows, the Classic ESP32-WROOM-32 commonly uses a CP210x USB-to-serial interface. If Windows
+                  does not create a usable port, you can
+                  <a class="doc-link"
+                    href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
+                    target="_blank" rel="noopener noreferrer">open the Silicon Labs CP210x driver page</a>.
+                </li>
+              </ul>
+            </div>
+          </details>
         </div>
       </div>
     </details>
