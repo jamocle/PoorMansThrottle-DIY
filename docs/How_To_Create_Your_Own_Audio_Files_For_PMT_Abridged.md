@@ -1,9 +1,5 @@
 # How to Create Your Own Audio Files for PMT — Abridged Guide
 
-**Firmware source:** PMT `3.0.0`, revision `221`  
-**Audio system:** PMTPlayer only  
-**Audacity examples:** Audacity `3.7.9` stable
-
 This is the short version of the PMT audio-authoring guide. It assumes you already know the basics of opening, selecting, trimming, and exporting audio in Audacity.
 
 ---
@@ -773,18 +769,6 @@ This abridged guide is based on the supplied PMT firmware and the full:
 ```text
 How_To_Create_Your_Own_Audio_Files_For_PMT.md
 ```
-
-The PMT firmware is the source of truth for:
-
-- WAV format requirements;
-- filenames;
-- `/diesel` and `/steam` paths;
-- track roles;
-- loop and one-shot behavior;
-- steam chuff ranges;
-- `0093.wav` minimum usable length;
-- `0190.wav` moving-bed behavior;
-- cab-chatter numbering.
 
 Audacity instructions match the Audacity `3.7.9` stable workflow used in the full guide.
 

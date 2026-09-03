@@ -1,13 +1,5 @@
 # How to Create Your Own Audio Files for PMT
 
-**First Draft**
-
-**Firmware source reviewed:** PMT firmware `3.0.0`, revision `221`  
-**Audio system covered:** PMTPlayer  
-**Audacity examples checked against:** Audacity `3.7.9` stable
-
----
-
 ## 1. What This Guide Is For
 
 PMT can play custom locomotive sounds from WAV files stored on its SD card.
@@ -2040,16 +2032,6 @@ Signed 16-bit PCM
 
 # 34. Technical Source Notes
 
-This guide was derived from the supplied PMT firmware source, with the PMT code treated as the source of truth for track numbers, playback roles, file paths, and accepted WAV structure.
-
-Primary source locations reviewed:
-
-```text
-PmtShared/src/PmtVersion.h
-PmtShared/src/PmtPlayerAudioBackend.h
-PmtShared/src/PmtPlayerAudioBackend.cpp
-PoorMansThrottle/PoorMansThrottle.ino
-```
 
 Important implementation details used in this guide include:
 
