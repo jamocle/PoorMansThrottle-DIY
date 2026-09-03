@@ -1,7 +1,11 @@
 {
-    "latest": "2.0.0",
+    "latest": "3.0.0",
     "versions": [
         {
+            "label": "v3.0.0",
+            "manifest": "manifest-3.0.0.json",
+            "selected": true
+        },{
             "label": "v2.0.0",
             "manifest": "manifest-2.0.0.json",
             "selected": true
