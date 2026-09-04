@@ -12,6 +12,6 @@
 // };
 
 window.PMT_SOUND_UPLOAD_CONFIG = {
-    apiUrl: "",
-    turnstileSiteKey: ""
+    apiUrl: "https://pmt-sound-upload.jimmy-d78.workers.dev",
+    turnstileSiteKey: "0x4AAAAAAEnaU-TfvKEKPqif"
 };
