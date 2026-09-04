@@ -706,6 +706,171 @@ code {
     padding: 14px 0 4px;
 }
 
+
+/* Sound pack crowdsourcing */
+.crowdsourcing-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+    gap: 20px;
+    margin-top: 16px;
+    padding: 20px;
+    border-radius: var(--radius-md);
+    background: var(--panel-solid);
+    border: 1px solid #e8e6e2;
+    box-shadow: var(--shadow-soft);
+}
+
+.crowdsourcing-copy h3 {
+    margin: 4px 0 12px;
+    font-size: 1.28rem;
+    letter-spacing: -0.025em;
+}
+
+.crowdsourcing-notice,
+.crowdsourcing-review-note {
+    margin-top: 16px;
+    padding: 15px 16px;
+    border-radius: 18px;
+    line-height: 1.5;
+}
+
+.crowdsourcing-notice {
+    background: rgba(123, 75, 31, 0.055);
+    border: 1px solid rgba(123, 75, 31, 0.13);
+}
+
+.crowdsourcing-review-note {
+    background: #f7f2eb;
+    border: 1px solid #e6d7c5;
+    color: #5f3b1b;
+}
+
+.crowdsourcing-list {
+    margin-top: 10px;
+}
+
+.sound-upload-form {
+    align-self: start;
+    padding: 18px;
+    border-radius: 22px;
+    background: #faf9f7;
+    border: 1px solid #ebe7e1;
+}
+
+.sound-upload-field + .sound-upload-field {
+    margin-top: 15px;
+}
+
+.sound-upload-field label {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 680;
+    color: var(--text);
+}
+
+.optional-label {
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.sound-upload-field input[type="file"],
+.sound-upload-field textarea,
+.sound-upload-field select {
+    width: 100%;
+    max-width: 100%;
+}
+
+.sound-upload-field input[type="file"] {
+    padding: 10px;
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+}
+
+.sound-upload-field input[type="file"]::file-selector-button {
+    min-height: 36px;
+    margin-right: 10px;
+    padding: 7px 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    font-weight: 620;
+    cursor: pointer;
+}
+
+.sound-upload-field textarea {
+    resize: vertical;
+    min-height: 96px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line-strong);
+    background: #ffffff;
+    color: var(--text);
+    font: inherit;
+    line-height: 1.45;
+    outline: none;
+}
+
+.sound-upload-field textarea:focus,
+.sound-upload-field input[type="file"]:focus-visible {
+    border-color: rgba(123, 75, 31, 0.4);
+    box-shadow: 0 0 0 4px rgba(123, 75, 31, 0.12);
+}
+
+.field-help {
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.turnstile-shell {
+    min-height: 66px;
+    margin-top: 16px;
+}
+
+.sound-upload-status {
+    margin-top: 12px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.sound-upload-status.is-success {
+    background: #eef8ef;
+    border-color: #cfe6d2;
+}
+
+.sound-upload-status.is-error {
+    background: #fff1ef;
+    border-color: #efc8c1;
+}
+
+.sound-upload-status p {
+    margin: 0;
+}
+
+.sound-upload-form.is-busy {
+    opacity: 0.76;
+}
+
+.sound-upload-form button:disabled,
+.sound-upload-form input:disabled,
+.sound-upload-form select:disabled,
+.sound-upload-form textarea:disabled {
+    cursor: not-allowed;
+}
+
+@media (max-width: 860px) {
+    .crowdsourcing-card {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (min-width: 860px) {
     .wrap {
         padding: 28px 24px 72px;
@@ -1225,3 +1390,39 @@ code {
     }
 }
 
+
+.sound-pack-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.sound-pack-group-header > :first-child {
+    min-width: 0;
+}
+
+.sound-pack-category-art {
+    display: block;
+    width: 104px;
+    max-width: 30%;
+    max-height: 58px;
+    height: auto;
+    flex: 0 0 auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 14px rgba(49, 85, 122, 0.12));
+}
+
+@media (max-width: 720px) {
+    .sound-pack-group-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sound-pack-category-art {
+        width: 112px;
+        max-width: 100%;
+        max-height: 62px;
+        align-self: center;
+    }
+}

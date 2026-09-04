@@ -650,9 +650,317 @@ function initializeSoundPacks() {
     loadWhenOpen();
 }
 
+
+const SOUND_UPLOAD_MAX_BYTES = 20 * 1024 * 1024;
+let soundUploadTurnstileWidgetId = null;
+let soundUploadTurnstileToken = "";
+let soundUploadScriptPromise = null;
+
+function getSoundUploadConfig() {
+    const config = window.PMT_SOUND_UPLOAD_CONFIG || {};
+
+    return {
+        apiUrl: typeof config.apiUrl === "string" ? config.apiUrl.trim().replace(/\/+$/, "") : "",
+        turnstileSiteKey:
+            typeof config.turnstileSiteKey === "string" ? config.turnstileSiteKey.trim() : ""
+    };
+}
+
+function setSoundUploadStatus(message, type) {
+    const target = document.getElementById("soundPackUploadStatus");
+    if (!target) {
+        return;
+    }
+
+    target.classList.remove("is-success", "is-error");
+
+    if (type === "success") {
+        target.classList.add("is-success");
+    } else if (type === "error") {
+        target.classList.add("is-error");
+    }
+
+    target.replaceChildren();
+
+    const paragraph = document.createElement("p");
+    paragraph.className = "note";
+
+    if (type === "success") {
+        const strong = document.createElement("strong");
+        strong.textContent = "Thank you for contributing! ";
+        paragraph.appendChild(strong);
+    }
+
+    paragraph.appendChild(document.createTextNode(message));
+    target.appendChild(paragraph);
+}
+
+function setSoundUploadFormDisabled(disabled) {
+    const form = document.getElementById("soundPackUploadForm");
+    if (!form) {
+        return;
+    }
+
+    form.classList.toggle("is-busy", disabled);
+
+    for (const control of form.querySelectorAll("input, select, button, textarea")) {
+        control.disabled = disabled;
+    }
+}
+
+function loadTurnstileScript() {
+    if (window.turnstile) {
+        return Promise.resolve();
+    }
+
+    if (soundUploadScriptPromise) {
+        return soundUploadScriptPromise;
+    }
+
+    soundUploadScriptPromise = new Promise((resolve, reject) => {
+        const existing = document.querySelector('script[data-pmt-turnstile="true"]');
+        if (existing) {
+            existing.addEventListener("load", () => resolve(), { once: true });
+            existing.addEventListener("error", () => reject(new Error("Turnstile failed to load.")), {
+                once: true
+            });
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.defer = true;
+        script.dataset.pmtTurnstile = "true";
+        script.addEventListener("load", () => resolve(), { once: true });
+        script.addEventListener("error", () => reject(new Error("Turnstile failed to load.")), {
+            once: true
+        });
+        document.head.appendChild(script);
+    });
+
+    return soundUploadScriptPromise;
+}
+
+function resetSoundUploadTurnstile() {
+    soundUploadTurnstileToken = "";
+
+    if (
+        window.turnstile &&
+        soundUploadTurnstileWidgetId !== null &&
+        soundUploadTurnstileWidgetId !== undefined
+    ) {
+        window.turnstile.reset(soundUploadTurnstileWidgetId);
+    }
+}
+
+async function initializeSoundUploadTurnstile(siteKey) {
+    const target = document.getElementById("soundPackTurnstile");
+    if (!target) {
+        return;
+    }
+
+    await loadTurnstileScript();
+
+    if (!window.turnstile) {
+        throw new Error("Turnstile is unavailable.");
+    }
+
+    soundUploadTurnstileWidgetId = window.turnstile.render(target, {
+        sitekey: siteKey,
+        theme: "light",
+        appearance: "interaction-only",
+        callback: (token) => {
+            soundUploadTurnstileToken = token;
+        },
+        "expired-callback": () => {
+            soundUploadTurnstileToken = "";
+        },
+        "error-callback": () => {
+            soundUploadTurnstileToken = "";
+            setSoundUploadStatus(
+                "Human verification could not be completed. Please refresh the page and try again.",
+                "error"
+            );
+        }
+    });
+}
+
+function isZipFile(file) {
+    return file && /\.zip$/i.test(file.name);
+}
+
+async function hasZipSignature(file) {
+    const signature = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+
+    if (signature.length < 4 || signature[0] !== 0x50 || signature[1] !== 0x4B) {
+        return false;
+    }
+
+    return (
+        (signature[2] === 0x03 && signature[3] === 0x04) ||
+        (signature[2] === 0x05 && signature[3] === 0x06) ||
+        (signature[2] === 0x07 && signature[3] === 0x08)
+    );
+}
+
+async function submitSoundPack(event) {
+    event.preventDefault();
+
+    const config = getSoundUploadConfig();
+    const form = document.getElementById("soundPackUploadForm");
+    const category = document.getElementById("soundPackCategory");
+    const fileInput = document.getElementById("soundPackFile");
+
+    if (!form || !category || !fileInput) {
+        return;
+    }
+
+    if (!config.apiUrl || !config.turnstileSiteKey) {
+        setSoundUploadStatus(
+            "Crowdsourcing uploads are not configured yet. Please try again later.",
+            "error"
+        );
+        return;
+    }
+
+    const file = fileInput.files && fileInput.files[0];
+
+    if (!file) {
+        setSoundUploadStatus("Choose a ZIP file before submitting.", "error");
+        return;
+    }
+
+    if (!isZipFile(file) || !(await hasZipSignature(file))) {
+        setSoundUploadStatus("Please choose a valid ZIP file.", "error");
+        return;
+    }
+
+    if (file.size <= 0 || file.size > SOUND_UPLOAD_MAX_BYTES) {
+        setSoundUploadStatus("The ZIP file must be 20 MB or smaller.", "error");
+        return;
+    }
+
+    if (!soundUploadTurnstileToken) {
+        setSoundUploadStatus(
+            "Human verification is still being prepared. Please wait a moment and try again.",
+            "error"
+        );
+        return;
+    }
+
+    const data = new FormData();
+    data.append("category", category.value);
+    data.append("file", file, file.name);
+    data.append("turnstileToken", soundUploadTurnstileToken);
+
+    setSoundUploadFormDisabled(true);
+    setSoundUploadStatus("Uploading your sound pack…", "");
+
+    try {
+        const response = await fetch(config.apiUrl + "/submit", {
+            method: "POST",
+            body: data,
+            headers: {
+                Accept: "application/json"
+            }
+        });
+
+        let payload = null;
+        try {
+            payload = await response.json();
+        } catch {
+            payload = null;
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                payload && typeof payload.message === "string"
+                    ? payload.message
+                    : "The upload could not be completed. Please try again."
+            );
+        }
+
+        form.reset();
+        resetSoundUploadTurnstile();
+
+        setSoundUploadStatus(
+            "Your sound pack was uploaded successfully. It is not live yet. " +
+            "Every submitted ZIP goes through a series of evaluations before it is approved " +
+            "and added to the public Sound Packs library.",
+            "success"
+        );
+    } catch (error) {
+        console.error(error);
+        resetSoundUploadTurnstile();
+        setSoundUploadStatus(
+            error instanceof Error
+                ? error.message
+                : "The upload could not be completed. Please try again.",
+            "error"
+        );
+    } finally {
+        setSoundUploadFormDisabled(false);
+    }
+}
+
+function initializeSoundPackCrowdsourcing() {
+    const form = document.getElementById("soundPackUploadForm");
+    const section = document.getElementById("soundPacksSection");
+    const submitButton = document.getElementById("soundPackSubmitButton");
+
+    if (!form || !section || !submitButton) {
+        return;
+    }
+
+    const config = getSoundUploadConfig();
+
+    if (!config.apiUrl || !config.turnstileSiteKey) {
+        setSoundUploadFormDisabled(true);
+        setSoundUploadStatus(
+            "Crowdsourcing uploads are being configured. Sound-pack downloads are still available.",
+            ""
+        );
+        return;
+    }
+
+    let turnstileInitialized = false;
+
+    const prepareWhenOpen = async () => {
+        if (!section.open || turnstileInitialized) {
+            return;
+        }
+
+        turnstileInitialized = true;
+        submitButton.disabled = true;
+        setSoundUploadStatus("Preparing secure upload…", "");
+
+        try {
+            await initializeSoundUploadTurnstile(config.turnstileSiteKey);
+            submitButton.disabled = false;
+            setSoundUploadStatus(
+                "Choose a ZIP file, select Diesel or Steam, then click Submit Sound Pack.",
+                ""
+            );
+        } catch (error) {
+            console.error(error);
+            setSoundUploadFormDisabled(true);
+            setSoundUploadStatus(
+                "The secure upload service could not be prepared. Please try again later.",
+                "error"
+            );
+        }
+    };
+
+    form.addEventListener("submit", submitSoundPack);
+    section.addEventListener("toggle", prepareWhenOpen);
+    prepareWhenOpen();
+}
+
 async function initialize() {
     await updateFirmwareInstaller();
     initializeSoundPacks();
+    initializeSoundPackCrowdsourcing();
     appendCacheBusterToAnchors();
     await loadAndroidGuide();
 }

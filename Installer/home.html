@@ -6,8 +6,9 @@
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <link rel="stylesheet" href="styles.css?v=20260904-1" />
-  <script type="module" src="app.js?v=20260904-1"></script>
+  <link rel="stylesheet" href="styles.css?v=20260904-2" />
+  <script src="sound-upload-config.js?v=20260904-2"></script>
+  <script type="module" src="app.js?v=20260904-2"></script>
 
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
 </head>
@@ -490,6 +491,13 @@
                 <div class="card-kicker">Diesel</div>
                 <h3 id="dieselSoundPackHeading">Diesel sound packs</h3>
               </div>
+
+              <img
+                src="diesel-engine.png"
+                alt="Diesel locomotive illustration"
+                class="sound-pack-category-art"
+                width="160"
+                height="72" />
             </div>
 
             <div class="sound-pack-list" id="dieselSoundPackList">
@@ -503,6 +511,13 @@
                 <div class="card-kicker">Steam</div>
                 <h3 id="steamSoundPackHeading">Steam sound packs</h3>
               </div>
+
+              <img
+                src="steam-engine.png"
+                alt="Steam locomotive illustration"
+                class="sound-pack-category-art"
+                width="160"
+                height="72" />
             </div>
 
             <div class="sound-pack-list" id="steamSoundPackList">
@@ -510,6 +525,64 @@
             </div>
           </section>
         </div>
+
+        <section class="crowdsourcing-card" aria-labelledby="crowdsourcingHeading">
+          <div class="crowdsourcing-copy">
+            <div class="card-kicker">Crowdsourcing</div>
+            <h3 id="crowdsourcingHeading">Share a sound pack with the PMT community.</h3>
+
+            <p class="note">
+              Have a Diesel or Steam sound pack that other Poor Man's Throttle users may enjoy?
+              You can submit the ZIP here for evaluation.
+            </p>
+
+            <div class="crowdsourcing-notice" role="note">
+              <strong>Before you upload:</strong>
+              <ul class="list crowdsourcing-list">
+                <li>Upload a ZIP file only.</li>
+                <li>Do not submit copyrighted material you do not have permission to share.</li>
+                <li>Use a descriptive filename so the sound pack is easy to identify.</li>
+              </ul>
+            </div>
+
+            <div class="crowdsourcing-review-note" role="note">
+              <strong>Uploads do not become live immediately.</strong>
+              Every submitted ZIP goes through a series of evaluations before it is approved
+              and added to the public Sound Packs library.
+            </div>
+          </div>
+
+          <form class="sound-upload-form" id="soundPackUploadForm" novalidate>
+            <div class="sound-upload-field">
+              <label for="soundPackCategory">Sound pack type</label>
+              <select id="soundPackCategory" name="category" required>
+                <option value="diesel">Diesel</option>
+                <option value="steam">Steam</option>
+              </select>
+            </div>
+
+            <div class="sound-upload-field">
+              <label for="soundPackFile">ZIP file</label>
+              <input id="soundPackFile" name="file" type="file" accept=".zip,application/zip" required />
+              <p class="field-help">Maximum upload size: 20 MB.</p>
+            </div>
+
+            <div id="soundPackTurnstile" class="turnstile-shell" aria-label="Human verification"></div>
+
+            <div class="action-buttons">
+              <button class="app-link app-link-primary" id="soundPackSubmitButton" type="submit">
+                Submit Sound Pack
+              </button>
+            </div>
+
+            <div class="sound-upload-status" id="soundPackUploadStatus" role="status" aria-live="polite">
+              <p class="note">
+                The upload service will become available after the site owner completes the one-time
+                crowdsourcing setup.
+              </p>
+            </div>
+          </form>
+        </section>
       </div>
     </details>
 
