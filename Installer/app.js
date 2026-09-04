@@ -447,8 +447,212 @@ async function loadAndroidGuide() {
     }
 }
 
+
+const SOUND_PACK_GITHUB_OWNER = "jamocle";
+const SOUND_PACK_GITHUB_REPOSITORY = "PoorMansThrottle-DIY";
+const SOUND_PACK_GITHUB_BRANCH = "main";
+const SOUND_PACK_REPOSITORY_DIRECTORY = "sounds";
+let soundPacksLoadPromise = null;
+
+function getSoundPackDisplayName(fileName) {
+    return fileName
+        .replace(/\.zip$/i, "")
+        .replace(/_/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function buildGitHubContentsApiUrl(category) {
+    const pathSegments = [
+        SOUND_PACK_REPOSITORY_DIRECTORY,
+        category
+    ].map((segment) => encodeURIComponent(segment));
+
+    const path = pathSegments.join("/");
+    return (
+        "https://api.github.com/repos/" +
+        encodeURIComponent(SOUND_PACK_GITHUB_OWNER) +
+        "/" +
+        encodeURIComponent(SOUND_PACK_GITHUB_REPOSITORY) +
+        "/contents/" +
+        path +
+        "?ref=" +
+        encodeURIComponent(SOUND_PACK_GITHUB_BRANCH)
+    );
+}
+
+async function loadSoundPackCategory(category) {
+    const apiUrl = buildGitHubContentsApiUrl(category);
+    const response = await fetch(apiUrl, { cache: "no-store" });
+
+    if (response.status === 404) {
+        return [];
+    }
+
+    if (!response.ok) {
+        const error = new Error(
+            "HTTP " + response.status + " while loading " + category + " sound packs."
+        );
+        error.status = response.status;
+        throw error;
+    }
+
+    const entries = await response.json();
+
+    if (!Array.isArray(entries)) {
+        throw new Error("Unexpected GitHub response while loading " + category + " sound packs.");
+    }
+
+    return entries
+        .filter((entry) =>
+            entry &&
+            entry.type === "file" &&
+            typeof entry.name === "string" &&
+            /\.zip$/i.test(entry.name)
+        )
+        .map((entry) => ({
+            name: entry.name,
+            displayName: getSoundPackDisplayName(entry.name),
+            sha: typeof entry.sha === "string" ? entry.sha : ""
+        }))
+        .sort((left, right) =>
+            left.displayName.localeCompare(right.displayName, undefined, {
+                numeric: true,
+                sensitivity: "base"
+            })
+        );
+}
+
+function buildSoundPackDownloadUrl(category, fileName, sha) {
+    const encodedFileName = encodeURIComponent(fileName);
+    const baseUrl = "../sounds/" + encodeURIComponent(category) + "/" + encodedFileName;
+
+    return sha ? baseUrl + "?v=" + encodeURIComponent(sha) : baseUrl;
+}
+
+function renderSoundPackCategory(category, files) {
+    const list = document.getElementById(category + "SoundPackList");
+    if (!list) {
+        return;
+    }
+
+    list.replaceChildren();
+
+    if (files.length === 0) {
+        const emptyMessage = document.createElement("p");
+        emptyMessage.className = "note sound-pack-empty";
+        emptyMessage.textContent =
+            "No " + category + " sound packs are currently available.";
+        list.appendChild(emptyMessage);
+        return;
+    }
+
+    for (const file of files) {
+        const row = document.createElement("div");
+        row.className = "sound-pack-row";
+
+        const name = document.createElement("span");
+        name.className = "sound-pack-name";
+        name.textContent = file.displayName;
+
+        const download = document.createElement("a");
+        download.className = "app-link app-link-primary sound-pack-download";
+        download.href = buildSoundPackDownloadUrl(category, file.name, file.sha);
+        download.setAttribute("download", file.name);
+        download.textContent = "Download";
+        download.setAttribute(
+            "aria-label",
+            "Download " + file.displayName + " " + category + " sound pack"
+        );
+
+        row.append(name, download);
+        list.appendChild(row);
+    }
+}
+
+function renderSoundPackError(category, error) {
+    const list = document.getElementById(category + "SoundPackList");
+    if (!list) {
+        return;
+    }
+
+    list.replaceChildren();
+
+    const message = document.createElement("p");
+    message.className = "note warn sound-pack-error";
+
+    if (error && (error.status === 403 || error.status === 429)) {
+        message.textContent =
+            "The sound-pack list is temporarily unavailable because GitHub is limiting requests. " +
+            "Please try again later.";
+    } else {
+        message.textContent =
+            "The " + category + " sound-pack list could not be loaded right now. Please try again.";
+    }
+
+    list.appendChild(message);
+}
+
+async function loadSoundPacks() {
+    const status = document.getElementById("soundPacksStatus");
+    if (status) {
+        status.textContent = "Loading available sound packs…";
+    }
+
+    const categories = ["diesel", "steam"];
+    const results = await Promise.allSettled(
+        categories.map((category) => loadSoundPackCategory(category))
+    );
+
+    let failureCount = 0;
+
+    results.forEach((result, index) => {
+        const category = categories[index];
+
+        if (result.status === "fulfilled") {
+            renderSoundPackCategory(category, result.value);
+        } else {
+            failureCount += 1;
+            console.error(result.reason);
+            renderSoundPackError(category, result.reason);
+        }
+    });
+
+    if (status) {
+        if (failureCount === 0) {
+            status.textContent =
+                "Sound packs are listed automatically from the Diesel and Steam folders.";
+        } else if (failureCount === categories.length) {
+            status.textContent =
+                "The sound-pack list could not be loaded right now. The rest of the installer is still available.";
+        } else {
+            status.textContent =
+                "Some sound packs could not be loaded right now. Available packs are shown below.";
+        }
+    }
+}
+
+function initializeSoundPacks() {
+    const section = document.getElementById("soundPacksSection");
+    if (!section) {
+        return;
+    }
+
+    const loadWhenOpen = () => {
+        if (!section.open || soundPacksLoadPromise) {
+            return;
+        }
+
+        soundPacksLoadPromise = loadSoundPacks();
+    };
+
+    section.addEventListener("toggle", loadWhenOpen);
+    loadWhenOpen();
+}
+
 async function initialize() {
     await updateFirmwareInstaller();
+    initializeSoundPacks();
     appendCacheBusterToAnchors();
     await loadAndroidGuide();
 }

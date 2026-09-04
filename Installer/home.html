@@ -6,8 +6,8 @@
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <link rel="stylesheet" href="styles.css?v=20260903-4" />
-  <script type="module" src="app.js?v=20260903-4"></script>
+  <link rel="stylesheet" href="styles.css?v=20260904-1" />
+  <script type="module" src="app.js?v=20260904-1"></script>
 
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
 </head>
@@ -452,6 +452,64 @@
             </div>
           </div>
         </details>
+      </div>
+    </details>
+
+
+    <details class="section" id="soundPacksSection">
+      <summary>
+        <span class="section-title">
+          <img src="sounds.png" alt="" class="section-icon" />
+          <span>Sound Packs</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card sound-packs-intro">
+          <div class="card-header">
+            <div>
+              <div class="card-kicker">Locomotive audio</div>
+              <h3>Download a sound pack.</h3>
+            </div>
+          </div>
+
+          <p class="note">
+            Choose a Diesel or Steam sound pack below. The list is loaded directly from the sound-pack folders on the
+            Poor Man's Throttle GitHub project, so newly published ZIP files appear automatically.
+          </p>
+
+          <p class="note" id="soundPacksStatus" role="status" aria-live="polite">
+            Open this section to load the available sound packs.
+          </p>
+        </div>
+
+        <div class="sound-pack-groups">
+          <section class="sound-pack-group" aria-labelledby="dieselSoundPackHeading">
+            <div class="sound-pack-group-header">
+              <div>
+                <div class="card-kicker">Diesel</div>
+                <h3 id="dieselSoundPackHeading">Diesel sound packs</h3>
+              </div>
+            </div>
+
+            <div class="sound-pack-list" id="dieselSoundPackList">
+              <p class="note">Loading diesel sound packs…</p>
+            </div>
+          </section>
+
+          <section class="sound-pack-group" aria-labelledby="steamSoundPackHeading">
+            <div class="sound-pack-group-header">
+              <div>
+                <div class="card-kicker">Steam</div>
+                <h3 id="steamSoundPackHeading">Steam sound packs</h3>
+              </div>
+            </div>
+
+            <div class="sound-pack-list" id="steamSoundPackList">
+              <p class="note">Loading steam sound packs…</p>
+            </div>
+          </section>
+        </div>
       </div>
     </details>
 

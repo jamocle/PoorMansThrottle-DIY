@@ -39,8 +39,8 @@ if ! /usr/bin/grep -q 'new_install_prompt_erase' "$APP_JS"; then
   exit 1
 fi
 
-if ! /usr/bin/grep -q 'styles.css?v=20260903-4' "$HOME_HTML" || \
-   ! /usr/bin/grep -q 'app.js?v=20260903-4' "$HOME_HTML"; then
+if ! /usr/bin/grep -q 'styles.css?v=20260904-1' "$HOME_HTML" || \
+   ! /usr/bin/grep -q 'app.js?v=20260904-1' "$HOME_HTML"; then
   printf '%s\n' "ERROR: The corrected installer home.html was not detected." >&2
   printf '%s\n' "Refusing to remove old manifest files." >&2
   exit 1
@@ -93,6 +93,33 @@ done
 if [ "$found" -eq 0 ]; then
   printf '%s\n' "No obsolete manifest files were found. Nothing to do."
 fi
+
+
+OBSOLETE_EMPTY_DIRECTORIES=(
+  "sounds/diesel"
+  "sounds/steam"
+  "sounds"
+)
+
+for directory in "${OBSOLETE_EMPTY_DIRECTORIES[@]}"; do
+  path="${SCRIPT_DIR}/${directory}"
+
+  if [ -d "$path" ]; then
+    if [ "$MODE" = "dry-run" ]; then
+      if [ -z "$(/bin/ls -A "$path" 2>/dev/null)" ]; then
+        printf '  WOULD REMOVE EMPTY DIRECTORY: %s\n' "$path"
+      else
+        printf '  KEEPING NON-EMPTY DIRECTORY: %s\n' "$path"
+      fi
+    else
+      if /bin/rmdir "$path" 2>/dev/null; then
+        printf '  REMOVED EMPTY DIRECTORY: %s\n' "$path"
+      else
+        printf '  KEEPING NON-EMPTY DIRECTORY: %s\n' "$path"
+      fi
+    fi
+  fi
+done
 
 if [ "$MODE" = "dry-run" ] && [ "$found" -eq 1 ]; then
   printf '\n%s\n' "Review the list above. To delete those exact files, run:"

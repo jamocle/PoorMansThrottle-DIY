@@ -637,6 +637,75 @@ code {
     padding: 0;
 }
 
+
+/* Sound packs */
+.sound-packs-intro {
+    margin-top: 0;
+}
+
+.sound-pack-groups {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.sound-pack-group {
+    min-width: 0;
+    border-radius: var(--radius-md);
+    background: var(--panel-solid);
+    border: 1px solid #e8e6e2;
+    box-shadow: var(--shadow-soft);
+    padding: 18px;
+}
+
+.sound-pack-group-header {
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+}
+
+.sound-pack-group-header h3 {
+    margin: 8px 0 0;
+    font-size: 1.18rem;
+    letter-spacing: -0.02em;
+}
+
+.sound-pack-list {
+    margin-top: 4px;
+}
+
+.sound-pack-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    min-height: 62px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.sound-pack-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.sound-pack-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-weight: 620;
+    line-height: 1.35;
+}
+
+.sound-pack-download {
+    flex: 0 0 auto;
+    min-width: 110px;
+}
+
+.sound-pack-empty,
+.sound-pack-error {
+    padding: 14px 0 4px;
+}
+
 @media (min-width: 860px) {
     .wrap {
         padding: 28px 24px 72px;
@@ -674,6 +743,12 @@ code {
     }
 }
 
+@media (max-width: 760px) {
+    .sound-pack-groups {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 700px) {
     .visual-shell {
         width: 132px;
@@ -697,6 +772,19 @@ code {
 
     .card {
         padding: 16px;
+    }
+}
+
+@media (max-width: 520px) {
+    .sound-pack-row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 0;
+    }
+
+    .sound-pack-download {
+        width: 100%;
     }
 }
 
