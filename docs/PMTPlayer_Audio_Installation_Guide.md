@@ -247,7 +247,7 @@ Use:
 - Diesel sounds for PMTPlayer Diesel
 - Steam sounds for PMTPlayer Steam
 
-If you are copying files manually, the firmware looks for:
+Copy the wav files you downloaded or created to your SD card. The firmware looks for files in the diesel or steam folders on the SD card. e.g.:
 
 ```text
 /diesel/####.wav
