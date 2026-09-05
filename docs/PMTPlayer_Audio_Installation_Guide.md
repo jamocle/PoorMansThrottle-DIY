@@ -93,6 +93,9 @@ You need:
 
 **Do not connect either speaker wire to ESP32 GND.**
 
+## ESP32 Classic Wiring Diagram
+![Esp32 Classic Wiring Diagram](PMT_Audio_Classic.png)
+
 ## Classic quick check
 
 Before power-on:
@@ -155,6 +158,9 @@ You need:
 
 **Do not connect either speaker wire to ESP32 GND.**
 
+## ESP32 S3 Wiring Diagram
+![Esp32 S3 Wiring Diagram](PMT_Audio_S3.png)
+
 ## Standard S3 quick check
 
 Before power-on:
@@ -216,6 +222,9 @@ For reference, the onboard card uses:
 | Speaker - | Speaker wire 2 |
 
 **Do not connect either speaker wire to ESP32 GND.**
+
+## ESP32 CAM Wiring Diagram
+![Esp32 CAM Wiring Diagram](PMT_Audio_CAM.png)
 
 ## S3 CAM quick check
 

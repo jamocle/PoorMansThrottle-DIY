@@ -135,6 +135,10 @@ Use the IBT-2 screw terminals for Battery +, Battery -, M+, and M-.
 | **VCC** | **5V pin** |
 | **GND** | **Common ground** |
 
+## Classic Wiring Diagram
+
+![ESP32 Classic Wiring Diagram](Classic_Motor_Driver_Install.png)
+
 ## Classic quick check
 
 - [ ] RPWM -> GPIO25
@@ -166,6 +170,10 @@ Use the IBT-2 screw terminals for Battery +, Battery -, M+, and M-.
 | **L_EN** | **GPIO5** |
 | **VCC** | **5V pin** |
 | **GND** | **Common ground** |
+
+## ESP32-S3 Wiring Diagram
+
+![ESP32-S3-N16R8/N8R8 Wiring Diagram](S3_Motor_Driver_Install.png)
 
 ## ESP32-S3 quick check
 
