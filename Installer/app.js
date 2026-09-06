@@ -651,6 +651,187 @@ function initializeSoundPacks() {
 }
 
 
+const DOCUMENTATION_GITHUB_OWNER = "jamocle";
+const DOCUMENTATION_GITHUB_REPOSITORY = "PoorMansThrottle-DIY";
+const DOCUMENTATION_GITHUB_BRANCH = "main";
+const DOCUMENTATION_REPOSITORY_DIRECTORY = "docs";
+let documentationLoadPromise = null;
+
+function getDocumentationDisplayName(fileName) {
+    const normalizedName = fileName
+        .replace(/\.md$/i, "")
+        .replace(/[_-]+/g, " ")
+        .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+        .replace(/([A-Z]+)([A-Z][a-z])/g, "$1 $2")
+        .replace(/\s+/g, " ")
+        .trim();
+
+    return normalizedName
+        .split(" ")
+        .map((word) => {
+            if (/^[A-Z0-9]+$/.test(word) && /[A-Z]/.test(word)) {
+                return word;
+            }
+
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        })
+        .join(" ");
+}
+
+function buildDocumentationContentsApiUrl() {
+    return (
+        "https://api.github.com/repos/" +
+        encodeURIComponent(DOCUMENTATION_GITHUB_OWNER) +
+        "/" +
+        encodeURIComponent(DOCUMENTATION_GITHUB_REPOSITORY) +
+        "/contents/" +
+        encodeURIComponent(DOCUMENTATION_REPOSITORY_DIRECTORY) +
+        "?ref=" +
+        encodeURIComponent(DOCUMENTATION_GITHUB_BRANCH)
+    );
+}
+
+async function loadDocumentationFiles() {
+    const response = await fetch(buildDocumentationContentsApiUrl(), { cache: "no-store" });
+
+    if (!response.ok) {
+        const error = new Error(
+            "HTTP " + response.status + " while loading project documentation."
+        );
+        error.status = response.status;
+        throw error;
+    }
+
+    const entries = await response.json();
+
+    if (!Array.isArray(entries)) {
+        throw new Error("Unexpected GitHub response while loading project documentation.");
+    }
+
+    return entries
+        .filter((entry) =>
+            entry &&
+            entry.type === "file" &&
+            typeof entry.name === "string" &&
+            /\.md$/i.test(entry.name) &&
+            typeof entry.html_url === "string" &&
+            entry.html_url.startsWith("https://github.com/")
+        )
+        .map((entry) => ({
+            name: entry.name,
+            displayName: getDocumentationDisplayName(entry.name),
+            url: entry.html_url
+        }))
+        .sort((left, right) =>
+            left.name.localeCompare(right.name, undefined, {
+                numeric: true,
+                sensitivity: "base"
+            })
+        );
+}
+
+function clearDynamicDocumentationItems(list) {
+    for (const item of list.querySelectorAll("[data-documentation-dynamic]")) {
+        item.remove();
+    }
+}
+
+function appendDocumentationMessage(list, message, isWarning) {
+    const item = document.createElement("li");
+    item.dataset.documentationDynamic = "true";
+    item.className = isWarning ? "note warn" : "note";
+    item.textContent = message;
+    list.appendChild(item);
+}
+
+function renderDocumentationFiles(files) {
+    const list = document.getElementById("documentationList");
+    if (!list) {
+        return;
+    }
+
+    clearDynamicDocumentationItems(list);
+
+    if (files.length === 0) {
+        appendDocumentationMessage(
+            list,
+            "No Markdown documentation files are currently available.",
+            false
+        );
+        return;
+    }
+
+    for (const file of files) {
+        const item = document.createElement("li");
+        item.dataset.documentationDynamic = "true";
+
+        const link = document.createElement("a");
+        link.className = "doc-link";
+        link.href = file.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = file.displayName;
+
+        item.appendChild(link);
+        list.appendChild(item);
+    }
+}
+
+function renderDocumentationError(error) {
+    const list = document.getElementById("documentationList");
+    if (!list) {
+        return;
+    }
+
+    clearDynamicDocumentationItems(list);
+
+    const isRateLimited = error && (error.status === 403 || error.status === 429);
+    appendDocumentationMessage(
+        list,
+        isRateLimited
+            ? "The documentation list is temporarily unavailable because GitHub is limiting requests. Please try again later."
+            : "The documentation list could not be loaded right now. Please try again later.",
+        true
+    );
+}
+
+async function loadDocumentation() {
+    const list = document.getElementById("documentationList");
+    if (!list) {
+        return;
+    }
+
+    clearDynamicDocumentationItems(list);
+    appendDocumentationMessage(list, "Loading project documentation…", false);
+
+    try {
+        const files = await loadDocumentationFiles();
+        renderDocumentationFiles(files);
+    } catch (error) {
+        console.error(error);
+        renderDocumentationError(error);
+    }
+}
+
+function initializeDocumentation() {
+    const section = document.getElementById("documentationSection");
+    if (!section) {
+        return;
+    }
+
+    const loadWhenOpen = () => {
+        if (!section.open || documentationLoadPromise) {
+            return;
+        }
+
+        documentationLoadPromise = loadDocumentation();
+    };
+
+    section.addEventListener("toggle", loadWhenOpen);
+    loadWhenOpen();
+}
+
+
 const SOUND_UPLOAD_MAX_BYTES = 20 * 1024 * 1024;
 let soundUploadTurnstileWidgetId = null;
 let soundUploadTurnstileToken = "";
@@ -960,6 +1141,7 @@ function initializeSoundPackCrowdsourcing() {
 async function initialize() {
     await updateFirmwareInstaller();
     initializeSoundPacks();
+    initializeDocumentation();
     initializeSoundPackCrowdsourcing();
     appendCacheBusterToAnchors();
     await loadAndroidGuide();
