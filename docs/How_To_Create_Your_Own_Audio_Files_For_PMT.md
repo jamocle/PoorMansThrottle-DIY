@@ -20,7 +20,7 @@ You will learn:
 
 The recommended lengths in this guide are **authoring recommendations**, not fixed hardware timing requirements.
 
-PMTPlayer should be allowed to work with naturally sized sounds. A startup sound can be longer than another startup sound. A horn release can be short or long. A diesel idle loop does not have to be an exact number of seconds.
+A startup sound can be longer than another startup sound. A horn release can be short or long. A diesel idle loop does not have to be an exact number of seconds.
 
 The important parts are:
 
