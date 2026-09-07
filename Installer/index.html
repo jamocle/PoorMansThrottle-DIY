@@ -3,12 +3,15 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Poor Man's Throttle</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script>
         (function () {
             const randomCacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
-            window.location.replace("home.html?v=" + randomCacheBust);
+            window.location.replace("home.html?v=" + randomCacheBust + "&pmtFresh=1");
         })();
     </script>
 </head>

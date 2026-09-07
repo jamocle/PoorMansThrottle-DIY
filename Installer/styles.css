@@ -1033,11 +1033,11 @@ code {
     transform-origin: center;
 }
 
-.board-choice[data-board="classic"] .board-choice-image {
+.board-choice[data-board-choice="classic"] .board-choice-image {
     transform: rotate(90deg);
 }
 
-.board-choice[data-board="s3"] .board-choice-image {
+.board-choice[data-board-choice="s3"] .board-choice-image {
     transform: rotate(-90deg);
 }
 
@@ -1076,6 +1076,96 @@ code {
 
 .board-choice-help {
     margin-top: 16px;
+}
+
+.s3-variant-panel {
+    margin-top: 22px;
+    padding-top: 22px;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.s3-variant-panel[hidden] {
+    display: none !important;
+}
+
+.s3-variant-warning {
+    margin-top: 10px;
+    padding: 14px 16px;
+    border: 1px solid rgba(160, 61, 45, 0.24);
+    border-radius: 16px;
+    background: rgba(160, 61, 45, 0.05);
+}
+
+.s3-variant-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+
+.s3-variant-choice {
+    display: grid;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    border: 2px solid #e2ddd6;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.96);
+    color: var(--text);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.s3-variant-choice:hover,
+.s3-variant-choice:focus-visible {
+    transform: translateY(-2px);
+    border-color: rgba(123, 75, 31, 0.42);
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.09);
+    outline: none;
+}
+
+.s3-variant-choice.is-selected {
+    border-color: var(--accent);
+    background: rgba(123, 75, 31, 0.06);
+    box-shadow: 0 0 0 4px rgba(123, 75, 31, 0.09), var(--shadow-soft);
+}
+
+.s3-variant-copy {
+    display: grid;
+    gap: 5px;
+}
+
+.s3-variant-copy strong {
+    font-size: 1.2rem;
+}
+
+.s3-variant-copy span {
+    color: var(--muted);
+    line-height: 1.4;
+}
+
+.s3-variant-action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.s3-variant-choice.is-selected .s3-variant-action {
+    background: var(--text);
+}
+
+.s3-variant-help {
+    margin-top: 14px;
 }
 
 .firmware-board-panel {
@@ -1118,7 +1208,8 @@ code {
     transform: rotate(90deg);
 }
 
-.selected-board-image[data-board="s3"] {
+.selected-board-image[data-board="s3"],
+.selected-board-image[data-board="s3-n8r8"] {
     transform: rotate(-90deg);
 }
 
@@ -1351,6 +1442,7 @@ code {
     }
 
     .board-choice-grid,
+    .s3-variant-grid,
     .os-help-grid,
     .install-choice-grid {
         grid-template-columns: 1fr;

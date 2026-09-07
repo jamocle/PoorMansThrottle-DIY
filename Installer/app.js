@@ -27,21 +27,15 @@ function appendCacheBusterToAnchors() {
 
         try {
             const url = new URL(href, window.location.href);
-            const hostname = (url.hostname || "").toLowerCase();
 
-            if (hostname === "youtu.be" || hostname === "www.youtu.be") {
-                continue;
-            }
-
-            if (url.searchParams.has("v")) {
+            if (url.origin !== window.location.origin || url.searchParams.has("v")) {
                 continue;
             }
 
             url.searchParams.set("v", cacheBust);
             link.setAttribute("href", url.toString());
         } catch {
-            const separator = href.includes("?") ? "&" : "?";
-            link.setAttribute("href", href + separator + "v=" + cacheBust);
+            // Leave malformed or unsupported URLs unchanged.
         }
     }
 }
@@ -145,6 +139,7 @@ function getFirmwareDirectoryUrl(board, version) {
 
 function createManifestUrl(board, release) {
     const firmwareDirectoryUrl = getFirmwareDirectoryUrl(board, release.version);
+    const firmwareCacheBust = getRandomCacheBust();
 
     const manifest = {
         name: "Poor Man's Throttle - " + board.label,
@@ -153,10 +148,15 @@ function createManifestUrl(board, release) {
         builds: [
             {
                 chipFamily: board.chipFamily,
-                parts: board.parts.map((part) => ({
-                    path: new URL(part.file, firmwareDirectoryUrl).href,
-                    offset: part.offset
-                }))
+                parts: board.parts.map((part) => {
+                    const firmwareUrl = new URL(part.file, firmwareDirectoryUrl);
+                    firmwareUrl.searchParams.set("v", firmwareCacheBust);
+
+                    return {
+                        path: firmwareUrl.href,
+                        offset: part.offset
+                    };
+                })
             }
         ]
     };
@@ -207,17 +207,41 @@ function populateFirmwareSelect(select, board) {
     }
 }
 
-function setBoardChoiceState(selectedBoardKey) {
-    const choices = document.querySelectorAll(".board-choice[data-board]");
+function setBoardChoiceState(selectedBoardChoice) {
+    const choices = document.querySelectorAll(".board-choice[data-board-choice]");
 
     for (const choice of choices) {
-        const isSelected = choice.dataset.board === selectedBoardKey;
+        const isSelected = choice.dataset.boardChoice === selectedBoardChoice;
         choice.setAttribute("aria-pressed", String(isSelected));
         choice.classList.toggle("is-selected", isSelected);
 
         const action = choice.querySelector(".board-choice-action");
         if (action) {
-            action.textContent = isSelected ? "Selected" : "I have this board";
+            if (isSelected) {
+                action.textContent = "Selected";
+            } else {
+                action.textContent =
+                    choice.dataset.boardChoice === "s3"
+                        ? "I have an S3 board"
+                        : "I have this board";
+            }
+        }
+    }
+}
+
+function setS3VariantChoiceState(selectedBoardKey) {
+    const choices = document.querySelectorAll(".s3-variant-choice[data-board]");
+
+    for (const choice of choices) {
+        const boardKey = choice.dataset.board;
+        const isSelected = boardKey === selectedBoardKey;
+        choice.setAttribute("aria-pressed", String(isSelected));
+        choice.classList.toggle("is-selected", isSelected);
+
+        const action = choice.querySelector(".s3-variant-action");
+        if (action) {
+            const variantName = boardKey === "s3-n8r8" ? "N8R8" : "N16R8";
+            action.textContent = isSelected ? "Selected" : "I have " + variantName;
         }
     }
 }
@@ -230,6 +254,7 @@ function isLocalPreviewEnvironment() {
 function showFirmwareLoadError() {
     const errorCard = document.getElementById("firmwareLoadError");
     const panel = document.getElementById("boardInstallPanel");
+    const s3VariantPanel = document.getElementById("s3VariantPanel");
 
     if (errorCard) {
         const isPreview = isLocalPreviewEnvironment();
@@ -276,10 +301,16 @@ function showFirmwareLoadError() {
     if (panel) {
         panel.hidden = true;
     }
+
+    if (s3VariantPanel) {
+        s3VariantPanel.hidden = true;
+    }
 }
 
 async function updateFirmwareInstaller() {
-    const boardChoices = document.querySelectorAll(".board-choice[data-board]");
+    const boardChoices = document.querySelectorAll(".board-choice[data-board-choice]");
+    const s3VariantChoices = document.querySelectorAll(".s3-variant-choice[data-board]");
+    const s3VariantPanel = document.getElementById("s3VariantPanel");
     const panel = document.getElementById("boardInstallPanel");
     const selectedBoardName = document.getElementById("selectedBoardName");
     const selectedBoardImage = document.getElementById("selectedBoardImage");
@@ -293,6 +324,8 @@ async function updateFirmwareInstaller() {
 
     if (
         boardChoices.length > 0 &&
+        s3VariantChoices.length > 0 &&
+        s3VariantPanel &&
         panel &&
         selectedBoardName &&
         selectedBoardImage &&
@@ -304,12 +337,20 @@ async function updateFirmwareInstaller() {
         try {
             const firmwareData = await loadFirmwareVersions();
 
+            const resetInstallSelection = () => {
+                panel.hidden = true;
+                sel.onchange = null;
+                clearInstallButtonManifest(olderBtn);
+                clearInstallButtonManifest(latestBtn);
+            };
+
             const selectBoard = (boardKey) => {
                 const board = firmwareData.boards[boardKey];
 
                 if (!board) {
                     console.error("Unknown firmware board: " + boardKey);
                     showFirmwareLoadError();
+                    resetInstallSelection();
                     return;
                 }
 
@@ -319,10 +360,14 @@ async function updateFirmwareInstaller() {
                 if (!latestRelease || !dropdownRelease) {
                     console.error("Firmware version configuration is incomplete for " + boardKey + ".");
                     showFirmwareLoadError();
+                    resetInstallSelection();
                     return;
                 }
 
-                setBoardChoiceState(boardKey);
+                const isS3 = boardKey === "s3" || boardKey === "s3-n8r8";
+                setBoardChoiceState(isS3 ? "s3" : "classic");
+                setS3VariantChoiceState(isS3 ? boardKey : null);
+                s3VariantPanel.hidden = !isS3;
 
                 selectedBoardName.textContent = board.label;
                 selectedBoardImage.src = board.image;
@@ -357,6 +402,30 @@ async function updateFirmwareInstaller() {
             };
 
             for (const choice of boardChoices) {
+                choice.addEventListener("click", () => {
+                    const selectedChoice = choice.dataset.boardChoice;
+
+                    if (selectedChoice === "classic") {
+                        setBoardChoiceState("classic");
+                        setS3VariantChoiceState(null);
+                        s3VariantPanel.hidden = true;
+                        selectBoard("classic");
+                        return;
+                    }
+
+                    if (selectedChoice === "s3") {
+                        setBoardChoiceState("s3");
+                        setS3VariantChoiceState(null);
+                        s3VariantPanel.hidden = false;
+
+                        // Never keep an old S3 manifest attached while the user is
+                        // deciding between N16R8 and N8R8.
+                        resetInstallSelection();
+                    }
+                });
+            }
+
+            for (const choice of s3VariantChoices) {
                 choice.addEventListener("click", () => {
                     selectBoard(choice.dataset.board);
                 });
@@ -527,7 +596,8 @@ function buildSoundPackDownloadUrl(category, fileName, sha) {
     const encodedFileName = encodeURIComponent(fileName);
     const baseUrl = "../sounds/" + encodeURIComponent(category) + "/" + encodedFileName;
 
-    return sha ? baseUrl + "?v=" + encodeURIComponent(sha) : baseUrl;
+    const cacheVersion = sha ? sha : getRandomCacheBust();
+    return baseUrl + "?v=" + encodeURIComponent(cacheVersion);
 }
 
 function renderSoundPackCategory(category, files) {
@@ -649,6 +719,7 @@ function initializeSoundPacks() {
     section.addEventListener("toggle", loadWhenOpen);
     loadWhenOpen();
 }
+
 
 
 const DOCUMENTATION_GITHUB_OWNER = "jamocle";
@@ -830,7 +901,6 @@ function initializeDocumentation() {
     section.addEventListener("toggle", loadWhenOpen);
     loadWhenOpen();
 }
-
 
 const SOUND_UPLOAD_MAX_BYTES = 20 * 1024 * 1024;
 let soundUploadTurnstileWidgetId = null;

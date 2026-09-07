@@ -79,10 +79,41 @@
       ]
     },
     "s3": {
-      "label": "ESP32-S3-N16R8 (N8R8)",
+      "label": "ESP32-S3-WROOM-1-N16R8",
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/s3/{version}/",
+      "latest": "3.0.0",
+      "dropdownDefault": "3.0.0",
+      "parts": [
+        {
+          "file": "PoorMansThrottle.ino.bootloader.bin",
+          "offset": 0
+        },
+        {
+          "file": "PoorMansThrottle.ino.partitions.bin",
+          "offset": 32768
+        },
+        {
+          "file": "boot_app0.bin",
+          "offset": 57344
+        },
+        {
+          "file": "PoorMansThrottle.ino.bin",
+          "offset": 65536
+        }
+      ],
+      "versions": [
+        {
+          "version": "3.0.0"
+        }
+      ]
+    },
+    "s3-n8r8": {
+      "label": "ESP32-S3-WROOM-1-N8R8",
+      "image": "Info/esp32-s3-n16r8.png",
+      "chipFamily": "ESP32-S3",
+      "firmwareDirectory": "../firmware/s3-n8r8/{version}/",
       "latest": "3.0.0",
       "dropdownDefault": "3.0.0",
       "parts": [

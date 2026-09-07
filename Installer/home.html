@@ -3,12 +3,146 @@
 
 <head>
   <meta charset="utf-8" />
+  <!-- PMT dynamic document cache protection -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script>
+    (() => {
+      "use strict";
+
+      const cacheParameter = "v";
+      const freshnessParameter = "pmtFresh";
+      const maximumFreshTokenAgeMs = 120000;
+
+      const createCacheToken = () => Date.now() + "-" + Math.random();
+
+      const isRecentCacheToken = (token) => {
+        if (!token) {
+          return false;
+        }
+
+        const timestamp = Number.parseInt(String(token).split("-", 1)[0], 10);
+        if (!Number.isFinite(timestamp)) {
+          return false;
+        }
+
+        const age = Date.now() - timestamp;
+        return age >= -5000 && age <= maximumFreshTokenAgeMs;
+      };
+
+      const makeFreshUrl = (input) => {
+        const url = new URL(input, window.location.href);
+        url.searchParams.set(cacheParameter, createCacheToken());
+        url.searchParams.set(freshnessParameter, "1");
+        return url;
+      };
+
+      const currentUrl = new URL(window.location.href);
+      const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const isFreshNavigation =
+        currentUrl.searchParams.get(freshnessParameter) === "1" &&
+        isRecentCacheToken(currentToken);
+
+      if (!isFreshNavigation) {
+        window.location.replace(makeFreshUrl(currentUrl).href);
+        return;
+      }
+
+      currentUrl.searchParams.delete(cacheParameter);
+      currentUrl.searchParams.delete(freshnessParameter);
+
+      try {
+        window.history.replaceState(window.history.state, "", currentUrl.href);
+      } catch {
+        // The freshness query may remain visible on unusual local-file/browser combinations.
+      }
+
+      const updateInternalHtmlLink = (link) => {
+        const href = link.getAttribute("href");
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          href.startsWith("javascript:")
+        ) {
+          return;
+        }
+
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch {
+          return;
+        }
+
+        if (
+          url.origin !== window.location.origin ||
+          !url.pathname.toLowerCase().endsWith(".html")
+        ) {
+          return;
+        }
+
+        link.href = makeFreshUrl(url).href;
+      };
+
+      const updateLinkFromEvent = (event) => {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+
+        const link = event.target.closest("a[href]");
+        if (link) {
+          updateInternalHtmlLink(link);
+        }
+      };
+
+      document.addEventListener("click", updateLinkFromEvent, true);
+      document.addEventListener("auxclick", updateLinkFromEvent, true);
+      document.addEventListener("contextmenu", updateLinkFromEvent, true);
+
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          window.location.replace(makeFreshUrl(window.location.href).href);
+        }
+      });
+    })();
+  </script>
+
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
-  <link rel="stylesheet" href="styles.css?v=20260904-2" />
-  <script src="sound-upload-config.js?v=20260904-2"></script>
-  <script type="module" src="app.js?v=20260904-2"></script>
+  <script>
+    (function () {
+      const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "styles.css?v=" + cacheBust;
+      document.head.appendChild(cssLink);
+
+      let appStarted = false;
+      const startApp = function () {
+        if (appStarted) {
+          return;
+        }
+
+        appStarted = true;
+
+        const appScript = document.createElement("script");
+        appScript.type = "module";
+        appScript.src = "app.js?v=" + cacheBust;
+        document.head.appendChild(appScript);
+      };
+
+      const soundConfigScript = document.createElement("script");
+      soundConfigScript.src = "sound-upload-config.js?v=" + cacheBust;
+      soundConfigScript.addEventListener("load", startApp, { once: true });
+      soundConfigScript.addEventListener("error", startApp, { once: true });
+      document.head.appendChild(soundConfigScript);
+    })();
+  </script>
 
   <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
 </head>
@@ -110,17 +244,18 @@
           <div class="card-header">
             <div>
               <div class="card-kicker">Step 1</div>
-              <h3>Which ESP32 board do you have?</h3>
+              <h3>Which ESP32 board family do you have?</h3>
             </div>
           </div>
 
           <p class="note">
-            Match your board to the picture below. Choosing the correct board is important because the
-            <strong>Classic ESP32-WROOM-32</strong> and <strong>ESP32-S3-N16R8 (N8R8)</strong> use different firmware.
+            Choose <strong>Classic ESP32-WROOM-32</strong> or <strong>ESP32-S3</strong>.
+            If you choose ESP32-S3, the installer will ask whether the metal module is marked
+            <strong>N16R8</strong> or <strong>N8R8</strong> before any firmware install controls are shown.
           </p>
 
-          <div class="board-choice-grid" id="boardChoiceGrid" aria-label="Choose your ESP32 board">
-            <button class="board-choice" type="button" data-board="classic" aria-pressed="false">
+          <div class="board-choice-grid" id="boardChoiceGrid" aria-label="Choose your ESP32 board family">
+            <button class="board-choice" type="button" data-board-choice="classic" aria-pressed="false">
               <span class="board-choice-image-shell">
                 <img src="Info/classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 board" class="board-choice-image" />
               </span>
@@ -131,21 +266,59 @@
               <span class="board-choice-action">I have this board</span>
             </button>
 
-            <button class="board-choice" type="button" data-board="s3" aria-pressed="false">
+            <button class="board-choice" type="button" data-board-choice="s3" aria-pressed="false">
               <span class="board-choice-image-shell">
-                <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3-N16R8 (N8R8) board" class="board-choice-image" />
+                <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3 board" class="board-choice-image" />
               </span>
               <span class="board-choice-copy">
-                <strong>ESP32-S3-N16R8 (N8R8)</strong>
-                <span>Choose this if your board matches this picture.</span>
+                <strong>ESP32-S3</strong>
+                <span>Choose this for an S3 board. You will identify N16R8 or N8R8 next.</span>
               </span>
-              <span class="board-choice-action">I have this board</span>
+              <span class="board-choice-action">I have an S3 board</span>
             </button>
           </div>
 
           <p class="note board-choice-help">
-            <strong>Not sure?</strong> Do not guess. Compare the board in your hand with both pictures before continuing.
+            <strong>Not sure?</strong> Do not guess. Compare the board in your hand with the pictures before continuing.
           </p>
+
+          <div id="s3VariantPanel" class="s3-variant-panel" hidden>
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 1A</div>
+                <h3>Which ESP32-S3 module do you have?</h3>
+              </div>
+            </div>
+
+            <p class="note s3-variant-warning">
+              <strong>Check the writing on the metal ESP32 module itself.</strong>
+              Find <strong>N16R8</strong> or <strong>N8R8</strong> in the printed module designation.
+              These modules use different flash sizes and different firmware. Do not guess.
+            </p>
+
+            <div class="s3-variant-grid" aria-label="Choose your ESP32-S3 module">
+              <button class="s3-variant-choice" type="button" data-board="s3" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N16R8</strong>
+                  <span>16 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N16R8</span>
+              </button>
+
+              <button class="s3-variant-choice" type="button" data-board="s3-n8r8" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N8R8</strong>
+                  <span>8 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N8R8</span>
+              </button>
+            </div>
+
+            <p class="note s3-variant-help">
+              The boards can look nearly identical. The module marking, not the board color or USB connector,
+              determines which S3 firmware you need.
+            </p>
+          </div>
         </div>
 
         <div id="firmwareLoadError" class="card firmware-error-card" hidden role="alert">
@@ -163,7 +336,8 @@
                 <div class="card-kicker">You selected</div>
                 <h3 id="selectedBoardName"></h3>
                 <p class="note">
-                  Make sure the board connected to your computer matches this picture before you install.
+                  Make sure the connected board matches this selection. For ESP32-S3, verify the metal module marking
+                  says N16R8 or N8R8 exactly as selected before you install.
                 </p>
               </div>
               <div class="selected-board-image-shell">
