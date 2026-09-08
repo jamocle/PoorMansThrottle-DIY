@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.0.0
+* **Audio refinements** Modified so that it prototypically obey's startup and shutdown for diesel profiles and prohibits throttle input during those times.
+* **Custom file searching** modified the code to make the resolution of custom audio files more robust.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.0
 * **PMT Goes Vocal** Major locomotive audio system added — Firmware 3.0.0 introduces a full motion-aware sound engine with native ESP32-S3 PMTPlayer / SD-WAV audio playback, including support for playing custom user-provided WAV sound files. The system provides throttle-synchronized diesel prime-mover startup, shutdown, idle, and notch sounds; speed-responsive steam chuffs, moving sound beds, and stationary boiler/idle sounds; managed horn/whistle, bell, and brake-squeal effects; randomized cab chatter; and custom FX-triggered sounds. The audio engine adds priority-based multi-voice playback, smooth loop and notch transitions, crossfades, overlap handling, dynamic mix/headroom management, limiter and speaker-profile tuning, and extensive CV-based audio configuration—allowing users to combine PMT’s locomotive-responsive sound engine with their own custom WAV audio.
