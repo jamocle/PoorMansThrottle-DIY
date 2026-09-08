@@ -169,9 +169,10 @@
     .sound-tags span{padding:7px 11px;border-radius:999px;background:#f2f2f5;border:1px solid #e2e2e7;
       font-size:.92rem;font-weight:600}
     .grade-card .big-grade{font-size:3rem;line-height:1;font-weight:800;letter-spacing:-.05em;margin:4px 0 10px}
+    .grade-card .big-grade.split-grade{font-size:clamp(1.8rem,5vw,2.45rem);letter-spacing:-.035em}
     .grade-row{display:grid;grid-template-columns:1fr auto;gap:12px;padding:8px 0;border-top:1px solid #ececf1}
     .grade-row:first-of-type{border-top:0}.grade-a{color:#147a43;font-weight:800}.grade-b{color:#986000;font-weight:800}
-    .grade-f{color:#b42318;font-weight:800}.mini{color:var(--muted);font-size:.94rem}
+    .grade-f{color:#b42318;font-weight:800}.strike{text-decoration:line-through}.mini{color:var(--muted);font-size:.94rem}
     .free-banner{margin-top:18px;padding:22px;border-radius:22px;text-align:center;background:linear-gradient(135deg,#161616,#2c2c2e);
       color:#fff;box-shadow:0 14px 32px rgba(0,0,0,.14)}
     .free-banner strong{display:block;font-size:clamp(1.45rem,5vw,2.4rem);line-height:1.1;letter-spacing:-.03em;margin-bottom:8px}
@@ -295,22 +296,26 @@
     <section class="section">
       <div class="section-header">
         <h2>PMT 3.0 hardware report card</h2>
-        <p>A simple way to choose hardware based on the kind of locomotive sound you want to run.</p>
+        <p>
+          A quick comparison of how each board handles Diesel and Steam audio.
+          This uses a U.S.-style A–F grading scale: <strong>A = recommended</strong>,
+          <strong>B− = usable with limitations</strong>, and <strong>F = not recommended</strong>.
+        </p>
       </div>
       <div class="content">
         <div class="grade-grid">
           <article class="grade-card">
             <span class="label green">ESP32-S3</span>
-            <div class="big-grade grade-a">A</div>
-            <div class="grade-row"><span>Diesel</span><span class="grade-a">A</span></div>
-            <div class="grade-row"><span>Steam</span><span class="grade-a">A</span></div>
+            <div class="big-grade grade-a">Diesel & Steam</div>
+            <div class="grade-row"><span>Diesel</span><span class="grade-a">A — Recommended</span></div>
+            <div class="grade-row"><span>Steam</span><span class="grade-a">A — Recommended</span></div>
             <p class="mini">Recommended for both Diesel and Steam. More voices, cached audio, and substantially more breathing room.</p>
           </article>
           <article class="grade-card">
             <span class="label red">CLASSIC ESP32</span>
-            <div class="big-grade grade-b">B− / F</div>
-            <div class="grade-row"><span>Diesel</span><span class="grade-b">B−</span></div>
-            <div class="grade-row"><span>Steam</span><span class="grade-f">F</span></div>
+            <div class="big-grade split-grade"><span class="grade-b">Diesel</span> · <span class="grade-f strike">Steam</span></div>
+            <div class="grade-row"><span>Diesel</span><span class="grade-b">B− — Usable with limitations</span></div>
+            <div class="grade-row"><span>Steam</span><span class="grade-f">F — Not recommended</span></div>
             <p class="mini">Usable for lighter Diesel needs. Not recommended for Steam because of the heavier layered audio demands.</p>
           </article>
         </div>
