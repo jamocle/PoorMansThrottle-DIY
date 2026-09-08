@@ -285,6 +285,24 @@
           <article class="card"><span class="label green">ESP32-S3</span><h3>13 or more voices</h3><p>The S3 platform can cache audio and support 13 or more voices, providing far more headroom for layered, responsive locomotive sound — especially important for Steam.</p></article>
           <article class="card"><span class="label red">CLASSIC ESP32</span><h3>3 simultaneous voices</h3><p>The classic ESP32 was pushed hard to make audio fit. It works, but resources are tight. It can be a practical option for Diesel installations where the sound mix is less demanding.</p></article>
         </div>
+
+        <div class="callout">
+          <strong>What does “voice” mean?</strong><br />
+          A voice is one sound that PMT can play at the same time as other sounds. It is <strong>not</strong> a limit on how many WAV files you can store on the microSD card or include in a sound set.
+          <br /><br />
+          <strong>Think of voices like burners on a stove.</strong>
+          You can have a kitchen full of ingredients, but if your stove has only 3 burners, only 3 things can be cooking at the same time.
+          In the same way, a Classic ESP32 can have many WAV files available, but it can play about 3 sounds at once.
+          For example, an engine sound, horn, and bell playing together would use 3 voices.
+          <br /><br />
+          <strong>Why does Steam need more voices?</strong>
+          Diesel is usually a simpler sound mix, with fewer sounds needing to overlap at the same moment.
+          Steam is more demanding because chuffs can be playing continuously while the whistle, bell, and other effects overlap.
+          Each overlapping sound needs a voice, so Steam benefits much more from the extra voices available on the ESP32-S3.
+          <br /><br />
+          <strong>In short:</strong> WAV files are the sounds you have available. Voices are how many sounds PMT can play at the same time.
+        </div>
+
         <div class="disclosure"><div class="disclosure-title">Full disclosure from the developer</div>
           I spent hours squeezing every byte I could out of the classic ESP32 to make this work.
           It is supported, but if sound matters to you, I highly recommend upgrading to an ESP32-S3.
