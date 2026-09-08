@@ -184,8 +184,9 @@
       <a href="#classic">Classic ESP32<span>External microSD + MAX98357A</span></a>
       <a href="#s3-standard">Standard ESP32-S3<span>External microSD + MAX98357A</span></a>
       <a href="#s3-cam">ESP32-S3 CAM<span>Onboard microSD + MAX98357A</span></a>
-      <a href="#sounds">Get PMTPlayer Sounds<span>Sound folders and WAV requirements</span></a>
-      <a href="#troubleshooting">Troubleshooting<span>No sound, popping, SD detection</span></a>
+      <a href="#sd-card-format">microSD Card Format<span>Required FAT16/FAT32 format</span></a>
+<a href="#sounds">Get PMTPlayer Sounds<span>Sound folders and WAV requirements</span></a>
+      <a href="#troubleshooting">Troubleshooting<span>S3 LED codes, card format, no sound, SD detection</span></a>
       <a href="#reference">One-Page Reference<span>GPIO wiring at a glance</span></a>
     </nav>
 
@@ -222,6 +223,40 @@
 <p><strong>Do not use the Standard S3 microSD wiring on an S3 CAM when using the CAM's onboard card slot.</strong></p>
 <blockquote>
 <p>GPIO numbers in this guide are the ESP32 GPIO numbers. Do not count connector pins from one end of the board.</p>
+</blockquote>
+
+<h1 id="sd-card-format">microSD Card Format — Required</h1>
+<div class="warning">
+<p><strong>PMTPlayer requires a FAT-formatted microSD card. Do not use exFAT.</strong></p>
+</div>
+<h2>Use this format for your card size</h2>
+<p><strong>The microSD card must use the format shown below. Do not use exFAT.</strong></p>
+<table>
+<thead>
+<tr>
+  <th style="text-align:right">Card size</th>
+  <th>Format to use</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="text-align:right">128 MB</td><td><strong>FAT16</strong></td></tr>
+<tr><td style="text-align:right">256 MB</td><td><strong>FAT16</strong></td></tr>
+<tr><td style="text-align:right">512 MB</td><td><strong>FAT16</strong></td></tr>
+<tr><td style="text-align:right">1 GB</td><td><strong>FAT16</strong></td></tr>
+<tr><td style="text-align:right">2 GB</td><td><strong>FAT16</strong></td></tr>
+<tr><td style="text-align:right">4 GB</td><td><strong>FAT32</strong></td></tr>
+<tr><td style="text-align:right">8 GB</td><td><strong>FAT32</strong></td></tr>
+<tr><td style="text-align:right">16 GB</td><td><strong>FAT32</strong></td></tr>
+<tr><td style="text-align:right">32 GB</td><td><strong>FAT32</strong></td></tr>
+<tr><td style="text-align:right">64 GB</td><td><strong>FAT32 — reformat if the card came as exFAT</strong></td></tr>
+<tr><td style="text-align:right">128 GB</td><td><strong>FAT32 — reformat if the card came as exFAT</strong></td></tr>
+</tbody>
+</table>
+<p><strong>64 GB and 128 GB cards are often sold already formatted as exFAT. PMTPlayer requires them to be reformatted as FAT32 before use.</strong></p>
+<p>On an S3 board, a card that cannot be mounted or used during audio startup can cause <strong>5 red flashes</strong>.</p>
+
+<blockquote>
+<p><strong>Before you copy any sound files:</strong> format the card correctly first. A 64 GB or 128 GB card may arrive from the factory as exFAT and must be reformatted as FAT32.</p>
 </blockquote>
 <hr />
 <h1 id="amplifier">2. MAX98357A Amplifier — Important</h1>
@@ -357,7 +392,7 @@
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>SD reader and amplifier both have GND connected</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>amplifier has a clean ground connection to ESP32 GND</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>speaker is connected only to the amplifier outputs</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is prepared and inserted</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is formatted as required in the microSD Card Format section and inserted</li>
 </ul>
 <hr />
 <h1 id="s3-standard">4. ESP32-S3 N16R8 — Standard Board</h1>
@@ -472,7 +507,7 @@
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>SD reader and amplifier both have GND connected</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>amplifier has a clean ground connection to ESP32-S3 GND</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>speaker is connected only to the amplifier outputs</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is prepared and inserted</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is formatted as required in the microSD Card Format section and inserted</li>
 </ul>
 <hr />
 <h1 id="s3-cam">5. ESP32-S3 CAM N16R8</h1>
@@ -558,10 +593,13 @@
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>amplifier GND is connected to ESP32-S3 GND</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>amplifier has a clean ground connection</li>
 <li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>speaker is connected only to the amplifier outputs</li>
-<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is prepared</li>
+<li class="task-list-item"><input class="task-list-item-checkbox" type="checkbox" disabled/>microSD card is formatted as required in the microSD Card Format section</li>
 </ul>
 <hr />
 <h1 id="sounds">6. Get PMTPlayer Sounds</h1>
+<div class="warning">
+<p><strong>Before copying sounds, check the <a href="#sd-card-format">microSD Card Format table</a>. Do not use exFAT.</strong></p>
+</div>
 <p>PMTPlayer sounds can be downloaded here:</p>
 <p><a href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html" target="_blank" rel="noopener noreferrer">Download and share PMTPlayer sounds</a></p>
 <p>Sounds can also be uploaded there to contribute to the crowdsourced PMTPlayer sound collection.</p>
@@ -590,7 +628,7 @@
 <h1 id="first-power">7. First Power-On</h1>
 <p>After all wiring is complete:</p>
 <ol>
-<li>Insert the prepared microSD card.</li>
+<li>Insert the prepared microSD card. Make sure it is formatted as shown in the <a href="#sd-card-format"><strong>microSD Card Format</strong></a> section. <strong>Do not use exFAT.</strong></li>
 <li>Check the wiring against the correct board section one more time.</li>
 <li>Make sure the three amplifier signal wires are very short.</li>
 <li>Power on the ESP32.</li>
@@ -599,6 +637,17 @@
 <li>Test a sound.</li>
 </ol>
 <p>The firmware defaults to <strong>audio disabled</strong>, so a correctly wired installation can still be silent until audio is enabled.</p>
+<h2>S3 boards: red LED flashes at startup</h2>
+<p><strong>This applies only to the ESP32-S3 Standard and ESP32-S3 CAM boards. It does not apply to the Classic ESP32.</strong></p>
+<p>If the red LED flashes, pauses, and repeats, <strong>count the flashes</strong>:</p>
+<ul>
+<li><strong>4 flashes</strong> — one or more sound files could not be loaded.</li>
+<li><strong>5 flashes</strong> — the audio system could not start.</li>
+<li><strong>6 flashes</strong> — audio file information could not be saved to the SD card.</li>
+</ul>
+<p><strong>Important:</strong> A missing individual WAV file normally causes <strong>4 flashes</strong>, not 5.<br />
+<strong>5 flashes can happen when the SD card itself cannot be used</strong>, including when a 64 GB or 128 GB card is still formatted as exFAT instead of FAT32.</p>
+<p>For causes and fixes, see <a href="#s3-led-errors"><strong>Section 8 — S3 startup red LED error codes</strong></a>.</p>
 <p>The basic commands are:</p>
 <h3>Diesel</h3>
 <pre><code class="language-text">CV400=0
@@ -612,7 +661,89 @@ CV400=1
 </code></pre>
 <hr />
 <h1 id="troubleshooting">8. Troubleshooting</h1>
+<h2 id="s3-led-errors">S3 startup red LED error codes</h2>
+<p><strong>This section is only for ESP32-S3 Standard and ESP32-S3 CAM boards.</strong></p>
+<p>The red LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.</p>
+
+<h3>4 red flashes — one or more sound files did not load</h3>
+<p><strong>What it means:</strong><br />
+The SD card is working, but one or more required sound files could not be loaded.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>a required WAV file is missing</li>
+<li>a WAV file is damaged or is not in a supported format</li>
+<li>the SD card could not read part of a file</li>
+<li>a sound file is too large for the available audio memory</li>
+<li>the board did not have enough memory to load the sound</li>
+</ul>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Make sure the correct <code>/diesel</code> or <code>/steam</code> folder is on the SD card.</li>
+<li>Make sure the required WAV files are present.</li>
+<li>Make sure the WAV files use the format listed in this guide.</li>
+<li>Check the SD card and its connections.</li>
+<li>Fix the problem, then reboot the board.</li>
+</ol>
+<p><strong>The board may still play sound with 4 flashes.</strong> Files that could not be preloaded can use the SD card directly.</p>
+
+<h3>5 red flashes — the audio system could not start</h3>
+<p><strong>What it means:</strong><br />
+The audio system did not finish starting.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>the SD card itself cannot be detected or used</li>
+<li>the SD card is formatted incorrectly</li>
+<li>a 64 GB or 128 GB card is still formatted as exFAT instead of FAT32</li>
+<li>SD or audio pins are set incorrectly</li>
+<li>BCLK, LRCLK/WS, or DIN wiring is wrong</li>
+<li>the audio output could not start</li>
+<li>the board did not have enough memory or another required audio task could not start</li>
+</ul>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Check the card format against the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>.
+  <ul>
+  <li><strong>128 MB through 2 GB:</strong> use FAT16.</li>
+  <li><strong>4 GB through 128 GB:</strong> use FAT32.</li>
+  <li><strong>Do not use exFAT.</strong></li>
+  </ul>
+</li>
+<li>Check the SD card itself.
+  <ul>
+  <li><strong>Standard S3:</strong> check the external SD card reader and its wiring.</li>
+  <li><strong>S3 CAM:</strong> make sure the card is fully inserted in the onboard SD slot.</li>
+  </ul>
+</li>
+<li>Check BCLK, LRCLK/WS, and DIN against the wiring table for your board.</li>
+<li>If you changed CV403 through CV409, make sure those settings match your actual wiring.</li>
+<li>Fix the problem, then reboot the board.</li>
+<li>If 5 flashes still return, check the startup serial log for the exact failure.</li>
+</ol>
+<p><strong>Important:</strong> A missing individual WAV file normally causes <strong>4 flashes</strong>, not 5.<br />
+<strong>5 flashes can happen when the SD card itself cannot be used, including when a 64 GB or 128 GB card is formatted as exFAT instead of FAT32.</strong></p>
+
+<h3>6 red flashes — audio file information could not be saved</h3>
+<p><strong>What it means:</strong><br />
+The board read and checked the WAV file, but it could not save the generated <code>.csh</code> information back to the SD card.</p>
+<p><strong>Common causes:</strong></p>
+<ul>
+<li>the SD card became unavailable</li>
+<li>the card or file path could not be used</li>
+<li>the firmware could not open the <code>.csh</code> file for writing</li>
+<li>the write to the SD card did not finish correctly</li>
+</ul>
+<p><strong>What to do:</strong></p>
+<ol>
+<li>Make sure the SD card is still inserted and working.</li>
+<li>Make sure the card uses the format listed in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a> and can be written to.</li>
+<li>Check the SD card and its connections.</li>
+<li>Fix the problem, then reboot the board.</li>
+<li>If 6 flashes return, check the serial log for the exact save failure.</li>
+</ol>
+<p><strong>The board may still play sound with 6 flashes.</strong> The audio information already held in memory can still be used for that boot.</p>
+
 <h2>No sound</h2>
+<p><strong>On an S3 board, if the red LED is flashing a repeating code, check the <a href="#s3-led-errors">S3 startup red LED error codes</a> above first.</strong></p>
 <p>Check:</p>
 <ol>
 <li>Audio is enabled.</li>
@@ -622,6 +753,7 @@ CV400=1
 <li>MAX98357A has power and ground.</li>
 <li>Speaker is connected to the amplifier <code>+</code> and <code>-</code> outputs.</li>
 <li>The microSD card is inserted.</li>
+<li>The microSD card uses the format listed in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>. <strong>Do not use exFAT.</strong></li>
 <li>The correct <code>/diesel</code> or <code>/steam</code> folder exists.</li>
 </ol>
 <h2>Clicking, popping, stuttering, or uneven sound</h2>
@@ -661,7 +793,7 @@ CV400=1
 </tr>
 </tbody>
 </table>
-<p>Also check card insertion, power, ground, and loose connections.</p>
+<p>Also check card insertion, power, ground, loose connections, and the card format in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>. <strong>Do not use exFAT.</strong></p>
 <h2>Classic external microSD not detected</h2>
 <p>Check:</p>
 <table>
@@ -690,11 +822,12 @@ CV400=1
 </tr>
 </tbody>
 </table>
-<p>Also check card insertion, power, ground, and loose connections.</p>
+<p>Also check card insertion, power, ground, loose connections, and the card format in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>. <strong>Do not use exFAT.</strong></p>
 <h2>S3 CAM onboard microSD not detected</h2>
 <p>Check:</p>
 <ul>
 <li>card is fully inserted in the onboard slot</li>
+<li>the card uses the format listed in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>; <strong>do not use exFAT</strong></li>
 <li>you are using the S3 CAM section, not the Standard S3 external-SD wiring</li>
 <li>nothing else is using GPIO39, GPIO38, or GPIO40</li>
 <li>the card is prepared correctly</li>
@@ -706,6 +839,7 @@ CV400=1
 <li>sound files are present</li>
 <li>filenames use four digits such as <code>0001.wav</code></li>
 <li>the microSD card is being detected</li>
+<li>the microSD card uses the format listed in the <a href="#sd-card-format"><strong>microSD Card Format table</strong></a>; <strong>do not use exFAT</strong></li>
 </ul>
 <p>On S3 boards, the boot chime can work even when the SD card or sound files have a problem.</p>
 <hr />
