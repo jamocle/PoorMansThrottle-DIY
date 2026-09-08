@@ -297,6 +297,21 @@ After all wiring is complete:
 
 The firmware defaults to **audio disabled**, so a correctly wired installation can still be silent until audio is enabled.
 
+## S3 boards: red LED flashes at startup
+
+**This applies only to the ESP32-S3 Standard and ESP32-S3 CAM boards. It does not apply to the Classic ESP32.**
+
+If the red LED flashes, pauses, and then repeats, **count the flashes**:
+
+- **4 flashes** — one or more sound files could not be loaded.
+- **5 flashes** — the audio system could not start.
+- **6 flashes** — audio file information could not be saved to the SD card.
+
+**Important:** A missing individual WAV file normally causes **4 flashes**, not 5.  
+**5 flashes can happen when the SD card itself cannot be used**, or when another problem stops the audio system from starting.
+
+For the causes and fixes, see **Section 8 — S3 startup red LED error codes**.
+
 The basic commands are:
 
 ### Diesel
@@ -319,7 +334,86 @@ CV400=1
 
 # 8. Troubleshooting
 
+## S3 startup red LED error codes
+
+**This section is only for ESP32-S3 Standard and ESP32-S3 CAM boards.**
+
+The red LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.
+
+### 4 red flashes — one or more sound files did not load
+
+**What it means:**  
+The SD card is working, but one or more required sound files could not be loaded.
+
+**Common causes:**
+
+- a required WAV file is missing
+- a WAV file is damaged or is not in a supported format
+- the SD card could not read part of a file
+- a sound file is too large for the available audio memory
+- the board did not have enough memory to load the sound
+
+**What to do:**
+
+1. Make sure the correct `/diesel` or `/steam` folder is on the SD card.
+2. Make sure the required WAV files are present.
+3. Make sure the WAV files use the format listed in this guide.
+4. Check the SD card and its connections.
+5. Fix the problem, then reboot the board.
+
+**The board may still play sound with 4 flashes.** Files that could not be preloaded can use the SD card directly.
+
+### 5 red flashes — the audio system could not start
+
+**What it means:**  
+The audio system did not finish starting.
+
+**Common causes:**
+
+- the SD card itself cannot be detected or used
+- SD or audio pins are set incorrectly
+- BCLK, LRCLK/WS, or DIN wiring is wrong
+- the audio output could not start
+- the board did not have enough memory or another required audio task could not start
+
+**What to do:**
+
+1. Check the SD card first.
+   - **Standard S3:** check the external SD card reader and its wiring.
+   - **S3 CAM:** make sure the card is fully inserted in the onboard SD slot.
+2. Check BCLK, LRCLK/WS, and DIN against the wiring table for your board.
+3. If you changed CV403 through CV409, make sure those settings match your actual wiring.
+4. Fix the problem, then reboot the board.
+5. If 5 flashes still return, check the startup serial log for the exact failure.
+
+**Important:** A missing individual WAV file normally causes **4 flashes**, not 5.  
+**5 flashes can happen when the SD card itself cannot be used.**
+
+### 6 red flashes — audio file information could not be saved
+
+**What it means:**  
+The board read and checked the WAV file, but it could not save the generated `.csh` information back to the SD card.
+
+**Common causes:**
+
+- the SD card became unavailable
+- the card or file path could not be used
+- the firmware could not open the `.csh` file for writing
+- the write to the SD card did not finish correctly
+
+**What to do:**
+
+1. Make sure the SD card is still inserted and working.
+2. Make sure the card can be written to.
+3. Check the SD card and its connections.
+4. Fix the problem, then reboot the board.
+5. If 6 flashes return, check the serial log for the exact save failure.
+
+**The board may still play sound with 6 flashes.** The audio information already held in memory can still be used for that boot.
+
 ## No sound
+
+**On an S3 board, if the red LED is flashing a repeating code, check the S3 startup red LED error codes above first.**
 
 Check:
 
