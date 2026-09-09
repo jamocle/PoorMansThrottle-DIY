@@ -5,6 +5,16 @@
 
 This guide is written for installers. Use the section for your board and wire it exactly as shown.
 
+## Bill of Materials
+
+For the **ESP32-S3-N16R8** audio installation:
+
+- **ESP32-S3-N16R8**
+- **WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V 6 Pin SPI Interface** (or equivalent)
+- **AITRIP 3 PCS MAX98357 Audio Power Amplifier Module I2S Class D Filterless Audio Amplifiers Board**
+- **4/8 ohm 4-watt speaker**
+- **Small microSD card — 128 MB is just fine (yes, megabyte, not gigabyte)**
+
 ---
 
 # 1. Identify Your Board

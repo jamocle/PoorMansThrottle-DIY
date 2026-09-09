@@ -3,6 +3,14 @@
 
 **For PMT firmware 3.0.0**
 
+## Bill of Materials
+
+For the **ESP32-S3-N16R8** IBT-2 installation:
+
+- **ESP32-S3-N16R8**
+- **IBT-2 BTS7960**
+- **DC 12V/24V to 5V USB-C Buck Converter, 3A / 15W Type-C Output**
+
 ## Companion Video
 
 Watch the companion installation video:
