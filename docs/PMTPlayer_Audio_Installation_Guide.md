@@ -15,6 +15,8 @@ For the **ESP32-S3-N16R8** audio installation:
 - **4/8 ohm 4-watt speaker**
 - **Small microSD card — 128 MB is just fine (yes, megabyte, not gigabyte)**
 
+**Base installation:** For the Bill of Materials and wiring required for the base PMT installation, see the [PMT IBT-2 Motor Driver Installation Guide](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/PMT_IBT2_Installation_Guide.md).
+
 ---
 
 # 1. Identify Your Board
