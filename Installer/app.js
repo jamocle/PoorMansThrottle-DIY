@@ -517,6 +517,386 @@ async function loadAndroidGuide() {
 }
 
 
+function initializeChangelog() {
+    const changelogDialog = document.getElementById("changelogDialog");
+    const closeChangelogButton = document.getElementById("closeChangelogButton");
+    const changelogStatus = document.getElementById("changelogStatus");
+    const changelogContent = document.getElementById("changelogContent");
+    const changelogTabs = Array.from(document.querySelectorAll(".changelog-tab"));
+    const changelogOpenButtons = Array.from(document.querySelectorAll("[data-open-changelog]"));
+
+    if (
+        !changelogDialog ||
+        !closeChangelogButton ||
+        !changelogStatus ||
+        !changelogContent ||
+        changelogTabs.length === 0 ||
+        changelogOpenButtons.length === 0
+    ) {
+        return;
+    }
+
+    const changelogSources = {
+        app: {
+            label: "App",
+            fileName: "CHANGELOG_App.md",
+            path: "../CHANGELOG_App.md"
+        },
+        firmware: {
+            label: "Firmware",
+            fileName: "CHANGELOG_Firmware.md",
+            path: "../CHANGELOG_Firmware.md"
+        }
+    };
+
+    let activeChangelog = "app";
+
+    function addChangelogCacheBuster(url) {
+        const cacheBustedUrl = new URL(url, window.location.href);
+        cacheBustedUrl.searchParams.set("v", getRandomCacheBust());
+        return cacheBustedUrl.href;
+    }
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll("\"", "&quot;")
+            .replaceAll("'", "&#39;");
+    }
+
+    function sanitizeMarkdownHref(rawHref) {
+        const href = String(rawHref || "").trim();
+        if (!href) {
+            return null;
+        }
+
+        try {
+            const url = new URL(href, window.location.href);
+            if (url.protocol === "http:" || url.protocol === "https:" || url.protocol === "mailto:") {
+                return url.href;
+            }
+
+            if (
+                url.origin === window.location.origin &&
+                (url.protocol === "file:" || url.protocol === window.location.protocol)
+            ) {
+                return url.href;
+            }
+        } catch {
+            return null;
+        }
+
+        return null;
+    }
+
+    function renderInlineMarkdown(value) {
+        const protectedTokens = [];
+        let text = String(value ?? "");
+
+        const protect = (html) => {
+            const token = "PMTMDTOKEN" + protectedTokens.length + "END";
+            protectedTokens.push(html);
+            return token;
+        };
+
+        text = text.replace(/`([^`\n]+)`/g, (_, code) =>
+            protect("<code>" + escapeHtml(code) + "</code>")
+        );
+
+        text = text.replace(/\[([^\]\n]+)\]\(([^)\s]+)\)/g, (_, label, href) => {
+            const safeHref = sanitizeMarkdownHref(href);
+            if (!safeHref) {
+                return label;
+            }
+
+            return protect(
+                "<a href=\"" +
+                escapeHtml(safeHref) +
+                "\" target=\"_blank\" rel=\"noopener noreferrer\">" +
+                escapeHtml(label) +
+                "</a>"
+            );
+        });
+
+        text = escapeHtml(text);
+        text = text.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+        text = text.replace(/__([^_\n]+)__/g, "<strong>$1</strong>");
+        text = text.replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+        text = text.replace(/_([^_\n]+)_/g, "<em>$1</em>");
+
+        protectedTokens.forEach((html, index) => {
+            text = text.replace("PMTMDTOKEN" + index + "END", html);
+        });
+
+        return text;
+    }
+
+    function splitMarkdownTableRow(line) {
+        let row = String(line || "").trim();
+        if (row.startsWith("|")) {
+            row = row.slice(1);
+        }
+        if (row.endsWith("|")) {
+            row = row.slice(0, -1);
+        }
+
+        return row.split("|").map((cell) => cell.trim());
+    }
+
+    function isMarkdownTableDivider(line) {
+        const cells = splitMarkdownTableRow(line);
+        return cells.length > 0 && cells.every((cell) => /^:?-{3,}:?$/.test(cell));
+    }
+
+    function renderMarkdown(markdown) {
+        const lines = String(markdown || "").replace(/\r\n?/g, "\n").split("\n");
+        const output = [];
+        let index = 0;
+
+        const isBlockStart = (line, nextLine) => {
+            const trimmed = String(line || "").trim();
+            return (
+                trimmed === "" ||
+                /^#{1,6}\s+/.test(trimmed) ||
+                /^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed) ||
+                /^```/.test(trimmed) ||
+                /^\s*>\s?/.test(line) ||
+                /^\s*[-*+]\s+/.test(line) ||
+                /^\s*\d+\.\s+/.test(line) ||
+                (trimmed.includes("|") && isMarkdownTableDivider(nextLine || ""))
+            );
+        };
+
+        while (index < lines.length) {
+            const rawLine = lines[index];
+            const trimmed = rawLine.trim();
+
+            if (!trimmed) {
+                index += 1;
+                continue;
+            }
+
+            const fenceMatch = trimmed.match(/^```(.*)$/);
+            if (fenceMatch) {
+                const language = fenceMatch[1].trim();
+                const codeLines = [];
+                index += 1;
+                while (index < lines.length && !lines[index].trim().startsWith("```")) {
+                    codeLines.push(lines[index]);
+                    index += 1;
+                }
+                if (index < lines.length) {
+                    index += 1;
+                }
+                const languageClass = language
+                    ? " class=\"language-" + escapeHtml(language) + "\""
+                    : "";
+                output.push(
+                    "<pre><code" +
+                    languageClass +
+                    ">" +
+                    escapeHtml(codeLines.join("\n")) +
+                    "</code></pre>"
+                );
+                continue;
+            }
+
+            const headingMatch = trimmed.match(/^(#{1,6})\s+(.+)$/);
+            if (headingMatch) {
+                const level = headingMatch[1].length;
+                output.push(
+                    "<h" +
+                    level +
+                    ">" +
+                    renderInlineMarkdown(headingMatch[2]) +
+                    "</h" +
+                    level +
+                    ">"
+                );
+                index += 1;
+                continue;
+            }
+
+            if (/^(?:-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
+                output.push("<hr>");
+                index += 1;
+                continue;
+            }
+
+            if (
+                trimmed.includes("|") &&
+                index + 1 < lines.length &&
+                isMarkdownTableDivider(lines[index + 1])
+            ) {
+                const headers = splitMarkdownTableRow(rawLine);
+                const rows = [];
+                index += 2;
+
+                while (
+                    index < lines.length &&
+                    lines[index].trim().includes("|") &&
+                    lines[index].trim() !== ""
+                ) {
+                    rows.push(splitMarkdownTableRow(lines[index]));
+                    index += 1;
+                }
+
+                const headHtml = headers
+                    .map((cell) => "<th>" + renderInlineMarkdown(cell) + "</th>")
+                    .join("");
+                const bodyHtml = rows
+                    .map((row) => {
+                        const cells = headers
+                            .map(
+                                (_, cellIndex) =>
+                                    "<td>" +
+                                    renderInlineMarkdown(row[cellIndex] ?? "") +
+                                    "</td>"
+                            )
+                            .join("");
+                        return "<tr>" + cells + "</tr>";
+                    })
+                    .join("");
+
+                output.push(
+                    "<div class=\"markdown-table-wrap\"><table><thead><tr>" +
+                    headHtml +
+                    "</tr></thead><tbody>" +
+                    bodyHtml +
+                    "</tbody></table></div>"
+                );
+                continue;
+            }
+
+            if (/^\s*>\s?/.test(rawLine)) {
+                const quoteLines = [];
+                while (index < lines.length && /^\s*>\s?/.test(lines[index])) {
+                    quoteLines.push(lines[index].replace(/^\s*>\s?/, "").trim());
+                    index += 1;
+                }
+                output.push(
+                    "<blockquote>" +
+                    renderInlineMarkdown(quoteLines.join(" ")) +
+                    "</blockquote>"
+                );
+                continue;
+            }
+
+            const unorderedMatch = rawLine.match(/^\s*[-*+]\s+(.+)$/);
+            const orderedMatch = rawLine.match(/^\s*\d+\.\s+(.+)$/);
+            if (unorderedMatch || orderedMatch) {
+                const ordered = Boolean(orderedMatch);
+                const listTag = ordered ? "ol" : "ul";
+                const itemPattern = ordered ? /^\s*\d+\.\s+(.+)$/ : /^\s*[-*+]\s+(.+)$/;
+                const items = [];
+
+                while (index < lines.length) {
+                    const itemMatch = lines[index].match(itemPattern);
+                    if (!itemMatch) {
+                        break;
+                    }
+                    items.push("<li>" + renderInlineMarkdown(itemMatch[1]) + "</li>");
+                    index += 1;
+                }
+
+                output.push("<" + listTag + ">" + items.join("") + "</" + listTag + ">");
+                continue;
+            }
+
+            const paragraphLines = [trimmed];
+            index += 1;
+
+            while (
+                index < lines.length &&
+                !isBlockStart(lines[index], lines[index + 1]) &&
+                lines[index].trim() !== ""
+            ) {
+                paragraphLines.push(lines[index].trim());
+                index += 1;
+            }
+
+            output.push("<p>" + renderInlineMarkdown(paragraphLines.join(" ")) + "</p>");
+        }
+
+        return "<div class=\"markdown-body\">" + output.join("") + "</div>";
+    }
+
+    function selectChangelogTab(kind) {
+        activeChangelog = kind;
+        changelogTabs.forEach((tab) => {
+            tab.setAttribute(
+                "aria-selected",
+                tab.dataset.changelog === kind ? "true" : "false"
+            );
+        });
+    }
+
+    async function loadChangelog(kind) {
+        const source = changelogSources[kind];
+        if (!source) {
+            return;
+        }
+
+        selectChangelogTab(kind);
+        changelogStatus.textContent = "Loading " + source.label + " changelog…";
+        changelogContent.setAttribute("aria-busy", "true");
+        changelogContent.innerHTML = "";
+
+        try {
+            const response = await fetch(addChangelogCacheBuster(source.path), {
+                cache: "no-store"
+            });
+            if (!response.ok) {
+                throw new Error("HTTP " + response.status);
+            }
+
+            const markdown = await response.text();
+            changelogContent.innerHTML = renderMarkdown(markdown);
+            changelogStatus.textContent = source.label + " changelog loaded.";
+            changelogContent.scrollTop = 0;
+        } catch (error) {
+            console.error("Failed to load " + source.fileName, error);
+            changelogStatus.textContent = "";
+            changelogContent.innerHTML =
+                "<div class=\"changelog-error\">The " +
+                escapeHtml(source.label) +
+                " changelog could not be loaded. Please try again later.</div>";
+        } finally {
+            changelogContent.setAttribute("aria-busy", "false");
+        }
+    }
+
+    changelogOpenButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const kind = button.dataset.openChangelog;
+            if (!kind || !changelogSources[kind]) {
+                return;
+            }
+
+            selectChangelogTab(kind);
+            if (!changelogDialog.open) {
+                changelogDialog.showModal();
+            }
+            void loadChangelog(kind);
+        });
+    });
+
+    closeChangelogButton.addEventListener("click", () => {
+        changelogDialog.close();
+    });
+
+    changelogTabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            const kind = tab.dataset.changelog;
+            if (kind && changelogSources[kind] && kind !== activeChangelog) {
+                void loadChangelog(kind);
+            }
+        });
+    });
+}
+
 const SOUND_PACK_GITHUB_OWNER = "jamocle";
 const SOUND_PACK_GITHUB_REPOSITORY = "PoorMansThrottle-DIY";
 const SOUND_PACK_GITHUB_BRANCH = "main";
@@ -1213,6 +1593,7 @@ async function initialize() {
     initializeSoundPacks();
     initializeDocumentation();
     initializeSoundPackCrowdsourcing();
+    initializeChangelog();
     appendCacheBusterToAnchors();
     await loadAndroidGuide();
 }

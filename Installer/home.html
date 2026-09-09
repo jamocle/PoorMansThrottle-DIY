@@ -112,15 +112,16 @@
 
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link id="pmtStylesheet" rel="stylesheet" href="styles.css" />
 
   <script>
     (function () {
       const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
 
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "styles.css?v=" + cacheBust;
-      document.head.appendChild(cssLink);
+      const cssLink = document.getElementById("pmtStylesheet");
+      if (cssLink) {
+        cssLink.href = "styles.css?v=" + cacheBust;
+      }
 
       let appStarted = false;
       const startApp = function () {
@@ -240,6 +241,15 @@
       </summary>
 
       <div class="section-content firmware-section-content">
+        <div class="card intro-card">
+          <p class="note note-strong">
+            <button class="doc-link prominent-link changelog-open-link" type="button"
+              data-open-changelog="firmware" aria-haspopup="dialog" aria-controls="changelogDialog">
+              Open the firmware change log
+            </button>
+          </p>
+        </div>
+
         <div class="card firmware-intro-card">
           <div class="card-header">
             <div>
@@ -423,14 +433,6 @@
               </div>
             </div>
 
-            <p class="note note-strong">
-              <a class="doc-link prominent-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md" target="_blank"
-                rel="noopener noreferrer">
-                What’s new in the firmware → latest changes and features
-              </a>
-            </p>
-
             <div class="firmware-install-option firmware-install-option-primary">
               <div>
                 <strong>Install the latest firmware</strong>
@@ -537,11 +539,10 @@
       <div class="section-content">
         <div class="card intro-card">
           <p class="note note-strong">
-            <a class="doc-link prominent-link"
-              href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md" target="_blank"
-              rel="noopener noreferrer">
+            <button class="doc-link prominent-link changelog-open-link" type="button"
+              data-open-changelog="app" aria-haspopup="dialog" aria-controls="changelogDialog">
               Open the app change log
-            </a>
+            </button>
           </p>
         </div>
 
@@ -835,6 +836,30 @@
       </div>
     </details>
   </main>
+
+  <dialog class="changelog-dialog" id="changelogDialog" aria-labelledby="changelogDialogTitle">
+    <div class="changelog-shell">
+      <div class="changelog-header">
+        <div>
+          <h2 id="changelogDialogTitle">PMT changelogs</h2>
+          <p>Review the current App and Firmware release notes.</p>
+        </div>
+        <button class="changelog-close" id="closeChangelogButton" type="button" aria-label="Close changelogs">×</button>
+      </div>
+
+      <div class="changelog-tabs" role="tablist" aria-label="PMT changelog">
+        <button class="changelog-tab" type="button" role="tab" data-changelog="app" aria-selected="true">
+          App
+        </button>
+        <button class="changelog-tab" type="button" role="tab" data-changelog="firmware" aria-selected="false">
+          Firmware
+        </button>
+      </div>
+
+      <div class="changelog-status" id="changelogStatus" role="status" aria-live="polite"></div>
+      <div class="changelog-content" id="changelogContent" tabindex="0" aria-live="polite"></div>
+    </div>
+  </dialog>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
