@@ -2,7 +2,7 @@
 
 ## Firmware:
 
-### Version 3.0.0
+### Version 3.0.1
 * **Audio refinements** Modified so that it prototypically obey's startup and shutdown for diesel profiles and prohibits throttle input during those times.
 * **Custom file searching** modified the code to make the resolution of custom audio files more robust.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
