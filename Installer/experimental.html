@@ -22,6 +22,35 @@
       max-height: 170px;
     }
 
+    .experimental-main-installer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border: 1px solid rgba(123, 75, 31, 0.22);
+      border-radius: 999px;
+      color: var(--text);
+      background: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .experimental-main-installer-link:hover {
+      border-color: rgba(123, 75, 31, 0.42);
+      background: rgba(123, 75, 31, 0.045);
+      transform: translateY(-1px);
+    }
+
+    .experimental-main-installer-link:focus-visible {
+      outline: 3px solid rgba(123, 75, 31, 0.22);
+      outline-offset: 3px;
+    }
+
     .experimental-warning-card {
       border-width: 2px;
       border-color: rgba(160, 61, 45, 0.28);
@@ -142,6 +171,14 @@
             This page is for a firmware build supplied directly to you for testing, diagnosis, or a bespoke change.
             It is separate from the normal Poor Man's Throttle firmware releases.
           </p>
+
+          <a
+            class="experimental-main-installer-link"
+            href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html"
+          >
+            <span aria-hidden="true">&larr;</span>
+            <span>Return to Main Firmware Installer</span>
+          </a>
 
           <div class="hero-meta">
             <div class="pill">Use Chrome or Edge on Windows</div>
