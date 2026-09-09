@@ -83,7 +83,7 @@
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/s3/{version}/",
-      "latest": "3.0.0",
+      "latest": "3.0.1",
       "dropdownDefault": "3.0.0",
       "parts": [
         {
@@ -104,6 +104,9 @@
         }
       ],
       "versions": [
+        {
+          "version": "3.0.1"
+        },
         {
           "version": "3.0.0"
         }
