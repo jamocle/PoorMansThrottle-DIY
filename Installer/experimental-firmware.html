@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Bespoke Experimental Firmware Deployment - Poor Man's Throttle</title>
+
+  <script>
+    (() => {
+      "use strict";
+
+      const cssLink = document.createElement("link");
+      cssLink.rel = "stylesheet";
+      cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
+      document.head.appendChild(cssLink);
+    })();
+  </script>
+
+  <style>
+    .experimental-hero {
+      border: 2px solid rgba(123, 75, 31, 0.18);
+    }
+
+    .experimental-warning-card {
+      border: 2px solid rgba(160, 61, 45, 0.3);
+      background: rgba(160, 61, 45, 0.05);
+    }
+
+    .experimental-board-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .experimental-board-grid .board-choice {
+      height: 100%;
+    }
+
+    .experimental-board-grid .board-choice[data-board-choice="s3"] .board-choice-image {
+      transform: rotate(-90deg);
+    }
+
+    .board-choice-copy .experimental-board-spec {
+      display: block;
+      margin-top: 4px;
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .selected-board-image[data-board="n16r8"],
+    .selected-board-image[data-board="n8r8"] {
+      transform: rotate(-90deg);
+    }
+
+    .experimental-confirmation {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 16px;
+      border: 1px solid #e8e6e2;
+      border-radius: 18px;
+      background: #faf9f7;
+      cursor: pointer;
+    }
+
+    .experimental-confirmation input {
+      width: 22px;
+      height: 22px;
+      margin: 1px 0 0;
+      flex: 0 0 auto;
+      accent-color: var(--accent);
+    }
+
+    .experimental-confirmation-copy {
+      display: grid;
+      gap: 5px;
+      line-height: 1.45;
+    }
+
+    .experimental-confirmation-copy span {
+      color: var(--muted);
+    }
+
+    .experimental-ready-panel[hidden],
+    .experimental-install-panel[hidden] {
+      display: none !important;
+    }
+
+    .experimental-selection-summary {
+      margin-top: 14px;
+    }
+
+    .experimental-selection-summary strong {
+      color: var(--text);
+    }
+
+    .experimental-install-panel {
+      margin-top: 14px;
+    }
+
+    .experimental-maintenance-note {
+      margin-top: 14px;
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 900px) {
+      .experimental-board-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script type="module" src="https://unpkg.com/esp-web-tools@9/dist/web/install-button.js?module"></script>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="hero experimental-hero" aria-label="Bespoke experimental firmware deployment">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Poor Man's Throttle</div>
+          <h1>Bespoke Experimental Firmware Deployment</h1>
+
+          <p class="subhead">
+            This page is for a firmware build supplied directly to you for testing, diagnosis, or a bespoke change.
+            It is separate from the normal Poor Man's Throttle firmware releases.
+          </p>
+
+          <div class="hero-meta">
+            <div class="pill">Use Chrome or Edge on Windows</div>
+            <div class="pill">Use Chrome on Mac</div>
+            <div class="pill">Choose your exact ESP32 before flashing</div>
+          </div>
+        </div>
+
+        <div class="brand-art">
+          <img src="firmware.png" alt="Firmware installation" class="header-image" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card experimental-warning-card" aria-labelledby="experimentalWarningTitle">
+      <div class="card-header">
+        <div>
+          <div class="card-kicker">Experimental firmware</div>
+          <h3 id="experimentalWarningTitle">Only install the bespoke firmware you were asked to test.</h3>
+        </div>
+      </div>
+
+      <p class="note note-strong">
+        This firmware may contain changes that are not part of a normal public release.
+        Do not use this page on another throttle unless you were specifically asked to do so.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="chooseBoardTitle">
+      <div class="card-header">
+        <div>
+          <div class="card-kicker">Step 1</div>
+          <h3 id="chooseBoardTitle">Choose your exact ESP32 board.</h3>
+        </div>
+      </div>
+
+      <p class="note">
+        Match the board in your hand to one of the choices below.
+        For an ESP32-S3, read the writing on the metal ESP32 module and find
+        <strong>N16R8</strong> or <strong>N8R8</strong>. Do not guess.
+      </p>
+
+      <div class="experimental-board-grid" id="boardChoiceGrid" aria-label="Choose your exact ESP32 board">
+        <button class="board-choice" type="button" data-board="classic" data-board-choice="classic"
+          aria-pressed="false">
+          <span class="board-choice-image-shell">
+            <img src="Info/classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 board"
+              class="board-choice-image" />
+          </span>
+          <span class="board-choice-copy">
+            <strong>Classic ESP32-WROOM-32</strong>
+            <span>Choose this if your board matches this Classic ESP32 picture.</span>
+          </span>
+          <span class="board-choice-action">I have this board</span>
+        </button>
+
+        <button class="board-choice" type="button" data-board="n16r8" data-board-choice="s3"
+          aria-pressed="false">
+          <span class="board-choice-image-shell">
+            <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3 board" class="board-choice-image" />
+          </span>
+          <span class="board-choice-copy">
+            <strong>ESP32-S3-WROOM-1-N16R8</strong>
+            <span class="experimental-board-spec">16 MB Flash · 8 MB PSRAM</span>
+            <span>Choose this only when the metal ESP32 module is marked N16R8.</span>
+          </span>
+          <span class="board-choice-action">I have N16R8</span>
+        </button>
+
+        <button class="board-choice" type="button" data-board="n8r8" data-board-choice="s3"
+          aria-pressed="false">
+          <span class="board-choice-image-shell">
+            <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3 board" class="board-choice-image" />
+          </span>
+          <span class="board-choice-copy">
+            <strong>ESP32-S3-WROOM-1-N8R8</strong>
+            <span class="experimental-board-spec">8 MB Flash · 8 MB PSRAM</span>
+            <span>Choose this only when the metal ESP32 module is marked N8R8.</span>
+          </span>
+          <span class="board-choice-action">I have N8R8</span>
+        </button>
+      </div>
+    </section>
+
+    <section id="readyPanel" class="experimental-ready-panel" hidden aria-labelledby="confirmBoardTitle">
+      <div class="card selected-board-card">
+        <div class="selected-board-layout">
+          <div>
+            <div class="card-kicker">Step 2</div>
+            <h3 id="confirmBoardTitle">Confirm the board before continuing.</h3>
+            <p id="selectedBoardSummary" class="note experimental-selection-summary" aria-live="polite"></p>
+
+            <label class="experimental-confirmation" for="boardConfirmed">
+              <input id="boardConfirmed" type="checkbox" />
+              <span class="experimental-confirmation-copy">
+                <strong>I checked the board and this selection is correct.</strong>
+                <span>
+                  For ESP32-S3, I checked the writing on the metal module itself and confirmed N16R8 or N8R8.
+                </span>
+              </span>
+            </label>
+          </div>
+
+          <div class="selected-board-image-shell">
+            <img id="selectedBoardImage" src="" alt="" class="selected-board-image" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card backup-warning-card">
+        <div class="backup-warning-icon" aria-hidden="true">!</div>
+        <div>
+          <div class="card-kicker">Before you install</div>
+          <h3>Back up your configuration first.</h3>
+          <p class="note note-strong">
+            Use the Poor Man's Throttle app to create a configuration backup before installing experimental firmware.
+            Unless you were specifically told to start fresh, keep <strong>Erase device</strong> off/unchecked when
+            ESP Web Tools asks.
+          </p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-kicker">Step 3</div>
+            <h3>Get your computer ready.</h3>
+          </div>
+        </div>
+
+        <div class="os-help-grid">
+          <div class="os-help-card">
+            <strong>Windows</strong>
+            <span>Use Google Chrome or Microsoft Edge.</span>
+          </div>
+          <div class="os-help-card">
+            <strong>Mac</strong>
+            <span>Use Google Chrome. Do not use Safari for firmware flashing.</span>
+          </div>
+        </div>
+
+        <ul class="list firmware-checklist">
+          <li>Use a <strong>USB data cable</strong>, not a charge-only cable.</li>
+          <li>Plug the ESP32 directly into the computer when possible.</li>
+          <li>Close Arduino Serial Monitor or anything else using the ESP32 USB/serial connection.</li>
+          <li>Do not unplug the ESP32 while firmware is being erased or written.</li>
+        </ul>
+      </div>
+
+      <div id="installPanel" class="card experimental-install-panel" hidden>
+        <div class="card-header">
+          <div>
+            <div class="card-kicker">Step 4</div>
+            <h3>Install the bespoke experimental firmware.</h3>
+          </div>
+        </div>
+
+        <p id="installTargetText" class="note note-strong"></p>
+
+        <div class="firmware-install-option firmware-install-option-primary">
+          <div>
+            <strong>Ready to install</strong>
+            <p class="note">
+              The installer will use the experimental firmware prepared for the board you confirmed above.
+            </p>
+          </div>
+
+          <div class="row installer-row">
+            <div class="install-button-wrap">
+              <esp-web-install-button id="experimentalInstallButton">
+                <button slot="activate" class="firmware-install-action" type="button">
+                  Install Bespoke Firmware
+                </button>
+                <span slot="unsupported" class="installer-message">
+                  Use Chrome or Edge on Windows, or Chrome on Mac.
+                </span>
+                <span slot="not-allowed" class="installer-message">
+                  Firmware flashing requires this page to be opened securely using HTTPS.
+                </span>
+              </esp-web-install-button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card experimental-maintenance-note">
+          <div class="card-kicker">What happens next</div>
+          <ol class="list numbered-install-steps">
+            <li>Click <strong>Install Bespoke Firmware</strong>.</li>
+            <li>Choose the USB/serial device that represents your ESP32 and connect to it.</li>
+            <li>Confirm the installation.</li>
+            <li>Unless you were specifically told otherwise, keep <strong>Erase device</strong> off/unchecked.</li>
+            <li>Wait for ESP Web Tools to report that installation has finished before unplugging the board.</li>
+          </ol>
+        </div>
+      </div>
+
+      <details class="card firmware-help-details">
+        <summary>
+          <span>
+            <span class="card-kicker">Troubleshooting</span>
+            <strong>If the installer cannot start flashing</strong>
+          </span>
+        </summary>
+        <div class="firmware-help-content">
+          <ul class="list">
+            <li>Confirm the USB cable supports data.</li>
+            <li>Close Arduino Serial Monitor and any other program using the ESP32 connection.</li>
+            <li>
+              If the device connects but flashing does not begin, hold <strong>BOOT</strong>, start the install,
+              select the device, then release <strong>BOOT</strong> when erasing/writing begins.
+            </li>
+            <li>
+              If you are unsure which board you have, stop and check the board/module marking before trying again.
+            </li>
+          </ul>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      // Maintenance model:
+      // Replace only the four binaries inside the matching experimental firmware folder.
+      // No release catalog or static ESP Web Tools manifest is required.
+      const boards = Object.freeze({
+        classic: Object.freeze({
+          label: "Classic ESP32-WROOM-32",
+          image: "Info/classic-esp32-wroom32.png",
+          chipFamily: "ESP32",
+          firmwareDirectory: "../firmware/experimental/classic/",
+          parts: Object.freeze([
+            Object.freeze({ file: "PoorMansThrottle.ino.bootloader.bin", offset: 0x1000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.partitions.bin", offset: 0x8000 }),
+            Object.freeze({ file: "boot_app0.bin", offset: 0xE000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.bin", offset: 0x10000 })
+          ])
+        }),
+        n16r8: Object.freeze({
+          label: "ESP32-S3-WROOM-1-N16R8",
+          image: "Info/esp32-s3-n16r8.png",
+          chipFamily: "ESP32-S3",
+          firmwareDirectory: "../firmware/experimental/n16r8/",
+          parts: Object.freeze([
+            Object.freeze({ file: "PoorMansThrottle.ino.bootloader.bin", offset: 0x0000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.partitions.bin", offset: 0x8000 }),
+            Object.freeze({ file: "boot_app0.bin", offset: 0xE000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.bin", offset: 0x10000 })
+          ])
+        }),
+        n8r8: Object.freeze({
+          label: "ESP32-S3-WROOM-1-N8R8",
+          image: "Info/esp32-s3-n16r8.png",
+          chipFamily: "ESP32-S3",
+          firmwareDirectory: "../firmware/experimental/n8r8/",
+          parts: Object.freeze([
+            Object.freeze({ file: "PoorMansThrottle.ino.bootloader.bin", offset: 0x0000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.partitions.bin", offset: 0x8000 }),
+            Object.freeze({ file: "boot_app0.bin", offset: 0xE000 }),
+            Object.freeze({ file: "PoorMansThrottle.ino.bin", offset: 0x10000 })
+          ])
+        })
+      });
+
+      const boardChoices = Array.from(document.querySelectorAll(".board-choice[data-board]"));
+      const readyPanel = document.getElementById("readyPanel");
+      const boardConfirmed = document.getElementById("boardConfirmed");
+      const selectedBoardSummary = document.getElementById("selectedBoardSummary");
+      const selectedBoardImage = document.getElementById("selectedBoardImage");
+      const installPanel = document.getElementById("installPanel");
+      const installTargetText = document.getElementById("installTargetText");
+      const installButton = document.getElementById("experimentalInstallButton");
+
+      let selectedBoardKey = null;
+      let manifestUrl = null;
+
+      const getCacheBust = () => Date.now() + "-" + Math.random();
+
+      const clearManifest = () => {
+        if (manifestUrl) {
+          URL.revokeObjectURL(manifestUrl);
+          manifestUrl = null;
+        }
+
+        installButton.setAttribute("manifest", "");
+      };
+
+      const createManifestUrl = (board) => {
+        const firmwareDirectoryUrl = new URL(board.firmwareDirectory, window.location.href);
+        const firmwareCacheBust = getCacheBust();
+
+        const manifest = {
+          name: "Poor Man's Throttle - Bespoke Experimental - " + board.label,
+          version: "Bespoke Experimental",
+          new_install_prompt_erase: true,
+          builds: [
+            {
+              chipFamily: board.chipFamily,
+              parts: board.parts.map((part) => {
+                const firmwareUrl = new URL(part.file, firmwareDirectoryUrl);
+                firmwareUrl.searchParams.set("v", firmwareCacheBust);
+
+                return {
+                  path: firmwareUrl.href,
+                  offset: part.offset
+                };
+              })
+            }
+          ]
+        };
+
+        const blob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+        return URL.createObjectURL(blob);
+      };
+
+      const setManifest = (board) => {
+        clearManifest();
+        manifestUrl = createManifestUrl(board);
+        installButton.setAttribute("manifest", manifestUrl);
+      };
+
+      const updateInstallState = () => {
+        const board = selectedBoardKey ? boards[selectedBoardKey] : null;
+        const confirmed = Boolean(board && boardConfirmed.checked);
+
+        installPanel.hidden = !confirmed;
+
+        if (!confirmed) {
+          clearManifest();
+          return;
+        }
+
+        installTargetText.textContent =
+          "Confirmed target: " + board.label + ". Check this one final time before clicking Install Bespoke Firmware.";
+
+        setManifest(board);
+      };
+
+      const selectBoard = (boardKey) => {
+        const board = boards[boardKey];
+        if (!board) {
+          return;
+        }
+
+        selectedBoardKey = boardKey;
+
+        for (const choice of boardChoices) {
+          const selected = choice.dataset.board === boardKey;
+          choice.classList.toggle("is-selected", selected);
+          choice.setAttribute("aria-pressed", selected ? "true" : "false");
+        }
+
+        boardConfirmed.checked = false;
+        clearManifest();
+        installPanel.hidden = true;
+
+        selectedBoardSummary.textContent =
+          "Selected: " + board.label +
+          ". Check the physical board/module marking before ticking the confirmation below.";
+
+        selectedBoardImage.src = board.image;
+        selectedBoardImage.alt = board.label;
+        selectedBoardImage.dataset.board = boardKey;
+
+        readyPanel.hidden = false;
+        readyPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      for (const choice of boardChoices) {
+        choice.addEventListener("click", () => {
+          selectBoard(choice.dataset.board);
+        });
+      }
+
+      boardConfirmed.addEventListener("change", updateInstallState);
+
+      window.addEventListener("pagehide", clearManifest);
+    })();
+  </script>
+</body>
+
+</html>
