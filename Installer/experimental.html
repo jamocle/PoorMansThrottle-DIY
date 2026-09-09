@@ -238,9 +238,7 @@
               <input id="boardConfirmed" type="checkbox" />
               <span class="experimental-confirmation-copy">
                 <strong>I checked the board and this selection is correct.</strong>
-                <span>
-                  For ESP32-S3, I checked the writing on the metal module itself and confirmed N16R8 or N8R8.
-                </span>
+                <span id="boardConfirmationDetail"></span>
               </span>
             </label>
           </div>
@@ -372,6 +370,7 @@
       const boards = Object.freeze({
         classic: Object.freeze({
           label: "Classic ESP32-WROOM-32",
+          confirmationDetail: "I checked that this is the Classic ESP32-WROOM-32 board.",
           image: "Info/classic-esp32-wroom32.png",
           styleBoard: "classic",
           chipFamily: "ESP32",
@@ -385,6 +384,7 @@
         }),
         n16r8: Object.freeze({
           label: "ESP32-S3-WROOM-1-N16R8",
+          confirmationDetail: "I checked the writing on the metal module itself and confirmed N16R8.",
           image: "Info/esp32-s3-n16r8.png",
           styleBoard: "s3",
           chipFamily: "ESP32-S3",
@@ -398,6 +398,7 @@
         }),
         n8r8: Object.freeze({
           label: "ESP32-S3-WROOM-1-N8R8",
+          confirmationDetail: "I checked the writing on the metal module itself and confirmed N8R8.",
           image: "Info/esp32-s3-n16r8.png",
           styleBoard: "s3-n8r8",
           chipFamily: "ESP32-S3",
@@ -415,6 +416,7 @@
       const readyPanel = document.getElementById("readyPanel");
       const boardConfirmed = document.getElementById("boardConfirmed");
       const selectedBoardSummary = document.getElementById("selectedBoardSummary");
+      const boardConfirmationDetail = document.getElementById("boardConfirmationDetail");
       const selectedBoardImage = document.getElementById("selectedBoardImage");
       const installPanel = document.getElementById("installPanel");
       const installTargetText = document.getElementById("installTargetText");
@@ -506,6 +508,8 @@
         selectedBoardSummary.textContent =
           "Selected: " + board.label +
           ". Check the physical board/module marking before ticking the confirmation below.";
+
+        boardConfirmationDetail.textContent = board.confirmationDetail;
 
         selectedBoardImage.src = board.image;
         selectedBoardImage.alt = board.label;

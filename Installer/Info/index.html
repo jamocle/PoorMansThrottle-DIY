@@ -739,7 +739,7 @@
 
             <h3 class="title">App and firmware changelogs</h3>
             <p class="desc">
-              View the current App and Firmware release notes, loaded directly from the maintained Markdown files.
+              View the current App and Firmware release notes.
             </p>
           </div>
         </article>
@@ -751,7 +751,7 @@
         <div class="changelog-header">
           <div>
             <h2 id="changelogDialogTitle">PMT changelogs</h2>
-            <p>Release notes are loaded from the current Markdown source each time you open or switch a changelog.</p>
+            <p>Review the current App and Firmware release notes.</p>
           </div>
           <button class="changelog-close" id="closeChangelogButton" type="button" aria-label="Close changelogs">×</button>
         </div>
@@ -1182,13 +1182,13 @@
 
         const markdown = await response.text();
         changelogContent.innerHTML = renderMarkdown(markdown);
-        changelogStatus.textContent = `Loaded from ${source.fileName}.`;
+        changelogStatus.textContent = `${source.label} changelog loaded.`;
         changelogContent.scrollTop = 0;
       } catch (error) {
         console.error(`Failed to load ${source.fileName}`, error);
         changelogStatus.textContent = '';
         changelogContent.innerHTML =
-          `<div class="changelog-error">The ${escapeHtml(source.label)} changelog could not be loaded from <strong>${escapeHtml(source.fileName)}</strong>. Make sure the Markdown file is available at the expected project-relative path.</div>`;
+          `<div class="changelog-error">The ${escapeHtml(source.label)} changelog could not be loaded. Please try again later.</div>`;
       } finally {
         changelogContent.setAttribute('aria-busy', 'false');
       }
