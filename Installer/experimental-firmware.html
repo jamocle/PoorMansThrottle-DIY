@@ -11,25 +11,21 @@
 
   <title>Bespoke Experimental Firmware Deployment - Poor Man's Throttle</title>
 
-  <script>
-    (() => {
-      "use strict";
-
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "styles.css?v=" + encodeURIComponent(Date.now() + "-" + Math.random());
-      document.head.appendChild(cssLink);
-    })();
-  </script>
+  <link rel="stylesheet" href="styles.css?v=experimental-20260909-2" />
 
   <style>
-    .experimental-hero {
-      border: 2px solid rgba(123, 75, 31, 0.18);
+    .experimental-hero .brand-art {
+      width: min(100%, 240px);
+    }
+
+    .experimental-hero .header-image {
+      max-height: 170px;
     }
 
     .experimental-warning-card {
-      border: 2px solid rgba(160, 61, 45, 0.3);
-      background: rgba(160, 61, 45, 0.05);
+      border-width: 2px;
+      border-color: rgba(160, 61, 45, 0.28);
+      background: linear-gradient(180deg, rgba(160, 61, 45, 0.055), #ffffff);
     }
 
     .experimental-board-grid {
@@ -40,23 +36,27 @@
     }
 
     .experimental-board-grid .board-choice {
+      display: flex;
+      flex-direction: column;
       height: 100%;
     }
 
-    .experimental-board-grid .board-choice[data-board-choice="s3"] .board-choice-image {
-      transform: rotate(-90deg);
+    .experimental-board-grid .board-choice-image-shell {
+      height: 200px;
+    }
+
+    .experimental-board-grid .board-choice-copy {
+      flex: 1 1 auto;
+    }
+
+    .experimental-board-grid .board-choice-action {
+      align-self: flex-start;
     }
 
     .board-choice-copy .experimental-board-spec {
       display: block;
-      margin-top: 4px;
       color: var(--text);
       font-weight: 700;
-    }
-
-    .selected-board-image[data-board="n16r8"],
-    .selected-board-image[data-board="n8r8"] {
-      transform: rotate(-90deg);
     }
 
     .experimental-confirmation {
@@ -69,6 +69,11 @@
       border-radius: 18px;
       background: #faf9f7;
       cursor: pointer;
+    }
+
+    .experimental-confirmation:hover {
+      border-color: rgba(123, 75, 31, 0.28);
+      background: rgba(123, 75, 31, 0.035);
     }
 
     .experimental-confirmation input {
@@ -108,12 +113,16 @@
 
     .experimental-maintenance-note {
       margin-top: 14px;
-      font-size: 0.92rem;
+      background: #faf9f7;
     }
 
     @media (max-width: 900px) {
       .experimental-board-grid {
         grid-template-columns: 1fr;
+      }
+
+      .experimental-board-grid .board-choice-image-shell {
+        height: 200px;
       }
     }
   </style>
@@ -142,7 +151,7 @@
         </div>
 
         <div class="brand-art">
-          <img src="firmware.png" alt="Firmware installation" class="header-image" />
+          <img src="Info/dfrr.png" alt="Poor Man's Throttle header artwork" class="header-image" />
         </div>
       </div>
     </section>
@@ -364,6 +373,7 @@
         classic: Object.freeze({
           label: "Classic ESP32-WROOM-32",
           image: "Info/classic-esp32-wroom32.png",
+          styleBoard: "classic",
           chipFamily: "ESP32",
           firmwareDirectory: "../firmware/experimental/classic/",
           parts: Object.freeze([
@@ -376,6 +386,7 @@
         n16r8: Object.freeze({
           label: "ESP32-S3-WROOM-1-N16R8",
           image: "Info/esp32-s3-n16r8.png",
+          styleBoard: "s3",
           chipFamily: "ESP32-S3",
           firmwareDirectory: "../firmware/experimental/n16r8/",
           parts: Object.freeze([
@@ -388,6 +399,7 @@
         n8r8: Object.freeze({
           label: "ESP32-S3-WROOM-1-N8R8",
           image: "Info/esp32-s3-n16r8.png",
+          styleBoard: "s3-n8r8",
           chipFamily: "ESP32-S3",
           firmwareDirectory: "../firmware/experimental/n8r8/",
           parts: Object.freeze([
@@ -497,7 +509,7 @@
 
         selectedBoardImage.src = board.image;
         selectedBoardImage.alt = board.label;
-        selectedBoardImage.dataset.board = boardKey;
+        selectedBoardImage.dataset.board = board.styleBoard;
 
         readyPanel.hidden = false;
         readyPanel.scrollIntoView({ behavior: "smooth", block: "start" });
