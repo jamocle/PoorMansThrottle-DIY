@@ -117,9 +117,9 @@ These CVs are part of the shared PMT firmware foundation.
 
 | CV | Availability | Purpose | Values / Default | Description |
 | ---: | --- | --- | --- | --- |
-| **CV4** | All | Device / Component Name | Text / blank | Sets the device name used for identity and advertising. For a throttle, this is normally the train name shown by the app. |
+| **CV4** | All | Device / Component Name | Up to 29 letters, digits, and spaces / blank | Sets the device name used for identity and advertising. Leading/trailing spaces are trimmed; values longer than 29 characters are truncated to 29 characters; characters other than letters, digits, and spaces are rejected. For a throttle, this is normally the train name shown by the app. |
 | **CV8** | All | Factory Reset Trigger | Must write `8` | `CV8=8` wipes saved configuration and reboots the ESP32. Not persisted as a normal setting. |
-| **CV10** | All | Wi-Fi Enable | `0`, `1` / `0` | Enables or disables Wi-Fi/WebSocket service when configured. |
+| **CV10** | All | Wi-Fi Enable | `0`, `1` / `0` | Enables or disables Wi-Fi/WebSocket service when configured. On hardware where the firmware resource guard does not allow concurrent Wi-Fi and audio, setting `CV10=1` while `CV400=1` disables audio (`CV400=0`). |
 | **CV11** | All | Wi-Fi SSID | Text / blank | Wi-Fi network name. |
 | **CV12** | All | Wi-Fi Password | Text / blank | Set-only from the terminal. Query returns `ERR`. |
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
@@ -150,7 +150,7 @@ The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throt
 
 | CV | Purpose | Values / Default | What it means |
 | ---: | --- | --- | --- |
-| **CV400** | Audio Enable | `0`, `1` / `0` | `0` disables audio; `1` enables it. |
+| **CV400** | Audio Enable | `0`, `1` / `0` | `0` disables audio; `1` enables it. On hardware where the firmware resource guard does not allow concurrent Wi-Fi and audio, setting `CV400=1` while `CV10=1` disables Wi-Fi (`CV10=0`). |
 | **CV401** | PMTPlayer Sound Mode | `0`, `2`, `3` / `2` | `0=None`, `2=Diesel`, `3=Steam`. For PMTPlayer, select `2` or `3` before changing custom audio pins or tuning values. |
 | **CV402** | Master Volume | `0..30` / `15` | Overall PMTPlayer volume. |
 | **CV403** | SD Chip Select (CS) | Classic `21`; S3 `10` | GPIO used for the microSD CS signal. |
@@ -168,18 +168,18 @@ The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throt
 | **CV415** | Amplifier Mute Pin | `-1` or valid output GPIO / `-1` | Optional amplifier mute control. |
 | **CV416** | Amplifier Standby Pin | `-1` or valid output GPIO / `-1` | Optional amplifier standby control. |
 | **CV417** | Fault Input Pin | `-1` or valid input GPIO / `-1` | Optional amplifier fault/status input. |
-| **CV418** | PMTPlayer Profile | `0..3` / `3` | `0=Conservative`, `1=Balanced`, `2=Loud`, `3=use the explicit advanced CV values below. |
+| **CV418** | PMTPlayer Profile | `0..3` / `3` | `0=Conservative`, `1=Balanced`, `2=Loud`, `3=use the explicit advanced CV values below. Selecting profile `0`, `1`, or `2` reapplies that profile's predefined advanced audio settings across `CV419–CV429`; profile `3` preserves explicit advanced values. |
 | **CV419** | WAV Gain | `1..12` / `1` | PMTPlayer WAV gain. |
 | **CV420** | Output Headroom | `50..100%` / `100` | Output headroom percentage. |
 | **CV421** | Limiter / Loudness Mode | `0..10` / `10` | PMTPlayer limiter/loudness setting. |
-| **CV422** | Speaker Size Profile | `0..2` / `2` | `0=large`, `1=medium`, `2=small`. |
+| **CV422** | Speaker Size Profile | `0..2` / `2` | `0=large`, `1=medium`, `2=small`. Writing `CV422` switches `CV418` to explicit profile `3` and automatically refreshes `CV421`: speaker size `0` sets `CV421=3`; sizes `1` or `2` set `CV421=10`. |
 | **CV423** | Maximum Active Voices | `0..255` / board default | `0` means use the board default; current defaults are Classic `3`, S3 `13`. |
 | **CV424** | Overlap Mode | effective `0..2` / `1` | PMTPlayer overlap behavior. |
 | **CV425** | Async Overlap Start | `0`, `1` / `1` | Enables asynchronous overlap start. |
 | **CV426** | Start Prime Bytes | `0..16384` / `12288` | Initial audio-buffer priming target. |
 | **CV427** | Overlap Prime Bytes | `0..16384` / `0` | Overlap-stream priming target. |
 | **CV428** | Mixer Attenuation | `25..100%` / `100` | Mixer attenuation percentage. |
-| **CV429** | Clip Telemetry | `0`, `1` / `1` stored | Diagnostic request. Normal non-verbose builds force the effective runtime behavior off. |
+| **CV429** | Clip Telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` | Diagnostic request. In verbose-audio-diagnostic builds, `0`/`1` controls clip telemetry. In normal non-verbose builds, firmware normalizes this CV to `0`, so clip telemetry remains disabled. |
 
 ### Classic `-1` SPI sentinel behavior
 
@@ -287,7 +287,7 @@ These CVs apply to **PoorMansTurbine firmware**. They are not locomotive motor-d
 | **CV5** | Quick Output | `0 – 100` / `0` | Output percentage used by the `FQ100` quick-blast command. |
 | **CV9** | Ramp to Full Output Time | `100 – 60000 ms` / `4000` | Time used to ramp from zero to full output. |
 | **CV41** | Low-Voltage Output Cap | `0 – 100` / `25` | Maximum turbine output while low-voltage limiting is active. |
-| **CV100** | ESC PWM Pin | Allowed runtime GPIO / `25` | PWM signal pin for ESC-style output. |
+| **CV100** | ESC PWM Pin | Allowed runtime GPIO / Classic `25`; S3 `6` | PWM signal pin for ESC-style output. |
 
 ## Turbine Runtime Commands
 
@@ -577,6 +577,20 @@ Current pattern values:
 | `3` | FRED | `FRED`, `LED_FRED` |
 | `4` | LED blink+ | `BLINK+`, `LED_BLINK+` |
 | `5` | LED blink- | `BLINK-`, `LED_BLINK-` |
+| `6` | LED ditch+ | `DITCH+`, `LED_DITCH+` |
+| `7` | LED ditch- | `DITCH-`, `LED_DITCH-` |
+| `8` | LED strobe+ | `STROBE+`, `LED_STROBE+` |
+| `9` | LED strobe- | `STROBE-`, `LED_STROBE-` |
+| `10` | LED rotary+ | `ROTARY+`, `LED_ROTARY+` |
+| `11` | LED rotary- | `ROTARY-`, `LED_ROTARY-` |
+| `12` | LED Mars+ | `MARS+`, `LED_MARS+` |
+| `13` | LED Mars- | `MARS-`, `LED_MARS-` |
+| `14` | LED Gyralite+ | `GYRALITE+`, `LED_GYRALITE+` |
+| `15` | LED Gyralite- | `GYRALITE-`, `LED_GYRALITE-` |
+| `16` | Firebox flicker | `FIREBOX`, `FIREBOX_FLICKER`, `LED_FIREBOX_FLICKER` |
+| `17` | Lantern flicker | `LANTERN`, `LANTERN_FLICKER`, `LED_LANTERN_FLICKER` |
+| `18` | Dynamo | `DYNAMO`, `LED_DYNAMO` |
+| `19` | Incandescent | `INCANDESCENT`, `LED_INCANDESCENT` |
 | `100` | Audio bell | `AUDIO_BELL` |
 | `101` | Audio horn | `AUDIO_HORN` |
 | `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |

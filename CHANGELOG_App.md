@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 3.1.0
+* **Prime Mover and Volume on Control Slideout** Now the prime mover and volume controls are added to the control slideout when Audio is on.
+* **Automatic Adding of Audio Controls** When the user turns on Audio, they will be asked if they wish to add common controls to the Controls screen for Audio.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.0.0
 * **PMT Audio Support** The App now supports sound for diesel and steam locomotion and custom sounds. 
 * **Terminal Fixes** 
