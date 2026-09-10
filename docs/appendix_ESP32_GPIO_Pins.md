@@ -2,13 +2,10 @@ Here’s a **ESP32 GPIO capability table** (based on the classic ESP32-WROOM / D
 
 ⭐ = *primary / most typical use for that pin*
 ⚠️ = caution (boot strapping, input-only, or special behavior)
-
 > **PMT firmware note — v3.0.0:** This appendix describes **generic Classic ESP32 hardware capabilities**. Labels such as “Default I²C SDA/SCL” below are generic ESP32/Arduino conventions, **not Poor Man's Throttle CV defaults**. PMT uses board-profile defaults for INA219: Classic ESP32-WROOM uses `CV31=16` / `CV32=17`; ESP32-S3-WROOM-1-N16R8 uses `CV31=17` / `CV32=18`.
 
 ---
-
 ## ESP32 GPIO Function Table
-
 | GPIO | Digital I/O | ADC    | DAC    | PWM | Touch  | I²C   | SPI | UART  | Other / Notes          |
 | ---- | ----------- | ------ | ------ | --- | ------ | ----- | --- | ----- | ---------------------- |
 | 0    | ⭐           | ADC2   |        | ⭐   | Touch1 |       |     |       | ⚠️ Boot pin            |
@@ -36,9 +33,7 @@ Here’s a **ESP32 GPIO capability table** (based on the classic ESP32-WROOM / D
 | 35   | ⭐ Input     | ⭐ ADC1 |        |     |        |       |     |       | ⚠️ Input only          |
 | 36   | ⭐ Input     | ⭐ ADC1 |        |     |        |       |     |       | VP (input only)        |
 | 39   | ⭐ Input     | ⭐ ADC1 |        |     |        |       |     |       | VN (input only)        |
-
 ---
-
 ## Quick “Beginner Cheat Sheet” 🧠
 
 ### ✅ Safest general-purpose pins
@@ -56,7 +51,6 @@ Use these first for projects:
 * **34–39** → input only (no output, no pullups)
 
 ---
-
 ### 🎯 Special features highlights
 
 * **ADC (analog read)**:
@@ -83,6 +77,113 @@ Use these first for projects:
 
 ---
 
+## ESP32-S3 GPIO Function Table
+
+This section covers the **ESP32-S3-WROOM-1-N16R8** module used by Poor Man's Throttle. The ESP32-S3 has different GPIO assignments and restrictions from the Classic ESP32.
+
+⭐ = *primary / most typical use for that pin*  
+⚠️ = caution (boot strapping, USB/JTAG/UART use, or memory-related restriction)
+
+| GPIO | Digital I/O | ADC     | DAC | PWM | Touch   | I²C       | SPI      | UART  | Other / Notes |
+| ---- | ----------- | ------- | --- | --- | ------- | --------- | -------- | ----- | ------------- |
+| 0    | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ Boot strapping |
+| 1    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch1  |           |          |       | Safe GPIO |
+| 2    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch2  |           |          |       | Safe GPIO |
+| 3    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch3  |           |          |       | ⚠️ Boot strapping |
+| 4    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch4  |           |          |       | Safe GPIO |
+| 5    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch5  |           |          |       | Safe GPIO |
+| 6    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch6  |           |          |       | Safe GPIO |
+| 7    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch7  |           |          |       | Safe GPIO |
+| 8    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch8  | ⭐ SDA     |          |       | Generic Arduino S3 I²C SDA convention — not PMT INA219 default |
+| 9    | ⭐           | ⭐ ADC1 |     | ⭐   | Touch9  | ⭐ SCL     |          |       | Generic Arduino S3 I²C SCL convention — not PMT INA219 default |
+| 10   | ⭐           | ⭐ ADC1 |     | ⭐   | Touch10 |           | ⭐ CS     |       | Generic Arduino S3 SPI SS/CS convention |
+| 11   | ⭐           | ADC2    |     | ⭐   | Touch11 |           | ⭐ MOSI   |       | Generic Arduino S3 SPI MOSI convention |
+| 12   | ⭐           | ADC2    |     | ⭐   | Touch12 |           | ⭐ SCK    |       | Generic Arduino S3 SPI SCK convention |
+| 13   | ⭐           | ADC2    |     | ⭐   | Touch13 |           | ⭐ MISO   |       | Generic Arduino S3 SPI MISO convention |
+| 14   | ⭐           | ADC2    |     | ⭐   | Touch14 |           |          |       | Safe GPIO |
+| 15   | ⭐           | ADC2    |     | ⭐   |         |           |          |       | Safe GPIO |
+| 16   | ⭐           | ADC2    |     | ⭐   |         |           |          |       | Safe GPIO |
+| 17   | ⭐           | ADC2    |     | ⭐   |         | PMT SDA   |          |       | PMT INA219 default SDA (`CV31=17`) |
+| 18   | ⭐           | ADC2    |     | ⭐   |         | PMT SCL   |          |       | PMT INA219 default SCL (`CV32=18`) |
+| 19   | ⭐           | ADC2    |     | ⭐   |         |           |          |       | ⚠️ USB D- / USB Serial-JTAG |
+| 20   | ⭐           | ADC2    |     | ⭐   |         |           |          |       | ⚠️ USB D+ / USB Serial-JTAG |
+| 21   | ⭐           |         |     | ⭐   |         |           |          |       | Safe GPIO |
+| 35   | ⚠️ Reserved |         |     |     |         |           |          |       | N16R8: used by Octal PSRAM; unavailable for other uses |
+| 36   | ⚠️ Reserved |         |     |     |         |           |          |       | N16R8: used by Octal PSRAM; unavailable for other uses |
+| 37   | ⚠️ Reserved |         |     |     |         |           |          |       | N16R8: used by Octal PSRAM; unavailable for other uses |
+| 38   | ⭐           |         |     | ⭐   |         |           |          |       | Safe GPIO |
+| 39   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ JTAG MTCK when hardware JTAG is used |
+| 40   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ JTAG MTDO when hardware JTAG is used |
+| 41   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ JTAG MTDI when hardware JTAG is used |
+| 42   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ JTAG MTMS when hardware JTAG is used |
+| 43   | ⭐           |         |     | ⭐   |         |           |          | ⭐ TX0 | UART0 TX |
+| 44   | ⭐           |         |     | ⭐   |         |           |          | ⭐ RX0 | UART0 RX |
+| 45   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ Boot strapping |
+| 46   | ⭐           |         |     | ⭐   |         |           |          |       | ⚠️ Boot strapping |
+| 47   | ⭐           |         |     | ⭐   |         |           |          |       | Safe GPIO on N16R8 |
+| 48   | ⭐           |         |     | ⭐   |         |           |          |       | Safe GPIO on N16R8 |
+
+### ESP32-S3 module availability notes
+
+* The ESP32-S3 chip has GPIO **0–21** and **26–48**, but the **ESP32-S3-WROOM-1** module does not expose every chip GPIO as a normal module pin.
+* GPIO **26–34** are therefore not listed in the table above for the WROOM-1-N16R8 module.
+* On the ESP32-S3 chip, GPIO **26–32** are normally used by SPI flash/PSRAM and are not recommended for general-purpose use.
+* On the **N16R8** module, GPIO **35, 36, and 37** are connected to the built-in Octal PSRAM and are not available for other uses.
+* The ESP32-S3 has **no built-in DAC output** equivalent to Classic ESP32 GPIO25/GPIO26.
+
+---
+## Quick “Beginner Cheat Sheet” — ESP32-S3 🧠
+
+### ✅ Safest general-purpose pins
+
+For generic hardware use, start with:
+
+* GPIO **1, 2, 4, 5, 6, 7, 14, 15, 16, 17, 18, 21, 38, 47, 48**
+
+For Poor Man's Throttle, remember that GPIO **17/18** are the default INA219 SDA/SCL pins.
+
+---
+
+### ⚠️ Pins to be careful with
+
+* **0, 3, 45, 46** → boot strapping pins
+* **19, 20** → native USB D-/D+ and USB Serial/JTAG
+* **35, 36, 37** → unavailable on ESP32-S3-WROOM-1-N16R8 because they are used by Octal PSRAM
+* **39–42** → hardware JTAG pins
+* **43, 44** → UART0 TX/RX
+
+---
+
+### 🎯 Special features highlights — ESP32-S3
+
+* **ADC (analog read)**:
+
+  * ADC1 = GPIO **1–10**
+  * ADC2 = GPIO **11–20**
+  * Prefer ADC1 when WiFi is active; ADC2 cannot be used simultaneously with WiFi.
+
+* **DAC (true analog output)**:
+
+  * **None** on ESP32-S3
+
+* **Touch sensing**:
+
+  * GPIO **1–14**
+
+* **Generic Arduino ESP32-S3 I²C convention**:
+
+  * SDA = **8**, SCL = **9**
+  * PMT INA219 defaults are **17/18**.
+
+* **Generic Arduino ESP32-S3 SPI convention**:
+
+  * MOSI = **11**, MISO = **13**, SCK = **12**, CS = **10**
+
+* **UART0**:
+
+  * TX = **43**, RX = **44**
+
+---
 ## 💡 Tip
 
 Think of ESP32 pins like **multi-tools**:
@@ -103,7 +204,6 @@ Think of GPIO pins like Swiss Army knives:
 * Some are **special features only certain pins have**
 
 ---
-
 ## 📊 Column-by-Column Explanation
 
 ### 1. **Digital I/O (Input / Output)** ⭐
@@ -125,7 +225,6 @@ Think of GPIO pins like Swiss Army knives:
 👉 This is the **most basic and most used function**
 
 ---
-
 ### 2. **ADC (Analog to Digital Converter)**
 
 **What it means:**
@@ -151,7 +250,6 @@ Think of GPIO pins like Swiss Army knives:
 * **ADC2 (⚠️ conflicts with WiFi)**
 
 ---
-
 ### 3. **DAC (Digital to Analog Converter)**
 
 **What it means:**
@@ -171,7 +269,6 @@ Think of GPIO pins like Swiss Army knives:
 💡 Rare feature — most microcontrollers don’t have this!
 
 ---
-
 ### 4. **PWM (Pulse Width Modulation)**
 
 **What it means:**
@@ -193,7 +290,6 @@ Think of GPIO pins like Swiss Army knives:
 💡 This is your **go-to “analog output” in most projects**
 
 ---
-
 ### 5. **Touch (Capacitive Touch)**
 
 **What it means:**
@@ -216,7 +312,6 @@ Think of GPIO pins like Swiss Army knives:
 * Control panels
 
 ---
-
 ### 6. **I²C (Inter-Integrated Circuit)**
 
 **What it means:**
@@ -244,7 +339,6 @@ Think of GPIO pins like Swiss Army knives:
 💡 You can actually move I²C to other pins if needed
 
 ---
-
 ### 7. **SPI (Serial Peripheral Interface)**
 
 **What it means:**
@@ -269,7 +363,6 @@ Think of GPIO pins like Swiss Army knives:
 💡 Faster than I²C but uses more pins
 
 ---
-
 ### 8. **UART (Serial Communication)**
 
 **What it means:**
@@ -305,7 +398,6 @@ Think of GPIO pins like Swiss Army knives:
 * Special behaviors or warnings
 
 **Common things here:**
-
 #### ⚠️ Boot Pins
 
 * Affect how ESP32 starts up
@@ -324,7 +416,6 @@ Think of GPIO pins like Swiss Army knives:
   * Programming
 
 ---
-
 ## 🔧 Summary
 
 When picking a pin, think like this:
@@ -347,6 +438,3 @@ When picking a pin, think like this:
 
 * Start with: **GPIO 4, 21, 22, 23, 18, 19, 32, 33**
 * Avoid at first: **0, 2, 12, 15, 1, 3**
-
-
-
