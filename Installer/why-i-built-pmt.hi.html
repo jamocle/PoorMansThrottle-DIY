@@ -40,13 +40,26 @@
 
       const currentUrl = new URL(window.location.href);
       const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const appCacheToken = [...currentUrl.searchParams.keys()].find(
+        (key) =>
+          /^\d{12}$/.test(key) &&
+          currentUrl.searchParams.get(key) === ""
+      );
+      const isAppFreshNavigation = appCacheToken !== undefined;
       const isFreshNavigation =
-        currentUrl.searchParams.get(freshnessParameter) === "1" &&
-        isRecentCacheToken(currentToken);
+        isAppFreshNavigation ||
+        (
+          currentUrl.searchParams.get(freshnessParameter) === "1" &&
+          isRecentCacheToken(currentToken)
+        );
 
       if (!isFreshNavigation) {
         window.location.replace(makeFreshUrl(currentUrl).href);
         return;
+      }
+
+      if (appCacheToken) {
+        currentUrl.searchParams.delete(appCacheToken);
       }
 
       currentUrl.searchParams.delete(cacheParameter);
