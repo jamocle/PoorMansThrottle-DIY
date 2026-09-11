@@ -7,6 +7,7 @@
 * **Changed the Icon for Control** The throttle page now has a new Control icon to represent all types of controls.
 * **Individual Volume** You can now modify the relative volume level of a sound vs other sounds +/- in the app.
 * **Automatic Adding of Audio Controls** When the user turns on Audio, they will be asked if they wish to add common controls to the Controls screen for Audio.
+* **UI Tweaks** Graph manipulation more user friendly for chuff rate and MU Consist speed matching. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.0
