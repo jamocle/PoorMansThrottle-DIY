@@ -1203,21 +1203,12 @@ async function loadDocumentationFiles() {
             typeof entry.name === "string" &&
             /\.md$/i.test(entry.name) &&
             typeof entry.html_url === "string" &&
-            entry.html_url.startsWith("https://github.com/") &&
-            typeof entry.download_url === "string" &&
-            entry.download_url.startsWith(
-                "https://raw.githubusercontent.com/" +
-                DOCUMENTATION_GITHUB_OWNER +
-                "/" +
-                DOCUMENTATION_GITHUB_REPOSITORY +
-                "/"
-            )
+            entry.html_url.startsWith("https://github.com/")
         )
         .map((entry) => ({
             name: entry.name,
             displayName: getDocumentationDisplayName(entry.name),
-            url: entry.html_url,
-            markdownUrl: entry.download_url
+            url: entry.html_url
         }))
         .sort((left, right) =>
             left.name.localeCompare(right.name, undefined, {
@@ -1256,6 +1247,20 @@ function setDocumentationViewerMessage(message, isWarning) {
     target.appendChild(paragraph);
 }
 
+function buildDocumentationMarkdownUrl(fileName) {
+    const pathBase = window.location.pathname.includes("/PoorMansThrottle-DIY/")
+        ? "/PoorMansThrottle-DIY"
+        : "";
+
+    return (
+        pathBase +
+        "/docs/" +
+        encodeURIComponent(fileName) +
+        "?v=" +
+        encodeURIComponent(getRandomCacheBust())
+    );
+}
+
 async function loadDocumentationFile(file) {
     const target = document.getElementById("documentationContent");
     if (!target) {
@@ -1264,9 +1269,12 @@ async function loadDocumentationFile(file) {
 
     setDocumentationViewerMessage("Loading " + file.displayName + "…", false);
     target.setAttribute("aria-busy", "true");
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
 
     try {
-        const response = await fetch(file.markdownUrl, { cache: "no-store" });
+        const response = await fetch(buildDocumentationMarkdownUrl(file.name), {
+            cache: "no-store"
+        });
 
         if (!response.ok) {
             const error = new Error(
