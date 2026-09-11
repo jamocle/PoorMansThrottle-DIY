@@ -1166,12 +1166,21 @@ async function loadDocumentationFiles() {
             typeof entry.name === "string" &&
             /\.md$/i.test(entry.name) &&
             typeof entry.html_url === "string" &&
-            entry.html_url.startsWith("https://github.com/")
+            entry.html_url.startsWith("https://github.com/") &&
+            typeof entry.download_url === "string" &&
+            entry.download_url.startsWith(
+                "https://raw.githubusercontent.com/" +
+                DOCUMENTATION_GITHUB_OWNER +
+                "/" +
+                DOCUMENTATION_GITHUB_REPOSITORY +
+                "/"
+            )
         )
         .map((entry) => ({
             name: entry.name,
             displayName: getDocumentationDisplayName(entry.name),
-            url: entry.html_url
+            url: entry.html_url,
+            markdownUrl: entry.download_url
         }))
         .sort((left, right) =>
             left.name.localeCompare(right.name, undefined, {
@@ -1193,6 +1202,63 @@ function appendDocumentationMessage(list, message, isWarning) {
     item.className = isWarning ? "note warn" : "note";
     item.textContent = message;
     list.appendChild(item);
+}
+
+function setDocumentationViewerMessage(message, isWarning) {
+    const target = document.getElementById("documentationContent");
+    if (!target) {
+        return;
+    }
+
+    target.hidden = false;
+    target.replaceChildren();
+
+    const paragraph = document.createElement("p");
+    paragraph.className = isWarning ? "note warn" : "note";
+    paragraph.textContent = message;
+    target.appendChild(paragraph);
+}
+
+async function loadDocumentationFile(file) {
+    const target = document.getElementById("documentationContent");
+    if (!target) {
+        return;
+    }
+
+    setDocumentationViewerMessage("Loading " + file.displayName + "…", false);
+    target.setAttribute("aria-busy", "true");
+
+    try {
+        const response = await fetch(file.markdownUrl, { cache: "no-store" });
+
+        if (!response.ok) {
+            const error = new Error(
+                "HTTP " + response.status + " while loading " + file.name + "."
+            );
+            error.status = response.status;
+            throw error;
+        }
+
+        const markdown = await response.text();
+
+        if (!markdown.trim()) {
+            setDocumentationViewerMessage(
+                "The Markdown file loaded, but it appears to be empty.",
+                true
+            );
+            return;
+        }
+
+        target.innerHTML = marked.parse(markdown);
+    } catch (error) {
+        console.error(error);
+        setDocumentationViewerMessage(
+            "Unable to load " + file.displayName + ". Please try again later.",
+            true
+        );
+    } finally {
+        target.setAttribute("aria-busy", "false");
+    }
 }
 
 function renderDocumentationFiles(files) {
@@ -1219,9 +1285,11 @@ function renderDocumentationFiles(files) {
         const link = document.createElement("a");
         link.className = "doc-link";
         link.href = file.url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
         link.textContent = file.displayName;
+        link.addEventListener("click", (event) => {
+            event.preventDefault();
+            void loadDocumentationFile(file);
+        });
 
         item.appendChild(link);
         list.appendChild(item);
