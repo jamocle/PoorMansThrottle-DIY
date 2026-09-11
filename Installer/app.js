@@ -1310,7 +1310,8 @@ async function loadDocumentationFile(file, updateHistory = true) {
     }
 
     try {
-        const response = await fetch(buildDocumentationMarkdownUrl(file.name), {
+        const markdownUrl = buildDocumentationMarkdownUrl(file.name);
+        const response = await fetch(markdownUrl, {
             cache: "no-store"
         });
 
@@ -1337,7 +1338,24 @@ async function loadDocumentationFile(file, updateHistory = true) {
             return;
         }
 
-        target.innerHTML = marked.parse(markdown);
+        const renderedHtml = marked.parse(markdown);
+        const template = document.createElement("template");
+        template.innerHTML = renderedHtml;
+
+        for (const image of template.content.querySelectorAll("img[src]")) {
+            const source = image.getAttribute("src");
+            if (!source) {
+                continue;
+            }
+
+            try {
+                image.setAttribute("src", new URL(source, markdownUrl).href);
+            } catch {
+                // Leave malformed image URLs unchanged so the browser can report them normally.
+            }
+        }
+
+        target.replaceChildren(template.content);
         target.scrollTop = 0;
         status.textContent = "";
     } catch (error) {
