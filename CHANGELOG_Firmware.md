@@ -2,11 +2,13 @@
 
 ## Firmware:
 
+### Version 3.1.0
+* **Individual Volume** The firmware now has the ability to modify the relative volume level of a sound vs other sounds +/-.
+
 ### Version 3.0.1
 * **Audio refinements** Modified so that it prototypically obey's startup and shutdown for diesel profiles and prohibits throttle input during those times.
 * **Custom file searching** modified the code to make the resolution of custom audio files more robust.
 * **Logging refinements** Improved D2 SD log reliability under sustained high activity. The logger now commits buffered log data after a short idle period, while also enforcing a maximum dirty interval so logs are still flushed even when the system never becomes fully idle. Short SD writes are retained and retried instead of being dropped, reducing the chance of missing or incomplete D2 logs during busy operation.
-
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.0
