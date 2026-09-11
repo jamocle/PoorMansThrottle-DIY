@@ -1238,8 +1238,8 @@ function setDocumentationViewerMessage(message, isWarning) {
         return;
     }
 
-    target.hidden = false;
     target.replaceChildren();
+    target.setAttribute("aria-busy", "false");
 
     const paragraph = document.createElement("p");
     paragraph.className = isWarning ? "note warn" : "note";
@@ -1261,15 +1261,53 @@ function buildDocumentationMarkdownUrl(fileName) {
     );
 }
 
-async function loadDocumentationFile(file) {
-    const target = document.getElementById("documentationContent");
-    if (!target) {
+function showDocumentationNotFound(fileName) {
+    const dialog = document.getElementById("documentationDialog");
+    const title = document.getElementById("documentationDialogTitle");
+    const status = document.getElementById("documentationStatus");
+
+    if (!dialog || !title || !status) {
         return;
     }
 
-    setDocumentationViewerMessage("Loading " + file.displayName + "…", false);
+    documentationRequestId += 1;
+    title.textContent = "Project documentation";
+    status.textContent = "";
+    setDocumentationViewerMessage(
+        'The requested Markdown guide "' + fileName + '" was not found.',
+        true
+    );
+
+    if (!dialog.open) {
+        dialog.showModal();
+    }
+}
+
+async function loadDocumentationFile(file, updateHistory = true) {
+    const dialog = document.getElementById("documentationDialog");
+    const title = document.getElementById("documentationDialogTitle");
+    const status = document.getElementById("documentationStatus");
+    const target = document.getElementById("documentationContent");
+
+    if (!dialog || !title || !status || !target) {
+        return;
+    }
+
+    if (updateHistory && getRequestedDocumentationFileName() !== file.name) {
+        updateDocumentationHistory(file.name, "push");
+    }
+
+    const requestId = ++documentationRequestId;
+
+    title.textContent = file.displayName;
+    status.textContent = "Loading " + file.displayName + "…";
+    target.replaceChildren();
     target.setAttribute("aria-busy", "true");
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
+    target.scrollTop = 0;
+
+    if (!dialog.open) {
+        dialog.showModal();
+    }
 
     try {
         const response = await fetch(buildDocumentationMarkdownUrl(file.name), {
@@ -1286,7 +1324,12 @@ async function loadDocumentationFile(file) {
 
         const markdown = await response.text();
 
+        if (requestId !== documentationRequestId) {
+            return;
+        }
+
         if (!markdown.trim()) {
+            status.textContent = "";
             setDocumentationViewerMessage(
                 "The Markdown file loaded, but it appears to be empty.",
                 true
@@ -1295,14 +1338,23 @@ async function loadDocumentationFile(file) {
         }
 
         target.innerHTML = marked.parse(markdown);
+        target.scrollTop = 0;
+        status.textContent = "";
     } catch (error) {
+        if (requestId !== documentationRequestId) {
+            return;
+        }
+
         console.error(error);
+        status.textContent = "";
         setDocumentationViewerMessage(
             "Unable to load " + file.displayName + ". Please try again later.",
             true
         );
     } finally {
-        target.setAttribute("aria-busy", "false");
+        if (requestId === documentationRequestId) {
+            target.setAttribute("aria-busy", "false");
+        }
     }
 }
 
@@ -1329,8 +1381,10 @@ function renderDocumentationFiles(files) {
 
         const link = document.createElement("a");
         link.className = "doc-link";
-        link.href = file.url;
+        link.href = buildDocumentationPageUrl(file.name);
         link.textContent = file.displayName;
+        link.setAttribute("aria-haspopup", "dialog");
+        link.setAttribute("aria-controls", "documentationDialog");
         link.addEventListener("click", (event) => {
             event.preventDefault();
             void loadDocumentationFile(file);
