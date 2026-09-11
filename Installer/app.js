@@ -1341,6 +1341,7 @@ async function loadDocumentationFile(file, updateHistory = true) {
         const renderedHtml = marked.parse(markdown);
         const template = document.createElement("template");
         template.innerHTML = renderedHtml;
+        const absoluteMarkdownUrl = new URL(markdownUrl, window.location.href);
 
         for (const image of template.content.querySelectorAll("img[src]")) {
             const source = image.getAttribute("src");
@@ -1349,7 +1350,7 @@ async function loadDocumentationFile(file, updateHistory = true) {
             }
 
             try {
-                image.setAttribute("src", new URL(source, markdownUrl).href);
+                image.setAttribute("src", new URL(source, absoluteMarkdownUrl).href);
             } catch {
                 // Leave malformed image URLs unchanged so the browser can report them normally.
             }
