@@ -796,7 +796,6 @@
                 rel="noopener noreferrer">Poor Man's Throttle GitHub project space</a></li>
           </ul>
 
-          <div id="documentationContent" class="markdown-content" aria-live="polite" hidden></div>
         </div>
       </div>
     </details>
@@ -838,6 +837,23 @@
       </div>
     </details>
   </main>
+
+  <dialog class="changelog-dialog" id="documentationDialog" aria-labelledby="documentationDialogTitle">
+    <div class="changelog-shell">
+      <div class="changelog-header">
+        <div>
+          <h2 id="documentationDialogTitle">Project documentation</h2>
+          <p>Read the selected Poor Man's Throttle guide.</p>
+        </div>
+        <button class="changelog-close" id="closeDocumentationButton" type="button"
+          aria-label="Close documentation">×</button>
+      </div>
+
+      <div class="changelog-status" id="documentationStatus" role="status" aria-live="polite"></div>
+      <div class="changelog-content markdown-content" id="documentationContent" tabindex="0"
+        aria-live="polite"></div>
+    </div>
+  </dialog>
 
   <dialog class="changelog-dialog" id="changelogDialog" aria-labelledby="changelogDialogTitle">
     <div class="changelog-shell">
