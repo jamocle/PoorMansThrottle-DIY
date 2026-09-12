@@ -2,6 +2,14 @@
 
 ## Smartphone App:
 
+### Version 3.1.0
+* **Prime Mover and Volume on Control Slideout** Now the prime mover and volume controls are added to the control slideout when Audio is on.
+* **Changed the Icon for Control** The throttle page now has a new Control icon to represent all types of controls.
+* **Individual Volume** You can now modify the relative volume level of a sound vs other sounds +/- in the app.
+* **Automatic Adding of Audio Controls** When the user turns on Audio, they will be asked if they wish to add common controls to the Controls screen for Audio.
+* **UI Tweaks** Graph manipulation more user friendly for chuff rate and MU Consist speed matching. 
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.0.0
 * **PMT Audio Support** The App now supports sound for diesel and steam locomotion and custom sounds. 
 * **Terminal Fixes** 
