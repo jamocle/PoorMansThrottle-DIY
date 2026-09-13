@@ -110,7 +110,8 @@ The firmware advertises using either the default firmware/device name or the con
 
 | Check | Action |
 |-----|-------|
-| ESP32 status LED | If the onboard LED is blinking, the controller is powered but not currently under active control |
+| ESP32 status LED | If `CV21` allows LED output and the onboard LED is blinking, the controller is powered but not currently under active control. A dark firmware-controlled LED is not by itself a fault when `CV21=0`, or when `CV21=2` and BLE or WebSocket control is connected. |
+| Onboard LED output mode | Check `CV21` if the firmware-controlled onboard LED is unexpectedly dark. `0` = always off, `1` = normal proposed LED state, `2` = off while BLE or WebSocket control is connected and normal proposed state while disconnected. |
 | Device name | Check for the configured train/device name, not only the default device name |
 | Recent disconnect | Power cycle if the device stopped appearing after a difficult disconnect or failed reconnect |
 | Phone BLE cache | Toggle Bluetooth off/on or force the app to rescan |
@@ -647,16 +648,18 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 
 ### What the LED Means
 
-The onboard LED is useful for diagnosis:
+The onboard LED is useful for diagnosis, but `CV21` is a final output gate and can intentionally suppress the physical LED without stopping the internal LED state machine.
 
 | LED Behavior | Meaning |
 |-----|-------|
-| Repeating double-blink search pattern | No active BLE or socket control connection |
-| Grace pattern | Control was lost and grace countdown behavior is active |
-| Solid on | Active control connection exists |
-| Brief dips off while connected | RX/TX activity is occurring |
+| Forced off at all times | `CV21=0` |
+| Repeating double-blink search pattern | No active BLE or socket control connection, when `CV21` allows output |
+| Grace pattern | Control was lost and grace countdown behavior is active, when `CV21` allows output |
+| Solid on | Active control connection exists with `CV21=1` |
+| Brief dips off while connected | RX/TX activity is occurring with `CV21=1` |
+| Visible while disconnected, then forced off when control connects | `CV21=2`; the proposed LED state is passed while disconnected and suppressed while either BLE or WebSocket control is connected |
 
-This can help distinguish a control-link problem from a motor power problem.
+A dark firmware-controlled onboard LED is therefore not by itself evidence of a power or control-link problem. Check `CV21` before using the LED as a diagnostic indicator.
 
 ---
 

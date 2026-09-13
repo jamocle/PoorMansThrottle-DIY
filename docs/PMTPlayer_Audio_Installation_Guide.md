@@ -335,6 +335,8 @@ The firmware defaults to **audio disabled**, so a correctly wired installation c
 
 **This applies only to the ESP32-S3 Standard and ESP32-S3 CAM boards. It does not apply to the Classic ESP32.**
 
+**CV21 can suppress this physical LED indication.** `CV21=0` forces the firmware-controlled onboard LED off. `CV21=2` forces it off while either BLE or WebSocket control is connected. For visible startup error codes, use `CV21=1`.
+
 If the red LED flashes, pauses, and repeats, **count the flashes**:
 
 - **4 flashes** — one or more sound files could not be loaded.
@@ -371,6 +373,8 @@ CV400=1
 ## S3 startup red LED error codes
 
 **This section is only for ESP32-S3 Standard and ESP32-S3 CAM boards.**
+
+**CV21 gates the final physical LED output.** With `CV21=0`, these red error flashes are not visible. With `CV21=2`, they are suppressed while either BLE or WebSocket control is connected. The firmware error state still exists even when the physical LED is gated off. Use `CV21=1` when you need the LED error code to remain visible.
 
 The red LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.
 
@@ -453,7 +457,7 @@ The board read and checked the WAV file, but it could not save the generated `.c
 
 ## No sound
 
-**On an S3 board, if the red LED is flashing a repeating code, check the S3 startup red LED error codes above first.**
+**On an S3 board, if the red LED is flashing a repeating code, check the S3 startup red LED error codes above first. If the LED is dark, check `CV21` before assuming no LED error code exists, because `CV21=0` can suppress it and `CV21=2` can suppress it while BLE or WebSocket control is connected.**
 
 Check:
 

@@ -46,7 +46,8 @@ Expected startup behavior:
 * the ESP32 powers on
 * the motor outputs are forced safe and the throttle starts stopped
 * BLE starts automatically
-* the onboard status LED enters its disconnected search pattern until a control connection is made
+* with the default `CV21=1`, the onboard status LED enters its disconnected search pattern until a control connection is made
+* `CV21=0` forces the firmware-controlled onboard LED off; `CV21=2` allows the disconnected/search pattern but forces the LED output off while either BLE or WebSocket control is connected
 * Wi-Fi/WebSocket control is optional and only starts if it has been enabled and configured in firmware settings
 
 Notes:
@@ -79,7 +80,7 @@ Expected result:
 
 * the ESP32 powers up
 * the locomotive should remain stopped at power-up
-* the firmware status LED should blink its disconnected/search pattern while waiting for a connection
+* with `CV21=1` or `CV21=2`, the firmware status LED should blink its disconnected/search pattern while waiting for a connection; with `CV21=0`, the firmware-controlled onboard LED remains off
 
 If the locomotive starts moving immediately, turn power off and inspect the wiring and motor driver configuration before continuing.
 
@@ -103,7 +104,7 @@ Expected result:
 
 * the locomotive appears as a BLE device
 * if no custom train name has been configured, it may advertise with the default firmware name
-* once connected, the onboard status LED changes from blinking to solid on
+* once connected, the onboard status LED changes from blinking to solid on when `CV21=1`; with `CV21=2`, the onboard LED is forced off while the BLE or WebSocket control connection is active; with `CV21=0`, it remains off
 
 If Wi-Fi/WebSocket has been configured, that can act as a secondary control path, but it is not required for a first power test.
 

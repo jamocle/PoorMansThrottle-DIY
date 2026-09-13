@@ -125,6 +125,7 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
+| **CV21** | All | Onboard LED Output Gate | `0`, `1`, `2` / `1` | Final hardware-output gate for the firmware-controlled onboard status LED. `0` forces the onboard LED output off. `1` passes the LED state currently proposed by the firmware, including its current color and blink pattern. `2` forces the onboard LED output off while either BLE or WebSocket control is connected and passes the proposed LED state while disconnected. The LED state machine continues running while output is gated. |
 | **CV30** | All | INA219 Enable | `0`, `1` / `0` | Enables or disables optional INA219 battery telemetry. Disabled by default. |
 | **CV31** | All where pin adapter exists | INA219 SDA Pin | Classic `16`; S3 `17` | I²C SDA pin used by the INA219. |
 | **CV32** | All where pin adapter exists | INA219 SCL Pin | Classic `17`; S3 `18` | I²C SCL pin used by the INA219. |

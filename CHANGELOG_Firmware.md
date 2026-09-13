@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version next
+Added CV21 to control the LED light output on the ESP32 card.
+
 ### Version 3.1.0
 * **Individual Volume** The firmware now has the ability to modify the relative volume level of a sound vs other sounds +/-.
 
