@@ -86,7 +86,7 @@ What to expect:
 - Use the firmware build that matches your controller board profile: **Classic ESP32-WROOM** or **ESP32-S3-WROOM-1-N16R8**. Do not flash a build intended for the other board profile.
 - By default, the BLE advertising name is `GScaleThrottle`.
 - If a train name has already been stored in controller settings, the advertised BLE name may appear as that configured train name instead.
-- The onboard status LED behavior is firmware-controlled and board-dependent in color. The firmware uses a status LED on GPIO2 with a blinking search pattern while disconnected and a solid-on state when a control connection is active.
+- The onboard status LED behavior is firmware-controlled and board-dependent in color. With the default `CV21=1`, the firmware passes its normal proposed LED state to the hardware, including the blinking search pattern while disconnected and the solid-on state when a control connection is active. `CV21=0` forces the firmware-controlled onboard LED off. `CV21=2` allows the proposed LED state while disconnected but forces the LED output off while either BLE or WebSocket control is connected.
 
 If the throttle appears in the app and the app can connect, the firmware installation is complete.
 

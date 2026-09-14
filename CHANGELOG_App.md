@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version Next
+
+Added About screen in the global configuration screen
+
 ### Version 3.1.0
 * **Prime Mover and Volume on Control Slideout** Now the prime mover and volume controls are added to the control slideout when Audio is on.
 * **Changed the Icon for Control** The throttle page now has a new Control icon to represent all types of controls.

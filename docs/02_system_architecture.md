@@ -468,6 +468,8 @@ Its behavior changes based on connection state, such as:
 * active control connection
 * receive/transmit activity
 
+`CV21` is the final hardware-output gate for this onboard status LED. The status logic continues to calculate the proposed color, blink pattern, error indication, and activity state even when the physical LED output is suppressed. `CV21=0` forces the onboard LED output off, `CV21=1` passes the proposed state through unchanged, and `CV21=2` forces the LED output off while either BLE or WebSocket control is connected and passes the proposed state while disconnected.
+
 This makes the onboard LED part of the control/status architecture, not just a power indicator.
 
 ## Optional Additional LED Outputs
