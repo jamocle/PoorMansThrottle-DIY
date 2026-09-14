@@ -88,6 +88,9 @@
       "firmwareDirectory": "../firmware/s3/{version}/",
       "latest": "3.1.0",
       "dropdownDefault": "3.0.1",
+      "ota": {
+        "file": "PoorMansThrottle.ino.bin"
+      },
       "parts": [
         {
           "file": "PoorMansThrottle.ino.bootloader.bin",
@@ -125,6 +128,9 @@
       "firmwareDirectory": "../firmware/s3-n8r8/{version}/",
       "latest": "3.1.0",
       "dropdownDefault": "3.0.0",
+      "ota": {
+        "file": "PoorMansThrottle.ino.bin"
+      },
       "parts": [
         {
           "file": "PoorMansThrottle.ino.bootloader.bin",
