@@ -2,11 +2,14 @@
 
 ## Firmware:
 
-### Version next
-Added CV21 to control the LED light output on the ESP32 card.
+### Version 3.2.0
+* **Over The Air Firmware Flashing** Flash all firmware AFTER this version wirelessly (Available only in the firmware for the S3 version of the ESP32 Module)
+* **New on-board LED light control** Added CV21 to control the LED light output on the ESP32 card.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.1.0
 * **Individual Volume** The firmware now has the ability to modify the relative volume level of a sound vs other sounds +/-.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.1
 * **Audio refinements** Modified so that it prototypically obey's startup and shutdown for diesel profiles and prohibits throttle input during those times.

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>PMT 3.2 — Over-the-Air Firmware Updates</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.84);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --green:#2ac66d;
+      --purple:#8b5cf6;
+      --danger:#b42318;
+      --shadow:0 20px 60px rgba(0,0,0,.10);
+      --radius:30px;
+      --max:1120px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% -10%, #fff 0%, #f7f7f9 38%, var(--bg) 68%, #ececf1 100%);
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:18px 16px 64px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      min-height:600px;
+      border-radius:36px;
+      background:
+        radial-gradient(circle at 76% 24%, rgba(42,198,109,.22), transparent 24%),
+        radial-gradient(circle at 88% 60%, rgba(139,92,246,.20), transparent 28%),
+        linear-gradient(145deg,#ffffff 0%,#f6f7fb 45%,#eef1f6 100%);
+      border:1px solid rgba(255,255,255,.8);
+      box-shadow:var(--shadow);
+      isolation:isolate;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:auto -120px -160px auto;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      background:linear-gradient(135deg,rgba(42,198,109,.22),rgba(139,92,246,.18));
+      filter:blur(50px);
+      z-index:-1;
+    }
+
+    .hero-copy{
+      position:relative;
+      z-index:5;
+      max-width:610px;
+      padding:58px 46px 46px;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 12px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      border:1px solid rgba(0,113,227,.14);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:700;
+      backdrop-filter:blur(14px);
+    }
+
+    .dot{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--green),var(--purple));
+      box-shadow:0 0 12px rgba(42,198,109,.55);
+    }
+
+    h1{
+      margin:18px 0 14px;
+      max-width:700px;
+      font-size:clamp(2.5rem,7vw,5.2rem);
+      line-height:.98;
+      letter-spacing:-.055em;
+      font-weight:750;
+    }
+
+    .hero-copy p{
+      margin:0;
+      max-width:560px;
+      color:var(--muted);
+      font-size:clamp(1.08rem,2.3vw,1.36rem);
+      line-height:1.45;
+    }
+
+    .hero-art{
+      position:absolute;
+      right:24px;
+      bottom:22px;
+      width:54%;
+      height:92%;
+      min-width:480px;
+      pointer-events:none;
+    }
+
+    .phone{
+      position:absolute;
+      right:0;
+      bottom:0;
+      width:48%;
+      min-width:260px;
+      border-radius:30px;
+      overflow:hidden;
+      box-shadow:0 28px 55px rgba(0,0,0,.20);
+      transform:rotate(1.5deg);
+      background:#fff;
+    }
+
+    .phone img{
+      width:100%;
+      display:block;
+    }
+
+    .board{
+      position:absolute;
+      right:30%;
+      bottom:6%;
+      width:56%;
+      filter:drop-shadow(0 28px 32px rgba(0,0,0,.28));
+      transform:rotate(-8deg);
+      z-index:3;
+    }
+
+    .board img{
+      width:100%;
+      display:block;
+    }
+
+    .pulse{
+      position:absolute;
+      right:17%;
+      top:14%;
+      width:190px;
+      height:190px;
+      border-radius:50%;
+      background:
+        radial-gradient(circle at 38% 38%,rgba(42,198,109,.75),rgba(42,198,109,.16) 34%,transparent 65%),
+        radial-gradient(circle at 65% 65%,rgba(139,92,246,.65),rgba(139,92,246,.10) 36%,transparent 68%);
+      filter:blur(18px);
+      opacity:.8;
+    }
+
+    .section{
+      margin-top:28px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:0 14px 36px rgba(0,0,0,.06);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .section-inner{padding:30px 28px 34px}
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.6rem,4vw,2.5rem);
+      line-height:1.08;
+      letter-spacing:-.03em;
+    }
+
+    .lede{
+      margin:0;
+      max-width:820px;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    .feature-grid,
+    .steps,
+    .support-grid{
+      display:grid;
+      gap:14px;
+      margin-top:22px;
+    }
+
+    .card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      padding:18px;
+      box-shadow:0 10px 24px rgba(0,0,0,.04);
+    }
+
+    .card strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1.02rem;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+    }
+
+    .step{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      padding:17px;
+    }
+
+    .step-num{
+      flex:0 0 36px;
+      width:36px;
+      height:36px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:#eef5ff;
+      color:var(--accent);
+      font-weight:800;
+    }
+
+    .step strong{
+      display:block;
+      margin-bottom:4px;
+    }
+
+    .step p{
+      margin:0;
+      color:var(--muted);
+    }
+
+    .status-strip{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      gap:18px;
+      margin-top:24px;
+      padding:20px;
+      border-radius:22px;
+      background:linear-gradient(135deg,rgba(42,198,109,.08),rgba(139,92,246,.08));
+      border:1px solid rgba(139,92,246,.13);
+    }
+
+    .status-led{
+      width:76px;
+      height:34px;
+      border-radius:999px;
+      background:linear-gradient(90deg,var(--green) 0 50%,var(--purple) 50% 100%);
+      box-shadow:
+        -12px 0 28px rgba(42,198,109,.28),
+        12px 0 28px rgba(139,92,246,.28);
+    }
+
+    .status-strip div:first-child{text-align:right}
+    .status-strip div:last-child{text-align:left}
+    .status-strip strong{display:block}
+    .status-strip span{color:var(--muted);font-size:.95rem}
+
+    .callout{
+      margin-top:22px;
+      padding:18px 20px;
+      border-radius:20px;
+      background:#fff7f6;
+      border-left:4px solid var(--danger);
+      color:#612018;
+    }
+
+    .callout strong{display:block;margin-bottom:4px}
+
+    .support{
+      padding:18px;
+      border-radius:22px;
+      background:#fff;
+      border:1px solid #e5e5ea;
+    }
+
+    .support h3{
+      margin:0 0 8px;
+      font-size:1.12rem;
+    }
+
+    .support p{
+      margin:0;
+      color:var(--muted);
+    }
+
+    .quote{
+      margin-top:28px;
+      padding:34px 28px;
+      text-align:center;
+      border-radius:28px;
+      background:linear-gradient(145deg,#111 0%,#202124 100%);
+      color:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .quote .big{
+      display:block;
+      font-size:clamp(1.9rem,5vw,3.5rem);
+      line-height:1.05;
+      letter-spacing:-.035em;
+      font-weight:750;
+    }
+
+    .quote p{
+      max-width:760px;
+      margin:14px auto 0;
+      color:#d1d1d6;
+      font-size:1.05rem;
+    }
+
+    .footer{
+      margin-top:26px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    @media (min-width:760px){
+      .feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:880px){
+      .hero{min-height:770px}
+      .hero-copy{padding:44px 24px 24px;max-width:100%}
+      .hero-art{
+        left:0;
+        right:0;
+        bottom:12px;
+        width:100%;
+        min-width:0;
+        height:52%;
+      }
+      .phone{right:4%;width:42%;min-width:220px}
+      .board{left:5%;right:auto;width:52%;bottom:8%}
+      .pulse{right:16%;top:4%}
+    }
+
+    @media (max-width:560px){
+      .wrap{padding:10px 10px 48px}
+      .hero{min-height:710px;border-radius:28px}
+      .hero-copy{padding:34px 20px 18px}
+      .hero-art{height:49%}
+      .phone{width:49%;right:2%;min-width:0;border-radius:20px}
+      .board{width:58%;left:1%;bottom:9%}
+      .pulse{width:140px;height:140px}
+      .section-inner{padding:24px 18px 28px}
+      .status-strip{grid-template-columns:1fr;justify-items:center;text-align:center}
+      .status-strip div:first-child,
+      .status-strip div:last-child{text-align:center}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="dot"></span> Poor Man's Throttle 3.2</div>
+        <h1 id="hero-title">Firmware updates without the USB cable.</h1>
+        <p>
+          Supported ESP32-S3 PMT devices can now update wirelessly, directly from the app.
+          PMT checks compatibility, guides the update, protects the controls, waits for the restart,
+          verifies the new firmware, and refreshes the device automatically.
+        </p>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="pulse"></div>
+        <div class="board"><img src="ota_board.png" alt="" /></div>
+        <div class="phone"><img src="ota_app.png" alt="" /></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>A guided update from start to finish.</h2>
+        <p class="lede">
+          OTA in PMT 3.2 is more than a wireless flash button. The app manages the entire experience:
+          capability detection, Wi-Fi readiness, confirmation, update protection, reboot handling,
+          firmware verification, and configuration recovery.
+        </p>
+
+        <div class="feature-grid">
+          <div class="card">
+            <strong>Automatic compatibility check</strong>
+            <p>The app asks the connected device whether OTA is supported instead of guessing from its name or firmware version.</p>
+          </div>
+          <div class="card">
+            <strong>Built into Configuration</strong>
+            <p>Compatible hardware receives a Flash Firmware option directly in the device Configuration screen.</p>
+          </div>
+          <div class="card">
+            <strong>Wi-Fi guidance</strong>
+            <p>If the device supports OTA but Wi-Fi is unavailable, the app explains what is needed before the update can begin.</p>
+          </div>
+          <div class="card">
+            <strong>Protected update state</strong>
+            <p>Once flashing starts, controls are temporarily locked so the update cannot be interrupted by normal device commands.</p>
+          </div>
+          <div class="card">
+            <strong>Automatic restart handling</strong>
+            <p>The app expects the PMT Device to disconnect and reboot, then waits for it to become available again.</p>
+          </div>
+          <div class="card">
+            <strong>Verified before returning control</strong>
+            <p>After reconnecting, the app authenticates again, reads the running firmware version, and refreshes the device configuration.</p>
+          </div>
+        </div>
+
+        <div class="status-strip">
+          <div>
+            <strong>GREEN</strong>
+            <span>Update activity</span>
+          </div>
+          <div class="status-led" aria-label="Green and purple update indication"></div>
+          <div>
+            <strong>PURPLE</strong>
+            <span>Alternating during OTA</span>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>Do not remove power during an update.</strong>
+          The PMT Device restarts automatically when installation is complete. The GREEN/PURPLE onboard RGB indication during OTA is expected behavior.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>What the customer experiences.</h2>
+        <p class="lede">
+          The process is intentionally simple. The technical work happens behind the scenes while the app keeps the user informed.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div><strong>Connect</strong><p>Connect to the PMT Device normally and open Configuration.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div><strong>Update</strong><p>Select Flash Firmware. The app verifies OTA readiness and asks for confirmation.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div><strong>Wait</strong><p>The interface switches to a dedicated update state and prevents conflicting controls.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div><strong>Automatic restart</strong><p>The PMT Device installs the latest compatible firmware and reboots by itself.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div><strong>Automatic verification</strong><p>The app reconnects, authenticates, and confirms the firmware version actually running on the device.</p></div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div><strong>Ready to use</strong><p>The device configuration is refreshed and controls are restored only after synchronization is complete.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>Hardware support.</h2>
+        <p class="lede">
+          OTA is capability-based. The app asks the device directly whether wireless updating is available.
+        </p>
+
+        <div class="support-grid">
+          <div class="support">
+            <h3>ESP32-S3 PMT hardware</h3>
+            <p>
+              Supported S3 hardware can update over the air when connected to Wi-Fi.
+              The S3 N16R8 and N8R8 variants use the same OTA experience in the app.
+            </p>
+          </div>
+          <div class="support">
+            <h3>Classic ESP32 PMT hardware</h3>
+            <p>
+              Classic ESP32 hardware continues to use the existing USB firmware-update process.
+              The app will not present OTA as available when the device reports that it is unsupported.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote">
+      <span class="big">Connect → Update → Wait → Restart → Verify → Ready.</span>
+      <p>
+        PMT 3.2 turns firmware maintenance into a guided app experience instead of a manual computer-and-cable task.
+      </p>
+    </section>
+
+    <div class="footer">
+      Poor Man's Throttle 3.2 — Over-the-Air firmware updating for supported ESP32-S3 PMT hardware.
+    </div>
+  </main>
+</body>
+</html>

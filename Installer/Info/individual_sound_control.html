@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#f5f5f7" />
+  <title>Individual Sound Control</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.88);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --shadow:0 18px 48px rgba(0,0,0,.08);
+      --radius:28px;
+      --max:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top,#fff 0%,#f7f7f9 44%,var(--bg) 72%,#ececf1 100%);
+      line-height:1.55;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:18px 16px 64px;
+    }
+
+    .hero{
+      position:relative;
+      overflow:hidden;
+      min-height:610px;
+      border-radius:36px;
+      background:
+        radial-gradient(circle at 75% 22%,rgba(0,113,227,.14),transparent 27%),
+        radial-gradient(circle at 82% 72%,rgba(142,84,233,.10),transparent 28%),
+        linear-gradient(145deg,#fff 0%,#f6f7fb 48%,#eef1f6 100%);
+      border:1px solid rgba(255,255,255,.8);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-copy{
+      position:relative;
+      z-index:5;
+      max-width:600px;
+      padding:58px 46px 44px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:999px;
+      border:1px solid rgba(0,113,227,.15);
+      background:rgba(255,255,255,.8);
+      color:var(--accent);
+      font-size:.86rem;
+      font-weight:700;
+      backdrop-filter:blur(12px);
+    }
+
+    h1{
+      margin:18px 0 14px;
+      font-size:clamp(2.5rem,7vw,5rem);
+      line-height:.98;
+      letter-spacing:-.055em;
+      font-weight:760;
+    }
+
+    .hero-copy p{
+      margin:0;
+      max-width:560px;
+      color:var(--muted);
+      font-size:clamp(1.08rem,2.5vw,1.34rem);
+      line-height:1.45;
+    }
+
+    .hero-art{
+      position:absolute;
+      right:22px;
+      bottom:12px;
+      width:51%;
+      height:93%;
+      min-width:470px;
+    }
+
+    .shot{
+      position:absolute;
+      width:47%;
+      border-radius:26px;
+      overflow:hidden;
+      background:#fff;
+      box-shadow:0 24px 52px rgba(0,0,0,.18);
+    }
+
+    .shot img{display:block;width:100%;height:auto}
+
+    /* Hero is intentionally layered for a more polished feature-banner look.
+       The full screens are shown unobstructed later in the page. */
+    .shot.one{
+      right:30%;
+      bottom:-2%;
+      transform:rotate(-5deg);
+      z-index:2;
+    }
+
+    .shot.two{
+      right:0;
+      bottom:4%;
+      transform:rotate(3deg);
+      z-index:3;
+    }
+
+    .section{
+      margin-top:28px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:0 14px 36px rgba(0,0,0,.06);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .inner{padding:30px 28px 34px}
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.6rem,4vw,2.5rem);
+      line-height:1.08;
+      letter-spacing:-.03em;
+    }
+
+    .lede{
+      margin:0;
+      max-width:850px;
+      color:var(--muted);
+      font-size:1.05rem;
+    }
+
+    .grid{
+      display:grid;
+      gap:14px;
+      margin-top:22px;
+    }
+
+    .card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      padding:18px;
+      box-shadow:0 10px 24px rgba(0,0,0,.04);
+    }
+
+    .card strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:1.03rem;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+    }
+
+    .image-grid{
+      display:grid;
+      gap:14px;
+      margin-top:22px;
+    }
+
+    figure{
+      margin:0;
+      background:#fff;
+      border:1px solid #e5e5ea;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 12px 28px rgba(0,0,0,.06);
+    }
+
+    figure img{
+      display:block;
+      width:100%;
+      height:auto;
+      background:#fff;
+    }
+
+    figcaption{
+      padding:13px 15px 16px;
+      color:var(--muted);
+      font-size:.95rem;
+      border-top:1px solid #ececf1;
+    }
+
+    .highlight{
+      margin-top:22px;
+      padding:18px 20px;
+      border-radius:20px;
+      background:var(--accent-soft);
+      border-left:4px solid var(--accent);
+      color:#153b63;
+    }
+
+    .highlight strong{display:block;margin-bottom:4px}
+
+    .sound-list{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .pill{
+      padding:9px 13px;
+      border-radius:999px;
+      background:#fff;
+      border:1px solid #e5e5ea;
+      color:#3a3a3c;
+      font-size:.94rem;
+      box-shadow:0 6px 16px rgba(0,0,0,.03);
+    }
+
+    .quote{
+      margin-top:28px;
+      padding:34px 28px;
+      border-radius:28px;
+      background:linear-gradient(145deg,#111,#232326);
+      color:#fff;
+      text-align:center;
+      box-shadow:var(--shadow);
+    }
+
+    .quote .big{
+      display:block;
+      font-size:clamp(1.9rem,5vw,3.4rem);
+      line-height:1.05;
+      letter-spacing:-.035em;
+      font-weight:760;
+    }
+
+    .quote p{
+      max-width:760px;
+      margin:14px auto 0;
+      color:#d1d1d6;
+      font-size:1.05rem;
+    }
+
+    .footer{
+      margin-top:26px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    @media (min-width:760px){
+      .grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .image-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media (max-width:880px){
+      .hero{min-height:800px}
+      .hero-copy{padding:44px 24px 22px;max-width:100%}
+      .hero-art{
+        left:0;
+        right:0;
+        bottom:8px;
+        width:100%;
+        height:53%;
+        min-width:0;
+      }
+      .shot{width:43%}
+      .shot.one{left:8%;right:auto;bottom:-2%}
+      .shot.two{right:7%;bottom:4%}
+    }
+
+    @media (max-width:560px){
+      .wrap{padding:10px 10px 48px}
+      .hero{min-height:760px;border-radius:28px}
+      .hero-copy{padding:34px 20px 16px}
+      .hero-art{height:50%}
+      .shot{width:47%;border-radius:18px}
+      .shot.one{left:2%;right:auto;bottom:-2%}
+      .shot.two{right:2%;bottom:4%}
+      .inner{padding:24px 18px 28px}
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Advanced Audio Control</div>
+        <h1>More than a master volume.</h1>
+        <p>
+          Shape the sound of each locomotive the way you want it. Individual sound groups can now be adjusted independently,
+          giving you fine control over the balance between the prime mover, horn, bell, brakes, chuffs, and other effects.
+        </p>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="shot one"><img src="sound_config.png" alt="" /></div>
+        <div class="shot two"><img src="sound_control.png" alt="" /></div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="inner">
+        <h2>Build a sound mix that fits the locomotive.</h2>
+        <p class="lede">
+          A single master volume is useful, but it cannot account for the way different sound effects compete with one another.
+          Individual sound control lets you tune the mix itself—so the horn can cut through without making the prime mover overwhelming,
+          the bell can sit naturally in the background, and steam effects can be balanced to match the character of the locomotive.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <strong>Keep important sounds clear</strong>
+            <p>Raise or lower specific sound groups without changing the overall volume of the locomotive.</p>
+          </div>
+          <div class="card">
+            <strong>Balance the soundscape</strong>
+            <p>Prevent a loud horn, bell, or brake effect from overpowering the prime mover or other locomotive sounds.</p>
+          </div>
+          <div class="card">
+            <strong>Tune by locomotive</strong>
+            <p>Create a mix that better matches the size, style, and personality of each individual engine.</p>
+          </div>
+        </div>
+
+        <div class="sound-list" aria-label="Examples of individually adjustable sound groups">
+          <span class="pill">Moving Bed</span>
+          <span class="pill">Horn</span>
+          <span class="pill">Bell</span>
+          <span class="pill">Cab / Auxiliary</span>
+          <span class="pill">Steam Brake</span>
+          <span class="pill">Stationary Steam Effects</span>
+          <span class="pill">Chuffs</span>
+          <span class="pill">Stationary Steam Background</span>
+        </div>
+
+        <div class="highlight">
+          <strong>Master volume still matters.</strong>
+          Use the master volume to set the overall listening level, then use the individual sound controls to shape the relative balance between effects.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="inner">
+        <h2>Configure once. Fine-tune anytime.</h2>
+        <p class="lede">
+          The Configuration screen provides the broad sound setup, while the live throttle controls make it easy to adjust a specific sound when you hear something that needs changing.
+        </p>
+
+        <div class="image-grid">
+          <figure>
+            <img src="sound_config.png" alt="Configuration screen showing master volume and independent volume controls for multiple sound groups." />
+            <figcaption>
+              Configure the overall audio profile and set the relative level of individual sound groups such as horn, bell, brake, chuffs, and background effects.
+            </figcaption>
+          </figure>
+
+          <figure>
+            <img src="sound_control.png" alt="Throttle control screen showing an individual Bell Volume adjustment." />
+            <figcaption>
+              Fine-tune a specific sound directly from the throttle controls. The example shows an individual Bell Volume offset adjustment.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="inner">
+        <h2>Why individual sound levels matter.</h2>
+        <p class="lede">
+          Real locomotives are not made up of equally loud sounds. Some effects should dominate, some should sit behind the action,
+          and some only need to be noticeable at the right moment. Independent level control makes it possible to recreate that balance.
+        </p>
+
+        <div class="grid">
+          <div class="card">
+            <strong>A horn that stands out</strong>
+            <p>Increase horn presence without making every other sound louder at the same time.</p>
+          </div>
+          <div class="card">
+            <strong>A bell that feels natural</strong>
+            <p>Reduce the bell when it is too dominant, while leaving the prime mover and other effects untouched.</p>
+          </div>
+          <div class="card">
+            <strong>Better steam balance</strong>
+            <p>Tune chuffs, brake sounds, stationary steam effects, and background sounds so they work together instead of competing.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="quote">
+      <span class="big">Your locomotive. Your mix.</span>
+      <p>
+        Set the overall volume once, then shape every important sound around it for a more balanced, believable, and personal operating experience.
+      </p>
+    </section>
+
+    <div class="footer">
+      Individual sound control adds detailed audio tuning without taking away the simplicity of a single master volume.
+    </div>
+  </main>
+</body>
+</html>

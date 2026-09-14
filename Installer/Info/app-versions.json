@@ -1,6 +1,20 @@
 {
     "versions": [
         {
+            "version": "3.2.0",
+            "title": "Firmware Update Wirelessly!",
+            "description": "PMT now supports Over-The-Air (OTA) Firmware updates (Requires firmware 3.2.0 or later and the ESP32-S3).",
+            "info": "ota_firmware_update.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "3.1.0",
+            "title": "Individual sound volume control",
+            "description": "PMT now supports the avility to set the relatiuve volume between different sounds.",
+            "info": "individual_sound_control.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
             "version": "3.0.0",
             "title": "Let there be sound!",
             "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
