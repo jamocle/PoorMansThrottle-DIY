@@ -177,6 +177,43 @@ If BLE works but WebSocket does not, the motor side may be fine and the issue ma
 
 ---
 
+# ESP32-S3 OTA Firmware Update Fails
+
+OTA applies to supported ESP32-S3 N16R8 and N8R8 throttle hardware. Classic ESP32-WROOM throttle hardware continues to use the USB firmware installer.
+
+### Expected OTA Sequence
+
+1. The app checks support with `OTA?`.
+2. The device must have an active Wi-Fi connection.
+3. `OTA` is accepted with `ACK:OTA`.
+4. The throttle performs its normal stop behavior and waits until it is fully stopped.
+5. OTA prepares the secure connection and reads the firmware catalog.
+6. Firmware transfer begins at `A:OTA 0` and advances in 10% steps through `A:OTA 100`.
+7. After `A:OTA 100`, the device disconnects and reboots automatically.
+
+The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA lifecycle.
+
+### Common Results
+
+| Result | Meaning / Action |
+|-----|-------|
+| `ERR:NS` from `OTA?` | OTA is not supported on this hardware. Classic ESP32 uses the USB installer. |
+| `ERR:NO WIFI` | The S3 device is not connected to Wi-Fi, or Wi-Fi was lost during OTA. Restore Wi-Fi and try again. |
+| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, or another pre-transfer error. |
+| `ERR:OTA` after progress begins | Firmware transfer/write did not complete. Keep the current firmware running if possible and use USB recovery if OTA cannot be retried successfully. |
+| Progress reaches `A:OTA 100` and the connection drops | Normal successful behavior. The firmware image completed and the device is rebooting. |
+| No progress percentages yet | This can be normal while OTA is stopping the throttle, obtaining validation time, or reading/validating the manifest. `0%` begins only when the firmware image transfer/write phase starts. |
+
+### Checks
+
+- Confirm the device is an ESP32-S3 N16R8 or N8R8 throttle.
+- Confirm Wi-Fi is connected before starting OTA.
+- Do not remove power while GREEN/PURPLE OTA indication is active.
+- If OTA repeatedly fails, use the normal USB installer as the recovery path.
+- Use USB when installing a specific older version or intentionally downgrading; OTA always installs the catalog's current `latest` version for the detected S3 target.
+
+---
+
 # Device Appears in the App but Opens the Wrong Screen
 
 ### Possible Causes
@@ -648,18 +685,19 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 
 ### What the LED Means
 
-The onboard LED is useful for diagnosis, but `CV21` is a final output gate and can intentionally suppress the physical LED without stopping the internal LED state machine.
+The onboard LED is useful for diagnosis. For normal status states, `CV21` is the final output gate and can intentionally suppress the physical LED without stopping the internal LED state machine. On supported ESP32-S3 throttle hardware, the OTA indication is intentionally higher priority than `CV21`.
 
 | LED Behavior | Meaning |
 |-----|-------|
-| Forced off at all times | `CV21=0` |
+| GREEN/PURPLE alternating every 300 ms | ESP32-S3 OTA is active. This OTA indication overrides `CV21` and normal/red status display until OTA finishes or aborts. |
+| Forced off at all times | `CV21=0` during normal operation; OTA on supported S3 hardware is the documented exception. |
 | Repeating double-blink search pattern | No active BLE or socket control connection, when `CV21` allows output |
 | Grace pattern | Control was lost and grace countdown behavior is active, when `CV21` allows output |
 | Solid on | Active control connection exists with `CV21=1` |
 | Brief dips off while connected | RX/TX activity is occurring with `CV21=1` |
 | Visible while disconnected, then forced off when control connects | `CV21=2`; the proposed LED state is passed while disconnected and suppressed while either BLE or WebSocket control is connected |
 
-A dark firmware-controlled onboard LED is therefore not by itself evidence of a power or control-link problem. Check `CV21` before using the LED as a diagnostic indicator.
+A dark firmware-controlled onboard LED is therefore not by itself evidence of a power or control-link problem. Check `CV21` before using the LED as a diagnostic indicator. During S3 OTA, GREEN/PURPLE should remain visible regardless of the normal `CV21` mode.
 
 ---
 

@@ -64,6 +64,7 @@ The app and firmware can also support optional advanced capabilities such as:
 * scheduled command (e.g. start/stop) behavior for supported devices
 * app-managed MU / consist control for multiple locomotive throttles
 * persistent configuration storage inside the controller
+* over-the-air installation of the catalog's latest firmware on supported ESP32-S3 N16R8/N8R8 throttles when Wi-Fi is connected; Classic ESP32 and recovery/rollback installs continue to use USB
 * multilingual and accessibility-friendly app behavior
 
 ---

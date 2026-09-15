@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.1.0  
+**Firmware Version:** 3.2.0  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -69,6 +69,7 @@ Command characteristics:
 | Time query / set | Yes | Yes | Yes |
 | Debug control (`D0` / `D1` / `D2`) | Yes | Yes | Yes |
 | Async state notify control | Yes | Yes | Yes |
+| OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
 | Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
 | Throttle motion commands | Yes | No | No |
@@ -427,7 +428,8 @@ ACK:A0
 
 Notes:
 
-* `A1` / `A0` control `A:` state-notification publishing.
+* `A1` / `A0` control normal `A:` state-notification publishing.
+* OTA progress lines (`A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`) are not controlled by `A1` / `A0`.
 * INA219 telemetry lines such as `TV:`, `TI:`, `TP:`, and `TF:` are not controlled by `A1` / `A0`.
 
 ---
@@ -531,6 +533,95 @@ Important exception:
 These commands apply to **Poor Man's Throttle** locomotive firmware.
 
 ---
+
+## ESP32-S3 OTA Capability and Firmware Update
+
+These OTA commands apply to supported **Poor Man's Throttle ESP32-S3 N16R8 and N8R8** firmware. OTA is not available on the Classic ESP32-WROOM throttle.
+
+Both commands require the normal authorization handshake.
+
+### Query OTA capability
+
+```text
+OTA?
+```
+
+Responses:
+
+```text
+ACK:OTA
+```
+
+Supported S3 throttle with Wi-Fi connected.
+
+```text
+ERR:NO WIFI
+```
+
+Supported S3 throttle without an active Wi-Fi connection.
+
+```text
+ERR:NS
+```
+
+Classic ESP32 throttle; OTA is not supported.
+
+`OTA?` is a query only. It does not stop the throttle, enter the OTA LED state, fetch the manifest, or start an update.
+
+### Start OTA
+
+```text
+OTA
+```
+
+On an authorized supported S3 throttle with Wi-Fi connected, the command is accepted with:
+
+```text
+ACK:OTA
+```
+
+The firmware then invokes the existing `S` stop behavior, waits until the throttle is fully stopped, obtains private OTA validation time, reads the firmware catalog, selects the exact S3 board target, and installs that target's `latest` firmware image.
+
+OTA does not accept a requested firmware version. The catalog `versions[]` list and `dropdownDefault` value are for USB installer selection and are not OTA version selectors.
+
+During the actual firmware image transfer/write phase, the initiating transport receives:
+
+```text
+A:OTA 0
+A:OTA 10
+A:OTA 20
+A:OTA 30
+A:OTA 40
+A:OTA 50
+A:OTA 60
+A:OTA 70
+A:OTA 80
+A:OTA 90
+A:OTA 100
+```
+
+Progress rules:
+
+* Progress is emitted in exact 10% buckets without intentionally skipping a bucket.
+* `A:OTA 0` means the firmware image transfer/write phase has begun. NTP acquisition and manifest processing occur before this point.
+* `A:OTA 100` means the firmware image transfer/write completed successfully. The device then reboots; no additional success packet is required.
+* OTA progress is sent to the transport that initiated OTA.
+* OTA progress is not controlled by the normal `A1` / `A0` async-state setting.
+* `OTA?` never produces OTA progress lines.
+
+Failure responses:
+
+```text
+ERR:NO WIFI
+ERR:OTA
+```
+
+`ERR:NO WIFI` is used when Wi-Fi is unavailable when OTA is requested or is lost while OTA is active. Other OTA failures return `ERR:OTA`.
+
+While OTA is active, motion commands are prevented from restarting motion. On supported S3 hardware, the onboard RGB LED alternates GREEN/PURPLE every 300 ms for the complete OTA lifecycle and this indication overrides the normal `CV21` LED output gate.
+
+---
+
 
 ## Motion Commands
 
@@ -1351,6 +1442,8 @@ Runtime override:
 | `D0` | Shared | Disable debug/logging and clear persistence |
 | `A1` | Shared | Enable async `A:` state updates |
 | `A0` | Shared | Disable async `A:` state updates |
+| `OTA?` | S3 Throttle | Query OTA capability/readiness |
+| `OTA` | S3 Throttle | Stop safely and install the board target's catalog `latest` firmware |
 | `G1` | Shared | Enable grace shutdown for this boot |
 | `G0` | Shared | Disable grace shutdown for this boot |
 | `PS?` | Shared | Query persist-only CV staging mode |
@@ -1383,6 +1476,8 @@ Runtime override:
 ---
 
 # Runtime / Result Line Summary
+
+OTA progress is reported as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress lines are independent of the normal `A1` / `A0` async-state setting.
 
 Unsolicited runtime lines:
 

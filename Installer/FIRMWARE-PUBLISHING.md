@@ -18,12 +18,22 @@ The existing `firmware/s3/` location remains the N16R8 location so existing publ
 
 ## The settings that control the web installer
 
-Each target has two independent settings in `Installer/@firmware-versions.json`:
+Each target has two independent USB-installer settings in `Installer/@firmware-versions.json`:
 
 - `latest` — the version installed by **Install Latest Firmware**.
 - `dropdownDefault` — the version initially selected in the **Choose a specific firmware version** dropdown.
 
 They do not need to be the same.
+
+The two ESP32-S3 targets also contain OTA metadata:
+
+```json
+"ota": {
+  "file": "PoorMansThrottle.ino.bin"
+}
+```
+
+OTA always combines the selected S3 board target's `latest`, `firmwareDirectory`, and `ota.file` values. OTA does **not** select from `versions[]` and does **not** use `dropdownDefault`. Classic does not have an OTA target.
 
 Current deployment:
 
@@ -125,6 +135,46 @@ PSRAM=opi
 
 The N16R8 build remains compiled for 16 MB flash and its 16 MB partition scheme.
 
+## ESP32-S3 OTA publishing contract
+
+For both S3 targets, the normal application binary is also the OTA payload:
+
+```text
+PoorMansThrottle.ino.bin
+```
+
+The OTA binary for the version named by `latest` must exist at the matching board-specific location:
+
+```text
+firmware/s3/<latest>/PoorMansThrottle.ino.bin
+firmware/s3-n8r8/<latest>/PoorMansThrottle.ino.bin
+```
+
+The catalog entries for the S3 targets must include:
+
+```json
+"ota": {
+  "file": "PoorMansThrottle.ino.bin"
+}
+```
+
+Publishing rules:
+
+1. Build the exact S3 target.
+2. Verify the target's partition scheme and generated artifacts.
+3. Publish the four normal USB/browser installer binaries to that target's version folder.
+4. Confirm `PoorMansThrottle.ino.bin` exists in that same folder; this is the OTA payload.
+5. Only then change that target's `latest` value if OTA should begin offering the new release.
+6. Deploy the binary and catalog change together and verify the final HTTPS URLs before announcing the release.
+
+`latest` is the OTA release pointer. `dropdownDefault` remains a USB-installer UI choice and can intentionally differ from `latest`. Entries in `versions[]` are also USB-installer choices; they do not make a version selectable by OTA.
+
+OTA never uses `PoorMansThrottle.ino.merged.bin`. The OTA updater writes the application image through the ESP32 OTA partition mechanism. The merged image remains inappropriate for the normal PMT USB update path and for OTA.
+
+USB remains the required recovery, rollback, downgrade, and specific-version path.
+
+---
+
 ## Add the version to the catalog
 
 Open:
@@ -162,6 +212,8 @@ Example:
 If you are publishing a beta or test build but do not want it on the Latest button, leave `latest` unchanged.
 
 The N16R8 and N8R8 `latest` values are independent.
+
+For S3 OTA, changing `latest` also changes the version that OTA will install for that exact S3 target. Do not advance an S3 `latest` value until that target's `PoorMansThrottle.ino.bin` is published and verified at the matching `firmwareDirectory/<latest>/` path.
 
 ## Decide whether to change `dropdownDefault`
 
@@ -252,7 +304,7 @@ The installer tells users to:
 
 ## Publishing order
 
-Deploy binary files and the matching installer catalog/UI changes together.
+Deploy binary files and the matching installer catalog/UI changes together. For S3 releases, this also keeps the OTA `latest` pointer from referencing a binary that has not been deployed yet.
 
 For a new N8R8 release:
 

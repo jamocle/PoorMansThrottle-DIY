@@ -54,6 +54,42 @@ Shared Command Handling
 Device Output
 ```
 
+## ESP32-S3 OTA Firmware Architecture
+
+Supported ESP32-S3 N16R8 and N8R8 throttle builds add a separate HTTPS OTA path. OTA uses Wi-Fi for firmware retrieval; it is not a WebSocket control operation even when the app initiated the request over BLE or WebSocket.
+
+```text
+PMT App
+   │
+   │  authorized OTA command
+   ▼
+ESP32-S3 Throttle Firmware
+   │
+   ├─ run existing stop behavior and wait until fully stopped
+   ├─ obtain OTA-private UTC validation time
+   ├─ HTTPS: read firmware catalog
+   ├─ select detected S3 target + catalog latest
+   └─ HTTPS: download/write PoorMansThrottle.ino.bin
+                    │
+                    ▼
+             OTA app partition
+                    │
+                    ▼
+                  Reboot
+```
+
+The OTA-private NTP lookup is used only for secure certificate-date validation. It does not call the normal PMT time-setting path and does not alter the firmware's shared NTP/runtime clock state.
+
+The firmware keeps standard TLS CA and hostname verification enabled. The private UTC value is used to validate certificate dates without changing the controller's system clock.
+
+OTA is supported only by the S3 throttle builds. Classic ESP32 throttle, Module, and Turbine firmware do not use this OTA update path.
+
+The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version.
+
+During firmware image transfer/write, progress is sent back to the transport that initiated OTA as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress events are independent of the normal `A1` / `A0` async-state setting.
+
+USB remains the recovery, rollback, downgrade, and specific-version installation path.
+
 ## Combined Device View
 
 ```text
@@ -468,7 +504,9 @@ Its behavior changes based on connection state, such as:
 * active control connection
 * receive/transmit activity
 
-`CV21` is the final hardware-output gate for this onboard status LED. The status logic continues to calculate the proposed color, blink pattern, error indication, and activity state even when the physical LED output is suppressed. `CV21=0` forces the onboard LED output off, `CV21=1` passes the proposed state through unchanged, and `CV21=2` forces the LED output off while either BLE or WebSocket control is connected and passes the proposed state while disconnected.
+For normal status states, `CV21` is the final hardware-output gate for this onboard status LED. The status logic continues to calculate the proposed color, blink pattern, error indication, and activity state even when the physical LED output is suppressed. `CV21=0` forces the onboard LED output off, `CV21=1` passes the proposed state through unchanged, and `CV21=2` forces the LED output off while either BLE or WebSocket control is connected and passes the proposed state while disconnected.
+
+On supported ESP32-S3 throttle hardware, OTA is a deliberate higher-priority exception: while OTA is active the onboard RGB LED alternates GREEN/PURPLE every 300 ms regardless of the normal `CV21` output mode. OTA indication also takes priority over the normal/red status display until OTA completes or aborts.
 
 This makes the onboard LED part of the control/status architecture, not just a power indicator.
 

@@ -349,28 +349,69 @@
     }
 
     @media (max-width:880px){
-      .hero{min-height:770px}
+      .hero{min-height:0}
       .hero-copy{padding:44px 24px 24px;max-width:100%}
       .hero-art{
-        left:0;
-        right:0;
-        bottom:12px;
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
         width:100%;
         min-width:0;
-        height:52%;
+        height:390px;
+        margin-top:4px;
+        overflow:hidden;
       }
-      .phone{right:4%;width:42%;min-width:220px}
-      .board{left:5%;right:auto;width:52%;bottom:8%}
+      .phone{
+        right:4%;
+        bottom:0;
+        width:auto;
+        height:96%;
+        min-width:0;
+        max-width:44%;
+      }
+      .phone img{
+        width:auto;
+        height:100%;
+        max-width:100%;
+        object-fit:contain;
+      }
+      .board{
+        left:5%;
+        right:auto;
+        bottom:8%;
+        width:50%;
+        max-height:78%;
+      }
+      .board img{
+        width:100%;
+        height:auto;
+        max-height:100%;
+        object-fit:contain;
+      }
       .pulse{right:16%;top:4%}
     }
 
     @media (max-width:560px){
       .wrap{padding:10px 10px 48px}
-      .hero{min-height:710px;border-radius:28px}
+      .hero{min-height:0;border-radius:28px}
       .hero-copy{padding:34px 20px 18px}
-      .hero-art{height:49%}
-      .phone{width:49%;right:2%;min-width:0;border-radius:20px}
-      .board{width:58%;left:1%;bottom:9%}
+      .hero-art{
+        height:340px;
+        margin-top:0;
+      }
+      .phone{
+        right:2%;
+        height:94%;
+        max-width:48%;
+        border-radius:20px;
+      }
+      .board{
+        width:56%;
+        left:1%;
+        bottom:9%;
+        max-height:76%;
+      }
       .pulse{width:140px;height:140px}
       .section-inner{padding:24px 18px 28px}
       .status-strip{grid-template-columns:1fr;justify-items:center;text-align:center}
@@ -454,7 +495,7 @@
 
         <div class="callout">
           <strong>Do not remove power during an update.</strong>
-          The PMT Device restarts automatically when installation is complete. The GREEN/PURPLE onboard RGB indication during OTA is expected behavior.
+          The PMT Device restarts automatically when installation is complete. The GREEN/PURPLE onboard RGB indication during OTA is expected behavior and alternates every 300 ms while OTA is active.
         </div>
       </div>
     </section>
@@ -495,6 +536,41 @@
       </div>
     </section>
 
+
+    <section class="section">
+      <div class="section-inner">
+        <h2>What the progress percentage means.</h2>
+        <p class="lede">
+          Firmware transfer progress is reported in 10% steps. Preparation happens before the first percentage is shown.
+        </p>
+
+        <div class="feature-grid">
+          <div class="card">
+            <strong>Before 0%</strong>
+            <p>The device may be stopping safely, confirming Wi-Fi, obtaining private OTA validation time, or reading and validating the firmware catalog.</p>
+          </div>
+          <div class="card">
+            <strong>0%</strong>
+            <p>The actual firmware image transfer/write phase has started.</p>
+          </div>
+          <div class="card">
+            <strong>10% through 90%</strong>
+            <p>The app receives firmware transfer/write progress in exact 10% buckets.</p>
+          </div>
+          <div class="card">
+            <strong>100%</strong>
+            <p>The firmware image transfer/write completed successfully. The device will disconnect and reboot next; no separate final success message is required.</p>
+          </div>
+        </div>
+
+        <div class="callout">
+          <strong>If the update fails:</strong>
+          <code>ERR:NO WIFI</code> means Wi-Fi was unavailable or was lost. <code>ERR:OTA</code> means another OTA step failed.
+          If OTA cannot be completed, use the normal USB installer as the recovery path.
+        </div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="section-inner">
         <h2>Hardware support.</h2>
@@ -508,6 +584,7 @@
             <p>
               Supported S3 hardware can update over the air when connected to Wi-Fi.
               The S3 N16R8 and N8R8 variants use the same OTA experience in the app.
+              OTA always installs the current catalog <code>latest</code> firmware for the detected S3 target.
             </p>
           </div>
           <div class="support">
@@ -515,6 +592,7 @@
             <p>
               Classic ESP32 hardware continues to use the existing USB firmware-update process.
               The app will not present OTA as available when the device reports that it is unsupported.
+              USB also remains the recovery and specific-version/rollback path for S3 hardware.
             </p>
           </div>
         </div>
