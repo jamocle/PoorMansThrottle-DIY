@@ -2,6 +2,8 @@
 
 ## Firmware:
 
+### Version 3.3.0
+
 ### Version 3.2.0
 * **Over The Air Firmware Flashing** Flash all firmware AFTER this version wirelessly (Available only in the firmware for the S3 version of the ESP32 Module)
 * **New on-board LED light control** Added CV21 to control the LED light output on the ESP32 card.

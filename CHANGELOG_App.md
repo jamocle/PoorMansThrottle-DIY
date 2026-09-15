@@ -2,7 +2,7 @@
 
 ## Smartphone App:
 
-### Version 3.2.1
+### Version 3.3.0
 
 * **Bug Fixes**
     Fixed save failures with the master volume slider on configuration page.
