@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.2.0  
+**Firmware Version:** 3.3.0  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -25,13 +25,13 @@ Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and func
 
 # Device Types Covered
 
-PMT firmware 2.0.0 uses a shared protocol foundation across more than one device type.
+PMT firmware 3.3.0 uses a shared protocol foundation across more than one device type.
 
 | Device type | Purpose | Protocol scope |
 |---|---|---|
-| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared configuration, schedule, INA219 telemetry/protection, and throttle audio diagnostics |
-| **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, schedule, INA219, debug, and configuration protocol |
-| **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, shared configuration, schedule, and INA219 telemetry/protection |
+| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared script management, shared configuration, schedule, INA219 telemetry/protection, and throttle audio diagnostics |
+| **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, script management, schedule, INA219, debug, and configuration protocol |
+| **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, shared script management, shared configuration, schedule, and INA219 telemetry/protection |
 
 Commands in this document are marked as **Shared**, **Throttle-only**, or **Turbine-only** where needed.
 
@@ -54,7 +54,7 @@ Command characteristics:
 * Leading/trailing whitespace and CR/LF are ignored.
 * Numeric throttle/output values are generally clamped or validated in the `0..100` domain, depending on the command.
 * CV commands require authorization first.
-* Persist-only CV staging commands and throttle audio diagnostic commands require authorization in normal external use.
+* Persist-only CV staging commands, shared script-management commands, and throttle audio diagnostic commands require authorization in normal external use.
 
 ---
 
@@ -72,6 +72,7 @@ Command characteristics:
 | OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
 | Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
+| Shared script record/playback/delete (`SR` / `SP...` / `SS?` / `SD=`) | Yes* | Yes* | Yes* |
 | Throttle motion commands | Yes | No | No |
 | Hardware/stored throttle state query | Yes | No | No |
 | Periodic throttle debug commands | Yes | No | No |
@@ -82,6 +83,8 @@ Command characteristics:
 | Shared CV commands | Yes | Yes | Yes |
 | Throttle CV commands | Yes | No | No |
 | Turbine CV commands | No | No | Yes |
+
+`*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of recordable control commands is device-specific. The generic Module image currently has no module-specific recordable control commands.
 
 ---
 
@@ -223,7 +226,7 @@ V
 Example response:
 
 ```text
-ACK:V2.0.0
+ACK:V3.3.0
 ```
 
 `V` is ACK-wrapped.
@@ -525,6 +528,288 @@ Behavior:
 Important exception:
 
 * `CV8` is a hardware-control CV rather than ordinary persisted configuration. Its restart/factory-reset behavior is not suppressed or staged by `PS1`.
+
+---
+
+# Shared Script Recording / Playback
+
+Firmware 3.3 adds a shared SD-backed script service for recording eligible control commands with timing, playing saved scripts once or repeatedly, checking script state, stopping playback, and deleting saved scripts.
+
+The management commands are shared across PMT firmware images. Actual recordable control commands remain device-specific.
+
+## Storage and File Naming
+
+Firmware scripts are stored as:
+
+```text
+/scripts/<name>.pmt
+```
+
+Name rules:
+
+* The base name is limited to **16 characters**.
+* Allowed characters are lowercase `a-z`, digits `0-9`, underscore `_`, and hyphen `-`.
+* Input is normalized to lowercase.
+* An optional `.pmt` suffix may be supplied in the command; firmware removes it before building the stored path.
+* Saving a recording to an existing name overwrites that script.
+* The `/scripts` directory is created when required for recording.
+* Script files are limited to **32 KiB**.
+
+All SD-backed script operations require an active PMT SD filesystem. If no active SD storage is available, the command returns `ERR:SD`.
+
+## Start Recording
+
+```text
+SR
+```
+
+Successful response:
+
+```text
+ACK:SR
+```
+
+Behavior:
+
+* Recording is observational: eligible external control commands still execute normally while they are being recorded.
+* Internally scheduled commands are not recorded.
+* Playback-generated commands are not re-recorded.
+* The first recorded control command is written immediately; firmware does **not** add a leading pause from `SR` to that first command.
+* Between recorded control commands, firmware inserts `PAUSE <milliseconds>` using the elapsed time between those commands.
+* If recording is already active, or playback is running, `SR` returns `ERR:BUSY`.
+* Starting recording requires active SD storage so the `/scripts` directory can be verified or created.
+
+## Stop Recording and Save
+
+```text
+SR=<name>
+```
+
+Example:
+
+```text
+SR=yard1
+```
+
+Successful response:
+
+```text
+ACK:SR
+```
+
+Behavior:
+
+* `SR=<name>` ends the recording and writes `/scripts/<name>.pmt`.
+* If at least one control command was recorded, firmware measures the elapsed time from the **last recorded control command to `SR=<name>`** and appends that as the final `PAUSE`.
+* That trailing pause is important for repeated playback because it preserves the time spent in the final recorded state before the next repetition begins.
+* `SR=<name>` itself is not written into the script.
+* If no eligible control commands were captured, an empty script file can be saved; attempting to play that file returns `ERR:EMPTY`.
+* If the in-memory recording exceeds the 32 KiB script limit, saving returns `ERR:FULL`.
+
+Example recording:
+
+```text
+F40
+PAUSE 9910
+FX4=1
+PAUSE 1110
+FX4=0
+PAUSE 90
+B
+PAUSE 10080
+```
+
+## Play Once
+
+```text
+SP1=<name>
+```
+
+Successful response:
+
+```text
+ACK:SP1
+```
+
+Behavior:
+
+* Loads and validates the script from SD.
+* Runs the script once.
+* The file is loaded into memory and closed before playback begins.
+* Playback is non-blocking; `PAUSE` delays are serviced from the normal firmware loop.
+
+## Repeat Playback
+
+```text
+SPR=<name>
+```
+
+Successful response:
+
+```text
+ACK:SPR
+```
+
+Behavior:
+
+* Loads and validates the script from SD.
+* Repeats from the beginning after the final line completes.
+* A trailing `PAUSE` recorded by `SR=<name>` is honored before the next repetition begins.
+
+## Stop Playback
+
+```text
+SP0
+```
+
+Successful response:
+
+```text
+ACK:SP0
+```
+
+If no script is running:
+
+```text
+ERR:STATE
+```
+
+## Script Status
+
+```text
+SS?
+```
+
+Possible responses:
+
+```text
+A:SS=IDLE
+A:SS=REC
+A:SS=PLAY
+A:SS=REPEAT
+```
+
+## Delete a Saved Script
+
+```text
+SD=<name>
+```
+
+Example:
+
+```text
+SD=yard1
+```
+
+Successful response:
+
+```text
+ACK:SD
+```
+
+Behavior:
+
+* Deletes `/scripts/<name>.pmt`.
+* The same name normalization and validation rules used by playback and recording are applied.
+* Deletion is blocked while recording or playback is active and returns `ERR:BUSY`.
+* A missing script returns `ERR:NOFILE`.
+* A filesystem delete failure returns `ERR:DELETE`.
+
+## Firmware `.pmt` Script Syntax
+
+Firmware-resident `.pmt` scripts intentionally use a restricted command set:
+
+```text
+<recordable device control command>
+PAUSE <milliseconds>
+```
+
+A bare:
+
+```text
+PAUSE
+```
+
+is also accepted and means 1000 ms.
+
+The maximum single parsed pause value is `2147483647` ms. Very long recorded intervals can be split across multiple `PAUSE` lines.
+
+Firmware `.pmt` playback is **not** the same as the app's general-purpose terminal script runner. App-only script directives are not accepted in firmware `.pmt` files. A firmware script must contain only blank lines, valid `PAUSE` lines, and commands classified as recordable controls by the active firmware image.
+
+## Recordable Commands by Device
+
+### Throttle
+
+The current throttle classifier accepts:
+
+```text
+S
+B
+B0..100
+F0..100
+R0..100
+FQ0..100
+RQ0..100
+FX1..12=0/1
+```
+
+### Turbine
+
+The current turbine classifier accepts:
+
+```text
+F0..100
+F0..100*
+FQ100
+```
+
+### Module
+
+The generic Module firmware currently has no module-specific physical control commands classified as recordable. Script-management commands are present, but a recording with no eligible controls produces an empty script and later playback returns `ERR:EMPTY`.
+
+## Playback Command Gating
+
+While a script is running:
+
+* Script-generated control commands are re-entered through the existing device command handlers.
+* Externally received recordable control commands are suppressed so they cannot override the active script.
+* Internally scheduled recordable control commands are likewise suppressed while playback is active.
+* Non-control management/configuration commands continue through the normal command path unless that specific command rejects the current script state.
+* `SP0` remains available to stop playback.
+* Starting another recording or playback, or deleting a script, returns `ERR:BUSY` while playback is active.
+
+## Script Errors
+
+| Response | Meaning |
+|---|---|
+| `ERR:BUSY` | Recording or playback state prevents the requested operation |
+| `ERR:SD` | Active SD storage is unavailable |
+| `ERR:MEM` | Required script buffer memory could not be reserved |
+| `ERR:STATE` | Requested state transition is not valid, such as `SP0` while idle |
+| `ERR:NAME` | Script name is empty, too long, or contains invalid characters |
+| `ERR:FULL` | Recording exceeded the 32 KiB script limit |
+| `ERR:WRITE` | Recording could not be written completely |
+| `ERR:NOFILE` | Requested script file does not exist |
+| `ERR:READ` | Script file could not be read completely |
+| `ERR:SIZE` | Script file exceeds the 32 KiB limit |
+| `ERR:EMPTY` | Script contains no executable content |
+| `ERR:SCRIPT` | Script contains an invalid line or unsupported command |
+| `ERR:DELETE` | Script file could not be deleted |
+
+## BLE Command-Length Constraint
+
+The 16-character script-name limit keeps the longest management commands within the minimum 20-byte BLE payload:
+
+```text
+SP1=<16-character-name>
+SPR=<16-character-name>
+```
+
+Each is at most 20 ASCII bytes before any transport framing.
+
+## Authorization
+
+Shared script-management commands follow the normal externally authorized command path. They are not part of the pre-authorization command set.
 
 ---
 
@@ -1366,6 +1651,7 @@ Autonomous behavior:
 * The OFF command still fires at the configured OFF boundary.
 * Replies are suppressed for internally scheduled command execution.
 * Internally scheduled commands execute through the normal command pipeline.
+* If script playback is active, scheduled commands that classify as recordable controls are suppressed until playback stops.
 * Device-specific commands must match the firmware image. For example, throttle firmware can schedule `F40` or `S`; turbine firmware can schedule `F50` or `F0`.
 * While autonomous mode is active, the configured schedule's exact ON/OFF command strings can be allowed through the command gate even without a completed external handshake.
 
@@ -1449,6 +1735,13 @@ Runtime override:
 | `PS?` | Shared | Query persist-only CV staging mode |
 | `PS1` | Shared | Enable persist-only CV staging |
 | `PS0` | Shared | Leave persist-only CV staging |
+| `SR` | Shared* | Start SD-backed control-command recording |
+| `SR=<name>` | Shared* | Stop recording and save `/scripts/<name>.pmt` |
+| `SP1=<name>` | Shared* | Play a saved firmware script once |
+| `SPR=<name>` | Shared* | Repeat a saved firmware script |
+| `SP0` | Shared | Stop active script playback |
+| `SS?` | Shared | Query script state |
+| `SD=<name>` | Shared* | Delete a saved firmware script |
 | `F<n>` | Throttle | Forward momentum ramp |
 | `R<n>` | Throttle | Reverse momentum ramp |
 | `FQ<n>` | Throttle | Forward quick ramp |
@@ -1473,6 +1766,8 @@ Runtime override:
 | `CV<n>?` | Device-specific | Query CV |
 | `CV<n>=<value>` | Device-specific | Set CV |
 
+`*` SD-backed script operations require an active PMT SD filesystem.
+
 ---
 
 # Runtime / Result Line Summary
@@ -1490,6 +1785,15 @@ Unsolicited runtime lines:
 | `TF:` | INA219 compact status flags |
 | `IP:` | Wi-Fi IP announcement |
 
+Command-generated script status lines:
+
+| Line | Meaning |
+|---|---|
+| `A:SS=IDLE` | Script service is idle |
+| `A:SS=REC` | Recording is active |
+| `A:SS=PLAY` | One-shot playback is active |
+| `A:SS=REPEAT` | Repeating playback is active |
+
 Command-generated audio-analysis lines:
 
 | Line prefix | Meaning |
@@ -1504,7 +1808,7 @@ Command-generated audio-analysis lines:
 
 # What Changed from the Older 1.12.x Reference
 
-This reference retains the existing PMT 2.0.0 document version label while documenting the verified command behavior in the supplied firmware source.
+This reference documents the verified command behavior for PMT firmware 3.3.0.
 
 Major documentation changes:
 
@@ -1520,5 +1824,6 @@ Major documentation changes:
 * Added `PS?`, `PS1`, and `PS0` persist-only CV staging commands.
 * Added Throttle `A?`, `A? N=<tracks>`, `AudioMark`, and `AM` audio diagnostic commands.
 * Added the `AR:` audio-analysis result family.
+* Added the firmware 3.3 shared SD-backed script recording/playback/status/delete command family, including trailing recording timing, `.pmt` validation, device-specific recordable controls, and playback command gating.
 * Added the approved, implementation-pending `ST<set-id>.<field-id>` sound `.set` protocol design, including hexadecimal target IDs, future-proof field IDs, immediate in-memory application, SD persistence, Classic/S3 initialization semantics, custom-WAV handling, grouped-vs-custom precedence, and BLE MTU constraints.
 * Reduced duplicated CV catalogs and retained only CV references that directly clarify command behavior.

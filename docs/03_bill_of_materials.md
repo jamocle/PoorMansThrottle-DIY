@@ -192,6 +192,27 @@ Do not power high-current accessories directly from ESP32 GPIO pins. Use appropr
 
 ---
 
+# Optional Shared microSD Storage for Firmware Scripts
+
+A microSD card is optional for normal PMT operation, but it is **required for firmware-resident script recording/playback** when you want to use commands such as `SR`, `SP1=<name>`, `SPR=<name>`, and `SD=<name>`.
+
+| Component | Description | Required? |
+|---|---|---|
+| microSD Card | Stores firmware `.pmt` scripts under `/scripts` | Required for firmware script recording/playback |
+| microSD Reader / Board Slot | Provides the active PMT SD filesystem used by the script service | Required for firmware script recording/playback |
+
+Notes:
+
+* The exact SD reader or onboard slot depends on the ESP32 board and PMT hardware configuration.
+* Script files are stored separately from audio files under `/scripts`.
+* A PMT device does **not** need a microSD card for basic control if SD-backed scripting and PMTPlayer audio are not being used.
+* Firmware script commands require an **active PMT SD filesystem**. If the selected firmware/hardware configuration has not initialized SD storage, SD-backed script operations return `ERR:SD`.
+* On supported configurations, the same active SD storage can also hold PMTPlayer audio files.
+
+For script command syntax and file-name rules, see `appendix_Command_Protocol_Reference.md`.
+
+---
+
 # Optional PMTPlayer Audio Components
 
 These parts are used when adding PMTPlayer audio to a supported PMT build.
@@ -200,7 +221,7 @@ These parts are used when adding PMTPlayer audio to a supported PMT build.
 |---|---|---|---|
 | NULLLAB 2-Pack NS4168 I2S Audio Amplifier & 3W Speaker Kit | PMT-tested I2S audio kit. The 2-pack includes 2 NS4168 amplifier modules, 2 **4Ω 3W speakers**, and 2 cables. The NS4168 is rated for **4w at 5V into 4Ω** and operates from **3.0V to 5.5V**. | **Recommended** | https://www.amazon.com/dp/B0GV7S7V77 |
 | MAX98357A I2S Amplifier Module | Existing PMT-compatible I2S amplifier option. A suitable speaker must be purchased separately. | Supported alternative | |
-| microSD Card / Reader | Stores PMTPlayer WAV files. The exact reader requirement depends on the ESP32 board; the ESP32-S3 CAM uses its onboard microSD slot. | Required for PMTPlayer audio | |
+| microSD Card / Reader | Stores PMTPlayer WAV files and can share the active PMT filesystem with firmware `.pmt` scripts. The exact reader requirement depends on the ESP32 board; the ESP32-S3 CAM uses its onboard microSD slot. | Required for PMTPlayer audio | |
 
 The NULLLAB NS4168 kit has been tested successfully with PMT firmware and is the recommended current audio purchase because the amplifier, matching **4Ω 3W speaker**, and cable are supplied together. The existing MAX98357A wiring option remains supported.
 

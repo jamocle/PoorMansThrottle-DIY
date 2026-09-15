@@ -145,6 +145,73 @@ In current firmware, motion commands are gated by the control session state. A r
 
 ---
 
+# Firmware Script Recording / Playback Does Not Work
+
+Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
+
+### First Checks
+
+| Check | Action |
+|---|---|
+| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| SD availability | Confirm the device has an active PMT SD filesystem; SD-backed script operations return `ERR:SD` when storage is unavailable |
+| Script name | Use 1–16 base-name characters from `a-z`, `0-9`, `_`, or `-`; `.pmt` is optional in the command |
+| File location | Firmware scripts are stored as `/scripts/<name>.pmt` |
+| Playback content | Firmware `.pmt` files may contain only valid recordable device-control commands, blank lines, and `PAUSE` lines |
+| App vs firmware scripts | The app's Run Script page is a separate app-side scripting mechanism; app-only directives are not valid firmware `.pmt` lines |
+
+### Common Script Errors
+
+| Result | Meaning / Action |
+|---|---|
+| `ERR:SD` | No active PMT SD storage is available. Check the card, reader/slot, and whether the selected firmware/hardware configuration initialized SD storage. |
+| `ERR:NAME` | The name is empty, longer than 16 characters, or contains a character other than `a-z`, `0-9`, `_`, or `-`. |
+| `ERR:NOFILE` | The requested `/scripts/<name>.pmt` file does not exist. Confirm spelling and use the same base name that was used when saving. |
+| `ERR:WRITE` | The recording could not be written completely. Check card health, free space, contacts, and SD stability. |
+| `ERR:DELETE` | `SD=<name>` found the script but the filesystem could not delete it. Check card health and filesystem access. |
+| `ERR:FULL` | The in-memory recording exceeded the 32 KiB firmware script limit. Make the recording shorter or reduce the number of recorded commands. |
+| `ERR:READ` | The script file could not be read completely. Check card/filesystem integrity. |
+| `ERR:SIZE` | The `.pmt` file is larger than the 32 KiB playback limit. |
+| `ERR:EMPTY` | The saved script contains no executable content. Record at least one eligible control command before saving. |
+| `ERR:SCRIPT` | A line in the `.pmt` file is not a valid `PAUSE` or recordable control command for that firmware image. |
+| `ERR:MEM` | Firmware could not reserve the required script buffer memory. Reboot and retry; if it repeats, investigate memory pressure. |
+| `ERR:BUSY` | Recording or playback is already active. Use `SS?`; stop playback with `SP0` before starting/deleting another script. |
+| `ERR:STATE` | The requested state transition is invalid, such as sending `SP0` when no script is running or trying `SR=<name>` when recording is not active. |
+
+### Recording Timing Does Not Look Right
+
+Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. When `SR=<name>` is sent, it also records the elapsed time from the **last recorded control command to the stop-recording command** as the final pause.
+
+The time between the initial `SR` and the first recorded control command is not stored.
+
+This means a recording such as:
+
+```text
+F40
+...wait...
+B
+...wait 10 seconds...
+SR=yard
+```
+
+will end with a final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+
+### A Command Does Not Appear in the Saved Script
+
+Only commands classified as recordable physical/device controls are captured. Configuration commands, script-management commands, and internally scheduled commands are not recorded.
+
+Current recordable controls include:
+
+* **Throttle:** `S`, `B`, `B0..100`, `F0..100`, `R0..100`, `FQ0..100`, `RQ0..100`, and `FX1..12=0/1`
+* **Turbine:** `F0..100`, `F0..100*`, and `FQ100`
+* **Generic Module:** no module-specific recordable physical controls are currently defined
+
+### External Controls Do Not Respond During Playback
+
+This is expected for recordable control commands. While playback is active, external and scheduled commands that classify as recordable controls are suppressed so they cannot override the running script. Send `SP0` to stop playback before taking manual control again.
+
+---
+
 # Wi-Fi / WebSocket Control Does Not Work
 
 ### Possible Causes
