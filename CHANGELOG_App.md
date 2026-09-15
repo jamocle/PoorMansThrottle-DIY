@@ -2,7 +2,7 @@
 
 ## Smartphone App:
 
-### Version Next
+### Version 3.2.0
 * **Wireless Firmware Updates** The app supports PMT firmware wireless updates. 
 * **Added About screen** in the global configuration screen
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

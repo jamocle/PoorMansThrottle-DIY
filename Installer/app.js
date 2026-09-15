@@ -213,6 +213,7 @@ function populateFirmwareSelect(select, board) {
 
 function setBoardChoiceState(selectedBoardChoice) {
     const choices = document.querySelectorAll(".board-choice[data-board-choice]");
+    const s3OtaCard = document.getElementById("s3OtaCard");
 
     for (const choice of choices) {
         const isSelected = choice.dataset.boardChoice === selectedBoardChoice;
@@ -230,6 +231,10 @@ function setBoardChoiceState(selectedBoardChoice) {
                         : "I have this board";
             }
         }
+    }
+
+    if (s3OtaCard) {
+        s3OtaCard.hidden = selectedBoardChoice !== "s3";
     }
 }
 
