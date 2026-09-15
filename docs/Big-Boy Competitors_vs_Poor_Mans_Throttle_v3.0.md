@@ -251,7 +251,7 @@
 | **User can fundamentally replace audio content** | ❌ Manufacturer library | ✅ **Yes** |
 | **Digital audio mixing** | ✅ Yes | ✅ Yes |
 | **Master volume** | ✅ Yes | ✅ Yes |
-| **Individual sound volume** | ✅ Yes | ⚠️ **Not yet — coming soon** |
+| **Individual sound volume** | ✅ Yes | ✅ Yes |
 | **Audio shaping / EQ** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Reverb/audio processing** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Dynamic audio processing** | ✅ Yes | ✅ Yes |
