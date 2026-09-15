@@ -251,7 +251,7 @@
         <p>
           <strong>The ESP32-S3-CAM N16R8 is the recommended PMT 3.0 board.</strong>
           It gives you the S3 performance PMT audio benefits from while also including a microSD card slot directly on the board.
-          That means you do <strong>not</strong> need to buy or wire a separate SD reader module — just add the audio amplifier.
+          That means you do <strong>not</strong> need to buy or wire a separate SD reader module — just add the recommended NS4168 I2S amplifier and included speaker kit. If you already have a MAX98357A, that amplifier remains a supported alternative with a separate speaker.
           The onboard OV3660 camera is not used by PMT audio and can be removed if you do not want it installed.
         </p>
       </div>
@@ -268,14 +268,14 @@
         <figure class="image-card hardware-image">
           <img src="esp32-s3-n16r8.png" alt="Generic ESP32-S3-N16R8 development board." />
           <figcaption class="caption">
-            Generic ESP32-S3-N16R8 — recommended for PMT audio. Pair it with a separate microSD reader and MAX98357 amplifier.
+            Generic ESP32-S3-N16R8 — recommended for PMT audio. Pair it with a separate microSD reader and the recommended NS4168 I2S amplifier/speaker kit. MAX98357A remains a supported alternative with a separate speaker.
           </figcaption>
         </figure>
 
         <figure class="image-card hardware-image">
           <img src="classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 development board." />
           <figcaption class="caption">
-            Classic ESP32-WROOM-32 — supported, but it requires a separate microSD reader and MAX98357 amplifier.
+            Classic ESP32-WROOM-32 — supported, but it requires a separate microSD reader and an I2S amplifier; the NS4168 kit is recommended, while MAX98357A remains a supported alternative with a separate speaker.
           </figcaption>
         </figure>
       </div>
@@ -358,7 +358,7 @@
             <p><strong>This is the recommended PMT 3.0 audio recipe.</strong> It gives you S3-class audio performance with the simplest hardware layout.</p>
             <ul class="feature-list">
               <li><strong>ESP32-S3-CAM development board</strong> — main controller, PMT sound engine, and microSD storage interface all on one board.</li>
-              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — drives the speaker from PMT's digital audio output.</li>
+              <li><strong><a href="https://www.amazon.com/dp/B0GV7S7V77">NULLLAB NS4168 I2S Audio Amplifier &amp; 3W Speaker Kit</a></strong> — recommended PMT-tested audio output; the kit includes the amplifier, a 4Ω 3W speaker, and cabling.</li>
             </ul>
             <p>
               <strong>No separate microSD reader is required.</strong> The ESP32-S3-CAM already has the card slot on the board,
@@ -376,7 +376,7 @@
             <ul class="feature-list">
               <li><strong>ESP32-S3-N16R8 or ESP32-S3-N8R8</strong> — excellent S3 controllers with more memory, cached audio, and much greater audio headroom than the Classic ESP32.</li>
               <li><strong>WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V</strong> — external microSD storage for WAV files and sound packs.</li>
-              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — drives the speaker from the ESP32's digital I2S audio stream.</li>
+              <li><strong><a href="https://www.amazon.com/dp/B0GV7S7V77">NULLLAB NS4168 I2S Audio Amplifier &amp; 3W Speaker Kit</a></strong> — recommended PMT-tested audio output; the kit includes the amplifier, a 4Ω 3W speaker, and cabling.</li>
             </ul>
             <p class="mini">
               This is an excellent PMT 3.0 audio build and supports 13 or more voices, but it requires a separate microSD reader module.
@@ -389,7 +389,7 @@
             <ul class="feature-list">
               <li><strong>Classic ESP32-WROOM-32</strong> — the main controller and PMT sound engine.</li>
               <li><strong>WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V</strong> — provides microSD storage for WAV files and sound packs.</li>
-              <li><strong>AITRIP MAX98357 I2S Class D Audio Amplifier</strong> — converts PMT's digital audio into amplified speaker output.</li>
+              <li><strong><a href="https://www.amazon.com/dp/B0GV7S7V77">NULLLAB NS4168 I2S Audio Amplifier &amp; 3W Speaker Kit</a></strong> — recommended PMT-tested audio output; the kit includes the amplifier, a 4Ω 3W speaker, and cabling.</li>
             </ul>
             <p class="mini">
               This is the most resource-constrained build. It supports about 3 voices and is best suited to lighter Diesel sound use.
@@ -399,19 +399,19 @@
 
           <article class="card">
             <span class="label">COMMON AUDIO OUTPUT</span>
-            <h3>AITRIP MAX98357 I2S Class D Audio Amplifier</h3>
+            <h3>NULLLAB NS4168 I2S Audio Amplifier &amp; 3W Speaker Kit</h3>
             <p>
-              This is the final audio stage used in all three recipes. It takes the digital I2S stream from PMT and turns it into amplified speaker output.
+              This is the recommended final audio stage for all three recipes and has been tested successfully with PMT firmware. The 2-pack includes two NS4168 amplifier modules, two <strong>4Ω 3W speakers</strong>, and two cables. <a href="https://www.amazon.com/dp/B0GV7S7V77">View the recommended kit on Amazon.</a>
             </p>
             <p>
-              It supports both <strong>4Ω and 8Ω speaker loads</strong> at approximately <strong>4 watts</strong>.
+              The NS4168 amplifier is rated for <strong>4w at 5V into 4Ω</strong> and operates from <strong>3.0V to 5.5V</strong>. The existing MAX98357A remains a supported alternative.
             </p>
           </article>
         </div>
 
         <div class="callout">
           <strong>Recommended PMT 3.0 build:</strong>
-          <strong>ESP32-S3-CAM N16R8 + MAX98357 amplifier.</strong>
+          <strong>ESP32-S3-CAM N16R8 + NULLLAB NS4168 amplifier/speaker kit.</strong> MAX98357A remains a supported alternative if you prefer the existing PMT amplifier path.
           It delivers the S3 performance recommended for Diesel and Steam while eliminating the separate microSD reader module.
           Fewer parts, less wiring, and the cleanest PMT audio installation.
         </div>
@@ -432,7 +432,7 @@
           <span class="label green">INSTALLATION &amp; WIRING GUIDE</span>
           <h3>Classic ESP32, ESP32-S3 N16R8/N8R8, and ESP32-S3 CAM N16R8</h3>
           <p>
-            See the complete MAX98357A and microSD wiring tables, full-size wiring diagrams, short-wire requirements,
+            See the complete NS4168/MAX98357A I2S and microSD wiring tables, full-size wiring diagrams, short-wire requirements,
             board-specific checklists, sound-card preparation, first-power-on procedure, troubleshooting, and one-page GPIO reference.
           </p>
           <p style="color:var(--accent);font-weight:700;margin-bottom:0">Open the PMTPlayer Audio Installation Guide →</p>

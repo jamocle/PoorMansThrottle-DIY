@@ -158,9 +158,9 @@ The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throt
 | **CV404** | SD SCK | Classic `-1`; S3 `11` | **Classic `-1` means use the Arduino/core default SPI SCK, effective GPIO18.** |
 | **CV405** | SD MISO | Classic `-1`; S3 `8` | **Classic `-1` means use the Arduino/core default SPI MISO, effective GPIO19.** |
 | **CV406** | SD MOSI | Classic `-1`; S3 `9` | **Classic `-1` means use the Arduino/core default SPI MOSI, effective GPIO23.** |
-| **CV407** | I2S BCLK | Classic `13`; S3 `12` | Bit-clock pin to the MAX98357A amplifier. |
-| **CV408** | I2S LRCLK / WS | Classic `12`; S3 `13` | Left/right word-clock pin to the MAX98357A amplifier. |
-| **CV409** | I2S DIN | `14` | Digital-audio data pin to the MAX98357A amplifier. |
+| **CV407** | I2S BCLK | Classic `13`; S3 `12` | Bit-clock pin to the I2S amplifier (recommended NS4168; MAX98357A supported alternative). |
+| **CV408** | I2S LRCLK / WS | Classic `12`; S3 `13` | Left/right word-clock pin to the I2S amplifier (recommended NS4168; MAX98357A supported alternative). |
+| **CV409** | I2S DIN | `14` | Digital-audio data pin to the I2S amplifier (recommended NS4168; MAX98357A supported alternative). |
 | **CV410** | Default Audio Priority | `0..100` / `30` | Default priority for audio requests. |
 | **CV411** | Conflict Policy | `0..2` / `1` | `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup`. |
 | **CV412** | Startup Delay | `0..10000 ms` / `0` | Delay after audio startup. |

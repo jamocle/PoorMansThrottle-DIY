@@ -256,7 +256,7 @@
 | **Reverb/audio processing** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Dynamic audio processing** | ✅ Yes | ✅ Yes |
 | **Sound priority management** | ✅ Yes | ✅ Yes |
-| **Standard amplifier recipe** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
+| **Standard amplifier recipe** | **3W / 8Ω** | ✅ **Recommended: NULLLAB NS4168 kit — 4w @ 5V/4Ω + included 4Ω 3W speaker; Alternative: MAX98357A I2S amplifier + separate speaker** |
 
 > Removed from this comparison as requested: **Concurrent Audio Playback**, **Multi-channel/Voice Audio**, and **Sound Channels**.
 
@@ -393,7 +393,7 @@
 | **Standard PMT motor recipe** | — | ⚠️ **IBT2** |
 | **Physical function outputs** | **8** | Hardware/module dependent |
 | **Function-output current** | **400mA each** | Hardware dependent |
-| **Audio amplifier** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
+| **Audio amplifier** | **3W / 8Ω** | ✅ **NS4168: 4w @ 5V/4Ω + included 4Ω 3W speaker** |
 | **Dimensions** | **69 × 30.5 × 14mm** | Installation dependent |
 | **DCC track voltage** | **7–27V** | N/A |
 | **Keep-alive capability** | ✅ **CurrentKeeper connector** | ✅ **Can install a capacitor to provide this functionality** |

@@ -11,9 +11,11 @@ For the **ESP32-S3-N16R8** audio installation:
 
 - **ESP32-S3-N16R8**
 - **WWZMDiB Micro SD TF Card Adapter Mini Reader Module 3.3V 6 Pin SPI Interface** (or equivalent)
-- **AITRIP 3 PCS MAX98357 Audio Power Amplifier Module I2S Class D Filterless Audio Amplifiers Board**
-- **4/8 ohm 4-watt speaker**
+- **Recommended: [NULLLAB 2-Pack NS4168 I2S Audio Amplifier & 3W Speaker Kit](https://www.amazon.com/dp/B0GV7S7V77)** — includes 2 NS4168 amplifier modules, 2 **4Ω 3W speakers**, and 2 cables
+- **Alternative: MAX98357A I2S amplifier** — existing PMT-compatible option; requires a suitable speaker purchased separately
 - **Small microSD card — 128 MB is just fine (yes, megabyte, not gigabyte)**
+
+**Recommended amplifier:** The NULLLAB NS4168 kit has been tested successfully with PMT firmware. The NS4168 amplifier is rated for **4w at 5V into 4Ω**, operates from **3.0V to 5.5V**, and the kit includes a matching **4Ω 3W speaker**. The MAX98357A remains a supported alternative.
 
 **Base installation:** For the Bill of Materials and wiring required for the base PMT installation, see the [PMT IBT-2 Motor Driver Installation Guide](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/PMT_IBT2_Installation_Guide.md).
 
@@ -35,11 +37,11 @@ There are three different PMTPlayer audio installations.
 
 ---
 
-# 2. MAX98357A Amplifier — Important
+# 2. I2S Amplifier — NS4168 Recommended
 
-All three board types use a MAX98357A amplifier.
+All three board types use an external I2S amplifier. The **NULLLAB NS4168 kit is the recommended option and has been tested successfully with PMT firmware**. The existing **MAX98357A remains a supported alternative**.
 
-The three signal wires are:
+The three I2S signal wires are:
 
 - **BCLK**
 - **LRCLK / WS / LRC**
@@ -47,18 +49,18 @@ The three signal wires are:
 
 **BCLK, LRCLK/WS, and DIN MUST be as short as possible. Preferably about 1 inch or less each.**
 
-**MAX98357A power:** The amplifier supports approximately 3V to 5V. For PMT installation, connect VIN/VCC to the highest suitable power output available on the ESP32 board, typically **5V**.
+**Amplifier power:** For the recommended NS4168, use a suitable **3.0V to 5.5V** supply; PMT installations normally use **5V**, where the amplifier is rated for **4w into 4Ω**. For the MAX98357A alternative, use the voltage supported by your exact module, typically **5V** in PMT installations.
 
 Long or messy wiring on these three lines can cause clicking, popping, stuttering, or uneven sound.
 
 Also:
 
-- connect MAX98357A **GND** to ESP32 **GND**
+- connect amplifier **GND** to ESP32 **GND**
 - use a clean, direct ground wire for the amplifier
 - keep the amplifier ground return separate from the SD-card ground path until they meet at the ESP32 ground
-- connect the speaker only to the MAX98357A speaker `+` and `-` outputs
+- connect the speaker only to the amplifier speaker outputs
 - **do not connect either speaker wire to ESP32 GND**
-- the MAX98357A supports approximately 3V to 5V power; connect it to the highest suitable supply available on the ESP32 board, typically **5V**
+- when using the recommended NS4168 kit, use the included **4Ω 3W speaker**
 
 ---
 
@@ -70,8 +72,8 @@ You need:
 
 - Classic ESP32
 - external microSD reader
-- MAX98357A amplifier
-- speaker
+- I2S amplifier — **NS4168 recommended; MAX98357A supported alternative**
+- speaker — **included with the recommended NS4168 kit; purchase separately when using a MAX98357A module**
 
 ## microSD wiring
 
@@ -84,9 +86,9 @@ You need:
 | GND | **GND** |
 | VCC | Use the voltage required by your exact microSD reader (likely 3.3V) |
 
-## MAX98357A wiring
+## I2S amplifier wiring
 
-| MAX98357A | Classic ESP32 |
+| I2S amplifier | Classic ESP32 |
 |---|---:|
 | BCLK | **GPIO13** |
 | LRCLK / WS / LRC | **GPIO12** |
@@ -98,7 +100,7 @@ You need:
 
 ## Speaker
 
-| MAX98357A | Speaker |
+| Amplifier | Speaker |
 |---|---|
 | Speaker + | Speaker wire 1 |
 | Speaker - | Speaker wire 2 |
@@ -108,6 +110,8 @@ You need:
 ## ESP32 Classic Wiring Diagram
 ![Esp32 Classic Wiring Diagram](PMT_Audio_Classic.png)
 
+**Diagram note:** The existing diagram labels the MAX98357A. The tested NS4168 uses the same PMT I2S signal assignments shown here: BCLK, LRCLK/WS, and DIN. Connect NS4168 power, ground, and speaker output using the module labels.
+
 ## Classic quick check
 
 Before power-on:
@@ -116,9 +120,9 @@ Before power-on:
 - [ ] SD SCK -> GPIO18
 - [ ] SD MISO -> GPIO19
 - [ ] SD MOSI -> GPIO23
-- [ ] MAX98357A BCLK -> GPIO13
-- [ ] MAX98357A LRCLK/WS -> GPIO12
-- [ ] MAX98357A DIN -> GPIO14
+- [ ] Amplifier BCLK -> GPIO13
+- [ ] Amplifier LRCLK/WS -> GPIO12
+- [ ] Amplifier DIN -> GPIO14
 - [ ] **BCLK, LRCLK/WS, and DIN are about 1 inch or less if possible**
 - [ ] SD reader and amplifier both have GND connected
 - [ ] amplifier has a clean ground connection to ESP32 GND
@@ -135,8 +139,8 @@ You need:
 
 - ESP32-S3 N16R8
 - external microSD reader
-- MAX98357A amplifier
-- speaker
+- I2S amplifier — **NS4168 recommended; MAX98357A supported alternative**
+- speaker — **included with the recommended NS4168 kit; purchase separately when using a MAX98357A module**
 
 ## microSD wiring
 
@@ -149,9 +153,9 @@ You need:
 | GND | **GND** |
 | VCC | Use the voltage required by your exact microSD reader (likely 3.3V) |
 
-## MAX98357A wiring
+## I2S amplifier wiring
 
-| MAX98357A | Standard ESP32-S3 |
+| I2S amplifier | Standard ESP32-S3 |
 |---|---:|
 | BCLK | **GPIO12** |
 | LRCLK / WS / LRC | **GPIO13** |
@@ -163,7 +167,7 @@ You need:
 
 ## Speaker
 
-| MAX98357A | Speaker |
+| Amplifier | Speaker |
 |---|---|
 | Speaker + | Speaker wire 1 |
 | Speaker - | Speaker wire 2 |
@@ -173,6 +177,8 @@ You need:
 ## ESP32 S3 Wiring Diagram
 ![Esp32 S3 Wiring Diagram](PMT_Audio_S3.png)
 
+**Diagram note:** The existing diagram labels the MAX98357A. The tested NS4168 uses the same PMT I2S signal assignments shown here: BCLK, LRCLK/WS, and DIN. Connect NS4168 power, ground, and speaker output using the module labels.
+
 ## Standard S3 quick check
 
 Before power-on:
@@ -181,9 +187,9 @@ Before power-on:
 - [ ] SD SCK -> GPIO11
 - [ ] SD MISO -> GPIO8
 - [ ] SD MOSI -> GPIO9
-- [ ] MAX98357A BCLK -> GPIO12
-- [ ] MAX98357A LRCLK/WS -> GPIO13
-- [ ] MAX98357A DIN -> GPIO14
+- [ ] Amplifier BCLK -> GPIO12
+- [ ] Amplifier LRCLK/WS -> GPIO13
+- [ ] Amplifier DIN -> GPIO14
 - [ ] **BCLK, LRCLK/WS, and DIN are about 1 inch or less if possible**
 - [ ] SD reader and amplifier both have GND connected
 - [ ] amplifier has a clean ground connection to ESP32-S3 GND
@@ -199,8 +205,8 @@ Use this section for the **ESP32-S3 CAM N16R8 with the onboard microSD slot**.
 You need:
 
 - ESP32-S3 CAM N16R8
-- MAX98357A amplifier
-- speaker
+- I2S amplifier — **NS4168 recommended; MAX98357A supported alternative**
+- speaker — **included with the recommended NS4168 kit; purchase separately when using a MAX98357A module**
 
 **You do not need an external microSD reader.**
 
@@ -214,9 +220,9 @@ For reference, the onboard card uses:
 
 **Do not add wires to these pins for the onboard microSD card.**
 
-## MAX98357A wiring
+## I2S amplifier wiring
 
-| MAX98357A | ESP32-S3 CAM |
+| I2S amplifier | ESP32-S3 CAM |
 |---|---:|
 | BCLK | **GPIO12** |
 | LRCLK / WS / LRC | **GPIO13** |
@@ -228,7 +234,7 @@ For reference, the onboard card uses:
 
 ## Speaker
 
-| MAX98357A | Speaker |
+| Amplifier | Speaker |
 |---|---|
 | Speaker + | Speaker wire 1 |
 | Speaker - | Speaker wire 2 |
@@ -238,15 +244,17 @@ For reference, the onboard card uses:
 ## ESP32 CAM Wiring Diagram
 ![Esp32 CAM Wiring Diagram](PMT_Audio_CAM.png)
 
+**Diagram note:** The existing diagram labels the MAX98357A. The tested NS4168 uses the same PMT I2S signal assignments shown here: BCLK, LRCLK/WS, and DIN. Connect NS4168 power, ground, and speaker output using the module labels.
+
 ## S3 CAM quick check
 
 Before power-on:
 
 - [ ] microSD card is inserted in the onboard slot
 - [ ] no external SD reader is connected for normal CAM use
-- [ ] MAX98357A BCLK -> GPIO12
-- [ ] MAX98357A LRCLK/WS -> GPIO13
-- [ ] MAX98357A DIN -> GPIO14
+- [ ] Amplifier BCLK -> GPIO12
+- [ ] Amplifier LRCLK/WS -> GPIO13
+- [ ] Amplifier DIN -> GPIO14
 - [ ] **BCLK, LRCLK/WS, and DIN are about 1 inch or less if possible**
 - [ ] amplifier GND is connected to ESP32-S3 GND
 - [ ] amplifier has a clean ground connection
@@ -464,8 +472,8 @@ Check:
 1. Audio is enabled.
 2. Diesel or Steam is selected.
 3. You used the wiring table for the correct board.
-4. MAX98357A BCLK, LRCLK/WS, and DIN are on the correct GPIOs.
-5. MAX98357A has power and ground.
+4. Amplifier BCLK, LRCLK/WS, and DIN are on the correct GPIOs.
+5. The I2S amplifier has power and ground.
 6. Speaker is connected to the amplifier `+` and `-` outputs.
 7. The microSD card is inserted.
 8. The microSD card uses the format listed in **Section 6**. **Do not use exFAT.**
@@ -477,7 +485,7 @@ Check:
 
 Then:
 
-1. Connect the MAX98357A ground directly back to ESP32 GND.
+1. Connect the amplifier ground directly back to ESP32 GND.
 2. Do not run amplifier ground through the same long breadboard ground path as the SD reader.
 3. Move the three signal wires away from motor, PWM, ESC, and other high-current wiring.
 4. Check for loose jumper wires or breadboard contacts.
@@ -627,7 +635,7 @@ SCK   -> GPIO18
 MISO  -> GPIO19
 MOSI  -> GPIO23
 
-MAX98357A
+I2S amplifier (NS4168 recommended; MAX98357A alternative)
 BCLK  -> GPIO13
 LRCLK -> GPIO12
 DIN   -> GPIO14
@@ -642,7 +650,7 @@ SCK   -> GPIO11
 MISO  -> GPIO8
 MOSI  -> GPIO9
 
-MAX98357A
+I2S amplifier (NS4168 recommended; MAX98357A alternative)
 BCLK  -> GPIO12
 LRCLK -> GPIO13
 DIN   -> GPIO14
@@ -655,7 +663,7 @@ microSD
 Use the onboard card slot.
 No external SD wiring is required.
 
-MAX98357A
+I2S amplifier (NS4168 recommended; MAX98357A alternative)
 BCLK  -> GPIO12
 LRCLK -> GPIO13
 DIN   -> GPIO14

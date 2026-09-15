@@ -192,6 +192,22 @@ Do not power high-current accessories directly from ESP32 GPIO pins. Use appropr
 
 ---
 
+# Optional PMTPlayer Audio Components
+
+These parts are used when adding PMTPlayer audio to a supported PMT build.
+
+| Component | Description | Recommendation | Possible Buy Location |
+|---|---|---|---|
+| NULLLAB 2-Pack NS4168 I2S Audio Amplifier & 3W Speaker Kit | PMT-tested I2S audio kit. The 2-pack includes 2 NS4168 amplifier modules, 2 **4Ω 3W speakers**, and 2 cables. The NS4168 is rated for **4w at 5V into 4Ω** and operates from **3.0V to 5.5V**. | **Recommended** | https://www.amazon.com/dp/B0GV7S7V77 |
+| MAX98357A I2S Amplifier Module | Existing PMT-compatible I2S amplifier option. A suitable speaker must be purchased separately. | Supported alternative | |
+| microSD Card / Reader | Stores PMTPlayer WAV files. The exact reader requirement depends on the ESP32 board; the ESP32-S3 CAM uses its onboard microSD slot. | Required for PMTPlayer audio | |
+
+The NULLLAB NS4168 kit has been tested successfully with PMT firmware and is the recommended current audio purchase because the amplifier, matching **4Ω 3W speaker**, and cable are supplied together. The existing MAX98357A wiring option remains supported.
+
+For exact board-specific I2S and microSD wiring, use the **PMTPlayer Audio Installation Guide**.
+
+---
+
 # General Optional Components
 
 These parts are optional for your installation and **not** required for every build.
