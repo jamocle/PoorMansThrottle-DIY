@@ -1,6 +1,63 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import { addOrReplaceRootReadme } from "./zip-readme.js";
 
+const SOUND_UPLOAD_TIME_ZONE = "America/New_York";
+
+function getEasternUploadTime(date) {
+    const formatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: SOUND_UPLOAD_TIME_ZONE,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hourCycle: "h23",
+        timeZoneName: "short"
+    });
+    const parts = Object.fromEntries(
+        formatter
+            .formatToParts(date)
+            .filter((part) => part.type !== "literal")
+            .map((part) => [part.type, part.value])
+    );
+
+    const easternAsUtc = Date.UTC(
+        Number(parts.year),
+        Number(parts.month) - 1,
+        Number(parts.day),
+        Number(parts.hour),
+        Number(parts.minute),
+        Number(parts.second)
+    );
+    const dateAtWholeSecond = Math.floor(date.getTime() / 1000) * 1000;
+    const offsetMinutes = Math.round((easternAsUtc - dateAtWholeSecond) / 60000);
+    const offsetSign = offsetMinutes >= 0 ? "+" : "-";
+    const absoluteOffsetMinutes = Math.abs(offsetMinutes);
+    const offsetHours = String(Math.floor(absoluteOffsetMinutes / 60)).padStart(2, "0");
+    const offsetRemainderMinutes = String(absoluteOffsetMinutes % 60).padStart(2, "0");
+
+    return {
+        timestamp:
+            parts.year +
+            "-" +
+            parts.month +
+            "-" +
+            parts.day +
+            "T" +
+            parts.hour +
+            ":" +
+            parts.minute +
+            ":" +
+            parts.second +
+            offsetSign +
+            offsetHours +
+            ":" +
+            offsetRemainderMinutes,
+        abbreviation: parts.timeZoneName || "ET"
+    };
+}
+
 function getDateTimeCacheBust() {
     return new Date().toISOString();
 }
@@ -1823,7 +1880,15 @@ async function submitSoundPack(event) {
     setSoundUploadStatus("Preparing your ZIP and adding README.md…", "");
 
     try {
-        const preparedFile = await addOrReplaceRootReadme(file, soundName);
+        const easternUploadTime = getEasternUploadTime(new Date());
+        const preparedFile = await addOrReplaceRootReadme(file, {
+            category: category.value,
+            submissionType: uploadType.value,
+            soundName,
+            originalFileName: file.name,
+            uploadedAtEastern: easternUploadTime.timestamp,
+            easternTimeZoneAbbreviation: easternUploadTime.abbreviation
+        });
 
         if (preparedFile.size <= 0 || preparedFile.size > SOUND_UPLOAD_MAX_BYTES) {
             throw new Error("The ZIP file must be 20 MB or smaller after README.md is added.");

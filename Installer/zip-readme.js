@@ -246,11 +246,43 @@ function createEndOfCentralDirectory(entryCount, centralDirectorySize, centralDi
     return eocd;
 }
 
-export async function addOrReplaceRootReadme(file, soundName) {
-    const normalizedName = typeof soundName === "string" ? soundName.trim() : "";
+export async function addOrReplaceRootReadme(file, metadata) {
+    const category = typeof metadata?.category === "string" ? metadata.category.trim() : "";
+    const submissionType =
+        typeof metadata?.submissionType === "string" ? metadata.submissionType.trim() : "";
+    const soundName =
+        typeof metadata?.soundName === "string" ? metadata.soundName.trim() : "";
+    const originalFileName =
+        typeof metadata?.originalFileName === "string" ? metadata.originalFileName.trim() : "";
+    const uploadedAtEastern =
+        typeof metadata?.uploadedAtEastern === "string" ? metadata.uploadedAtEastern.trim() : "";
+    const easternTimeZoneAbbreviation =
+        typeof metadata?.easternTimeZoneAbbreviation === "string"
+            ? metadata.easternTimeZoneAbbreviation.trim()
+            : "";
 
-    if (!normalizedName) {
+    if (category !== "diesel" && category !== "steam") {
+        throw new Error("A valid sound category is required before README.md can be added.");
+    }
+
+    if (submissionType !== "pack" && submissionType !== "individual") {
+        throw new Error("A valid submission type is required before README.md can be added.");
+    }
+
+    if (!soundName) {
         throw new Error("A sound name is required before README.md can be added.");
+    }
+
+    if (!originalFileName) {
+        throw new Error("The original ZIP filename is required before README.md can be added.");
+    }
+
+    if (!uploadedAtEastern) {
+        throw new Error("The Eastern upload timestamp is required before README.md can be added.");
+    }
+
+    if (easternTimeZoneAbbreviation !== "EST" && easternTimeZoneAbbreviation !== "EDT") {
+        throw new Error("The Eastern time zone abbreviation must be EST or EDT.");
     }
 
     const originalBytes = new Uint8Array(await file.arrayBuffer());
@@ -293,7 +325,22 @@ export async function addOrReplaceRootReadme(file, soundName) {
         .filter((record) => !record.isRootReadme)
         .map((record) => record.bytes);
 
-    const readmeContent = textEncoder.encode(normalizedName + "\n");
+    const readmeText =
+        "category = " +
+        category +
+        "\nsubmissionType = " +
+        submissionType +
+        "\nsoundName = " +
+        soundName +
+        "\nfile = " +
+        originalFileName +
+        "\nuploadedAtEastern = " +
+        uploadedAtEastern +
+        "\ntimeZone = America/New_York" +
+        "\ntimeZoneAbbreviation = " +
+        easternTimeZoneAbbreviation +
+        "\n";
+    const readmeContent = textEncoder.encode(readmeText);
     const readmeOffset = centralDirectoryOffset;
     const readmeRecords = createReadmeRecords(readmeContent, readmeOffset);
 
