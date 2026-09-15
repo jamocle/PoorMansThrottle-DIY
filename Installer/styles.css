@@ -670,6 +670,21 @@ code {
     letter-spacing: -0.02em;
 }
 
+.sound-library-subgroup {
+    margin-top: 16px;
+}
+
+.sound-library-subgroup + .sound-library-subgroup {
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+}
+
+.sound-library-subheading {
+    margin: 0;
+    font-size: 0.98rem;
+    letter-spacing: -0.01em;
+}
+
 .sound-pack-list {
     margin-top: 4px;
 }
@@ -774,19 +789,27 @@ code {
 }
 
 .sound-upload-field input[type="file"],
+.sound-upload-field input[type="text"],
 .sound-upload-field textarea,
 .sound-upload-field select {
     width: 100%;
     max-width: 100%;
 }
 
-.sound-upload-field input[type="file"] {
+.sound-upload-field input[type="file"],
+.sound-upload-field input[type="text"] {
     padding: 10px;
     border: 1px solid var(--line-strong);
     border-radius: 14px;
     background: #ffffff;
     color: var(--text);
     font: inherit;
+}
+
+.sound-upload-field input[type="text"] {
+    min-height: 46px;
+    padding: 10px 14px;
+    outline: none;
 }
 
 .sound-upload-field input[type="file"]::file-selector-button {
@@ -816,6 +839,7 @@ code {
 }
 
 .sound-upload-field textarea:focus,
+.sound-upload-field input[type="text"]:focus,
 .sound-upload-field input[type="file"]:focus-visible {
     border-color: rgba(123, 75, 31, 0.4);
     box-shadow: 0 0 0 4px rgba(123, 75, 31, 0.12);

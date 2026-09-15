@@ -1,4 +1,5 @@
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
+import { addOrReplaceRootReadme } from "./zip-readme.js";
 
 function getDateTimeCacheBust() {
     return new Date().toISOString();
@@ -920,13 +921,17 @@ function getSoundPackDisplayName(fileName) {
         .trim();
 }
 
-function buildGitHubContentsApiUrl(category) {
+function buildGitHubContentsApiUrl(category, collection) {
     const pathSegments = [
         SOUND_PACK_REPOSITORY_DIRECTORY,
         category
-    ].map((segment) => encodeURIComponent(segment));
+    ];
 
-    const path = pathSegments.join("/");
+    if (collection === "individual") {
+        pathSegments.push("individual");
+    }
+
+    const path = pathSegments.map((segment) => encodeURIComponent(segment)).join("/");
     return (
         "https://api.github.com/repos/" +
         encodeURIComponent(SOUND_PACK_GITHUB_OWNER) +
@@ -939,9 +944,14 @@ function buildGitHubContentsApiUrl(category) {
     );
 }
 
-async function loadSoundPackCategory(category) {
-    const apiUrl = buildGitHubContentsApiUrl(category);
+function getSoundCollectionLabel(collection) {
+    return collection === "individual" ? "individual sounds" : "sound packs";
+}
+
+async function loadSoundPackCategory(category, collection) {
+    const apiUrl = buildGitHubContentsApiUrl(category, collection);
     const response = await fetch(apiUrl, { cache: "no-store" });
+    const collectionLabel = getSoundCollectionLabel(collection);
 
     if (response.status === 404) {
         return [];
@@ -949,7 +959,7 @@ async function loadSoundPackCategory(category) {
 
     if (!response.ok) {
         const error = new Error(
-            "HTTP " + response.status + " while loading " + category + " sound packs."
+            "HTTP " + response.status + " while loading " + category + " " + collectionLabel + "."
         );
         error.status = response.status;
         throw error;
@@ -958,7 +968,7 @@ async function loadSoundPackCategory(category) {
     const entries = await response.json();
 
     if (!Array.isArray(entries)) {
-        throw new Error("Unexpected GitHub response while loading " + category + " sound packs.");
+        throw new Error("Unexpected GitHub response while loading " + category + " " + collectionLabel + ".");
     }
 
     return entries
@@ -981,27 +991,42 @@ async function loadSoundPackCategory(category) {
         );
 }
 
-function buildSoundPackDownloadUrl(category, fileName, sha) {
-    const encodedFileName = encodeURIComponent(fileName);
-    const baseUrl = "../sounds/" + encodeURIComponent(category) + "/" + encodedFileName;
+function buildSoundPackDownloadUrl(category, fileName, sha, collection) {
+    const pathSegments = ["..", "sounds", category];
+
+    if (collection === "individual") {
+        pathSegments.push("individual");
+    }
+
+    pathSegments.push(fileName);
+
+    const baseUrl = pathSegments
+        .map((segment, index) => index === 0 ? segment : encodeURIComponent(segment))
+        .join("/");
 
     const cacheVersion = sha ? sha : getRandomCacheBust();
     return baseUrl + "?v=" + encodeURIComponent(cacheVersion);
 }
 
-function renderSoundPackCategory(category, files) {
-    const list = document.getElementById(category + "SoundPackList");
+function getSoundListId(category, collection) {
+    return category + (collection === "individual" ? "IndividualSoundList" : "SoundPackList");
+}
+
+function renderSoundPackCategory(category, collection, files) {
+    const list = document.getElementById(getSoundListId(category, collection));
     if (!list) {
         return;
     }
 
     list.replaceChildren();
 
+    const collectionLabel = getSoundCollectionLabel(collection);
+
     if (files.length === 0) {
         const emptyMessage = document.createElement("p");
         emptyMessage.className = "note sound-pack-empty";
         emptyMessage.textContent =
-            "No " + category + " sound packs are currently available.";
+            "No " + category + " " + collectionLabel + " are currently available.";
         list.appendChild(emptyMessage);
         return;
     }
@@ -1016,12 +1041,13 @@ function renderSoundPackCategory(category, files) {
 
         const download = document.createElement("a");
         download.className = "app-link app-link-primary sound-pack-download";
-        download.href = buildSoundPackDownloadUrl(category, file.name, file.sha);
+        download.href = buildSoundPackDownloadUrl(category, file.name, file.sha, collection);
         download.setAttribute("download", file.name);
         download.textContent = "Download";
         download.setAttribute(
             "aria-label",
-            "Download " + file.displayName + " " + category + " sound pack"
+            "Download " + file.displayName + " " + category + " " +
+                (collection === "individual" ? "individual sound" : "sound pack")
         );
 
         row.append(name, download);
@@ -1029,8 +1055,8 @@ function renderSoundPackCategory(category, files) {
     }
 }
 
-function renderSoundPackError(category, error) {
-    const list = document.getElementById(category + "SoundPackList");
+function renderSoundPackError(category, collection, error) {
+    const list = document.getElementById(getSoundListId(category, collection));
     if (!list) {
         return;
     }
@@ -1039,14 +1065,15 @@ function renderSoundPackError(category, error) {
 
     const message = document.createElement("p");
     message.className = "note warn sound-pack-error";
+    const collectionLabel = getSoundCollectionLabel(collection);
 
     if (error && (error.status === 403 || error.status === 429)) {
         message.textContent =
-            "The sound-pack list is temporarily unavailable because GitHub is limiting requests. " +
+            "The " + collectionLabel + " list is temporarily unavailable because GitHub is limiting requests. " +
             "Please try again later.";
     } else {
         message.textContent =
-            "The " + category + " sound-pack list could not be loaded right now. Please try again.";
+            "The " + category + " " + collectionLabel + " list could not be loaded right now. Please try again.";
     }
 
     list.appendChild(message);
@@ -1055,38 +1082,44 @@ function renderSoundPackError(category, error) {
 async function loadSoundPacks() {
     const status = document.getElementById("soundPacksStatus");
     if (status) {
-        status.textContent = "Loading available sound packs…";
+        status.textContent = "Loading available sounds and sound packs…";
     }
 
-    const categories = ["diesel", "steam"];
+    const collections = [
+        { category: "diesel", collection: "pack" },
+        { category: "diesel", collection: "individual" },
+        { category: "steam", collection: "pack" },
+        { category: "steam", collection: "individual" }
+    ];
+
     const results = await Promise.allSettled(
-        categories.map((category) => loadSoundPackCategory(category))
+        collections.map((item) => loadSoundPackCategory(item.category, item.collection))
     );
 
     let failureCount = 0;
 
     results.forEach((result, index) => {
-        const category = categories[index];
+        const item = collections[index];
 
         if (result.status === "fulfilled") {
-            renderSoundPackCategory(category, result.value);
+            renderSoundPackCategory(item.category, item.collection, result.value);
         } else {
             failureCount += 1;
             console.error(result.reason);
-            renderSoundPackError(category, result.reason);
+            renderSoundPackError(item.category, item.collection, result.reason);
         }
     });
 
     if (status) {
         if (failureCount === 0) {
             status.textContent =
-                "Sound packs are listed automatically from the Diesel and Steam folders.";
-        } else if (failureCount === categories.length) {
+                "Sound packs and individual sounds are listed automatically from the Diesel and Steam folders.";
+        } else if (failureCount === collections.length) {
             status.textContent =
-                "The sound-pack list could not be loaded right now. The rest of the installer is still available.";
+                "The sounds library could not be loaded right now. The rest of the installer is still available.";
         } else {
             status.textContent =
-                "Some sound packs could not be loaded right now. Available packs are shown below.";
+                "Some sounds could not be loaded right now. Available downloads are shown below.";
         }
     }
 }
@@ -1694,15 +1727,43 @@ async function hasZipSignature(file) {
     );
 }
 
+function updateSoundUploadNamePrompt() {
+    const category = document.getElementById("soundPackCategory");
+    const uploadType = document.getElementById("soundUploadType");
+    const nameInput = document.getElementById("soundUploadName");
+    const nameLabel = document.getElementById("soundUploadNameLabel");
+
+    if (!category || !uploadType || !nameInput || !nameLabel) {
+        return;
+    }
+
+    if (uploadType.value === "individual") {
+        nameLabel.textContent = "What is this sound?";
+        nameInput.placeholder = "Nathan K5LA";
+        return;
+    }
+
+    if (uploadType.value === "pack") {
+        nameLabel.textContent = "What is this sound pack?";
+        nameInput.placeholder = category.value === "steam" ? "ALCO Big Boy" : "EMD GP30";
+        return;
+    }
+
+    nameLabel.textContent = "What are you uploading?";
+    nameInput.placeholder = "Enter a sound or sound pack name";
+}
+
 async function submitSoundPack(event) {
     event.preventDefault();
 
     const config = getSoundUploadConfig();
     const form = document.getElementById("soundPackUploadForm");
     const category = document.getElementById("soundPackCategory");
+    const uploadType = document.getElementById("soundUploadType");
+    const nameInput = document.getElementById("soundUploadName");
     const fileInput = document.getElementById("soundPackFile");
 
-    if (!form || !category || !fileInput) {
+    if (!form || !category || !uploadType || !nameInput || !fileInput) {
         return;
     }
 
@@ -1711,6 +1772,25 @@ async function submitSoundPack(event) {
             "Crowdsourcing uploads are not configured yet. Please try again later.",
             "error"
         );
+        return;
+    }
+
+    if (category.value !== "diesel" && category.value !== "steam") {
+        setSoundUploadStatus("Select Diesel or Steam before submitting.", "error");
+        return;
+    }
+
+    if (uploadType.value !== "pack" && uploadType.value !== "individual") {
+        setSoundUploadStatus("Select Full Sound Pack or Individual Sounds before submitting.", "error");
+        uploadType.focus();
+        return;
+    }
+
+    const soundName = nameInput.value.trim();
+
+    if (!soundName) {
+        setSoundUploadStatus("Enter a name for what you are uploading.", "error");
+        nameInput.focus();
         return;
     }
 
@@ -1739,15 +1819,25 @@ async function submitSoundPack(event) {
         return;
     }
 
-    const data = new FormData();
-    data.append("category", category.value);
-    data.append("file", file, file.name);
-    data.append("turnstileToken", soundUploadTurnstileToken);
-
     setSoundUploadFormDisabled(true);
-    setSoundUploadStatus("Uploading your sound pack…", "");
+    setSoundUploadStatus("Preparing your ZIP and adding README.md…", "");
 
     try {
+        const preparedFile = await addOrReplaceRootReadme(file, soundName);
+
+        if (preparedFile.size <= 0 || preparedFile.size > SOUND_UPLOAD_MAX_BYTES) {
+            throw new Error("The ZIP file must be 20 MB or smaller after README.md is added.");
+        }
+
+        const data = new FormData();
+        data.append("category", category.value);
+        data.append("submissionType", uploadType.value);
+        data.append("soundName", soundName);
+        data.append("file", preparedFile, preparedFile.name);
+        data.append("turnstileToken", soundUploadTurnstileToken);
+
+        setSoundUploadStatus("Uploading your sound submission…", "");
+
         const response = await fetch(config.apiUrl + "/submit", {
             method: "POST",
             body: data,
@@ -1772,12 +1862,13 @@ async function submitSoundPack(event) {
         }
 
         form.reset();
+        updateSoundUploadNamePrompt();
         resetSoundUploadTurnstile();
 
         setSoundUploadStatus(
-            "Your sound pack was uploaded successfully. It is not live yet. " +
+            "Your sound upload was submitted successfully. It is not live yet. " +
             "Every submitted ZIP goes through a series of evaluations before it is approved " +
-            "and added to the public Sound Packs library.",
+            "and added to the public sounds library.",
             "success"
         );
     } catch (error) {
@@ -1798,17 +1889,23 @@ function initializeSoundPackCrowdsourcing() {
     const form = document.getElementById("soundPackUploadForm");
     const section = document.getElementById("soundPacksSection");
     const submitButton = document.getElementById("soundPackSubmitButton");
+    const category = document.getElementById("soundPackCategory");
+    const uploadType = document.getElementById("soundUploadType");
 
-    if (!form || !section || !submitButton) {
+    if (!form || !section || !submitButton || !category || !uploadType) {
         return;
     }
+
+    updateSoundUploadNamePrompt();
+    category.addEventListener("change", updateSoundUploadNamePrompt);
+    uploadType.addEventListener("change", updateSoundUploadNamePrompt);
 
     const config = getSoundUploadConfig();
 
     if (!config.apiUrl || !config.turnstileSiteKey) {
         setSoundUploadFormDisabled(true);
         setSoundUploadStatus(
-            "Crowdsourcing uploads are being configured. Sound-pack downloads are still available.",
+            "Crowdsourcing uploads are being configured. Sound downloads are still available.",
             ""
         );
         return;
@@ -1829,7 +1926,8 @@ function initializeSoundPackCrowdsourcing() {
             await initializeSoundUploadTurnstile(config.turnstileSiteKey);
             submitButton.disabled = false;
             setSoundUploadStatus(
-                "Choose a ZIP file, select Diesel or Steam, then click Submit Sound Pack.",
+                "Choose Diesel or Steam, select Full Sound Pack or Individual Sounds, enter a name, " +
+                "choose a ZIP file, then click Submit Sound Upload.",
                 ""
             );
         } catch (error) {

@@ -658,7 +658,7 @@
       <summary>
         <span class="section-title">
           <img src="sounds.png" alt="" class="section-icon" />
-          <span>Sound Packs</span>
+          <span>Sounds &amp; Sound Packs</span>
         </span>
       </summary>
 
@@ -667,17 +667,18 @@
           <div class="card-header">
             <div>
               <div class="card-kicker">Locomotive audio</div>
-              <h3>Download a sound pack.</h3>
+              <h3>Download sounds and sound packs.</h3>
             </div>
           </div>
 
           <p class="note">
-            Choose a Diesel or Steam sound pack below. The list is loaded directly from the sound-pack folders on the
-            Poor Man's Throttle GitHub project, so newly published ZIP files appear automatically.
+            Choose Diesel or Steam below, then download a full sound pack or an individual sound ZIP.
+            The lists are loaded directly from the Poor Man's Throttle GitHub project, so newly published ZIP files
+            appear automatically.
           </p>
 
           <p class="note" id="soundPacksStatus" role="status" aria-live="polite">
-            Open this section to load the available sound packs.
+            Open this section to load the available sounds and sound packs.
           </p>
         </div>
 
@@ -686,7 +687,7 @@
             <div class="sound-pack-group-header">
               <div>
                 <div class="card-kicker">Diesel</div>
-                <h3 id="dieselSoundPackHeading">Diesel sound packs</h3>
+                <h3 id="dieselSoundPackHeading">Diesel sounds</h3>
               </div>
 
               <img
@@ -697,8 +698,18 @@
                 height="72" />
             </div>
 
-            <div class="sound-pack-list" id="dieselSoundPackList">
-              <p class="note">Loading diesel sound packs…</p>
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Full Sound Packs</h4>
+              <div class="sound-pack-list" id="dieselSoundPackList">
+                <p class="note">Loading diesel sound packs…</p>
+              </div>
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Individual Sounds</h4>
+              <div class="sound-pack-list" id="dieselIndividualSoundList">
+                <p class="note">Loading diesel individual sounds…</p>
+              </div>
             </div>
           </section>
 
@@ -706,7 +717,7 @@
             <div class="sound-pack-group-header">
               <div>
                 <div class="card-kicker">Steam</div>
-                <h3 id="steamSoundPackHeading">Steam sound packs</h3>
+                <h3 id="steamSoundPackHeading">Steam sounds</h3>
               </div>
 
               <img
@@ -717,8 +728,18 @@
                 height="72" />
             </div>
 
-            <div class="sound-pack-list" id="steamSoundPackList">
-              <p class="note">Loading steam sound packs…</p>
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Full Sound Packs</h4>
+              <div class="sound-pack-list" id="steamSoundPackList">
+                <p class="note">Loading steam sound packs…</p>
+              </div>
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Individual Sounds</h4>
+              <div class="sound-pack-list" id="steamIndividualSoundList">
+                <p class="note">Loading steam individual sounds…</p>
+              </div>
             </div>
           </section>
         </div>
@@ -726,32 +747,33 @@
         <section class="crowdsourcing-card" aria-labelledby="crowdsourcingHeading">
           <div class="crowdsourcing-copy">
             <div class="card-kicker">Crowdsourcing</div>
-            <h3 id="crowdsourcingHeading">Share a sound pack with the PMT community.</h3>
+            <h3 id="crowdsourcingHeading">Share sounds with the PMT community.</h3>
 
             <p class="note">
-              Have a Diesel or Steam sound pack that other Poor Man's Throttle users may enjoy?
-              You can submit the ZIP here for evaluation.
+              Have a Diesel or Steam full sound pack or a group of related individual sound files that other
+              Poor Man's Throttle users may enjoy? You can submit the ZIP here for evaluation.
             </p>
 
             <div class="crowdsourcing-notice" role="note">
               <strong>Before you upload:</strong>
               <ul class="list crowdsourcing-list">
                 <li>Upload a ZIP file only.</li>
+                <li>Choose whether the ZIP contains a Full Sound Pack or Individual Sounds.</li>
+                <li>Enter a descriptive name for what you are uploading.</li>
                 <li>Do not submit copyrighted material you do not have permission to share.</li>
-                <li>Use a descriptive filename so the sound pack is easy to identify.</li>
               </ul>
             </div>
 
             <div class="crowdsourcing-review-note" role="note">
               <strong>Uploads do not become live immediately.</strong>
               Every submitted ZIP goes through a series of evaluations before it is approved
-              and added to the public Sound Packs library.
+              and added to the public sounds library.
             </div>
           </div>
 
           <form class="sound-upload-form" id="soundPackUploadForm" novalidate>
             <div class="sound-upload-field">
-              <label for="soundPackCategory">Sound pack type</label>
+              <label for="soundPackCategory">Engine type</label>
               <select id="soundPackCategory" name="category" required>
                 <option value="diesel">Diesel</option>
                 <option value="steam">Steam</option>
@@ -759,16 +781,39 @@
             </div>
 
             <div class="sound-upload-field">
+              <label for="soundUploadType">Upload type</label>
+              <select id="soundUploadType" name="submissionType" required>
+                <option value="" selected>Select upload type</option>
+                <option value="pack">Full Sound Pack</option>
+                <option value="individual">Individual Sounds</option>
+              </select>
+            </div>
+
+            <div class="sound-upload-field">
+              <label id="soundUploadNameLabel" for="soundUploadName">What are you uploading?</label>
+              <input
+                id="soundUploadName"
+                name="soundName"
+                type="text"
+                placeholder="Enter a sound or sound pack name"
+                autocomplete="off"
+                required />
+              <p class="field-help" id="soundUploadNameHelp">
+                This name will be written to README.md inside the ZIP.
+              </p>
+            </div>
+
+            <div class="sound-upload-field">
               <label for="soundPackFile">ZIP file</label>
               <input id="soundPackFile" name="file" type="file" accept=".zip,application/zip" required />
-              <p class="field-help">Maximum upload size: 20 MB.</p>
+              <p class="field-help">Maximum upload size: 20 MB after README.md is added.</p>
             </div>
 
             <div id="soundPackTurnstile" class="turnstile-shell" aria-label="Human verification"></div>
 
             <div class="action-buttons">
               <button class="app-link app-link-primary" id="soundPackSubmitButton" type="submit">
-                Submit Sound Pack
+                Submit Sound Upload
               </button>
             </div>
 
