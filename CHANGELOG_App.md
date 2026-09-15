@@ -2,6 +2,12 @@
 
 ## Smartphone App:
 
+### Version 3.2.1
+
+* **Bug Fixes**
+    Fixed save failures with the master volume slider on configuration page.
+    The code monkey has been busy (me).
+
 ### Version 3.2.0
 * **Wireless Firmware Updates** The app supports PMT firmware wireless updates. 
 * **Added About screen** in the global configuration screen
