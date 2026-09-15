@@ -1170,7 +1170,7 @@ async function loadSoundPacks() {
     if (status) {
         if (failureCount === 0) {
             status.textContent =
-                "Sound packs and individual sounds are listed automatically from the Diesel and Steam folders.";
+                "Sound packs and individual sounds are listed automatically from the Diesel and Steam archives.";
         } else if (failureCount === collections.length) {
             status.textContent =
                 "The sounds library could not be loaded right now. The rest of the installer is still available.";
