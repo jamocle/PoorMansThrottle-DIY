@@ -462,8 +462,11 @@ Notes:
 
 * This is runtime-only.
 * Reboot restores the default grace behavior.
-* `G0` clears any active grace countdown.
-* These commands are shared across supported firmware images, but the visible effect depends on the device's disconnect behavior.
+* `G1` enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
+* If a connection returns before grace expires, the active grace countdown is cancelled and the running script continues without being restarted.
+* If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior.
+* `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
+* These commands are shared across supported firmware images, but the visible shutdown effect depends on the device's disconnect behavior.
 
 ---
 
@@ -655,6 +658,8 @@ Behavior:
 * Loads and validates the script from SD.
 * Repeats from the beginning after the final line completes.
 * A trailing `PAUSE` recorded by `SR=<name>` is honored before the next repetition begins.
+* Playback uses an absolute logical timeline. Normal command-processing time or loop jitter does not shift later pause deadlines, so small lateness does not accumulate as repeat-cycle drift.
+* At a repeat boundary, firmware rewinds the script content without resetting the logical timeline to the current time.
 
 ## Stop Playback
 
@@ -773,10 +778,27 @@ While a script is running:
 
 * Script-generated control commands are re-entered through the existing device command handlers.
 * Externally received recordable control commands are suppressed so they cannot override the active script.
-* Internally scheduled recordable control commands are likewise suppressed while playback is active.
+* Firmware-internal and scheduled control commands are **not** suppressed by script playback; they continue to apply through their existing command paths.
 * Non-control management/configuration commands continue through the normal command path unless that specific command rejects the current script state.
 * `SP0` remains available to stop playback.
 * Starting another recording or playback, or deleting a script, returns `ERR:BUSY` while playback is active.
+
+### `S` During Playback
+
+The throttle `S` command has origin-sensitive behavior:
+
+* An **external/app-originated `S`** stops script playback first, then continues through the throttle's normal `S` handling so the train stops as it does outside script mode.
+* An **`S` read from the running script** executes the normal train-stop behavior but does **not** terminate script playback. The script continues with the following `PAUSE` or command.
+* Firmware-internal/scheduled commands continue to apply while the script is running.
+
+### Grace Shutdown During Playback
+
+`G0` and `G1` change grace-shutdown state; they do not pause the script timeline:
+
+* `G1` enables grace shutdown. If a disconnect starts a grace countdown, script playback continues during that countdown.
+* Reconnection before expiry cancels the countdown and the script continues normally.
+* Actual grace expiry stops active script playback, then the firmware continues with its existing grace-expiry shutdown behavior.
+* `G0` disables grace shutdown and clears an active grace countdown. `G0` does not stop the script.
 
 ## Script Errors
 

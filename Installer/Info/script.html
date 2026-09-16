@@ -272,6 +272,42 @@
       color:#153b63;
     }
 
+    code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      font-size:.94em;
+      background:#f0f0f3;
+      border:1px solid #e2e2e7;
+      border-radius:7px;
+      padding:2px 6px;
+    }
+
+    .command-grid{
+      display:grid;
+      gap:12px;
+      margin:18px 0;
+    }
+
+    .command-card{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:18px;
+      padding:15px 16px;
+    }
+
+    .command-card strong{
+      display:block;
+      margin-bottom:5px;
+    }
+
+    .rule-list{
+      margin:12px 0 0;
+      padding-left:22px;
+    }
+
+    .rule-list li{
+      margin:8px 0;
+    }
+
     .footer-note{
       margin-top:30px;
       text-align:center;
@@ -285,6 +321,7 @@
       .content{padding:28px 28px 32px}
       .image-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
       .steps{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .command-grid{grid-template-columns:repeat(2, minmax(0,1fr))}
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -361,6 +398,111 @@
         <p style="margin-top:18px;">
           As the language expands, scripting becomes more useful for creating repeatable train actions, more structured command
           sequences, and richer control flows without requiring every step to be handled manually in real time.
+        </p>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="firmware-script-title">
+      <div class="section-header">
+        <h2 id="firmware-script-title">Firmware recorded scripts</h2>
+        <p>
+          PMT firmware also has an SD-backed script recorder/player. This is separate from the app's Run Script page:
+          app terminal scripts are entered and interpreted by the app, while firmware scripts are stored on the device as
+          <code>/scripts/&lt;name&gt;.pmt</code> and are played by the firmware.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="callout">
+          <strong>Two different script systems:</strong>
+          the app's Run Script page and firmware-resident <code>.pmt</code> playback are related tools, but they are not the same
+          scripting engine. Firmware <code>.pmt</code> files use recordable device-control commands plus
+          <code>PAUSE &lt;milliseconds&gt;</code>.
+        </div>
+
+        <div class="command-grid">
+          <div class="command-card">
+            <strong><code>SR</code></strong>
+            Start recording eligible external control commands and their timing.
+          </div>
+          <div class="command-card">
+            <strong><code>SR=&lt;name&gt;</code></strong>
+            Stop recording and save it as <code>/scripts/&lt;name&gt;.pmt</code>.
+          </div>
+          <div class="command-card">
+            <strong><code>SP1=&lt;name&gt;</code></strong>
+            Play a saved firmware script once.
+          </div>
+          <div class="command-card">
+            <strong><code>SPR=&lt;name&gt;</code></strong>
+            Play a saved firmware script repeatedly.
+          </div>
+          <div class="command-card">
+            <strong><code>SP0</code></strong>
+            Stop active firmware script playback.
+          </div>
+          <div class="command-card">
+            <strong><code>SS?</code></strong>
+            Query script state: idle, recording, play-once, or repeat.
+          </div>
+          <div class="command-card">
+            <strong><code>SD=&lt;name&gt;</code></strong>
+            Delete a saved firmware script when recording/playback is idle.
+          </div>
+        </div>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Playback control rules</h2>
+        <ul class="rule-list">
+          <li>
+            Script-generated commands use the normal device command handlers.
+          </li>
+          <li>
+            External/app-originated recordable control commands are ignored while firmware script playback is active so they
+            cannot unexpectedly override the script.
+          </li>
+          <li>
+            Firmware-internal and scheduled control commands are <strong>not</strong> blocked by script playback; they continue
+            to apply normally.
+          </li>
+          <li>
+            An external/app-originated <code>S</code> is a deliberate exception: it stops script playback first, then executes
+            the throttle's normal stop behavior.
+          </li>
+          <li>
+            An <code>S</code> inside the script stops the train normally but does <strong>not</strong> terminate the script.
+            Playback continues with the following pause or command.
+          </li>
+        </ul>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Grace shutdown: <code>G0</code> and <code>G1</code></h2>
+        <ul class="rule-list">
+          <li>
+            <code>G1</code> enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is
+            running, the script continues normally during the countdown.
+          </li>
+          <li>
+            If the connection returns before grace expires, the countdown is cancelled and the running script continues; it is
+            not restarted.
+          </li>
+          <li>
+            If grace actually expires, firmware stops active script playback before continuing with the device's existing
+            grace-expiry shutdown behavior.
+          </li>
+          <li>
+            <code>G0</code> disables grace shutdown and clears any active grace countdown. It does <strong>not</strong> stop a
+            running script.
+          </li>
+        </ul>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Repeat timing</h2>
+        <p>
+          Firmware playback uses an absolute logical timeline. Each <code>PAUSE</code> advances that timeline instead of starting
+          a new delay from the moment the firmware loop happens to process it. Small command-processing delays or loop jitter
+          therefore do not accumulate into repeat-cycle drift.
+        </p>
+        <p>
+          In repeat mode, firmware rewinds the script content without resetting the logical clock to the current time. A trailing
+          pause recorded when <code>SR=&lt;name&gt;</code> saves the script is honored before the next iteration starts.
         </p>
       </div>
     </section>
