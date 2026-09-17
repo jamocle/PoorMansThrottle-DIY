@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Poor Man's Automation brings repeatable railroad automation to PMT throttles and modules with recording, playback, repeat, editing, timing adjustment, and script management." />
+  <title>Poor Man's Automation</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.9);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --success:#147a43;
+      --success-soft:rgba(20,122,67,.08);
+      --burgundy:#970026;
+      --burgundy-soft:rgba(151,0,38,.08);
+      --gold:#8a5716;
+      --gold-soft:rgba(138,87,22,.09);
+      --shadow:0 16px 44px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1100px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top,#fff 0%,#f5f5f7 48%,#ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .wrap{
+      width:min(100%,var(--max));
+      margin:0 auto;
+      padding:22px 16px 68px;
+    }
+
+    .hero{
+      text-align:center;
+      padding:12px 4px 22px;
+    }
+
+    .eyebrow{
+      display:inline-block;
+      padding:6px 12px;
+      border-radius:999px;
+      border:1px solid rgba(151,0,38,.18);
+      background:rgba(255,255,255,.82);
+      color:var(--burgundy);
+      font-size:.86rem;
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+
+    h1{
+      margin:16px auto 10px;
+      max-width:920px;
+      font-size:clamp(2.15rem,7vw,4.25rem);
+      line-height:1.02;
+      letter-spacing:-.045em;
+      font-weight:760;
+    }
+
+    .lead{
+      max-width:900px;
+      margin:0 auto;
+      color:var(--muted);
+      font-size:clamp(1.04rem,2.8vw,1.28rem);
+    }
+
+    .lead strong{color:var(--text)}
+
+    .hero-image{
+      margin-top:24px;
+      border-radius:28px;
+      overflow:hidden;
+      box-shadow:0 22px 60px rgba(0,0,0,.18);
+      background:#111;
+    }
+
+    .hero-image img{
+      display:block;
+      width:100%;
+      height:auto;
+    }
+
+    .section{
+      margin-top:26px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+
+    .section-header{padding:28px 22px 0}
+
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.45rem,4vw,2.25rem);
+      line-height:1.1;
+      letter-spacing:-.03em;
+    }
+
+    h3{
+      margin:0 0 8px;
+      font-size:1.17rem;
+      letter-spacing:-.015em;
+    }
+
+    p{margin:0 0 16px}
+
+    .section-header p{
+      color:var(--muted);
+      margin-bottom:20px;
+    }
+
+    .content{padding:22px}
+
+    .card-grid,.use-grid,.workflow{
+      display:grid;
+      gap:14px;
+    }
+
+    .card,.use-card,.step{
+      background:var(--surface-solid);
+      border:1px solid #e5e5ea;
+      border-radius:22px;
+      box-shadow:0 10px 22px rgba(0,0,0,.055);
+    }
+
+    .card,.use-card{padding:18px}
+
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.81rem;
+      font-weight:700;
+    }
+
+    .label.green{background:var(--success-soft);color:var(--success)}
+    .label.red{background:var(--burgundy-soft);color:var(--burgundy)}
+    .label.gold{background:var(--gold-soft);color:var(--gold)}
+
+    .callout{
+      margin-top:18px;
+      padding:17px 19px;
+      border-radius:18px;
+      background:var(--success-soft);
+      border-left:4px solid var(--success);
+      color:#175537;
+    }
+
+    .workflow{
+      margin-top:6px;
+    }
+
+    .step{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      padding:16px;
+    }
+
+    .step-number{
+      flex:0 0 36px;
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:var(--burgundy-soft);
+      color:var(--burgundy);
+      font-weight:800;
+    }
+
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .version{
+      margin-top:18px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 76px}
+      .section-header{padding:32px 30px 0}
+      .content{padding:28px 30px 34px}
+      .card-grid,.use-grid,.workflow{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">POOR MAN'S AUTOMATION</div>
+      <h1>Teach your railroad a routine — then let it do it again.</h1>
+      <p class="lead">
+        <strong>Automation is now built directly into PMT throttles and modules.</strong>
+        Record what you do, save it, replay it once or continuously, fine-tune the timing,
+        and turn repeatable railroad operation into something anyone can use.
+      </p>
+
+      <div class="hero-image">
+        <img src="poor-mans-automation-hero.png" alt="Poor Man's Automation showing recording, playback, editing, timing adjustment, and script management from the PMT app." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>From manual operation to repeatable railroad automation.</h2>
+        <p>
+          One of the most common requests was simple: “Can I make a trolley run back and forth automatically?”
+          Now the answer is yes — and the same automation system can do much more than that.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label red">RECORD</span>
+            <h3>Operate it once</h3>
+            <p>
+              Run the locomotive or module exactly the way you want. PMT records the sequence so your actions can become a reusable automation.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label green">REPEAT</span>
+            <h3>Run it again and again</h3>
+            <p>
+              Play the automation once, or let it repeat continuously for unattended, predictable operation.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">EDIT</span>
+            <h3>Change the script later</h3>
+            <p>
+              Saved automations can be opened, edited, renamed through your workflow, saved back to the device, or deleted when you no longer need them.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label gold">ADJUST</span>
+            <h3>Fine-tune the timing live</h3>
+            <p>
+              Speed the overall routine up or slow it down by adjusting its timing in milliseconds. Repeating scripts pick up the updated timing on the next cycle.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          PMT turns a one-time operating sequence into a repeatable railroad behavior — without forcing you to hand-code every move from scratch.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>What can you automate?</h2>
+        <p>
+          The trolley shuttle is the obvious example, but once repeatable scripting is available, the possibilities get much bigger.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="use-grid">
+          <article class="use-card">
+            <span class="label">TROLLEY SHUTTLE</span>
+            <h3>Back-and-forth operation</h3>
+            <p>
+              Record a trolley moving from one end of the line to the other, pausing, reversing, and returning — then repeat the cycle automatically.
+            </p>
+          </article>
+
+          <article class="use-card">
+            <span class="label">STATION STOPS</span>
+            <h3>Repeatable passenger service</h3>
+            <p>
+              Build a routine with approach speed, stop duration, departure, and the next station sequence for a more consistent operating display.
+            </p>
+          </article>
+
+          <article class="use-card">
+            <span class="label">DISPLAY LAYOUTS</span>
+            <h3>Keep something moving</h3>
+            <p>
+              Perfect for open houses, club displays, train shows, or home layouts where you want reliable repeated motion without constant operator input.
+            </p>
+          </article>
+
+          <article class="use-card">
+            <span class="label">YARD &amp; INDUSTRIAL MOVES</span>
+            <h3>Demonstrate a sequence</h3>
+            <p>
+              Record a repeatable switching move, industrial transfer, or yard demonstration and replay it consistently whenever you want.
+            </p>
+          </article>
+
+          <article class="use-card">
+            <span class="label">MODULE AUTOMATION</span>
+            <h3>Automate more than locomotives</h3>
+            <p>
+              Because automation is baked into both throttles and modules, repeatable routines can extend beyond train motion into the wider PMT ecosystem.
+            </p>
+          </article>
+
+          <article class="use-card">
+            <span class="label">TIMED EFFECTS</span>
+            <h3>Build a show, not just a movement</h3>
+            <p>
+              Use repeatable command timing to coordinate actions into a predictable routine — ideal for demonstrations, scenes, and layout effects.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>The complete automation workflow is now in the app.</h2>
+        <p>
+          What started as basic script recording and playback has evolved into a complete, user-manageable automation system.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="workflow">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Record</h3>
+              <p>Capture a real operating sequence from your throttle or module.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>Save</h3>
+              <p>Name the automation and store it on the device for later use.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>Play once or repeat</h3>
+              <p>Run the routine one time or keep it looping continuously.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Monitor</h3>
+              <p>See whether automation is idle, playing, repeating, recording, or waiting to be saved.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">5</div>
+            <div>
+              <h3>Adjust timing</h3>
+              <p>Change the overall pace without rebuilding the entire automation.</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">6</div>
+            <div>
+              <h3>Edit or delete</h3>
+              <p>Open saved automations, modify their script text, save the changes, or remove scripts you no longer need.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          Closing the automation controls does not stop a routine already running on the device. Start it, get out of the way, and let the railroad keep doing its job.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Record first. Perfect it later.</h2>
+        <p>
+          Automation does not have to be perfect on the first attempt. PMT is designed so you can capture the idea quickly and refine it afterward.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label">SAVE OR DISCARD</span>
+            <h3>You are never forced to keep a bad take</h3>
+            <p>
+              Stop recording, review where you are, then save it with a name or discard the recording and try again.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">TIMING STRUCTURE</span>
+            <h3>Fine control without breaking the routine</h3>
+            <p>
+              Timing can be reduced all the way to zero and later increased again without losing the locations of those timing points in the script.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Automation that feels like part of the railroad — not a programming project.</h2>
+        <p>
+          Poor Man's Automation is about making repeatable operation accessible to the same people already using PMT to run trains, modules, sounds, lights, and layout accessories.
+        </p>
+      </div>
+
+      <div class="content">
+        <p>
+          Record what you already know how to do, save it, and let PMT repeat it. Then refine the timing, edit the details, and build increasingly sophisticated operating routines as your railroad grows.
+        </p>
+
+        <div class="callout">
+          A trolley shuttle today. A fully choreographed railroad scene tomorrow. Poor Man's Automation gives you the tools to build both.
+        </div>
+
+        <div class="version">
+          App 3.3.0 • Firmware 3.3.0 rev242
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Automation — record it once, refine it, and let your railroad do it again.
+    </div>
+  </main>
+</body>
+</html>

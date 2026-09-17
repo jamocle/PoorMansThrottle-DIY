@@ -3,7 +3,7 @@
 ## Smartphone App:
 
 ### Version 3.3.0
-
+* **Aupport for Automation scripts** No the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
 * **Bug Fixes**
     Fixed save failures with the master volume slider on configuration page.
     The code monkey has been busy (me).
