@@ -1,13 +1,13 @@
-# "Big-Boy" Systems Controller vs. Poor Man’s Throttle v3.0
+# "Big-Boy" Systems Controller vs. Poor Man’s Throttle v3.3
 
-> **Comparison scope:** This document compares the "Big-Boy" Systems platform and app with Poor Man’s Throttle (PMT) v3.0.  
+> **Comparison scope:** This document compares the "Big-Boy" Systems platform and app with Poor Man’s Throttle (PMT) v3.3.  
 > For "Big-Boy" Systems, “No” should be read as “not supported or not documented in the current "Big-Boy" Systems feature set” where applicable.
 
 ---
 
 ## 1. Hardware Platform & Cost
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Hardware architecture** | 🔒 **Proprietary Big-Boy hardware/platform** | ✅ **Based on the Espressif ESP32 architecture family** |
 | **Uses widely available general-purpose hardware** | ❌ **No — proprietary decoder hardware** | ✅ **Yes — ESP32-family hardware is widely available; you may already have compatible boards lying around** |
@@ -20,7 +20,7 @@
 
 ## 2. App & Full-Layout Ecosystem
 
-| Feature | "Big-Boy" Systems / App | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems / App | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Floating camera video while controlling locomotive** | ❌ **No** | ✅ **Yes — floating camera overlay while throttle remains operational** |
 | **Full layout ecosystem from one app** | ❌ **No — locomotive-decoder focused** | ✅ **Yes** |
@@ -44,7 +44,8 @@
 | **Integrated diagnostic terminal** | ❌ **No** | ✅ **Yes** |
 | **Send direct firmware/CV commands from app terminal** | ❌ No | ✅ **Yes** |
 | **Test commands without leaving application** | ❌ No | ✅ **Yes** |
-| **Scripting subsystem for autonomous running of commands and effects** | ❌ No | ✅ **Yes** |
+| **App-side terminal scripting for running command sequences and effects** | ❌ No | ✅ **Yes** |
+| **On-device SD-backed recording/playback of control commands with preserved timing** | ❌ No | ✅ **Yes — firmware `.pmt` scripts can be recorded, played once, repeated, stopped, queried, and deleted** |
 | **Scheduling subsystem for running commands / scripts at specific times** | ❌ No | ✅ **Yes** |
 | **Built-in help system** | ❌ No equivalent integrated help system documented | ✅ **Yes** |
 | **BLE and Wi-Fi devices controlled from same application** | ❌ Bluetooth only | ✅ **Yes** |
@@ -57,7 +58,7 @@
 | **Graphical MU/consist speed matching** | ⚠️ Limited Low / Medium / High adjustment points with +/- controls | ✅ **Yes — graphical interactive matching** |
 | **Real-time MU speed-matching adjustments** | ⚠️ Limited adjustment model | ✅ **Yes — real-time graphical adjustment while operating** |
 | **Graphically visualize relationships between locomotives in consist** | ❌ No equivalent interactive system | ✅ **Yes** |
-| **Number of simultaneously defined consists** | **4 consists** | ✅ **Unlimited** |
+| **Number of simultaneously defined consists** | **4 consists** | ✅ **App-managed consists/MUs; no maximum** |
 | **Yard/switching reduced-speed mode** | ✅ **Yes — ½-speed Switching Mode** | ✅ **Yes — Yard Switching Mode** |
 | **Control multiple locomotives from one app** | ✅ Multi-Train | ✅ Yes |
 | **Create consists/MUs** | ✅ Yes | ✅ Yes |
@@ -78,10 +79,10 @@
 
 ## 3. Updates, Development & User Influence
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **User-installable locomotive firmware updates** | ❌ **No documented user firmware-update mechanism** | ✅ **Yes** |
-| **Frequent firmware releases** | ❌ Vendor controlled | ✅ **Daily/weekly as development requires** |
+| **Firmware development cadence** | ❌ Vendor controlled | ✅ **Actively developed** |
 | **Rapid firmware bug fixes** | ❌ Vendor release cycle | ✅ **Yes** |
 | **Rapid addition of new firmware capabilities** | ❌ Vendor controlled | ✅ **Yes** |
 | **User-suggested features regularly implemented** | ❌ Manufacturer roadmap determines implementation | ✅ **Yes — regularly added** |
@@ -89,14 +90,14 @@
 | **Users can modify firmware** | ❌ Proprietary | ⚠️ **Yes — NDA and approval required** |
 | **Community firmware contributions** | ❌ No public contribution model | ⚠️ **Yes — NDA and approval required** |
 | **User-accessible firmware source** | ❌ No | ⚠️ **Controlled access — NDA/approval requirements apply** |
-| **App update cadence** | ⚠️ **Periodic — typically weeks/months between releases** | ✅ **Daily/weekly when development requires** |
+| **App update cadence** | ⚠️ **Periodic — vendor controlled** | ⚠️ **Continual** |
 | **Active app development** | ✅ Yes | ✅ Yes |
 
 ---
 
 ## 4. Connectivity, Wi-Fi, Failover & API
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Wi-Fi as primary locomotive-control transport** | ❌ **No** | ✅ **Yes** |
 | **Wi-Fi locomotive control** | ❌ **No** | ✅ **Yes** |
@@ -121,7 +122,7 @@
 
 ## 5. Crowdsourced & Shareable Audio Ecosystem
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Professionally recorded sounds** | ✅ **Yes** | ⚠️ **Crowdsourced** |
 | **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **Yes** |
@@ -137,14 +138,14 @@
 | **Community-created FX sounds** | ❌ No arbitrary import | ✅ **Yes** |
 | **Record your own locomotive and install it** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **Distribute complete locomotive sound sets** | ❌ No | ✅ **Yes** |
-| **Potential sound library size** | Large but manufacturer-defined | ✅ **Effectively unlimited through crowdsourcing** |
+| **Potential sound library size** | Large but manufacturer-defined | ✅ **Community-expandable; PMTPlayer addresses track IDs `0001`–`9999` within the active sound root, subject to storage/content limits** |
 | **Sound ecosystem independent of manufacturer releases** | ❌ No | ✅ **Yes** |
 
 ---
 
 ## 6. Core Sound Architecture
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Steam and Diesel sound architectures available simultaneously** | ❌ No runtime cross-profile system documented | ✅ **Yes** |
 | **Real-time Steam ↔ Diesel switching** | ❌ No | ✅ **Yes** |
@@ -170,14 +171,14 @@
 
 ## 7. Custom Function / FX Audio
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Attach custom sound files to Functions (FX)** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
 | **Import arbitrary WAV as an FX sound** | ❌ None | ✅ **Yes** |
 | **Assign personal recording to an FX function** | ❌ No | ✅ **Yes** |
 | **User-created FX library** | ❌ No arbitrary files | ✅ **Yes** |
 | **Locomotive-specific custom FX audio** | ❌ No arbitrary files | ✅ **Yes** |
-| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Effectively unlimited** |
+| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Track IDs `1`–`9999` are addressable for custom PMTPlayer FX within the active sound root; 12 FX slots can be configured at once** |
 | **Replace FX sound with another user WAV** | ❌ No | ✅ **Yes** |
 | **Add FX audio without recompiling firmware** | ❌ No arbitrary WAV support | ✅ **Yes** |
 | **Crowdsource FX sounds** | ❌ No | ✅ **Yes** |
@@ -191,7 +192,7 @@
 
 ## 8. Diesel Sound
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **User-created prime mover** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **User-created horn** | ❌ No arbitrary WAV import | ✅ **Yes** |
@@ -219,7 +220,7 @@
 
 ## 9. Steam Sound
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **User-created chuff/exhaust WAVs** | ❌ No arbitrary WAV import | ✅ **Yes** |
 | **User-created whistle WAVs** | ❌ No arbitrary WAV import | ✅ **Yes** |
@@ -244,19 +245,19 @@
 
 ## 10. Audio Processing & Amplifier
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Audio system accepts arbitrary user WAV library** | ❌ No | ✅ **Yes** |
 | **Audio system works with crowdsourced sound sets** | ❌ No | ✅ **Yes** |
 | **User can fundamentally replace audio content** | ❌ Manufacturer library | ✅ **Yes** |
 | **Digital audio mixing** | ✅ Yes | ✅ Yes |
 | **Master volume** | ✅ Yes | ✅ Yes |
-| **Individual sound volume** | ✅ Yes | ⚠️ **Not yet — coming soon** |
+| **Individual sound volume** | ✅ Yes | ✅ Yes |
 | **Audio shaping / EQ** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Reverb/audio processing** | ✅ Yes | ⚠️ **Yes — not configurable** |
 | **Dynamic audio processing** | ✅ Yes | ✅ Yes |
 | **Sound priority management** | ✅ Yes | ✅ Yes |
-| **Standard amplifier recipe** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
+| **Standard amplifier recipe** | **3W / 8Ω** | ✅ **Recommended: NULLLAB NS4168 kit — 4w @ 5V/4Ω + included 4Ω 3W speaker; Alternative: MAX98357A I2S amplifier + separate speaker** |
 
 > Removed from this comparison as requested: **Concurrent Audio Playback**, **Multi-channel/Voice Audio**, and **Sound Channels**.
 
@@ -264,17 +265,17 @@
 
 ## 11. Motor Power & Large-Scale / Multi-Locomotive Capability
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
-| **48A standard installation** | ❌ **No — 4A max stall current** | ✅ **Yes — 48A standard recipe** |
-| **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
-| **High-current multi-locomotive architecture** | ❌ Fixed 4A output | ✅ **Yes** |
-| **Motor power independently scalable from controller** | ❌ Integrated/fixed | ✅ **Yes** |
+| **Firmware-defined motor current rating** | **4A stall rating shown for the compared product** | ⚠️ **If using the IBT2 motor driver its 46A rated** |
+| **Number of locomotives that may share one power stage** | 1 | ✅ **Not firmware-defined; depends on motor driver (tested > 10)** |
+| **High-current motor architecture** | Integrated power stage | ✅ **Motor-power hardware is separate from the ESP32 controller** |
+| **Motor power independently scalable from controller** | ❌ Integrated/fixed | ✅ **Yes, by choosing suitable external motor hardware** |
 | **Replace motor driver without replacing controller** | ❌ No | ✅ **Yes** |
-| **Selectable motor-driver hardware** | ❌ No | ✅ **Yes** |
-| **Scale amperage by changing motor driver** | ❌ No | ✅ **Yes** |
-| **Motor load beyond 4A aggregate** | ❌ No | ✅ **Yes** |
-| **Standard maximum motor capability** | **4A stall** | **48A standard installation** |
+| **Selectable motor-driver hardware** | ❌ No | ✅ **Yes — firmware supports multiple control interfaces** |
+| **Scale motor current capability by changing motor hardware** | ❌ Integrated/fixed | ✅ **Hardware dependent; verify the actual driver's safe continuous/stall ratings** |
+| **Motor load beyond a specific current** | Product rating dependent | ⚠️ **Not determined by firmware** |
+| **Maximum PMT motor capability** | Product-defined | ⚠️ **Driver/power/wiring dependent; no firmware amperage value** |
 | **Direct motor control** | ✅ Yes | ✅ Yes |
 | **Forward/reverse** | ✅ Yes | ✅ Yes |
 | **Variable speed** | ✅ Yes | ✅ Yes |
@@ -285,13 +286,13 @@
 
 ## 12. Motor Control & Speed Curves
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Interactive graphical speed-curve editor** | ❌ Conventional decoder speed-table configuration | ✅ **Yes — graphical and interactive** |
 | **Replaceable motor-control power stage** | ❌ No | ✅ **Yes** |
 | **User-selectable motor-driver architecture** | ❌ No | ✅ **Yes** |
 | **Advanced motor control** | ✅ Big-Boy architecture | ✅ PMT motor control |
-| **Back-EMF control** | ✅ Yes | ✅ **Yes — requires INA219 or compatible micro board** |
+| **Back-EMF control** | ✅ Yes | ❌ No  |
 | **Low-speed control** | ✅ Yes | ✅ Yes |
 | **Acceleration momentum** | ✅ Yes | ✅ Yes |
 | **Deceleration momentum** | ✅ Yes | ✅ Yes |
@@ -304,7 +305,7 @@
 
 ## 13. Braking & Driving Realism
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Feathered braking** | ❌ **No** | ✅ **Yes — Expert Throttle** |
 | **Continuous proportional operator brake control** | ❌ No feathered-brake equivalent | ✅ **Yes — Expert Throttle; supported by firmware** |
@@ -323,7 +324,7 @@
 
 ## 14. Lighting & Physical Functions
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Function-output architecture expandable through modules** | ❌ Fixed eight outputs | ✅ **Yes** |
 | **Output hardware independently selectable** | ❌ Fixed decoder | ✅ **Yes** |
@@ -344,7 +345,7 @@
 
 ## 15. Configuration, Backup & Locomotive Management
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Real-time Steam/Diesel type selection by CV** | ❌ No | ✅ **Yes** |
 | **Locomotive templates** | ❌ No equivalent PMT template architecture | ✅ **Yes** |
@@ -366,7 +367,7 @@
 
 ## 16. Operating Modes & Multi-Locomotive Control
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Wi-Fi-only locomotive operation** | ❌ No | ✅ **Yes** |
 | **Network-controlled locomotive operation** | ❌ No IP transport | ✅ **Yes** |
@@ -383,17 +384,17 @@
 
 ## 17. Hardware Specifications
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
-| **48A standard motor installation** | ❌ No | ✅ **Yes** |
-| **Up to 10 locomotives wired in parallel** | ❌ No 48A-class capability | ✅ **Yes** |
+| **Firmware-defined motor current** | ⚠️ 4A | ✅ **46A** |
+| **Parallel-locomotive count** | 0 recommended for G Scale| ⚠️ **Tested 10 with IBT2** |
 | **Replaceable motor-power stage** | ❌ No | ✅ **Yes** |
 | **Selectable motor hardware** | ❌ No | ✅ **Yes** |
-| **Maximum motor stall rating** | **BLU 4A** | **48A** (driver dependent) |
-| **Standard PMT motor recipe** | — | **48A** |
+| **Maximum motor stall rating** | **4A** | ⚠️ **IBT2 - 46A** |
+| **Standard PMT motor recipe** | — | ⚠️ **IBT2** |
 | **Physical function outputs** | **8** | Hardware/module dependent |
 | **Function-output current** | **400mA each** | Hardware dependent |
-| **Audio amplifier** | **3W / 8Ω** | ✅ **4W / 4Ω or 8Ω** |
+| **Audio amplifier** | **3W / 8Ω** | ✅ **NS4168: 4w @ 5V/4Ω + included 4Ω 3W speaker** |
 | **Dimensions** | **69 × 30.5 × 14mm** | Installation dependent |
 | **DCC track voltage** | **7–27V** | N/A |
 | **Keep-alive capability** | ✅ **CurrentKeeper connector** | ✅ **Can install a capacitor to provide this functionality** |
@@ -402,7 +403,7 @@
 
 ## 18. Telemetry, Sensors & Expansion
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **General-purpose sensor expansion** | ❌ Not a general modular platform | ✅ **Yes** |
 | **User-installable control modules** | ❌ Fixed decoder architecture | ✅ **Poor Man’s Modules** |
@@ -419,7 +420,7 @@
 
 ## 19. Platform Extensibility
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **User firmware modification** | ❌ No | ⚠️ **Yes — NDA + approval required** |
 | **Community firmware contribution** | ❌ No public model | ⚠️ **Yes — NDA + approval required** |
@@ -442,7 +443,7 @@
 
 # Highest-Impact Differentiators
 
-| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.0 |
+| Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
 | **Hardware architecture** | 🔒 **Proprietary** | ✅ **Espressif ESP32 family** |
 | **Software / firmware cost** | 💰 Commercial | ✅ **FREE** |
@@ -454,7 +455,7 @@
 | **Feathered braking** | ❌ | ✅ **YES — EXPERT THROTTLE** |
 | **Graphical interactive MU speed matching** | ❌ Limited Low/Medium/High +/- | ✅ **YES** |
 | **Interactive graphical speed curves** | ❌ Conventional speed-table configuration | ✅ **YES** |
-| **Number of consists** | **4** | ✅ **UNLIMITED** |
+| **Number of consists** | **4** | ✅ **App-managed; no fixed maximum established** |
 | **Multilingual app** | ❌ | ✅ **YES** |
 | **Integrated terminal** | ❌ | ✅ **YES** |
 | **Built-in help system** | ❌ No equivalent | ✅ **YES** |
@@ -463,16 +464,15 @@
 | **BLE ↔ Wi-Fi failover** | ❌ | ✅ **YES** |
 | **WebSocket control** | ❌ | ✅ **YES** |
 | **Computer/API control** | ❌ | ✅ **YES** |
-| **48A standard installation** | ❌ **4A MAX** | ✅ **48A** |
-| **Up to 10 locomotives wired in parallel** | ❌ | ✅ **YES** |
-| **Steam + Diesel simultaneously available** | ❌ | ✅ **YES** |
+| **Firmware-defined motor amperage** | 4A | ⚠️ **46A** |
+| **Steam + Diesel sound families available for selection for one installation** | ❌ | ✅ **YES** |
 | **Real-time Steam ↔ Diesel CV switching** | ❌ | ✅ **YES** |
 | **User-supplied locomotive WAV files** | ❌ | ✅ **YES** |
 | **Custom audio files attached to FX** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
-| **Potential custom FX sounds** | ❌ **NONE** | ✅ **EFFECTIVELY UNLIMITED** |
+| **Potential custom FX sounds** | ❌ **NONE** | ✅ **Track IDs 1–9999; 12 FX slots configurable at one time** |
 | **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **YES** |
 | **Share/download community sound sets** | ❌ | ✅ **YES** |
-| **Frequent firmware/app development** | Vendor release cycle | ✅ **DAILY/WEEKLY** |
+| **Firmware/app development** | Vendor release cycle | ✅ **Active development** |
 | **User-requested features regularly implemented** | Vendor roadmap | ✅ **YES** |
 | **User firmware modification** | ❌ | ⚠️ **YES — NDA + APPROVAL REQUIRED** |
 | **Replaceable/scalable motor driver** | ❌ | ✅ **YES** |
@@ -496,4 +496,4 @@
 
 **"Big-Boy" Systems** is a sophisticated proprietary commercial locomotive sound/motor decoder with Bluetooth control, extensive factory sound libraries, advanced motor control, braking, lighting, CV configuration, and strong locomotive-focused app features.
 
-**Poor Man’s Throttle v3.0** is an ESP32-family, free software/firmware platform designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.
+**Poor Man’s Throttle v3.3** is an ESP32-family, free software/firmware platform designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.

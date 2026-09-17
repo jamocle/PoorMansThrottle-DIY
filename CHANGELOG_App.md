@@ -1,13 +1,37 @@
 # Changelog — PoorMansThrottle
 
 ## Smartphone App:
+
+### Version 3.3.0
+
+* **Bug Fixes**
+    Fixed save failures with the master volume slider on configuration page.
+    The code monkey has been busy (me).
+
+### Version 3.2.0
+* **Wireless Firmware Updates** The app supports PMT firmware wireless updates. 
+* **Added About screen** in the global configuration screen
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 3.1.0
+* **Prime Mover and Volume on Control Slideout** Now the prime mover and volume controls are added to the control slideout when Audio is on.
+* **Changed the Icon for Control** The throttle page now has a new Control icon to represent all types of controls.
+* **Individual Volume** You can now modify the relative volume level of a sound vs other sounds +/- in the app.
+* **Automatic Adding of Audio Controls** When the user turns on Audio, they will be asked if they wish to add common controls to the Controls screen for Audio.
+* **UI Tweaks** Graph manipulation more user friendly for chuff rate and MU Consist speed matching. Added a lock control to lock the settings for the chuff mapping.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.0.0
+* **PMT Audio Support** The App now supports sound for diesel and steam locomotion and custom sounds. 
 * **Terminal Fixes** 
  ** The terminal now allows exit of the screen when connectivity is dropped.
  ** The terminal now enters script mode if the send button is pressed with no command.
  ** The terminal now allows scripts to run when in WebSocket connected state and no BLE.
 * **Backup and Restore Refined** The app now has a more refined backup and restore system for hardware configuration.
 * **Startup Restore Sensing** The app now senses when a firmware update occurred and prompts the user if they wish to apply the latest backup (if stored) to the firmware.
+* **FX LED mode information expanded for firmware 3.0.0** to cover the fourteen newly added FX function-output patterns: `DITCH+`, `DITCH-`, `STROBE+`, `STROBE-`, `ROTARY+`, `ROTARY-`, `MARS+`, `MARS-`, `GYRALITE+`, `GYRALITE-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`. The paired `+` / `-` warning-light modes are half-cycle phase shifted, while the simulated lamp/beacon modes include PWM-based brightness effects such as smooth sweeps, flicker, dynamo variation, and incandescent warm-up.
+* **Updates to Multilingual localization engine and artifacts**
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.5.7
 * **Android camera bug fixed** The app would not show the preview on some Android devices..

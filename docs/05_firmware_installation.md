@@ -31,8 +31,36 @@ https://jamocle.github.io/PoorMansThrottle-DIY/Installer/
 Read the full installer screen before continuing.
 
 The installer provides:
-- a recommended path to install the latest firmware
+- a recommended USB/browser path to install the latest firmware
 - a version selector for installing an older firmware version when needed
+
+For supported **ESP32-S3 N16R8 and N8R8** throttle hardware, the PMT app can also install the catalog's current `latest` firmware over Wi-Fi using OTA. Classic ESP32-WROOM hardware continues to use the USB/browser installer.
+
+USB installation remains the recovery and rollback path for all boards, and it is the path to use when a specific or older firmware version must be installed.
+
+[ESP32-S3 OTA firmware update guide](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ota_firmware_update.html)
+
+---
+
+# ESP32-S3 Over-the-Air (OTA) Firmware Updates
+
+Supported **ESP32-S3 N16R8 and N8R8** throttle hardware can install firmware wirelessly from the PMT app when the device is connected to Wi-Fi.
+
+OTA behavior:
+
+- OTA is supported on the ESP32-S3 throttle builds only. Classic ESP32-WROOM throttle hardware uses the USB installer.
+- The app asks the device whether OTA is supported before offering the update.
+- OTA installs the board target's catalog `latest` firmware. It does not install a version selected from the USB installer's version list.
+- Older versions, specific-version installs, downgrades, and recovery installs remain USB-only.
+- When OTA is accepted, the throttle first performs its normal stop behavior and waits until it is fully stopped before firmware transfer begins.
+- During the actual firmware transfer, the app can receive progress in 10% steps from `0%` through `100%`.
+- `0%` means the firmware image transfer/write phase has started. Manifest lookup and OTA preparation happen before `0%`.
+- `100%` means the firmware image transfer/write completed successfully. The device then reboots automatically.
+- Do not remove power while OTA is active.
+- On supported S3 hardware, the onboard RGB LED alternates **GREEN/PURPLE every 300 ms** while OTA is active. This OTA indication has priority over the normal `CV21` LED output mode.
+- If OTA cannot be completed, use the USB installer as the recovery path.
+
+The existing USB/browser instructions below remain valid for Classic ESP32, recovery, rollback, and specific-version installation.
 
 ---
 
@@ -83,10 +111,10 @@ After installation:
 4. Open the PMT smartphone app and scan for the throttle.
 
 What to expect:
-- The firmware target is an ESP32-WROOM-32 based controller.
+- Use the firmware build that matches your controller board profile: **Classic ESP32-WROOM** or **ESP32-S3-WROOM-1-N16R8**. Do not flash a build intended for the other board profile.
 - By default, the BLE advertising name is `GScaleThrottle`.
 - If a train name has already been stored in controller settings, the advertised BLE name may appear as that configured train name instead.
-- The onboard status LED behavior is firmware-controlled and board-dependent in color. The firmware uses a status LED on GPIO2 with a blinking search pattern while disconnected and a solid-on state when a control connection is active.
+- The onboard status LED behavior is firmware-controlled and board-dependent in color. With the default `CV21=1`, the firmware passes its normal proposed LED state to the hardware, including the blinking search pattern while disconnected and the solid-on state when a control connection is active. `CV21=0` forces the firmware-controlled onboard LED off. `CV21=2` allows the proposed LED state while disconnected but forces the LED output off while either BLE or WebSocket control is connected. On supported ESP32-S3 throttle hardware, the OTA GREEN/PURPLE indication is a higher-priority status state and is intentionally shown regardless of `CV21` while OTA is active.
 
 If the throttle appears in the app and the app can connect, the firmware installation is complete.
 

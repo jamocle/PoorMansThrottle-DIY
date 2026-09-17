@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pmt-sound-upload",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-04",
+  "workers_dev": true,
+
+  "vars": {
+    "ALLOWED_ORIGINS": "https://jamocle.github.io",
+    "TURNSTILE_EXPECTED_HOSTNAME": "jamocle.github.io",
+    "GITHUB_OWNER": "jamocle",
+    "GITHUB_REPOSITORY": "PoorMansThrottle-Sound-Submissions",
+    "GITHUB_BRANCH": "main",
+    "GITHUB_UPLOAD_DIRECTORY": "sounds/upload",
+    "MAX_UPLOAD_BYTES": "20971520"
+  },
+
+  "ratelimits": [
+    {
+      "name": "UPLOAD_RATE_LIMITER",
+      "namespace_id": "901204",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
+  ]
+}

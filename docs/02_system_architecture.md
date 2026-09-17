@@ -54,6 +54,42 @@ Shared Command Handling
 Device Output
 ```
 
+## ESP32-S3 OTA Firmware Architecture
+
+Supported ESP32-S3 N16R8 and N8R8 throttle builds add a separate HTTPS OTA path. OTA uses Wi-Fi for firmware retrieval; it is not a WebSocket control operation even when the app initiated the request over BLE or WebSocket.
+
+```text
+PMT App
+   │
+   │  authorized OTA command
+   ▼
+ESP32-S3 Throttle Firmware
+   │
+   ├─ run existing stop behavior and wait until fully stopped
+   ├─ obtain OTA-private UTC validation time
+   ├─ HTTPS: read firmware catalog
+   ├─ select detected S3 target + catalog latest
+   └─ HTTPS: download/write PoorMansThrottle.ino.bin
+                    │
+                    ▼
+             OTA app partition
+                    │
+                    ▼
+                  Reboot
+```
+
+The OTA-private NTP lookup is used only for secure certificate-date validation. It does not call the normal PMT time-setting path and does not alter the firmware's shared NTP/runtime clock state.
+
+The firmware keeps standard TLS CA and hostname verification enabled. The private UTC value is used to validate certificate dates without changing the controller's system clock.
+
+OTA is supported only by the S3 throttle builds. Classic ESP32 throttle, Module, and Turbine firmware do not use this OTA update path.
+
+The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version.
+
+During firmware image transfer/write, progress is sent back to the transport that initiated OTA as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress events are independent of the normal `A1` / `A0` async-state setting.
+
+USB remains the recovery, rollback, downgrade, and specific-version installation path.
+
 ## Combined Device View
 
 ```text
@@ -398,15 +434,17 @@ Power Source ───────────────► Motor Driver / ESC
 
 ---
 
-# Function Output Architecture
+# Function / FX Architecture
 
-The throttle firmware includes support for configurable function outputs.
+The throttle firmware includes **12 configurable FX slots**. An FX slot can represent a physical output such as a light, or an audio action.
 
-These can be used for locomotive accessories such as:
+Typical uses include:
 
 * headlight
 * reverse light
 * additional lighting effects
+* bell, horn, or cab-chatter audio
+* user-selected custom PMTPlayer audio
 * other switched accessory outputs
 
 ## Function Behavior
@@ -414,29 +452,42 @@ These can be used for locomotive accessories such as:
 Each function can be configured with:
 
 * a name
-* an assigned GPIO pin
-* an output pattern
+* a pin/track field
+* a numeric pattern
 * a direction rule
+* app flags
 
-## Supported Output Patterns
+The meaning of the pin/track field depends on the pattern. For physical LED patterns, it is a GPIO. For `AUDIO_CUSTOM` / `AUDIO_CUSTOM_REPLAY`, the same CV stores a PMTPlayer track number from `1..9999`. Bell, horn, and cab-chatter audio patterns do not require a physical function GPIO.
 
-The firmware includes several output pattern types, including:
+## Supported Pattern Families
 
-* solid
-* double blink
-* FRED-style pattern
-* blink plus
-* blink minus
+Current pattern values are:
+
+| Value | Meaning |
+|---:|---|
+| `0` | None / unconfigured |
+| `1` | LED solid |
+| `2` | LED double blink |
+| `3` | FRED |
+| `4` | LED blink+ |
+| `5` | LED blink- |
+| `100` | Audio bell |
+| `101` | Audio horn |
+| `102` | Audio cab chatter |
+| `103` | Audio custom one-shot |
+| `104` | Audio custom replay / loop |
+
+Values `1..99` are reserved for physical/LED patterns and `100..199` for audio patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted, but CV queries report numeric values.
 
 ## Direction Awareness
 
-Function outputs can also be gated by locomotive direction:
+FX behavior can also be gated by locomotive direction:
 
 * forward only
 * reverse only
 * both directions
 
-This makes the architecture capable of supporting more realistic lighting and accessory behavior than a simple always-on output design.
+For physical patterns, activation additionally requires a valid non-conflicting output GPIO. Audio FX instead use the active audio configuration and, for custom patterns, the configured track number.
 
 ---
 
@@ -452,6 +503,10 @@ Its behavior changes based on connection state, such as:
 * grace period active
 * active control connection
 * receive/transmit activity
+
+For normal status states, `CV21` is the final hardware-output gate for this onboard status LED. The status logic continues to calculate the proposed color, blink pattern, error indication, and activity state even when the physical LED output is suppressed. `CV21=0` forces the onboard LED output off, `CV21=1` passes the proposed state through unchanged, and `CV21=2` forces the LED output off while either BLE or WebSocket control is connected and passes the proposed state while disconnected.
+
+On supported ESP32-S3 throttle hardware, OTA is a deliberate higher-priority exception: while OTA is active the onboard RGB LED alternates GREEN/PURPLE every 300 ms regardless of the normal `CV21` output mode. OTA indication also takes priority over the normal/red status display until OTA completes or aborts.
 
 This makes the onboard LED part of the control/status architecture, not just a power indicator.
 

@@ -2,6 +2,113 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <!-- PMT dynamic document cache protection -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script>
+    (() => {
+      "use strict";
+
+      const cacheParameter = "v";
+      const freshnessParameter = "pmtFresh";
+      const maximumFreshTokenAgeMs = 120000;
+
+      const createCacheToken = () => Date.now() + "-" + Math.random();
+
+      const isRecentCacheToken = (token) => {
+        if (!token) {
+          return false;
+        }
+
+        const timestamp = Number.parseInt(String(token).split("-", 1)[0], 10);
+        if (!Number.isFinite(timestamp)) {
+          return false;
+        }
+
+        const age = Date.now() - timestamp;
+        return age >= -5000 && age <= maximumFreshTokenAgeMs;
+      };
+
+      const makeFreshUrl = (input) => {
+        const url = new URL(input, window.location.href);
+        url.searchParams.set(cacheParameter, createCacheToken());
+        url.searchParams.set(freshnessParameter, "1");
+        return url;
+      };
+
+      const currentUrl = new URL(window.location.href);
+      const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const isFreshNavigation =
+        currentUrl.searchParams.get(freshnessParameter) === "1" &&
+        isRecentCacheToken(currentToken);
+
+      if (!isFreshNavigation) {
+        window.location.replace(makeFreshUrl(currentUrl).href);
+        return;
+      }
+
+      currentUrl.searchParams.delete(cacheParameter);
+      currentUrl.searchParams.delete(freshnessParameter);
+
+      try {
+        window.history.replaceState(window.history.state, "", currentUrl.href);
+      } catch {
+        // The freshness query may remain visible on unusual local-file/browser combinations.
+      }
+
+      const updateInternalHtmlLink = (link) => {
+        const href = link.getAttribute("href");
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          href.startsWith("javascript:")
+        ) {
+          return;
+        }
+
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch {
+          return;
+        }
+
+        if (
+          url.origin !== window.location.origin ||
+          !url.pathname.toLowerCase().endsWith(".html")
+        ) {
+          return;
+        }
+
+        link.href = makeFreshUrl(url).href;
+      };
+
+      const updateLinkFromEvent = (event) => {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+
+        const link = event.target.closest("a[href]");
+        if (link) {
+          updateInternalHtmlLink(link);
+        }
+      };
+
+      document.addEventListener("click", updateLinkFromEvent, true);
+      document.addEventListener("auxclick", updateLinkFromEvent, true);
+      document.addEventListener("contextmenu", updateLinkFromEvent, true);
+
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          window.location.replace(makeFreshUrl(window.location.href).href);
+        }
+      });
+    })();
+  </script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Scheduling Autonomous Runs</title>
   <style>

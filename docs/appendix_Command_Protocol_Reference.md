@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 2.0.0  
+**Firmware Version:** 3.3.0  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -17,21 +17,23 @@ It is intended for:
 * advanced builders
 * compatible third-party control software
 
-This is a protocol reference, not a beginner setup guide. It intentionally documents command syntax, response formats, CVs, and device-specific command availability.
+This is a protocol reference, not a beginner setup guide. It intentionally focuses on command syntax, response formats, command behavior, and device-specific command availability.
+
+Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and function-pattern configuration are maintained in `appendix_Configuration_Variables.md`. This document references CVs only where they directly affect command behavior.
 
 ---
 
 # Device Types Covered
 
-PMT firmware 2.0.0 uses a shared protocol foundation across more than one device type.
+PMT firmware 3.3.0 uses a shared protocol foundation across more than one device type.
 
 | Device type | Purpose | Protocol scope |
 |---|---|---|
-| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared configuration, schedule, INA219 telemetry/protection |
-| **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, schedule, INA219, debug, and configuration protocol |
-| **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, turbine configuration CVs, shared configuration, schedule, INA219 telemetry/protection |
+| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared script management, shared configuration, schedule, INA219 telemetry/protection, and throttle audio diagnostics |
+| **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, script management, schedule, INA219, debug, and configuration protocol |
+| **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, shared script management, shared configuration, schedule, and INA219 telemetry/protection |
 
-Commands and CVs in this document are marked as **Shared**, **Throttle-only**, or **Turbine-only** where needed.
+Commands in this document are marked as **Shared**, **Throttle-only**, or **Turbine-only** where needed.
 
 ---
 
@@ -52,6 +54,7 @@ Command characteristics:
 * Leading/trailing whitespace and CR/LF are ignored.
 * Numeric throttle/output values are generally clamped or validated in the `0..100` domain, depending on the command.
 * CV commands require authorization first.
+* Persist-only CV staging commands, shared script-management commands, and throttle audio diagnostic commands require authorization in normal external use.
 
 ---
 
@@ -64,17 +67,24 @@ Command characteristics:
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
-| Debug on/off | Yes | Yes | Yes |
+| Debug control (`D0` / `D1` / `D2`) | Yes | Yes | Yes |
 | Async state notify control | Yes | Yes | Yes |
+| OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
+| Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
+| Shared script record/playback/delete (`SR` / `SP...` / `SS?` / `SD=`) | Yes* | Yes* | Yes* |
 | Throttle motion commands | Yes | No | No |
 | Hardware/stored throttle state query | Yes | No | No |
 | Periodic throttle debug commands | Yes | No | No |
 | Function output commands | Yes | No | No |
+| Audio analysis / diagnostic commands | Yes | No | No |
+| Sound `.set` get/set (`ST`) | Yes | No | No |
 | Turbine output commands | No | No | Yes |
-| Shared CVs | Yes | Yes | Yes |
-| Throttle CVs | Yes | No | No |
-| Turbine CVs | No | No | Yes |
+| Shared CV commands | Yes | Yes | Yes |
+| Throttle CV commands | Yes | No | No |
+| Turbine CV commands | No | No | Yes |
+
+`*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of recordable control commands is device-specific. The generic Module image currently has no module-specific recordable control commands.
 
 ---
 
@@ -98,13 +108,17 @@ Some commands return raw lines without an `ACK:` or `ERR:` wrapper.
 Common raw response examples:
 
 ```text
+I:<id>
 I:CONNECTED
 CONN B1 S0 W1
 IP:192.168.1.50
 T:1720000000
 F:25
 HW-FWD M40 HW60
+A:PS=1
 ```
+
+Throttle audio analysis also emits command-generated `AR:` progress/result lines.
 
 Asynchronous runtime messages may also be sent without being directly requested.
 
@@ -114,7 +128,9 @@ Asynchronous runtime messages may also be sent without being directly requested.
 
 CV commands require a successful authorization handshake.
 
-Before authorization, the firmware allows only a limited set of safe commands such as identity, version, connection status, async-notify control, debug control, state queries where supported, IP query, and time query/set.
+Before authorization, firmware allows a limited safe command set including identity, version, connection status, `A0` / `A1`, `D0` / `D1` / `D2`, supported state queries, IP query, and time query/set. Exact configured autonomous schedule commands may also be accepted while autonomous schedule mode is active.
+
+`PS?`, `PS1`, `PS0`, `A?`, `AudioMark`, and `AM` are not part of the normal pre-authorization allow-list.
 
 If a protected command is attempted before authorization succeeds, the firmware returns:
 
@@ -138,8 +154,16 @@ Response:
 I:<device-id>
 ```
 
+The returned ID is used by the client to compute the connection token.
+
 ---
 
+## Send Connection Token
+
+Primary connection:
+
+```text
+I,<token>
 ```
 
 Backup WebSocket connection:
@@ -202,7 +226,7 @@ V
 Example response:
 
 ```text
-ACK:V2.0.0
+ACK:V3.3.0
 ```
 
 `V` is ACK-wrapped.
@@ -251,7 +275,7 @@ The default WebSocket endpoint is then:
 ws://192.168.1.50:81
 ```
 
-The WebSocket port is configurable with `CV13`.
+`CV10` controls Wi-Fi enablement and `CV13` configures the WebSocket port. See `appendix_Configuration_Variables.md` for configuration details.
 
 ---
 
@@ -278,6 +302,11 @@ If time has not been established:
 ```text
 ERR:No NTP
 ```
+
+Notes:
+
+* `T?` returns the firmware's current system-clock epoch.
+* When firmware establishes its clock, it applies the configured `CV14` offset to the UTC source epoch. Therefore the returned epoch represents the **CV14-adjusted firmware clock**, not an untouched raw UTC source value.
 
 ---
 
@@ -307,32 +336,75 @@ ERR:T=<value>
 
 Notes:
 
-* The value must be a positive Unix timestamp.
+* The supplied value must be a positive Unix timestamp.
 * The firmware accepts values up to `2147483647`.
-* `CV14` controls the configured UTC offset used by the firmware's time handling.
+* Firmware treats the supplied timestamp as the UTC source value, applies the configured `CV14` offset, then establishes the firmware system clock.
+* Changing `CV14` while time is established shifts the firmware clock by the offset difference.
+* Schedule boundaries are evaluated against this CV14-adjusted firmware clock.
 
 ---
 
 ## Debug Logging
 
-Enable debug:
+### Persistent debug enable
 
 ```text
 D1
 ```
 
-Disable debug:
+Response:
+
+```text
+ACK:D1
+```
+
+Behavior:
+
+* Enables debug event generation.
+* Persists the debug startup override.
+* Debug remains enabled across reboot until `D0` clears the override.
+
+### Debug with SD logging request
+
+```text
+D2
+```
+
+Response:
+
+```text
+ACK:D2
+```
+
+Behavior:
+
+* Enables debug event generation.
+* Requests SD-backed debug logging.
+* The ACK is sent before the firmware waits for the SD log file to become writable/open.
+* If SD logging becomes operational, the firmware persists the SD-log startup override.
+* If SD logging cannot be activated, debug event generation remains enabled and the command can operate as serial-debug-only.
+* Runtime resource policy can prevent SD logging on hardware/configurations where the logging path is not allowed.
+* `D0` disables logging and clears the persistent debug/logging overrides.
+
+### Disable debug/logging
 
 ```text
 D0
 ```
 
-Responses:
+Response:
 
 ```text
-ACK:D1
 ACK:D0
 ```
+
+Behavior:
+
+* Clears the persistent debug startup override.
+* Disables SD logging and clears its persisted startup behavior.
+* Disables debug event generation.
+
+`D0`, `D1`, and `D2` are available before authorization.
 
 ---
 
@@ -359,7 +431,8 @@ ACK:A0
 
 Notes:
 
-* `A1` / `A0` control `A:` state-notification publishing.
+* `A1` / `A0` control normal `A:` state-notification publishing.
+* OTA progress lines (`A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`) are not controlled by `A1` / `A0`.
 * INA219 telemetry lines such as `TV:`, `TI:`, `TP:`, and `TF:` are not controlled by `A1` / `A0`.
 
 ---
@@ -389,8 +462,376 @@ Notes:
 
 * This is runtime-only.
 * Reboot restores the default grace behavior.
-* `G0` clears any active grace countdown.
-* These commands are shared across supported firmware images, but the visible effect depends on the device's disconnect behavior.
+* `G1` enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
+* If a connection returns before grace expires, the active grace countdown is cancelled and the running script continues without being restarted.
+* If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior.
+* `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
+* These commands are shared across supported firmware images, but the visible shutdown effect depends on the device's disconnect behavior.
+
+---
+
+## Persist-Only CV Staging
+
+These commands control a runtime-only CV staging mode. They require authorization.
+
+### Query staging mode
+
+```text
+PS?
+```
+
+Response:
+
+```text
+A:PS=0
+```
+
+or:
+
+```text
+A:PS=1
+```
+
+### Enable persist-only staging
+
+```text
+PS1
+```
+
+Response:
+
+```text
+ACK:PS1
+```
+
+Behavior:
+
+* Valid CV writes are applied to persisted configuration without applying their normal live runtime side effects.
+* Staged values require a reboot before they become the active runtime configuration.
+* The staging mode itself is runtime-only and is not persisted.
+
+### Leave persist-only staging
+
+```text
+PS0
+```
+
+Response:
+
+```text
+ACK:PS0
+```
+
+Behavior:
+
+* Leaves persist-only staging mode.
+* Values already staged still require a reboot before they take effect.
+* After staged writes exist, the firmware continues tracking the pending-reboot condition.
+
+Important exception:
+
+* `CV8` is a hardware-control CV rather than ordinary persisted configuration. Its restart/factory-reset behavior is not suppressed or staged by `PS1`.
+
+---
+
+# Shared Script Recording / Playback
+
+Firmware 3.3 adds a shared SD-backed script service for recording eligible control commands with timing, playing saved scripts once or repeatedly, checking script state, stopping playback, and deleting saved scripts.
+
+The management commands are shared across PMT firmware images. Actual recordable control commands remain device-specific.
+
+## Storage and File Naming
+
+Firmware scripts are stored as:
+
+```text
+/scripts/<name>.pmt
+```
+
+Name rules:
+
+* The base name is limited to **16 characters**.
+* Allowed characters are lowercase `a-z`, digits `0-9`, underscore `_`, and hyphen `-`.
+* Input is normalized to lowercase.
+* An optional `.pmt` suffix may be supplied in the command; firmware removes it before building the stored path.
+* Saving a recording to an existing name overwrites that script.
+* The `/scripts` directory is created when required for recording.
+* Script files are limited to **32 KiB**.
+
+All SD-backed script operations require an active PMT SD filesystem. If no active SD storage is available, the command returns `ERR:SD`.
+
+## Start Recording
+
+```text
+SR
+```
+
+Successful response:
+
+```text
+ACK:SR
+```
+
+Behavior:
+
+* Recording is observational: eligible external control commands still execute normally while they are being recorded.
+* Internally scheduled commands are not recorded.
+* Playback-generated commands are not re-recorded.
+* The first recorded control command is written immediately; firmware does **not** add a leading pause from `SR` to that first command.
+* Between recorded control commands, firmware inserts `PAUSE <milliseconds>` using the elapsed time between those commands.
+* If recording is already active, or playback is running, `SR` returns `ERR:BUSY`.
+* Starting recording requires active SD storage so the `/scripts` directory can be verified or created.
+
+## Stop Recording and Save
+
+```text
+SR=<name>
+```
+
+Example:
+
+```text
+SR=yard1
+```
+
+Successful response:
+
+```text
+ACK:SR
+```
+
+Behavior:
+
+* `SR=<name>` ends the recording and writes `/scripts/<name>.pmt`.
+* If at least one control command was recorded, firmware measures the elapsed time from the **last recorded control command to `SR=<name>`** and appends that as the final `PAUSE`.
+* That trailing pause is important for repeated playback because it preserves the time spent in the final recorded state before the next repetition begins.
+* `SR=<name>` itself is not written into the script.
+* If no eligible control commands were captured, an empty script file can be saved; attempting to play that file returns `ERR:EMPTY`.
+* If the in-memory recording exceeds the 32 KiB script limit, saving returns `ERR:FULL`.
+
+Example recording:
+
+```text
+F40
+PAUSE 9910
+FX4=1
+PAUSE 1110
+FX4=0
+PAUSE 90
+B
+PAUSE 10080
+```
+
+## Play Once
+
+```text
+SP1=<name>
+```
+
+Successful response:
+
+```text
+ACK:SP1
+```
+
+Behavior:
+
+* Loads and validates the script from SD.
+* Runs the script once.
+* The file is loaded into memory and closed before playback begins.
+* Playback is non-blocking; `PAUSE` delays are serviced from the normal firmware loop.
+
+## Repeat Playback
+
+```text
+SPR=<name>
+```
+
+Successful response:
+
+```text
+ACK:SPR
+```
+
+Behavior:
+
+* Loads and validates the script from SD.
+* Repeats from the beginning after the final line completes.
+* A trailing `PAUSE` recorded by `SR=<name>` is honored before the next repetition begins.
+* Playback uses an absolute logical timeline. Normal command-processing time or loop jitter does not shift later pause deadlines, so small lateness does not accumulate as repeat-cycle drift.
+* At a repeat boundary, firmware rewinds the script content without resetting the logical timeline to the current time.
+
+## Stop Playback
+
+```text
+SP0
+```
+
+Successful response:
+
+```text
+ACK:SP0
+```
+
+If no script is running:
+
+```text
+ERR:STATE
+```
+
+## Script Status
+
+```text
+SS?
+```
+
+Possible responses:
+
+```text
+A:SS=IDLE
+A:SS=REC
+A:SS=PLAY
+A:SS=REPEAT
+```
+
+## Delete a Saved Script
+
+```text
+SD=<name>
+```
+
+Example:
+
+```text
+SD=yard1
+```
+
+Successful response:
+
+```text
+ACK:SD
+```
+
+Behavior:
+
+* Deletes `/scripts/<name>.pmt`.
+* The same name normalization and validation rules used by playback and recording are applied.
+* Deletion is blocked while recording or playback is active and returns `ERR:BUSY`.
+* A missing script returns `ERR:NOFILE`.
+* A filesystem delete failure returns `ERR:DELETE`.
+
+## Firmware `.pmt` Script Syntax
+
+Firmware-resident `.pmt` scripts intentionally use a restricted command set:
+
+```text
+<recordable device control command>
+PAUSE <milliseconds>
+```
+
+A bare:
+
+```text
+PAUSE
+```
+
+is also accepted and means 1000 ms.
+
+The maximum single parsed pause value is `2147483647` ms. Very long recorded intervals can be split across multiple `PAUSE` lines.
+
+Firmware `.pmt` playback is **not** the same as the app's general-purpose terminal script runner. App-only script directives are not accepted in firmware `.pmt` files. A firmware script must contain only blank lines, valid `PAUSE` lines, and commands classified as recordable controls by the active firmware image.
+
+## Recordable Commands by Device
+
+### Throttle
+
+The current throttle classifier accepts:
+
+```text
+S
+B
+B0..100
+F0..100
+R0..100
+FQ0..100
+RQ0..100
+FX1..12=0/1
+```
+
+### Turbine
+
+The current turbine classifier accepts:
+
+```text
+F0..100
+F0..100*
+FQ100
+```
+
+### Module
+
+The generic Module firmware currently has no module-specific physical control commands classified as recordable. Script-management commands are present, but a recording with no eligible controls produces an empty script and later playback returns `ERR:EMPTY`.
+
+## Playback Command Gating
+
+While a script is running:
+
+* Script-generated control commands are re-entered through the existing device command handlers.
+* Externally received recordable control commands are suppressed so they cannot override the active script.
+* Firmware-internal and scheduled control commands are **not** suppressed by script playback; they continue to apply through their existing command paths.
+* Non-control management/configuration commands continue through the normal command path unless that specific command rejects the current script state.
+* `SP0` remains available to stop playback.
+* Starting another recording or playback, or deleting a script, returns `ERR:BUSY` while playback is active.
+
+### `S` During Playback
+
+The throttle `S` command has origin-sensitive behavior:
+
+* An **external/app-originated `S`** stops script playback first, then continues through the throttle's normal `S` handling so the train stops as it does outside script mode.
+* An **`S` read from the running script** executes the normal train-stop behavior but does **not** terminate script playback. The script continues with the following `PAUSE` or command.
+* Firmware-internal/scheduled commands continue to apply while the script is running.
+
+### Grace Shutdown During Playback
+
+`G0` and `G1` change grace-shutdown state; they do not pause the script timeline:
+
+* `G1` enables grace shutdown. If a disconnect starts a grace countdown, script playback continues during that countdown.
+* Reconnection before expiry cancels the countdown and the script continues normally.
+* Actual grace expiry stops active script playback, then the firmware continues with its existing grace-expiry shutdown behavior.
+* `G0` disables grace shutdown and clears an active grace countdown. `G0` does not stop the script.
+
+## Script Errors
+
+| Response | Meaning |
+|---|---|
+| `ERR:BUSY` | Recording or playback state prevents the requested operation |
+| `ERR:SD` | Active SD storage is unavailable |
+| `ERR:MEM` | Required script buffer memory could not be reserved |
+| `ERR:STATE` | Requested state transition is not valid, such as `SP0` while idle |
+| `ERR:NAME` | Script name is empty, too long, or contains invalid characters |
+| `ERR:FULL` | Recording exceeded the 32 KiB script limit |
+| `ERR:WRITE` | Recording could not be written completely |
+| `ERR:NOFILE` | Requested script file does not exist |
+| `ERR:READ` | Script file could not be read completely |
+| `ERR:SIZE` | Script file exceeds the 32 KiB limit |
+| `ERR:EMPTY` | Script contains no executable content |
+| `ERR:SCRIPT` | Script contains an invalid line or unsupported command |
+| `ERR:DELETE` | Script file could not be deleted |
+
+## BLE Command-Length Constraint
+
+The 16-character script-name limit keeps the longest management commands within the minimum 20-byte BLE payload:
+
+```text
+SP1=<16-character-name>
+SPR=<16-character-name>
+```
+
+Each is at most 20 ASCII bytes before any transport framing.
+
+## Authorization
+
+Shared script-management commands follow the normal externally authorized command path. They are not part of the pre-authorization command set.
 
 ---
 
@@ -399,6 +840,95 @@ Notes:
 These commands apply to **Poor Man's Throttle** locomotive firmware.
 
 ---
+
+## ESP32-S3 OTA Capability and Firmware Update
+
+These OTA commands apply to supported **Poor Man's Throttle ESP32-S3 N16R8 and N8R8** firmware. OTA is not available on the Classic ESP32-WROOM throttle.
+
+Both commands require the normal authorization handshake.
+
+### Query OTA capability
+
+```text
+OTA?
+```
+
+Responses:
+
+```text
+ACK:OTA
+```
+
+Supported S3 throttle with Wi-Fi connected.
+
+```text
+ERR:NO WIFI
+```
+
+Supported S3 throttle without an active Wi-Fi connection.
+
+```text
+ERR:NS
+```
+
+Classic ESP32 throttle; OTA is not supported.
+
+`OTA?` is a query only. It does not stop the throttle, enter the OTA LED state, fetch the manifest, or start an update.
+
+### Start OTA
+
+```text
+OTA
+```
+
+On an authorized supported S3 throttle with Wi-Fi connected, the command is accepted with:
+
+```text
+ACK:OTA
+```
+
+The firmware then invokes the existing `S` stop behavior, waits until the throttle is fully stopped, obtains private OTA validation time, reads the firmware catalog, selects the exact S3 board target, and installs that target's `latest` firmware image.
+
+OTA does not accept a requested firmware version. The catalog `versions[]` list and `dropdownDefault` value are for USB installer selection and are not OTA version selectors.
+
+During the actual firmware image transfer/write phase, the initiating transport receives:
+
+```text
+A:OTA 0
+A:OTA 10
+A:OTA 20
+A:OTA 30
+A:OTA 40
+A:OTA 50
+A:OTA 60
+A:OTA 70
+A:OTA 80
+A:OTA 90
+A:OTA 100
+```
+
+Progress rules:
+
+* Progress is emitted in exact 10% buckets without intentionally skipping a bucket.
+* `A:OTA 0` means the firmware image transfer/write phase has begun. NTP acquisition and manifest processing occur before this point.
+* `A:OTA 100` means the firmware image transfer/write completed successfully. The device then reboots; no additional success packet is required.
+* OTA progress is sent to the transport that initiated OTA.
+* OTA progress is not controlled by the normal `A1` / `A0` async-state setting.
+* `OTA?` never produces OTA progress lines.
+
+Failure responses:
+
+```text
+ERR:NO WIFI
+ERR:OTA
+```
+
+`ERR:NO WIFI` is used when Wi-Fi is unavailable when OTA is requested or is lost while OTA is active. Other OTA failures return `ERR:OTA`.
+
+While OTA is active, motion commands are prevented from restarting motion. On supported S3 hardware, the onboard RGB LED alternates GREEN/PURPLE every 300 ms for the complete OTA lifecycle and this indication overrides the normal `CV21` LED output gate.
+
+---
+
 
 ## Motion Commands
 
@@ -448,6 +978,7 @@ Notes:
 * `CV3` controls maximum output / ceiling.
 * `CV41` can cap throttle when low-voltage limiting is active.
 * Direction changes while moving are handled as stop-first direction changes.
+* Detailed CV semantics are in `appendix_Configuration_Variables.md`.
 
 ---
 
@@ -505,6 +1036,7 @@ Example responses:
 
 ```text
 HW-FWD M40 HW60
+HW-REV M25 HW35
 HW-STOPPED M0 HW0
 ```
 
@@ -591,8 +1123,293 @@ ERR:FX<n>=<value>
 
 Notes:
 
-* Function output configuration is controlled by the function CV block starting at `CV150`.
+* Function behavior is configured by the function CV blocks in the `CV150–CV231` range.
 * Direction-gated functions can be forced off automatically when the active direction does not match their configured direction rule.
+* Function CV layouts, patterns, pin/track semantics, defaults, and reserved positions are documented only in `appendix_Configuration_Variables.md`.
+
+---
+
+## Audio Track-Length Analysis
+
+These commands require authorization and are available only on Throttle firmware.
+
+### Analyze the default audio manifest
+
+```text
+A?
+```
+
+Behavior:
+
+* Starts track-length recording/analysis for the firmware-selected default audio manifest for the active backend.
+* `CV400` audio must be enabled.
+* The active audio backend must expose the required BUSY/track-length recording capability.
+* The operation emits `AR:` progress/result lines.
+
+### Analyze an explicit track list
+
+```text
+A? N=<track>[,<track>...]
+```
+
+Example:
+
+```text
+A? N=202,211,212
+```
+
+Rules:
+
+* Each explicit track value must be numeric and in the range `1..9999`.
+* A malformed list produces an audio-analysis format error.
+* A second analysis request while one is active is rejected as busy.
+
+Typical command-generated replies include:
+
+```text
+AR:START N=<count>
+AR:T<track> START
+AR:T<track> L=<ms>
+AR:DONE
+ACK:A?
+```
+
+Failure examples include:
+
+```text
+AR:ERR AUDIO-OFF
+ERR:A? AUDIO-OFF
+```
+
+Other verified failure reasons include `BUSY`, `BUSY-PIN`, `FORMAT`, and `START`.
+
+---
+
+## Audio Diagnostic Marker
+
+Long form:
+
+```text
+AudioMark
+```
+
+Short alias:
+
+```text
+AM
+```
+
+Responses:
+
+```text
+ACK:AudioMark
+ACK:AM
+```
+
+Behavior:
+
+* Requests a manual audio diagnostic marker from the active audio service.
+* The command is acknowledged after the marker attempt.
+* This is a diagnostic/logging command; it does not configure an audio CV.
+
+---
+
+## Sound `.set` Field Get / Set (`ST`) — Approved Protocol Design
+
+> **Status:** Approved protocol design; firmware command implementation is pending.
+>
+> This section records the agreed wire format and behavior so the firmware and client implementations use the same addressing rules.
+
+The `ST` command reads or writes one field in a sound `.set` file.
+
+Set:
+
+```text
+ST<set-id>.<field-id>=<value>
+```
+
+Query:
+
+```text
+ST<set-id>.<field-id>?
+```
+
+Successful set response:
+
+```text
+ACK:ST<set-id>.<field-id>=<value>
+```
+
+Successful query response:
+
+```text
+ACK:ST<set-id>.<field-id>=<value>
+```
+
+Invalid syntax, target IDs, field IDs, values, unavailable targets, or persistence failures return an `ERR:` response using the normal PMT error style.
+
+### Addressing Rules
+
+`<set-id>` is hexadecimal with no `0x` prefix.
+
+`<field-id>` is decimal.
+
+The hexadecimal target namespace is:
+
+| Set ID | Target |
+|---|---|
+| `0001`–`270F` | Custom WAV `1`–`9999` in the firmware's active sound root |
+| `2A01` | `prime.set` |
+| `2A02` | `horn.set` |
+| `2A03` | `bell.set` |
+| `2A04` | `cab.set` |
+| `2A05` | `brake.set` |
+| `2A06` | `steamfx.set` |
+
+Custom WAV IDs are the WAV's decimal track number represented in hexadecimal.
+
+Examples:
+
+```text
+9999 decimal = 270F hex
+1234 decimal = 04D2 hex
+```
+
+Leading zeroes are not required on the wire, so custom WAV `1234.wav` may be addressed as:
+
+```text
+ST4D2.1=25
+```
+
+The firmware already knows whether the active sound root is steam or diesel. Therefore the custom-WAV `set-id` does **not** encode steam/diesel.
+
+For example, with custom WAV `9999.wav`:
+
+```text
+ST270F.1=25
+ACK:ST270F.1=25
+
+ST270F.1?
+ACK:ST270F.1=25
+```
+
+The same command targets either `/steam/9999.set` or `/diesel/9999.set` according to the firmware's active sound root.
+
+For `steamfx.set`:
+
+```text
+ST2A06.1=-20
+ACK:ST2A06.1=-20
+
+ST2A06.1?
+ACK:ST2A06.1=-20
+```
+
+### Field IDs
+
+Field IDs are stable numeric protocol identifiers. New `.set` properties can be added later without changing the `ST` command format.
+
+Current field map:
+
+| Field ID | `.set` property | Meaning |
+|---:|---|---|
+| `1` | `volumeOffsetPercent` | Signed percentage-point adjustment applied on top of existing firmware volume behavior |
+
+Current `volumeOffsetPercent` range:
+
+```text
+-100..100
+```
+
+`0` is neutral.
+
+Existing hard-coded firmware levels and dynamic curves remain authoritative baseline behavior. For example, the existing brake-squeal and steam-chuff relative percentages remain in code, and the `.set` value is additive to those values. The `0190` inverse-speed volume behavior also remains in code, with the applicable `.set` adjustment applied on top.
+
+With all known `.set` values at `0` and no custom `.set` files present, volume behavior is required to remain equivalent to the existing firmware behavior.
+
+### Runtime and Persistence Semantics
+
+A successful set command must:
+
+1. Validate the target, field, and value.
+2. Apply the new value to the in-memory setting immediately so the runtime audio effect changes as soon as the applicable mixer/playback processing uses it.
+3. Persist the same value to the corresponding `.set` file on the SD card.
+4. Return `ACK:` only after the requested value is active in memory and persistence succeeds.
+
+If persistence fails, the command must return `ERR:` and must not intentionally leave RAM and the persisted `.set` value inconsistent.
+
+A query returns the current in-memory value. It does not require an SD-card reread.
+
+### Known Category `.set` Files
+
+For the known, non-custom category files, initialization behavior applies on both Classic and S3:
+
+* If a known `.set` file is missing, firmware creates it with its default fields, currently including:
+
+```text
+version=1
+volumeOffsetPercent=0
+```
+
+* After creation, the settings are loaded into memory.
+* If the file already exists, firmware does not replace it; it loads the settings into memory.
+* Runtime audio uses the in-memory values rather than repeatedly reading the SD card.
+
+### Custom WAV `.set` Files
+
+Custom WAV sidecars are different from known category files:
+
+* They are not automatically created during normal initialization.
+* If a custom `.set` file is missing, its effective adjustment is neutral (`0`).
+* Querying a missing custom `.set` returns the neutral value without creating the file.
+* Explicitly setting a custom field may create the custom `.set` file, then updates RAM and persists the requested value.
+
+### Grouped Playback Versus Custom Playback
+
+Playback context determines which `.set` applies.
+
+When a WAV is played as part of a normal grouped sound, only the group's `.set` is used. Any individual `.set` file for a WAV inside that group is ignored.
+
+Example:
+
+```text
+horn.set       volumeOffsetPercent=10
+0211.set       volumeOffsetPercent=-25
+```
+
+If `0211.wav` is played as part of the normal horn function, `horn.set` applies and `0211.set` is ignored.
+
+If that same `0211.wav` is selected and played as a custom individual sound, `0211.set` applies and `horn.set` is not inherited.
+
+In short:
+
+```text
+Normal grouped playback
+    -> group .set only
+    -> individual WAV .set ignored
+
+Custom individual playback
+    -> individual WAV .set only
+    -> normal group .set not inherited
+```
+
+### BLE MTU / Command-Length Constraint
+
+The `ST` wire format is intentionally compact so commands and responses fit in a single BLE notification/write even when only the minimum 20-byte ATT payload is available.
+
+With the planned two-digit future field-ID space, a long current-format response such as:
+
+```text
+ACK:ST2A06.99=-100
+```
+
+is 18 ASCII bytes before a line terminator and 19 bytes with a single newline.
+
+The protocol should therefore preserve compact hexadecimal set IDs, decimal field IDs, and compact signed decimal values rather than replacing them with long property or filename strings.
+
+### Authorization
+
+Authorization behavior for the new `ST` family has not yet been defined in this approved protocol design. It must be decided during firmware implementation rather than inferred from unrelated command families.
 
 ---
 
@@ -661,6 +1478,7 @@ Notes:
 * Normal `F<n>` commands ramp using the configured turbine ramp behavior.
 * `F<n>*` bypasses the normal ramp and applies the requested value immediately.
 * `CV2` and `CV3` define the physical output scale used by normal turbine output.
+* Detailed turbine CV values and board-specific defaults are maintained in `appendix_Configuration_Variables.md`.
 
 ---
 
@@ -692,7 +1510,7 @@ Notes:
 
 # Module Firmware Commands
 
-Poor Man's Module firmware supports the shared PMT command set and shared CV blocks.
+Poor Man's Module firmware supports the shared PMT command set and shared CV handling.
 
 It does **not** implement locomotive throttle commands or turbine output commands.
 
@@ -702,10 +1520,11 @@ Use module firmware for PMT-compatible devices that need the shared foundation:
 * Wi-Fi / WebSocket transport
 * debug commands
 * time commands
-* schedule commands
-* shared device name
-* INA219 telemetry/protection configuration
-* LED timing configuration
+* schedule/autonomous command execution
+* persist-only CV staging
+* shared configuration
+* INA219 telemetry/protection
+* shared LED timing
 
 ---
 
@@ -717,6 +1536,8 @@ There are two main categories:
 
 1. `A:` state updates
 2. INA219 telemetry/protection updates using `TV:`, `TI:`, `TP:`, and `TF:`
+
+`AR:` lines are different: they are command-generated progress/result lines from the Throttle `A?` audio-analysis command.
 
 ---
 
@@ -777,6 +1598,7 @@ Notes:
 * These telemetry lines are unsolicited.
 * They are not controlled by `A1` / `A0`.
 * If INA219 measurement data is invalid, voltage/current/power telemetry can report `0` until valid samples resume.
+* Configuration of INA219 CVs is documented in `appendix_Configuration_Variables.md`.
 
 ---
 
@@ -810,262 +1632,56 @@ ERR:<original-command>
 
 ---
 
-# Shared CVs
+# Command-Relevant CV Cross-References
 
-These CVs are available across supported PMT firmware images.
+This command reference intentionally does **not** duplicate the full CV catalog. Use `appendix_Configuration_Variables.md` as the authoritative CV reference for definitions, ranges, defaults, GPIO validation, function patterns, board differences, and audio tuning.
 
-## Shared Device CVs
+The following CVs remain here only because they directly change command behavior:
 
-| CV | Purpose | Value format | Notes |
-|---|---|---|---|
-| `CV4` | Device / component name | letters, digits, spaces | Used for device identity / advertising name where applicable |
-| `CV8` | Factory reset trigger | set-only value `8` | Query returns `ERR`; successful set reboots after wiping persisted settings |
-
----
-
-## Wi-Fi / WebSocket / Time CVs
-
-| CV | Purpose | Value format |
+| CV / bank | Scope | Command relevance |
 |---|---|---|
-| `CV10` | Wi-Fi enable | `0` or `1` |
-| `CV11` | Wi-Fi SSID | string |
-| `CV12` | Wi-Fi password | set-only string; query returns `ERR` |
-| `CV13` | WebSocket port | `1..65535` |
-| `CV14` | UTC offset | signed hour value such as `0`, `-5`, `+5.5`, `9` |
-
-Notes:
-
-* Changing Wi-Fi CVs can restart or stop network services.
-* `CV14` stores a UTC offset in hours. One decimal place is accepted, where each tenth represents 6 minutes.
-* `CV14=-5` means UTC minus 5 hours.
+| `CV8` | Shared | Operational restart/reset control. `CV8=0` requests a safe restart without wiping configuration. `CV8=8` wipes persisted configuration and reboots. Querying CV8 returns `ERR`. `PS1` does not stage/suppress CV8. |
+| `CV10`, `CV13` | Shared | Control Wi-Fi enablement and WebSocket port used by the command transport. |
+| `CV14` | Shared | Offset applied when establishing/adjusting the firmware clock; therefore affects `T?`, `T=<unix>`, and schedule evaluation. |
+| `CV2`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. |
+| `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
+| `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
+| `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
+| `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
+| `CV400` | Audio / Throttle behavior | Audio must be enabled for Throttle `A?` track-length analysis. |
 
 ---
 
-## LED Timing CV
+# Scheduling / Autonomous Mode
 
-| CV | Purpose | Value format |
-|---|---|---|
-| `CV20` | Shared blink timing | `<phasePeriodMs>,<onMs>` |
+The schedule subsystem is configured with `CV300–CV305`. Full CV formats and defaults are in `appendix_Configuration_Variables.md`.
 
-Example:
+A schedule is valid only when the configured enable flag, weekday mask, ON/OFF times, and ON/OFF commands form a complete valid schedule. The ON time must be earlier than the OFF time; schedules that cross midnight are not supported.
 
-```text
-CV20=1000,250
-```
+Time behavior:
 
-Valid range:
+* `CV302` and `CV303` are evaluated against the **CV14-adjusted firmware clock**.
+* The configured weekday is likewise derived from that adjusted firmware clock.
+* `CV304` is the command executed at the ON boundary.
+* `CV305` is the command executed at the OFF boundary.
 
-* `phasePeriodMs`: `1..60000`
-* `onMs`: `1..phasePeriodMs`
+Autonomous behavior:
 
----
-
-## INA219 Telemetry / Protection CVs
-
-| CV | Purpose | Value format |
-|---|---|---|
-| `CV30` | INA219 enable | `0` or `1` |
-| `CV31` | INA219 SDA pin | valid runtime-capable pin |
-| `CV32` | INA219 SCL pin | valid runtime-capable pin |
-| `CV33` | INA219 I2C address | `64..79` decimal (`0x40..0x4F`) |
-| `CV34` | Sample interval ms | `50..60000` |
-| `CV35` | Publish interval ms | `100..60000` |
-| `CV36` | Warning threshold mV | `0..50000` |
-| `CV37` | Limit threshold mV | `0..50000` |
-| `CV38` | Shutdown threshold mV | `0..50000` |
-| `CV39` | Recovery threshold mV | `0..50000`; `0` disables automatic recovery |
-| `CV40` | Battery disconnect threshold mV | `0..50000` |
-| `CV42` | Low-voltage LED pin | `0` or valid runtime-capable pin |
-
-Notes:
-
-* The INA219 is used as a sensor; firmware derives warning, limiting, shutdown, recovery, and telemetry behavior from its readings.
-* Pin CVs reject duplicate SDA/SCL/LED pin assignments.
-* Threshold `0` generally disables the associated protection behavior.
-
----
-
-## Schedule CVs
-
-| CV | Purpose | Value format |
-|---|---|---|
-| `CV300` | Schedule enable | `0` or `1` |
-| `CV301` | Weekday bitmask | `0..127` |
-| `CV302` | Schedule ON time | UTC `HH:MM` |
-| `CV303` | Schedule OFF time | UTC `HH:MM` |
-| `CV304` | Schedule ON command | non-empty command string |
-| `CV305` | Schedule OFF command | non-empty command string |
-
-Weekday bit mapping:
-
-| Bit | Day |
-|---:|---|
-| 0 | Sunday |
-| 1 | Monday |
-| 2 | Tuesday |
-| 3 | Wednesday |
-| 4 | Thursday |
-| 5 | Friday |
-| 6 | Saturday |
-
-Notes:
-
-* `CV302` and `CV303` must use strict 24-hour `HH:MM` time.
-* The schedule does not support crossing midnight.
-* Schedule validation requires schedule enabled, at least one day selected, valid ON/OFF times, `ON < OFF`, and non-empty ON/OFF commands.
-* Scheduled commands are executed through the same command pipeline as external commands.
-* The configured ON/OFF commands are allowed to run internally for autonomous schedule execution.
-
----
-
-# Throttle-Specific CVs
-
-These CVs apply to **Poor Man's Throttle** locomotive firmware.
-
-## Core Throttle CVs
-
-| CV | Purpose | Value format |
-|---|---|---|
-| `CV1` | Motor driver type | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` |
-| `CV2` | Minimum start / floor | `0..100` |
-| `CV3` | Ceiling / max output | `0..100` |
-| `CV5` | Direction invert | `0` or `1` |
-| `CV6` | Async state interval when steady | `50..10000` ms |
-| `CV7` | Async state interval while changing | `50..10000` ms |
-| `CV9` | Kick config | `<throttle>,<ms>,<rampDownMs>,<maxApply>` |
-| `CV41` | Low-voltage throttle cap percent | `0..100` |
-
-Example `CV9`:
-
-```text
-CV9=25,300,80,15
-```
-
----
-
-## Throttle Motor Pin CVs
-
-### DUAL_PWM Pins
-
-| CV | Purpose |
-|---|---|
-| `CV100` | DUAL_PWM forward / RPWM pin |
-| `CV101` | DUAL_PWM reverse / LPWM pin |
-| `CV102` | DUAL_PWM enable A / R_EN pin |
-| `CV103` | DUAL_PWM enable B / L_EN pin |
-
-### PWM_DIR / DUAL_INPT Pins
-
-| CV | Purpose |
-|---|---|
-| `CV104` | Two-pin A / PWM pin |
-| `CV105` | Two-pin B / direction or alternate input pin |
-
-### PWM_BIDIR Pins
-
-| CV | Purpose |
-|---|---|
-| `CV106` | PWM_BIDIR PWM / enable pin |
-| `CV107` | PWM_BIDIR forward logic pin |
-| `CV108` | PWM_BIDIR reverse logic pin |
-
-Notes:
-
-* Invalid GPIO assignments return `ERR:<original-command>`.
-* Runtime pin changes place outputs in a safe state and reinitialize the selected driver interface.
-
----
-
-## Function Configuration CV Blocks
-
-Throttle firmware exposes 12 function configuration blocks starting at `CV150`.
-
-Each function uses a stride of 7 CV numbers.
-
-For function index `n` (`1..12`):
-
-```text
-base = 150 + ((n - 1) * 7)
-```
-
-| Offset | Meaning |
-|---:|---|
-| `+0` | Function name |
-| `+1` | Function output pin |
-| `+2` | Function pattern |
-| `+3` | Function direction mode |
-| `+4` | Function app flags |
-
-Examples:
-
-| Function | Name CV | Pin CV | Pattern CV | Direction CV | App flags CV |
-|---|---:|---:|---:|---:|---:|
-| FX1 | 150 | 151 | 152 | 153 | 154 |
-| FX2 | 157 | 158 | 159 | 160 | 161 |
-| FX3 | 164 | 165 | 166 | 167 | 168 |
-| FX12 | 227 | 228 | 229 | 230 | 231 |
-
-Pattern values:
-
-* `SOLID`
-* `DBL_BLNK`
-* `FRED`
-* `BLINK+`
-* `BLINK-`
-
-Direction values:
-
-* `BOTH`
-* `FWD`
-* `REV`
-
-App flags:
-
-* unsigned 32-bit integer
-* range `0..4294967295`
-
-Default function notes:
-
-* FX1 default name is `Headlight`, direction `FWD`.
-* FX2 default name is `ReverseLgt`, direction `REV`.
-* FX3..FX12 default to direction `BOTH`.
-
----
-
-# Turbine-Specific CVs
-
-These CVs apply to **Poor Man's Turbine** firmware.
-
-Some CV numbers overlap with throttle firmware, but the meaning is device-specific.
-
-| CV | Turbine purpose | Value format | Default |
-|---|---|---|---:|
-| `CV2` | Minimum output percent | `0..100`, must be <= `CV3` | `0` |
-| `CV3` | Full output percent | `1..100`, must be >= `CV2` | `100` |
-| `CV5` | Quick output percent for `FQ100` | `0..100` | `0` |
-| `CV9` | Ramp-to-full-output duration | `100..60000` ms | `4000` |
-| `CV41` | Low-voltage limit cap percent | `0..100` | `25` |
-| `CV100` | ESC PWM output pin | valid runtime-capable pin | `25` |
-
-Notes:
-
-* Turbine output uses a 50 Hz ESC-style PWM signal.
-* The ESC pulse range is 1000–2000 μs.
-* Changing `CV100` reconfigures the output pin and forces output back to a safe stopped state.
-* When shutdown is active from INA219 policy, turbine output is forced off.
-* When limit is active from INA219 policy, output is capped by `CV41`.
+* When system time is valid and the schedule is configured, the firmware can enter autonomous schedule mode around the configured operating window.
+* The autonomous-mode window extends 2 minutes before the ON boundary and 2 minutes after the OFF boundary.
+* The ON command still fires at the configured ON boundary.
+* The OFF command still fires at the configured OFF boundary.
+* Replies are suppressed for internally scheduled command execution.
+* Internally scheduled commands execute through the normal command pipeline.
+* If script playback is active, scheduled commands that classify as recordable controls are suppressed until playback stops.
+* Device-specific commands must match the firmware image. For example, throttle firmware can schedule `F40` or `S`; turbine firmware can schedule `F50` or `F0`.
+* While autonomous mode is active, the configured schedule's exact ON/OFF command strings can be allowed through the command gate even without a completed external handshake.
 
 ---
 
 # WebSocket Operation
 
-When Wi-Fi is enabled with:
-
-```text
-CV10=1
-```
-
-The firmware starts the configured Wi-Fi/WebSocket service.
+When Wi-Fi is enabled with `CV10=1`, firmware starts the configured Wi-Fi/WebSocket service.
 
 Defaults:
 
@@ -1080,22 +1696,7 @@ Notes:
 * A backup socket can use `IB,<token>`.
 * WebSocket text payloads are processed through the same command handler as BLE.
 * When Wi-Fi connects, firmware can emit an unsolicited `IP:<address>` line.
-
----
-
-# Scheduling / Autonomous Mode
-
-When a valid schedule is configured and system time is valid, supported firmware can enter autonomous schedule mode.
-
-A schedule is considered active when current UTC time is within the configured operating window for an enabled day.
-
-Important behavior:
-
-* `CV304` fires at the configured `CV302` ON boundary.
-* `CV305` fires at the configured `CV303` OFF boundary.
-* Replies are suppressed for internally scheduled command execution.
-* The ON/OFF commands still execute through the normal command pipeline.
-* Device-specific commands must match the firmware image. For example, throttle firmware can schedule `F40` or `S`; turbine firmware can schedule `F50` or `F0`.
+* `CV13` configures the WebSocket port; detailed Wi-Fi/CV behavior is in `appendix_Configuration_Variables.md`.
 
 ---
 
@@ -1142,14 +1743,27 @@ Runtime override:
 | `V` | Shared | Firmware version |
 | `C?` | Shared | Connection status |
 | `IP?` | Shared | IP address query |
-| `T?` | Shared | Current time query |
-| `T=<unix>` | Shared | Manual time set |
-| `D1` | Shared | Debug on |
-| `D0` | Shared | Debug off |
+| `T?` | Shared | Current adjusted firmware time query |
+| `T=<unix>` | Shared | Set time from UTC source epoch and apply CV14 offset |
+| `D1` | Shared | Enable and persist debug startup override |
+| `D2` | Shared | Enable debug and request persistent SD logging |
+| `D0` | Shared | Disable debug/logging and clear persistence |
 | `A1` | Shared | Enable async `A:` state updates |
 | `A0` | Shared | Disable async `A:` state updates |
+| `OTA?` | S3 Throttle | Query OTA capability/readiness |
+| `OTA` | S3 Throttle | Stop safely and install the board target's catalog `latest` firmware |
 | `G1` | Shared | Enable grace shutdown for this boot |
 | `G0` | Shared | Disable grace shutdown for this boot |
+| `PS?` | Shared | Query persist-only CV staging mode |
+| `PS1` | Shared | Enable persist-only CV staging |
+| `PS0` | Shared | Leave persist-only CV staging |
+| `SR` | Shared* | Start SD-backed control-command recording |
+| `SR=<name>` | Shared* | Stop recording and save `/scripts/<name>.pmt` |
+| `SP1=<name>` | Shared* | Play a saved firmware script once |
+| `SPR=<name>` | Shared* | Repeat a saved firmware script |
+| `SP0` | Shared | Stop active script playback |
+| `SS?` | Shared | Query script state |
+| `SD=<name>` | Shared* | Delete a saved firmware script |
 | `F<n>` | Throttle | Forward momentum ramp |
 | `R<n>` | Throttle | Reverse momentum ramp |
 | `FQ<n>` | Throttle | Forward quick ramp |
@@ -1162,6 +1776,11 @@ Runtime override:
 | `P0` | Throttle | Periodic mismatch debug only |
 | `P1` | Throttle | Periodic debug always |
 | `FX<n>=0/1` | Throttle | Function output off/on |
+| `A?` | Throttle | Analyze default audio track manifest |
+| `A? N=<tracks>` | Throttle | Analyze explicit audio track list |
+| `AudioMark` / `AM` | Throttle | Emit manual audio diagnostic marker |
+| `ST<set-id>.<field-id>=<value>` | Throttle | Set a sound `.set` field; approved design, implementation pending |
+| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field; approved design, implementation pending |
 | `F?` | Turbine | Requested turbine output query |
 | `F<n>` | Turbine | Ramp turbine output |
 | `F<n>*` | Turbine | Immediate turbine output |
@@ -1169,11 +1788,15 @@ Runtime override:
 | `CV<n>?` | Device-specific | Query CV |
 | `CV<n>=<value>` | Device-specific | Set CV |
 
+`*` SD-backed script operations require an active PMT SD filesystem.
+
 ---
 
-# Async Telemetry Summary
+# Runtime / Result Line Summary
 
-These are not commands. They may appear asynchronously at runtime.
+OTA progress is reported as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress lines are independent of the normal `A1` / `A0` async-state setting.
+
+Unsolicited runtime lines:
 
 | Line prefix | Meaning |
 |---|---|
@@ -1184,20 +1807,45 @@ These are not commands. They may appear asynchronously at runtime.
 | `TF:` | INA219 compact status flags |
 | `IP:` | Wi-Fi IP announcement |
 
+Command-generated script status lines:
+
+| Line | Meaning |
+|---|---|
+| `A:SS=IDLE` | Script service is idle |
+| `A:SS=REC` | Recording is active |
+| `A:SS=PLAY` | One-shot playback is active |
+| `A:SS=REPEAT` | Repeating playback is active |
+
+Command-generated audio-analysis lines:
+
+| Line prefix | Meaning |
+|---|---|
+| `AR:START` | Track-length analysis started |
+| `AR:T... START` | Analysis started for a track |
+| `AR:T... L=...` | Track length measured |
+| `AR:ERR ...` | Analysis failure |
+| `AR:DONE` | Requested analysis completed |
+
 ---
 
 # What Changed from the Older 1.12.x Reference
 
-This reference has been updated for the current PMT 2.0.0 firmware family.
+This reference documents the verified command behavior for PMT firmware 3.3.0.
 
 Major documentation changes:
 
 * Updated the document from throttle-only to the PMT device family.
 * Added Poor Man's Module protocol scope.
-* Added Poor Man's Turbine commands and CVs.
+* Added Poor Man's Turbine commands.
 * Added backup socket authorization with `IB,<token>`.
 * Added current time query/set documentation with `T?` and `T=<unix-time>`.
-* Added `CV14` UTC offset documentation.
-* Clarified that some CV numbers are device-specific and can mean different things on throttle vs turbine firmware.
+* Clarified the CV14-adjusted firmware clock behavior used by time and scheduling.
 * Corrected the identity flow so `I` requests identity and `I?` checks authorization state.
 * Clarified shared vs throttle-only vs turbine-only command availability.
+* Added `D2` SD-debug logging behavior and clarified persistent `D1` / `D0` semantics.
+* Added `PS?`, `PS1`, and `PS0` persist-only CV staging commands.
+* Added Throttle `A?`, `A? N=<tracks>`, `AudioMark`, and `AM` audio diagnostic commands.
+* Added the `AR:` audio-analysis result family.
+* Added the firmware 3.3 shared SD-backed script recording/playback/status/delete command family, including trailing recording timing, `.pmt` validation, device-specific recordable controls, and playback command gating.
+* Added the approved, implementation-pending `ST<set-id>.<field-id>` sound `.set` protocol design, including hexadecimal target IDs, future-proof field IDs, immediate in-memory application, SD persistence, Classic/S3 initialization semantics, custom-WAV handling, grouped-vs-custom precedence, and BLE MTU constraints.
+* Reduced duplicated CV catalogs and retained only CV references that directly clarify command behavior.

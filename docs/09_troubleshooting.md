@@ -110,7 +110,8 @@ The firmware advertises using either the default firmware/device name or the con
 
 | Check | Action |
 |-----|-------|
-| ESP32 status LED | If the onboard LED is blinking, the controller is powered but not currently under active control |
+| ESP32 status LED | If `CV21` allows LED output and the onboard LED is blinking, the controller is powered but not currently under active control. A dark firmware-controlled LED is not by itself a fault when `CV21=0`, or when `CV21=2` and BLE or WebSocket control is connected. |
+| Onboard LED output mode | Check `CV21` if the firmware-controlled onboard LED is unexpectedly dark. `0` = always off, `1` = normal proposed LED state, `2` = off while BLE or WebSocket control is connected and normal proposed state while disconnected. |
 | Device name | Check for the configured train/device name, not only the default device name |
 | Recent disconnect | Power cycle if the device stopped appearing after a difficult disconnect or failed reconnect |
 | Phone BLE cache | Toggle Bluetooth off/on or force the app to rescan |
@@ -144,6 +145,73 @@ In current firmware, motion commands are gated by the control session state. A r
 
 ---
 
+# Firmware Script Recording / Playback Does Not Work
+
+Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
+
+### First Checks
+
+| Check | Action |
+|---|---|
+| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| SD availability | Confirm the device has an active PMT SD filesystem; SD-backed script operations return `ERR:SD` when storage is unavailable |
+| Script name | Use 1–16 base-name characters from `a-z`, `0-9`, `_`, or `-`; `.pmt` is optional in the command |
+| File location | Firmware scripts are stored as `/scripts/<name>.pmt` |
+| Playback content | Firmware `.pmt` files may contain only valid recordable device-control commands, blank lines, and `PAUSE` lines |
+| App vs firmware scripts | The app's Run Script page is a separate app-side scripting mechanism; app-only directives are not valid firmware `.pmt` lines |
+
+### Common Script Errors
+
+| Result | Meaning / Action |
+|---|---|
+| `ERR:SD` | No active PMT SD storage is available. Check the card, reader/slot, and whether the selected firmware/hardware configuration initialized SD storage. |
+| `ERR:NAME` | The name is empty, longer than 16 characters, or contains a character other than `a-z`, `0-9`, `_`, or `-`. |
+| `ERR:NOFILE` | The requested `/scripts/<name>.pmt` file does not exist. Confirm spelling and use the same base name that was used when saving. |
+| `ERR:WRITE` | The recording could not be written completely. Check card health, free space, contacts, and SD stability. |
+| `ERR:DELETE` | `SD=<name>` found the script but the filesystem could not delete it. Check card health and filesystem access. |
+| `ERR:FULL` | The in-memory recording exceeded the 32 KiB firmware script limit. Make the recording shorter or reduce the number of recorded commands. |
+| `ERR:READ` | The script file could not be read completely. Check card/filesystem integrity. |
+| `ERR:SIZE` | The `.pmt` file is larger than the 32 KiB playback limit. |
+| `ERR:EMPTY` | The saved script contains no executable content. Record at least one eligible control command before saving. |
+| `ERR:SCRIPT` | A line in the `.pmt` file is not a valid `PAUSE` or recordable control command for that firmware image. |
+| `ERR:MEM` | Firmware could not reserve the required script buffer memory. Reboot and retry; if it repeats, investigate memory pressure. |
+| `ERR:BUSY` | Recording or playback is already active. Use `SS?`; stop playback with `SP0` before starting/deleting another script. |
+| `ERR:STATE` | The requested state transition is invalid, such as sending `SP0` when no script is running or trying `SR=<name>` when recording is not active. |
+
+### Recording Timing Does Not Look Right
+
+Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. When `SR=<name>` is sent, it also records the elapsed time from the **last recorded control command to the stop-recording command** as the final pause.
+
+The time between the initial `SR` and the first recorded control command is not stored.
+
+This means a recording such as:
+
+```text
+F40
+...wait...
+B
+...wait 10 seconds...
+SR=yard
+```
+
+will end with a final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+
+### A Command Does Not Appear in the Saved Script
+
+Only commands classified as recordable physical/device controls are captured. Configuration commands, script-management commands, and internally scheduled commands are not recorded.
+
+Current recordable controls include:
+
+* **Throttle:** `S`, `B`, `B0..100`, `F0..100`, `R0..100`, `FQ0..100`, `RQ0..100`, and `FX1..12=0/1`
+* **Turbine:** `F0..100`, `F0..100*`, and `FQ100`
+* **Generic Module:** no module-specific recordable physical controls are currently defined
+
+### External Controls Do Not Respond During Playback
+
+This is expected for recordable control commands. While playback is active, external and scheduled commands that classify as recordable controls are suppressed so they cannot override the running script. Send `SP0` to stop playback before taking manual control again.
+
+---
+
 # Wi-Fi / WebSocket Control Does Not Work
 
 ### Possible Causes
@@ -173,6 +241,43 @@ Current firmware supports Wi-Fi / WebSocket as a **secondary, backup, or failove
 ### Tip
 
 If BLE works but WebSocket does not, the motor side may be fine and the issue may be only Wi-Fi configuration.
+
+---
+
+# ESP32-S3 OTA Firmware Update Fails
+
+OTA applies to supported ESP32-S3 N16R8 and N8R8 throttle hardware. Classic ESP32-WROOM throttle hardware continues to use the USB firmware installer.
+
+### Expected OTA Sequence
+
+1. The app checks support with `OTA?`.
+2. The device must have an active Wi-Fi connection.
+3. `OTA` is accepted with `ACK:OTA`.
+4. The throttle performs its normal stop behavior and waits until it is fully stopped.
+5. OTA prepares the secure connection and reads the firmware catalog.
+6. Firmware transfer begins at `A:OTA 0` and advances in 10% steps through `A:OTA 100`.
+7. After `A:OTA 100`, the device disconnects and reboots automatically.
+
+The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA lifecycle.
+
+### Common Results
+
+| Result | Meaning / Action |
+|-----|-------|
+| `ERR:NS` from `OTA?` | OTA is not supported on this hardware. Classic ESP32 uses the USB installer. |
+| `ERR:NO WIFI` | The S3 device is not connected to Wi-Fi, or Wi-Fi was lost during OTA. Restore Wi-Fi and try again. |
+| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, or another pre-transfer error. |
+| `ERR:OTA` after progress begins | Firmware transfer/write did not complete. Keep the current firmware running if possible and use USB recovery if OTA cannot be retried successfully. |
+| Progress reaches `A:OTA 100` and the connection drops | Normal successful behavior. The firmware image completed and the device is rebooting. |
+| No progress percentages yet | This can be normal while OTA is stopping the throttle, obtaining validation time, or reading/validating the manifest. `0%` begins only when the firmware image transfer/write phase starts. |
+
+### Checks
+
+- Confirm the device is an ESP32-S3 N16R8 or N8R8 throttle.
+- Confirm Wi-Fi is connected before starting OTA.
+- Do not remove power while GREEN/PURPLE OTA indication is active.
+- If OTA repeatedly fails, use the normal USB installer as the recovery path.
+- Use USB when installing a specific older version or intentionally downgrading; OTA always installs the catalog's current `latest` version for the detected S3 target.
 
 ---
 
@@ -380,6 +485,59 @@ The train may therefore behave differently from a direct on/off throttle, especi
 
 ---
 
+# Motor Buzz, Whine, or Low-Speed PWM Feel
+
+Current throttle firmware allows the motor PWM switching frequency to be tuned with **CV90**.
+
+The default is:
+
+```text
+CV90=202020202020
+```
+
+which keeps the motor at 20 kHz across the full throttle range.
+
+CV90 can use a fixed frequency:
+
+```text
+CV90=10
+```
+
+which expands to `101010101010`, or a changing frequency curve:
+
+```text
+CV90=051520
+```
+
+which expands to `050515152020`.
+
+The six canonical points correspond to effective mapped throttle values `1,10,25,50,75,100%`, and firmware interpolates between them.
+
+### What Frequency Changes Can Do
+
+Changing PWM frequency can alter:
+
+- audible motor buzz or whine
+- low-speed feel and smoothness
+- motor/driver heating
+- how a particular motor and driver respond under load
+
+Results depend on the motor and driver. Lower frequency does **not** guarantee more torque, and CV90 does not directly command torque or speed.
+
+### Checks
+
+| Check | Action |
+|---|---|
+| Return to known behavior | Set `CV90=20` or `CV90=202020202020` to restore 20 kHz everywhere |
+| Verify stored curve | Query CV90; readback is always the canonical 12-digit form |
+| Tune gradually | Change frequency in small steps and test motor sound, low-speed behavior, and temperature |
+| Separate frequency from duty | If start speed/output is wrong, also review CV2, CV3, and CV9 rather than treating CV90 as a duty-control setting |
+| Watch hardware temperature | Stop testing if the motor or driver becomes unusually hot |
+
+Valid CV90 frequency values are `01..40` kHz per curve point.
+
+---
+
 # MU / Consist Behavior Is Wrong
 
 ### Possible Causes
@@ -542,41 +700,51 @@ If INA219 support is enabled, the firmware can:
 
 ---
 
-# Lights or Function Outputs Do Not Work
+# Lights or Function / FX Effects Do Not Work
 
 ### Possible Causes
 
-- no GPIO pin assigned to the function
-- pin is not valid for runtime output
-- function pattern not configured
-- direction gating prevents the output from being active in the current direction
-- another function is trying to use the same pin
+- function pattern is not configured
+- direction gating prevents the FX from being active in the current direction
+- for a physical LED pattern, no valid GPIO is assigned
+- for a physical LED pattern, another active function is using the same pin
+- for an audio pattern, audio is disabled or the selected PMTPlayer sound mode is not usable
+- for custom audio, the function pin/track CV is not a valid PMTPlayer track number
 - LED wiring expects a higher voltage or includes a resistor sized for 12V or 5V use
 
 ### What to Know
 
-Current firmware supports up to **12 function outputs**. Outputs can be configured with:
-- a name
-- a GPIO pin
-- a pattern
-- a direction mode of **BOTH**, **FWD**, or **REV**
+Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family and values `100..199` are the audio family.
 
-Supported patterns include:
-- **SOLID**
-- **DBL_BLNK**
-- **FRED**
-- **BLINK+**
-- **BLINK-**
+Implemented values are:
+
+- `1` = LED solid
+- `2` = LED double blink
+- `3` = FRED
+- `4` = LED blink+
+- `5` = LED blink-
+- `100` = audio bell
+- `101` = audio horn
+- `102` = audio cab chatter
+- `103` = custom audio one-shot
+- `104` = custom audio replay / loop
+
+Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted. Queries return numeric pattern values.
+
+Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`).
 
 ### Checks
 
 | Check | Action |
 |-----|-------|
-| Pin assignment | Confirm the function has a valid GPIO pin assigned |
-| Pattern | Make sure a pattern has actually been configured |
+| Pattern | Query the function's pattern CV and confirm the expected numeric pattern is configured |
 | Direction gating | Test in the direction where the function is allowed |
-| Duplicate pin use | Make sure two active functions are not sharing one GPIO pin |
-| LED wiring | Check LED polarity and resistor assumptions for 3.3V GPIO operation |
+| Physical FX pin | For patterns `1..99`, confirm a valid, non-conflicting output GPIO is assigned |
+| LED wiring | For physical FX, check LED polarity and resistor assumptions for 3.3V GPIO operation |
+| Audio enable | For patterns `100..199`, confirm `CV400=1` |
+| PMTPlayer sound mode | Confirm `CV401` selects the intended sound mode (`2` Diesel, `3` Steam) |
+| Audio volume | Confirm `CV402` is not zero |
+| Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
 
 ---
 
@@ -584,16 +752,19 @@ Supported patterns include:
 
 ### What the LED Means
 
-The onboard LED is useful for diagnosis:
+The onboard LED is useful for diagnosis. For normal status states, `CV21` is the final output gate and can intentionally suppress the physical LED without stopping the internal LED state machine. On supported ESP32-S3 throttle hardware, the OTA indication is intentionally higher priority than `CV21`.
 
 | LED Behavior | Meaning |
 |-----|-------|
-| Repeating double-blink search pattern | No active BLE or socket control connection |
-| Grace pattern | Control was lost and grace countdown behavior is active |
-| Solid on | Active control connection exists |
-| Brief dips off while connected | RX/TX activity is occurring |
+| GREEN/PURPLE alternating every 300 ms | ESP32-S3 OTA is active. This OTA indication overrides `CV21` and normal/red status display until OTA finishes or aborts. |
+| Forced off at all times | `CV21=0` during normal operation; OTA on supported S3 hardware is the documented exception. |
+| Repeating double-blink search pattern | No active BLE or socket control connection, when `CV21` allows output |
+| Grace pattern | Control was lost and grace countdown behavior is active, when `CV21` allows output |
+| Solid on | Active control connection exists with `CV21=1` |
+| Brief dips off while connected | RX/TX activity is occurring with `CV21=1` |
+| Visible while disconnected, then forced off when control connects | `CV21=2`; the proposed LED state is passed while disconnected and suppressed while either BLE or WebSocket control is connected |
 
-This can help distinguish a control-link problem from a motor power problem.
+A dark firmware-controlled onboard LED is therefore not by itself evidence of a power or control-link problem. Check `CV21` before using the LED as a diagnostic indicator. During S3 OTA, GREEN/PURPLE should remain visible regardless of the normal `CV21` mode.
 
 ---
 

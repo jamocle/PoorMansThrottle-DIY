@@ -343,6 +343,32 @@ These components are **optional but recommended**.
 
 ---
 
+## Optional Build Add-On: microSD for Firmware Script Recording
+
+Firmware 3.3 can record and play device-control scripts from SD storage. A microSD card/reader is **not required for the basic throttle build**, but it is required if you want to use firmware-resident recording/playback commands such as:
+
+```text
+SR
+SR=<name>
+SP1=<name>
+SPR=<name>
+SD=<name>
+```
+
+This requirement is independent of PMTPlayer audio: you may install SD storage specifically for firmware scripts even when audio is not part of the build.
+
+Important planning notes:
+
+* The exact microSD reader or onboard slot depends on the ESP32 board and PMT hardware configuration.
+* Do not assume one board's SD pinout applies to another board.
+* Firmware script operations require an **active PMT SD filesystem**; if storage is not initialized or available, they return `ERR:SD`.
+* Saved firmware scripts are stored under `/scripts` with the `.pmt` extension.
+* If PMTPlayer audio is also installed on a supported configuration, the same active SD storage can hold both audio content and `/scripts`.
+
+For parts planning, see `03_bill_of_materials.md`. For script commands, file-name rules, and playback behavior, see `appendix_Command_Protocol_Reference.md`.
+
+---
+
 ## Optional Build Add-On: INA219 Voltage / Current Monitoring
 
 The firmware also supports an **optional INA219 sensor** for voltage, current, and protection-related monitoring.
@@ -350,8 +376,8 @@ The firmware also supports an **optional INA219 sensor** for voltage, current, a
 Default firmware values for this optional add-on are:
 
 - **INA219 disabled by default**
-- **SDA default pin:** GPIO21
-- **SCL default pin:** GPIO22
+- **SDA default pin for this Classic ESP32-WROOM build:** GPIO16 (`CV31=16`)
+- **SCL default pin for this Classic ESP32-WROOM build:** GPIO17 (`CV32=17`)
 - **Default I2C address:** 0x40
 
 This sensor is **not required** for the basic build in this document. If used, it should be wired as an optional add-on and configured in firmware/app settings.
@@ -443,6 +469,7 @@ The firmware and app can also support hardware expansion beyond the basic build,
 - alternate supported motor-driver interface types
 - optional INA219 telemetry/protection wiring
 - configurable function / lighting outputs on additional pins
+- optional microSD storage for firmware script recording/playback
 - scheduled operation once the controller is configured
 - app-managed MU / consist operation using multiple working throttle controllers
 

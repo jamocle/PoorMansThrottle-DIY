@@ -3,22 +3,145 @@
 
 <head>
   <meta charset="utf-8" />
+  <!-- PMT dynamic document cache protection -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script>
+    (() => {
+      "use strict";
+
+      const cacheParameter = "v";
+      const freshnessParameter = "pmtFresh";
+      const maximumFreshTokenAgeMs = 120000;
+
+      const createCacheToken = () => Date.now() + "-" + Math.random();
+
+      const isRecentCacheToken = (token) => {
+        if (!token) {
+          return false;
+        }
+
+        const timestamp = Number.parseInt(String(token).split("-", 1)[0], 10);
+        if (!Number.isFinite(timestamp)) {
+          return false;
+        }
+
+        const age = Date.now() - timestamp;
+        return age >= -5000 && age <= maximumFreshTokenAgeMs;
+      };
+
+      const makeFreshUrl = (input) => {
+        const url = new URL(input, window.location.href);
+        url.searchParams.set(cacheParameter, createCacheToken());
+        url.searchParams.set(freshnessParameter, "1");
+        return url;
+      };
+
+      const currentUrl = new URL(window.location.href);
+      const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const isFreshNavigation =
+        currentUrl.searchParams.get(freshnessParameter) === "1" &&
+        isRecentCacheToken(currentToken);
+
+      if (!isFreshNavigation) {
+        window.location.replace(makeFreshUrl(currentUrl).href);
+        return;
+      }
+
+      currentUrl.searchParams.delete(cacheParameter);
+      currentUrl.searchParams.delete(freshnessParameter);
+
+      try {
+        window.history.replaceState(window.history.state, "", currentUrl.href);
+      } catch {
+        // The freshness query may remain visible on unusual local-file/browser combinations.
+      }
+
+      const updateInternalHtmlLink = (link) => {
+        const href = link.getAttribute("href");
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          href.startsWith("javascript:")
+        ) {
+          return;
+        }
+
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch {
+          return;
+        }
+
+        if (
+          url.origin !== window.location.origin ||
+          !url.pathname.toLowerCase().endsWith(".html")
+        ) {
+          return;
+        }
+
+        link.href = makeFreshUrl(url).href;
+      };
+
+      const updateLinkFromEvent = (event) => {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+
+        const link = event.target.closest("a[href]");
+        if (link) {
+          updateInternalHtmlLink(link);
+        }
+      };
+
+      document.addEventListener("click", updateLinkFromEvent, true);
+      document.addEventListener("auxclick", updateLinkFromEvent, true);
+      document.addEventListener("contextmenu", updateLinkFromEvent, true);
+
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          window.location.replace(makeFreshUrl(window.location.href).href);
+        }
+      });
+    })();
+  </script>
+
   <title>Poor Man's Throttle Installer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link id="pmtStylesheet" rel="stylesheet" href="styles.css" />
 
   <script>
     (function () {
       const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
 
-      const cssLink = document.createElement("link");
-      cssLink.rel = "stylesheet";
-      cssLink.href = "styles.css?v=" + cacheBust;
-      document.head.appendChild(cssLink);
+      const cssLink = document.getElementById("pmtStylesheet");
+      if (cssLink) {
+        cssLink.href = "styles.css?v=" + cacheBust;
+      }
 
-      const appScript = document.createElement("script");
-      appScript.type = "module";
-      appScript.src = "app.js?v=" + cacheBust;
-      document.head.appendChild(appScript);
+      let appStarted = false;
+      const startApp = function () {
+        if (appStarted) {
+          return;
+        }
+
+        appStarted = true;
+
+        const appScript = document.createElement("script");
+        appScript.type = "module";
+        appScript.src = "app.js?v=" + cacheBust;
+        document.head.appendChild(appScript);
+      };
+
+      const soundConfigScript = document.createElement("script");
+      soundConfigScript.src = "sound-upload-config.js?v=" + cacheBust;
+      soundConfigScript.addEventListener("load", startApp, { once: true });
+      soundConfigScript.addEventListener("error", startApp, { once: true });
+      document.head.appendChild(soundConfigScript);
     })();
   </script>
 
@@ -109,7 +232,7 @@
       </div>
     </details>
 
-    <details class="section">
+    <details class="section firmware-primary-section" id="firmwareInstallation">
       <summary>
         <span class="section-title">
           <img src="firmware.png" alt="" class="section-icon" />
@@ -117,80 +240,308 @@
         </span>
       </summary>
 
-      <div class="section-content">
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-kicker">Recommended</div>
-              <h3>Install the latest firmware.</h3>
-            </div>
-          </div>
-
+      <div class="section-content firmware-section-content">
+        <div class="card intro-card">
           <p class="note note-strong">
-            <a class="doc-link prominent-link"
-              href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md" target="_blank"
-              rel="noopener noreferrer">
-              What’s new in the firmware → latest changes and features
-            </a>
-          </p>
-
-          <p class="note">
-            Use <strong>Chrome</strong> or <strong>Edge</strong> for flashing.
-            Use a <strong>data-capable USB cable</strong>.
-          </p>
-
-          <div class="row installer-row">
-            <div class="install-button-wrap">
-              <esp-web-install-button id="latestBtn" manifest=""></esp-web-install-button>
-            </div>
-            <span id="latestVersionLabel" class="meta-label"></span>
-          </div>
-
-          <p class="note warn">
-            If the device connects but doesn’t begin flashing, hold <strong>BOOT</strong>, click Install,
-            select the port, then release <strong>BOOT</strong> once “Erasing/Writing” begins.
+            <button class="doc-link prominent-link changelog-open-link" type="button"
+              data-open-changelog="firmware" aria-haspopup="dialog" aria-controls="changelogDialog">
+              Open the firmware change log
+            </button>
           </p>
         </div>
 
-        <div class="card">
+        <div class="card firmware-intro-card">
           <div class="card-header">
             <div>
-              <div class="card-kicker">Optional</div>
-              <h3>Install an earlier firmware version.</h3>
-            </div>
-          </div>
-
-          <div class="row installer-row">
-            <label class="note note-label" for="fwSel">Version</label>
-            <select id="fwSel" aria-label="Select firmware version"></select>
-            <div class="install-button-wrap">
-              <esp-web-install-button id="olderBtn" manifest=""></esp-web-install-button>
+              <div class="card-kicker">Step 1</div>
+              <h3>Which ESP32 board family do you have?</h3>
             </div>
           </div>
 
           <p class="note">
-            Useful if you want to roll back after testing a newer release.
+            Choose <strong>Classic ESP32-WROOM-32</strong> or <strong>ESP32-S3</strong>.
+            If you choose ESP32-S3, the installer will ask whether the metal module is marked
+            <strong>N16R8</strong> or <strong>N8R8</strong> before any firmware install controls are shown.
+          </p>
+
+          <div class="board-choice-grid" id="boardChoiceGrid" aria-label="Choose your ESP32 board family">
+            <button class="board-choice" type="button" data-board-choice="classic" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 board" class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>Classic ESP32-WROOM-32</strong>
+                <span>Choose this if your board matches this picture.</span>
+              </span>
+              <span class="board-choice-action">I have this board</span>
+            </button>
+
+            <button class="board-choice" type="button" data-board-choice="s3" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3 board" class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>ESP32-S3</strong>
+                <span>Choose this for an S3 board. You will identify N16R8 or N8R8 next.</span>
+              </span>
+              <span class="board-choice-action">I have an S3 board</span>
+            </button>
+          </div>
+
+          <p class="note board-choice-help">
+            <strong>Not sure?</strong> Do not guess. Compare the board in your hand with the pictures before continuing.
+          </p>
+
+          <div id="s3VariantPanel" class="s3-variant-panel" hidden>
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 1A</div>
+                <h3>Which ESP32-S3 module do you have?</h3>
+              </div>
+            </div>
+
+            <p class="note s3-variant-warning">
+              <strong>Check the writing on the metal ESP32 module itself.</strong>
+              Find <strong>N16R8</strong> or <strong>N8R8</strong> in the printed module designation.
+              These modules use different flash sizes and different firmware.
+            </p>
+
+            <p class="note s3-variant-help">
+              <strong>If you cannot tell which version you have, try N16R8 first. If the firmware flashes but the throttle does not start normally, connect to, or work correctly with the Poor Man’s Throttle app, come back here and install the N8R8 version instead. A successful flash only means the firmware was written to the board; it does not guarantee that you selected the correct S3 version.</strong>
+            </p>
+
+            <div class="s3-variant-grid" aria-label="Choose your ESP32-S3 module">
+              <button class="s3-variant-choice" type="button" data-board="s3" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N16R8</strong>
+                  <span>16 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N16R8</span>
+              </button>
+
+              <button class="s3-variant-choice" type="button" data-board="s3-n8r8" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N8R8</strong>
+                  <span>8 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N8R8</span>
+              </button>
+            </div>
+
+            <p class="note s3-variant-help">
+              The boards can look nearly identical. The module marking, not the board color or USB connector,
+              determines which S3 firmware you need.
+            </p>
+          </div>
+        </div>
+
+
+        <div id="s3OtaCard" class="card" hidden>
+          <div class="card-header">
+            <div>
+              <div class="card-kicker">ESP32-S3 wireless updates</div>
+              <h3>Already running PMT on an S3? You may not need the USB cable.</h3>
+            </div>
+          </div>
+          <p class="note">
+            Supported ESP32-S3 N16R8 and N8R8 throttle devices can install the catalog's latest firmware
+            from the Poor Man's Throttle app when Wi-Fi is connected. OTA is for the current latest release;
+            use the USB installer below for Classic ESP32, recovery, rollback, or a specific/older version.
+          </p>
+          <p>
+            <a class="doc-link" href="Info/ota_firmware_update.html">Read the ESP32-S3 OTA firmware update guide</a>
           </p>
         </div>
 
-        <div class="card">
-          <div class="card-header">
-            <div>
-              <div class="card-kicker">Troubleshooting</div>
-              <h3>If installation does not go as expected.</h3>
+        <div id="firmwareLoadError" class="card firmware-error-card" hidden role="alert">
+          <div class="card-kicker">Installer problem</div>
+          <h3>Firmware information could not be loaded.</h3>
+          <p class="note">
+            Refresh this page and try again. If the message returns, please contact Poor Man's Throttle support before flashing.
+          </p>
+        </div>
+
+        <div id="boardInstallPanel" class="firmware-board-panel" hidden>
+          <div class="card selected-board-card">
+            <div class="selected-board-layout">
+              <div>
+                <div class="card-kicker">You selected</div>
+                <h3 id="selectedBoardName"></h3>
+                <p class="note">
+                  Make sure the connected board matches this selection. For ESP32-S3, verify the metal module marking
+                  says N16R8 or N8R8 exactly as selected before you install.
+                </p>
+              </div>
+              <div class="selected-board-image-shell">
+                <img id="selectedBoardImage" src="" alt="" class="selected-board-image" />
+              </div>
             </div>
           </div>
 
-          <ul class="list">
-            <li>Close Arduino Serial Monitor or anything else using the COM port.</li>
-            <li>
-              Windows: CP2102 usually works automatically. If not, install the Silicon Labs CP210x driver.
-              <a class="doc-link"
-                href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
-                target="_blank" rel="noopener noreferrer">Open CP210x driver</a>
-            </li>
-            <li>If you see repeated resets, run the latest install again.</li>
-          </ul>
+          <div class="card backup-warning-card">
+            <div class="backup-warning-icon" aria-hidden="true">!</div>
+            <div>
+              <div class="card-kicker">Before you install</div>
+              <h3>Back up your configuration first.</h3>
+              <p class="note note-strong">
+                Use the Poor Man's Throttle app to create a configuration backup before every firmware installation.
+                Normal updates are designed to keep your settings, but a backup gives you a safe recovery copy if
+                something unexpected happens.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 2</div>
+                <h3>Get your computer ready.</h3>
+              </div>
+            </div>
+
+            <div class="os-help-grid">
+              <div class="os-help-card">
+                <strong>Windows</strong>
+                <span>Use Google Chrome or Microsoft Edge.</span>
+              </div>
+              <div class="os-help-card">
+                <strong>Mac</strong>
+                <span>Use Google Chrome. Do not use Safari for firmware flashing.</span>
+              </div>
+            </div>
+
+            <ul class="list firmware-checklist">
+              <li>Use a <strong>USB data cable</strong>. Some USB cables only charge and cannot install firmware.</li>
+              <li>Plug the ESP32 directly into the computer when possible.</li>
+              <li>Close Arduino Serial Monitor or any other program that may be using the ESP32 USB/serial connection.</li>
+            </ul>
+          </div>
+
+          <div class="card preserve-settings-card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 3</div>
+                <h3>Keep your settings unless you intentionally want to start over.</h3>
+              </div>
+            </div>
+
+            <div class="install-choice-grid">
+              <div class="install-choice recommended-choice">
+                <strong>Keep my settings — Recommended</strong>
+                <p>
+                  When ESP Web Tools asks about erasing the device, leave <strong>Erase device</strong>
+                  off/unchecked. The firmware will be updated without intentionally wiping your saved configuration.
+                </p>
+              </div>
+              <div class="install-choice destructive-choice">
+                <strong>Erase everything / Start fresh</strong>
+                <p>
+                  Only choose erase if you intentionally want to delete the saved configuration and start from a clean device.
+                  You will need to restore a backup or configure the throttle again.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card firmware-install-card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 4</div>
+                <h3>Install firmware.</h3>
+              </div>
+            </div>
+
+            <div class="firmware-install-option firmware-install-option-primary">
+              <div>
+                <strong>Install the latest firmware</strong>
+                <p class="note">Recommended for most users.</p>
+              </div>
+              <div class="row installer-row">
+                <div class="install-button-wrap">
+                  <esp-web-install-button id="latestBtn">
+                    <button slot="activate" class="firmware-install-action" type="button">Install Latest Firmware</button>
+                    <span slot="unsupported" class="installer-message">
+                      Use Chrome or Edge on Windows, or Chrome on Mac.
+                    </span>
+                    <span slot="not-allowed" class="installer-message">
+                      Firmware flashing requires this page to be opened securely using HTTPS.
+                    </span>
+                  </esp-web-install-button>
+                </div>
+                <span id="latestVersionLabel" class="meta-label"></span>
+              </div>
+            </div>
+
+            <details class="older-firmware-details">
+              <summary>Choose a specific firmware version</summary>
+              <div class="older-firmware-content">
+                <p class="note">
+                  Use this when you intentionally want a particular release, including rolling back after testing.
+                </p>
+                <div class="row installer-row">
+                  <label class="note note-label" for="fwSel">Version</label>
+                  <select id="fwSel" aria-label="Select firmware version"></select>
+                  <div class="install-button-wrap">
+                    <esp-web-install-button id="olderBtn">
+                      <button slot="activate" class="firmware-install-action firmware-install-action-secondary" type="button">
+                        Install Selected Version
+                      </button>
+                      <span slot="unsupported" class="installer-message">
+                        Use Chrome or Edge on Windows, or Chrome on Mac.
+                      </span>
+                      <span slot="not-allowed" class="installer-message">
+                        Firmware flashing requires this page to be opened securely using HTTPS.
+                      </span>
+                    </esp-web-install-button>
+                  </div>
+                </div>
+                <p id="dropdownDefaultNote" class="note"></p>
+              </div>
+            </details>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">What happens next</div>
+                <h3>Follow the installer one step at a time.</h3>
+              </div>
+            </div>
+
+            <ol class="list numbered-install-steps">
+              <li>Click the firmware install button above.</li>
+              <li>Choose the USB/serial device that represents your ESP32 and connect to it.</li>
+              <li>Confirm the installation.</li>
+              <li>For a normal update, keep <strong>Erase device</strong> off/unchecked.</li>
+              <li>Wait until ESP Web Tools says the installation has finished. Do not unplug the board while it is writing.</li>
+            </ol>
+          </div>
+
+          <details class="card firmware-help-details">
+            <summary>
+              <span>
+                <span class="card-kicker">Troubleshooting</span>
+                <strong>If the installer cannot start flashing</strong>
+              </span>
+            </summary>
+            <div class="firmware-help-content">
+              <ul class="list">
+                <li>Confirm you are using a USB <strong>data</strong> cable, not a charge-only cable.</li>
+                <li>Close Arduino Serial Monitor and other programs that might already be using the ESP32 connection.</li>
+                <li>
+                  If the device connects but flashing does not begin, hold <strong>BOOT</strong>, start the install and
+                  select the device. Release <strong>BOOT</strong> when erasing/writing begins.
+                </li>
+                <li>
+                  On Windows, the Classic ESP32-WROOM-32 commonly uses a CP210x USB-to-serial interface. If Windows
+                  does not create a usable port, you can
+                  <a class="doc-link"
+                    href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
+                    target="_blank" rel="noopener noreferrer">open the Silicon Labs CP210x driver page</a>.
+                </li>
+              </ul>
+            </div>
+          </details>
         </div>
       </div>
     </details>
@@ -206,11 +557,10 @@
       <div class="section-content">
         <div class="card intro-card">
           <p class="note note-strong">
-            <a class="doc-link prominent-link"
-              href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_App.md" target="_blank"
-              rel="noopener noreferrer">
+            <button class="doc-link prominent-link changelog-open-link" type="button"
+              data-open-changelog="app" aria-haspopup="dialog" aria-controls="changelogDialog">
               Open the app change log
-            </a>
+            </button>
           </p>
         </div>
 
@@ -303,7 +653,182 @@
       </div>
     </details>
 
-    <details class="section">
+
+    <details class="section" id="soundPacksSection">
+      <summary>
+        <span class="section-title">
+          <img src="sounds.png" alt="" class="section-icon" />
+          <span>Sounds &amp; Sound Packs</span>
+        </span>
+      </summary>
+
+      <div class="section-content">
+        <div class="card sound-packs-intro">
+          <div class="card-header">
+            <div>
+              <div class="card-kicker">Locomotive audio</div>
+              <h3>Download sounds and sound packs.</h3>
+            </div>
+          </div>
+
+          <p class="note">
+            Choose Diesel or Steam below, then download a full sound pack or an individual sound ZIP.
+            The lists are loaded directly from the Poor Man's Throttle GitHub project, so newly published ZIP files
+            appear automatically.
+          </p>
+
+          <p class="note" id="soundPacksStatus" role="status" aria-live="polite">
+            Open this section to load the available sounds and sound packs.
+          </p>
+        </div>
+
+        <div class="sound-pack-groups">
+          <section class="sound-pack-group" aria-labelledby="dieselSoundPackHeading">
+            <div class="sound-pack-group-header">
+              <div>
+                <div class="card-kicker">Diesel</div>
+                <h3 id="dieselSoundPackHeading">Diesel sounds</h3>
+              </div>
+
+              <img
+                src="diesel-engine.png"
+                alt="Diesel locomotive illustration"
+                class="sound-pack-category-art"
+                width="160"
+                height="72" />
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Full Sound Packs</h4>
+              <div class="sound-pack-list" id="dieselSoundPackList">
+                <p class="note">Loading diesel sound packs…</p>
+              </div>
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Individual Sounds</h4>
+              <div class="sound-pack-list" id="dieselIndividualSoundList">
+                <p class="note">Loading diesel individual sounds…</p>
+              </div>
+            </div>
+          </section>
+
+          <section class="sound-pack-group" aria-labelledby="steamSoundPackHeading">
+            <div class="sound-pack-group-header">
+              <div>
+                <div class="card-kicker">Steam</div>
+                <h3 id="steamSoundPackHeading">Steam sounds</h3>
+              </div>
+
+              <img
+                src="steam-engine.png"
+                alt="Steam locomotive illustration"
+                class="sound-pack-category-art"
+                width="160"
+                height="72" />
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Full Sound Packs</h4>
+              <div class="sound-pack-list" id="steamSoundPackList">
+                <p class="note">Loading steam sound packs…</p>
+              </div>
+            </div>
+
+            <div class="sound-library-subgroup">
+              <h4 class="sound-library-subheading">Individual Sounds</h4>
+              <div class="sound-pack-list" id="steamIndividualSoundList">
+                <p class="note">Loading steam individual sounds…</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <section class="crowdsourcing-card" aria-labelledby="crowdsourcingHeading">
+          <div class="crowdsourcing-copy">
+            <div class="card-kicker">Crowdsourcing</div>
+            <h3 id="crowdsourcingHeading">Share sounds with the PMT community.</h3>
+
+            <p class="note">
+              Have a Diesel or Steam full sound pack or a group of related individual sound files that other
+              Poor Man's Throttle users may enjoy? You can submit the ZIP here for evaluation.
+            </p>
+
+            <div class="crowdsourcing-notice" role="note">
+              <strong>Before you upload:</strong>
+              <ul class="list crowdsourcing-list">
+                <li>Upload a ZIP file only.</li>
+                <li>Choose whether the ZIP contains a Full Sound Pack or Individual Sounds.</li>
+                <li>Enter a descriptive name for what you are uploading.</li>
+                <li>Do not submit copyrighted material you do not have permission to share.</li>
+              </ul>
+            </div>
+
+            <div class="crowdsourcing-review-note" role="note">
+              <strong>Uploads do not become live immediately.</strong>
+              Every submitted ZIP goes through a series of evaluations before it is approved
+              and added to the public sounds library.
+            </div>
+          </div>
+
+          <form class="sound-upload-form" id="soundPackUploadForm" novalidate>
+            <div class="sound-upload-field">
+              <label for="soundPackCategory">Engine type</label>
+              <select id="soundPackCategory" name="category" required>
+                <option value="diesel">Diesel</option>
+                <option value="steam">Steam</option>
+              </select>
+            </div>
+
+            <div class="sound-upload-field">
+              <label for="soundUploadType">Upload type</label>
+              <select id="soundUploadType" name="submissionType" required>
+                <option value="" selected>Select upload type</option>
+                <option value="pack">Full Sound Pack</option>
+                <option value="individual">Individual Sounds</option>
+              </select>
+            </div>
+
+            <div class="sound-upload-field">
+              <label id="soundUploadNameLabel" for="soundUploadName">What are you uploading?</label>
+              <input
+                id="soundUploadName"
+                name="soundName"
+                type="text"
+                placeholder="Enter a sound or sound pack name"
+                autocomplete="off"
+                required />
+              <p class="field-help" id="soundUploadNameHelp">
+                This name will be written to README.md inside the ZIP.
+              </p>
+            </div>
+
+            <div class="sound-upload-field">
+              <label for="soundPackFile">ZIP file</label>
+              <input id="soundPackFile" name="file" type="file" accept=".zip,application/zip" required />
+              <p class="field-help">Maximum upload size: 20 MB after README.md is added.</p>
+            </div>
+
+            <div id="soundPackTurnstile" class="turnstile-shell" aria-label="Human verification"></div>
+
+            <div class="action-buttons">
+              <button class="app-link app-link-primary" id="soundPackSubmitButton" type="submit">
+                Submit Sound Upload
+              </button>
+            </div>
+
+            <div class="sound-upload-status" id="soundPackUploadStatus" role="status" aria-live="polite">
+              <p class="note">
+                The upload service will become available after the site owner completes the one-time
+                crowdsourcing setup.
+              </p>
+            </div>
+          </form>
+        </section>
+      </div>
+    </details>
+
+    <details class="section" id="documentationSection">
       <summary>
         <span class="section-title">
           <img src="documentation.png" alt="" class="section-icon" />
@@ -321,10 +846,10 @@
           </div>
 
           <p class="note">
-            Open any guide below in GitHub.
+            Select a Markdown guide below to read it here. External project links open in a new tab.
           </p>
 
-          <ul class="list link-list">
+          <ul class="list link-list" id="documentationList">
             <li><a class="doc-link"
                 href="https://chatgpt.com/g/g-69b6b9e2de288191b93ca08de865a365-poor-man-s-throttle-troubleshooter"
                 target="_blank" rel="noopener noreferrer">Wigand — your Poor Man's Throttle AI Assistant</a></li>
@@ -332,61 +857,8 @@
                 rel="noopener noreferrer">Das Fassel Railroad Facebook page</a></li>
             <li><a class="doc-link" href="https://github.com/jamocle/PoorMansThrottle-DIY" target="_blank"
                 rel="noopener noreferrer">Poor Man's Throttle GitHub project space</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md"
-                target="_blank" rel="noopener noreferrer">00 Why Poor Man's Throttle</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/01_quick_overview.md"
-                target="_blank" rel="noopener noreferrer">01 Quick Overview</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/02_system_architecture.md"
-                target="_blank" rel="noopener noreferrer">02 System Architecture</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/03_bill_of_materials.md"
-                target="_blank" rel="noopener noreferrer">03 Bill of Materials</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/04_tools_and_safety.md"
-                target="_blank" rel="noopener noreferrer">04 Tools and Safety</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/05_firmware_installation.md"
-                target="_blank" rel="noopener noreferrer">05 Firmware Installation</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/06_build_guide.md" target="_blank"
-                rel="noopener noreferrer">06 Build Guide</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/07_installation_options.md"
-                target="_blank" rel="noopener noreferrer">07 Installation Options</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/08_first_power_test.md"
-                target="_blank" rel="noopener noreferrer">08 First Power Test</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/09_troubleshooting.md"
-                target="_blank" rel="noopener noreferrer">09 Troubleshooting</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/10_mobile_device_installation_instructions.md"
-                target="_blank" rel="noopener noreferrer">10 Mobile Device Installation Instructions</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Command_Protocol_Reference.md"
-                target="_blank" rel="noopener noreferrer">Appendix — Command Protocol Reference</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">Appendix — Configuration Variables</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_ESP32_GPIO_Pins.md"
-                target="_blank" rel="noopener noreferrer">Appendix — ESP32 GPIO Pins</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_traditional_transformer_layout_benefits.md"
-                target="_blank" rel="noopener noreferrer">Appendix — Traditional Transformer Layout Benefits</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_troubleshooting_a_bad_IBT_board.md"
-                target="_blank" rel="noopener noreferrer">Appendix — Troubleshooting IBT-2 Boards</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_wiring_reference.md"
-                target="_blank" rel="noopener noreferrer">Appendix — Wiring Reference</a></li>
-            <li><a class="doc-link"
-                href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_battery_management_module.md"
-                target="_blank" rel="noopener noreferrer">Appendix — How to add battery management</a></li>
           </ul>
+
         </div>
       </div>
     </details>
@@ -428,6 +900,47 @@
       </div>
     </details>
   </main>
+
+  <dialog class="changelog-dialog" id="documentationDialog" aria-labelledby="documentationDialogTitle">
+    <div class="changelog-shell">
+      <div class="changelog-header">
+        <div>
+          <h2 id="documentationDialogTitle">Project documentation</h2>
+          <p>Read the selected Poor Man's Throttle guide.</p>
+        </div>
+        <button class="changelog-close" id="closeDocumentationButton" type="button"
+          aria-label="Close documentation">×</button>
+      </div>
+
+      <div class="changelog-status" id="documentationStatus" role="status" aria-live="polite"></div>
+      <div class="changelog-content markdown-content" id="documentationContent" tabindex="0"
+        aria-live="polite"></div>
+    </div>
+  </dialog>
+
+  <dialog class="changelog-dialog" id="changelogDialog" aria-labelledby="changelogDialogTitle">
+    <div class="changelog-shell">
+      <div class="changelog-header">
+        <div>
+          <h2 id="changelogDialogTitle">PMT changelogs</h2>
+          <p>Review the current App and Firmware release notes.</p>
+        </div>
+        <button class="changelog-close" id="closeChangelogButton" type="button" aria-label="Close changelogs">×</button>
+      </div>
+
+      <div class="changelog-tabs" role="tablist" aria-label="PMT changelog">
+        <button class="changelog-tab" type="button" role="tab" data-changelog="app" aria-selected="true">
+          App
+        </button>
+        <button class="changelog-tab" type="button" role="tab" data-changelog="firmware" aria-selected="false">
+          Firmware
+        </button>
+      </div>
+
+      <div class="changelog-status" id="changelogStatus" role="status" aria-live="polite"></div>
+      <div class="changelog-content" id="changelogContent" tabindex="0" aria-live="polite"></div>
+    </div>
+  </dialog>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {

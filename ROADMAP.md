@@ -24,6 +24,16 @@ Core Wireless Control
 * Known-device support to help reconnect to previously configured devices.
 * Device naming so locomotives and PMT devices can be identified more easily in the app.
 
+Audio
+
+* Steam Locomotives sounds
+* Diesel Locomotive sounds
+* Bell
+* Horn, Whistle
+* Cab Chatter
+* Custom sounds (user defined) (unlimited)
+* Crowdsourced sounds (sharing with the community)
+
 Locomotive Profiles, Configuration Management, and Operating Modes
 
 * Locomotive Profiles
@@ -90,6 +100,11 @@ App Experience
 * Accessibility / screen-reader improvements.
 * In-app version and release information.
 
+Personalization and Branding
+
+* Personal Railroad Branding
+    Allow users to personalize the app with railroad-themed branding, including custom theme colors, layout names, railroad names, or preferred display styles.
+
 ⸻
 
 ## 🛠️ Planned Improvements (Requested / In Progress)
@@ -105,9 +120,7 @@ Core Locomotive Control
 
 Personalization and Branding
 
-1. Personal Railroad Branding
-    Allow users to personalize the app with railroad-themed branding, including custom theme colors, layout names, railroad names, or preferred display styles.
-2. Enhanced Device Presentation
+1. Enhanced Device Presentation
     Improve how locomotives, consists, modules, and turbine devices are displayed in the app so larger collections are easier to identify and manage.
 
 System Awareness
@@ -121,11 +134,9 @@ System Awareness
 
 Locomotive Feature Control
 
-1. Sound Trigger Outputs
-    Provide output triggers that can activate external sound boards or audio modules, such as DFPlayer Mini-style sound boards. These triggers could support common locomotive sounds such as horn, bell, whistle, brake squeal, or prime-mover effects.
-2. Expanded Function Output Presets
+1. Expanded Function Output Presets
     Add easier app presets for common lighting and accessory output setups.
-3. Function Output Test Mode
+2. Function Output Test Mode
     Provide a safer app workflow for testing function outputs one at a time during installation.
 
 Module and Accessory Control
