@@ -83,6 +83,32 @@
       color: var(--text);
     }
 
+    .paypal-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .paypal-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .paypal-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .paypal-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
     .venmo-qr-wrap {
       margin-top: 24px;
       text-align: center;
@@ -214,6 +240,7 @@
         padding: 20px;
       }
 
+      .paypal-qr,
       .venmo-qr {
         width: 100%;
       }
@@ -236,6 +263,13 @@
           If Poor Man’s Throttle has helped you, inspired you, saved you money, or made this hobby more accessible,
           I would sincerely appreciate your support.
         </p>
+
+        <div class="paypal-qr-wrap">
+          <img src="paypal.png" alt="PayPal QR code for paypal.me/jamocle" class="paypal-qr" />
+          <div class="paypal-caption">
+            Donate on PayPal: <span class="paypal-handle-inline">paypal.me/jamocle</span>
+          </div>
+        </div>
 
         <div class="venmo-qr-wrap">
           <img src="jamocle.jpeg" alt="Venmo QR code for @Jamocle" class="venmo-qr" />
@@ -384,7 +418,8 @@
         <p>
           If Poor Man’s Throttle has helped you, if it has saved you money, if it has made your own project possible,
           if it has taught you something, or if you simply appreciate what it stands for, I would greatly appreciate
-          a donation to my Venmo: <span class="emphasis">@Jamocle</span>.
+          a donation to my PayPal: <span class="emphasis">paypal.me/jamocle</span>, or to my Venmo:
+          <span class="emphasis">@Jamocle</span>.
         </p>
 
         <p>
@@ -413,7 +448,7 @@
 
         <p class="final-ask">
           If you believe that work is worth supporting, I would be deeply grateful for your help. Please consider
-          donating to
+          donating to PayPal at <span class="emphasis">paypal.me/jamocle</span> or Venmo at
           <span class="emphasis">@Jamocle</span>.
         </p>
 
