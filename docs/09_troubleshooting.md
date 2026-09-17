@@ -147,13 +147,14 @@ In current firmware, motion commands are gated by the control session state. A r
 
 # Firmware Script Recording / Playback Does Not Work
 
-Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
+Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR0`, `SRX`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
 
 ### First Checks
 
 | Check | Action |
 |---|---|
-| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=SAVE`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| Pending save | `A:SS=SAVE` means recording has already stopped and is waiting to be saved with `SR=<name>` or discarded with `SRX` |
 | SD availability | Confirm the device has an active PMT SD filesystem; SD-backed script operations return `ERR:SD` when storage is unavailable |
 | Script name | Use 1–16 base-name characters from `a-z`, `0-9`, `_`, or `-`; `.pmt` is optional in the command |
 | File location | Firmware scripts are stored as `/scripts/<name>.pmt` |
@@ -175,26 +176,42 @@ Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1
 | `ERR:EMPTY` | The saved script contains no executable content. Record at least one eligible control command before saving. |
 | `ERR:SCRIPT` | A line in the `.pmt` file is not a valid `PAUSE` or recordable control command for that firmware image. |
 | `ERR:MEM` | Firmware could not reserve the required script buffer memory. Reboot and retry; if it repeats, investigate memory pressure. |
-| `ERR:BUSY` | Recording or playback is already active. Use `SS?`; stop playback with `SP0` before starting/deleting another script. |
-| `ERR:STATE` | The requested state transition is invalid, such as sending `SP0` when no script is running or trying `SR=<name>` when recording is not active. |
+| `ERR:BUSY` | Recording, pending save (`SAVE`), or playback is active. Use `SS?`; stop playback with `SP0`, or resolve `SAVE` with `SR=<name>` / `SRX`, before starting/deleting another script. |
+| `ERR:STATE` | The requested state transition is invalid, such as `SP0` while idle, `SR0` when not recording, `SRX` when not in `SAVE`, or `SR=<name>` when neither recording nor `SAVE` is active. |
 
 ### Recording Timing Does Not Look Right
 
-Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. When `SR=<name>` is sent, it also records the elapsed time from the **last recorded control command to the stop-recording command** as the final pause.
+Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. In the current app workflow, `SR0` stops recording and captures the elapsed time from the **last recorded control command to `SR0`** as the final pause. The subsequent `SR=<name>` only names/saves the already-stopped recording, so time spent entering the name is not added.
 
 The time between the initial `SR` and the first recorded control command is not stored.
 
-This means a recording such as:
+For example:
 
 ```text
+SR
 F40
 ...wait...
 B
 ...wait 10 seconds...
+SR0
+SS?
+A:SS=SAVE
 SR=yard
 ```
 
-will end with a final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+The saved script ends with the roughly 10-second final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+
+The older direct form is still valid: sending `SR=yard` while recording stops and saves in one command, and the final pause is measured at that command.
+
+### Recording Is Stuck at `A:SS=SAVE`
+
+`SAVE` is not an active recording. The recording has already stopped and is being held in memory until you choose what to do:
+
+* Send `SR=<name>` to save it as `/scripts/<name>.pmt`.
+* Send `SRX` to discard it and return to `A:SS=IDLE`.
+* In the throttle app's firmware-script floater, **Save** sends `SR=<name>` and the `<` chevron discards the pending recording with `SRX`.
+
+Closing the floater does not resolve `SAVE`; reopening it queries firmware state and shows the pending-save prompt again.
 
 ### A Command Does Not Appear in the Saved Script
 
@@ -297,7 +314,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 | Firmware type | Confirm whether the device is Throttle, Module, or Turbine firmware |
 | App flow | Make sure you are opening the matching control/configuration screen |
 | Known devices | Forget or refresh the remembered device if stale information appears to be used |
-| Firmware version | Confirm the installed firmware is compatible with the app version |
+| Firmware version/revision | Send `VV` in the terminal to identify the exact build. A 3.3.0 revision 241 device replies `ACK:V3.3.0.241`. Confirm that the installed build is compatible with the app version. |
 
 ---
 

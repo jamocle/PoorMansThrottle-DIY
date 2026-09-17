@@ -109,6 +109,13 @@ After installation:
 2. Power the controller.
 3. Confirm the board begins advertising over BLE.
 4. Open the PMT smartphone app and scan for the throttle.
+5. For an exact firmware build check, open a terminal connection and send `VV`. Firmware 3.3.0 revision 241 replies:
+
+```text
+ACK:V3.3.0.241
+```
+
+`V` remains available when only the semantic firmware version is needed and returns `ACK:V3.3.0`.
 
 What to expect:
 - Use the firmware build that matches your controller board profile: **Classic ESP32-WROOM** or **ESP32-S3-WROOM-1-N16R8**. Do not flash a build intended for the other board profile.

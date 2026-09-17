@@ -426,8 +426,16 @@
             Start recording eligible external control commands and their timing.
           </div>
           <div class="command-card">
+            <strong><code>SR0</code></strong>
+            Stop recording now and hold the unsaved recording in the <code>SAVE</code> state.
+          </div>
+          <div class="command-card">
             <strong><code>SR=&lt;name&gt;</code></strong>
-            Stop recording and save it as <code>/scripts/&lt;name&gt;.pmt</code>.
+            Save the pending recording as <code>/scripts/&lt;name&gt;.pmt</code>. It can also still directly stop-and-save an active recording.
+          </div>
+          <div class="command-card">
+            <strong><code>SRX</code></strong>
+            Discard the pending unsaved recording and return to <code>IDLE</code>.
           </div>
           <div class="command-card">
             <strong><code>SP1=&lt;name&gt;</code></strong>
@@ -443,13 +451,88 @@
           </div>
           <div class="command-card">
             <strong><code>SS?</code></strong>
-            Query script state: idle, recording, play-once, or repeat.
+            Query script state: <code>IDLE</code>, <code>REC</code>, <code>SAVE</code>, <code>PLAY</code>, or <code>REPEAT</code>.
           </div>
           <div class="command-card">
             <strong><code>SD=&lt;name&gt;</code></strong>
-            Delete a saved firmware script when recording/playback is idle.
+            Delete a saved firmware script when no recording, pending save, or playback is active.
+          </div>
+          <div class="command-card">
+            <strong><code>SA=&lt;name&gt;,&plusmn;&lt;ms&gt;</code> / <code>SA=&plusmn;&lt;ms&gt;</code></strong>
+            Adjust the script's total pause time and save it automatically. Negative milliseconds shorten the script;
+            positive milliseconds lengthen it. The no-name form targets the currently playing script.
           </div>
         </div>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Throttle app firmware-script floater</h2>
+        <ul class="rule-list">
+          <li>
+            The firmware-script floater is on the <strong>Throttle</strong> screen and reflects the current firmware state when opened.
+          </li>
+          <li>
+            <strong>Play</strong> requests the saved script list through PX/1 <code>ScriptList</code>. Each script row lets the user choose
+            one-shot playback (<code>SP1=&lt;name&gt;</code>) or repeat playback (<code>SPR=&lt;name&gt;</code>).
+          </li>
+          <li>
+            The <code>&lt;</code> chevron in the script-list state cancels the selection and returns to the normal Play/Record controls.
+          </li>
+          <li>
+            <strong>Record</strong> sends <code>SR</code>. <strong>Stop</strong> sends <code>SR0</code>, so recording stops immediately and
+            firmware reports <code>A:SS=SAVE</code> while the app asks for a name.
+          </li>
+          <li>
+            In the <code>SAVE</code> state, <strong>Save</strong> sends <code>SR=&lt;name&gt;</code>. The <code>&lt;</code> chevron sends
+            <code>SRX</code> to discard the unsaved recording.
+          </li>
+          <li>
+            While a script is playing or repeating, the floater shows a millisecond adjustment field plus vector speed controls.
+            <strong>Speed Up</strong> (up arrow) sends <code>SA=-&lt;ms&gt;</code> to shorten total pause time.
+            <strong>Slow Down</strong> (down arrow) sends <code>SA=+&lt;ms&gt;</code> to lengthen total pause time.
+            The current cycle is not interrupted; repeat playback uses the saved adjustment on the next cycle.
+          </li>
+          <li>
+            Closing the floater does not stop active recording or playback and does not discard a pending save. Reopening the floater
+            queries firmware state so the controls match what the device is actually doing.
+          </li>
+        </ul>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Adjusting firmware-script timing</h2>
+        <p>
+          Firmware revision 242 adds <code>SA</code> (Script Adjust). Use
+          <code>SA=&lt;name&gt;,-&lt;ms&gt;</code> to shorten a saved script or
+          <code>SA=&lt;name&gt;,+&lt;ms&gt;</code> to lengthen it. During active playback, the shorter forms
+          <code>SA=-&lt;ms&gt;</code> and <code>SA=+&lt;ms&gt;</code> target the currently playing script.
+          A successful adjustment returns <code>ACK:SA</code>.
+        </p>
+        <ul class="rule-list">
+          <li>
+            Firmware normalizes the requested timing change across the script's existing <code>PAUSE</code> positions and saves
+            the adjusted <code>.pmt</code> file automatically.
+          </li>
+          <li>
+            If a reduction consumes all available pause time, firmware writes the existing positions as <code>PAUSE 0</code>
+            instead of deleting them. This preserves where a later positive adjustment can add time back.
+          </li>
+          <li>
+            If all saved pause positions are already <code>PAUSE 0</code>, positive time is distributed across those retained
+            positions. If a script has no pause positions at all, a positive adjustment is added as a trailing pause.
+          </li>
+          <li>
+            A one-shot script already in progress finishes its current run unchanged. A repeating script keeps its current cycle
+            unchanged and applies the adjusted content at the next repeat boundary.
+          </li>
+          <li>
+            The adjustment must include an explicit plus or minus sign and a non-zero millisecond magnitude from
+            <code>1</code> through <code>2147483647</code>. Invalid values return <code>ERR:VALUE</code>.
+          </li>
+        </ul>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Recording stop and naming</h2>
+        <p>
+          The current app stops recording with <code>SR0</code> before asking for a script name. This captures the final recorded
+          pause at the moment Stop is pressed. Time spent typing the name is not added to the script. While the unsaved recording
+          is waiting for a name, <code>SS?</code> reports <code>A:SS=SAVE</code>.
+        </p>
 
         <h2 style="font-size:1.3rem; margin-top:26px;">Playback control rules</h2>
         <ul class="rule-list">
@@ -502,7 +585,7 @@
         </p>
         <p>
           In repeat mode, firmware rewinds the script content without resetting the logical clock to the current time. A trailing
-          pause recorded when <code>SR=&lt;name&gt;</code> saves the script is honored before the next iteration starts.
+          pause recorded when recording stops with <code>SR0</code> (or the compatible direct <code>SR=&lt;name&gt;</code> form) is honored before the next iteration starts.
         </p>
       </div>
     </section>
