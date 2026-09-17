@@ -203,6 +203,32 @@
       color: var(--text);
     }
 
+    .paypal-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .paypal-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .paypal-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .paypal-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
     .venmo-qr-wrap {
       margin-top: 24px;
       text-align: center;
@@ -334,6 +360,7 @@
         padding: 20px;
       }
 
+      .paypal-qr,
       .venmo-qr {
         width: 100%;
       }
@@ -342,144 +369,112 @@
 </head>
 
 <body>
-  <main class="page">
-    <section class="hero">
-      <p class="eyebrow">Poor Man’s Throttle</p>
-      <h1>Miksi rakensin PMT:n</h1>
-      <p class="intro">
+<main class="page">
+<section class="hero">
+<p class="eyebrow">Poor Man’s Throttle</p>
+<h1>Miksi rakensin PMT:n</h1>
+<p class="intro">
         Edullinen langaton ajosäädinjärjestelmä, jonka tarkoitus on tehdä pienoisjunien ohjauksesta helpommin saavutettavaa, lähestyttävämpää ja edullisempaa tämän harrastuksen ystäville.
       </p>
-
-      <div class="donation-callout">
-        <p>
+<div class="donation-callout">
+<p>
           Jos Poor Man’s Throttle on auttanut sinua, inspiroinut sinua, säästänyt rahaa tai tehnyt tästä harrastuksesta helpommin saavutettavan, arvostaisin vilpittömästi tukeasi.
         </p>
-
-        <div class="venmo-qr-wrap">
-          <img src="jamocle.jpeg" alt="Venmo-QR-koodi käyttäjälle @Jamocle" class="venmo-qr" />
-          <div class="venmo-caption">
+<div class="paypal-qr-wrap">
+<img alt="PayPal-QR-koodi osoitteelle paypal.me/jamocle" class="paypal-qr" src="paypal.png"/>
+<div class="paypal-caption">
+            Lahjoita PayPalissa: <span class="paypal-handle-inline">paypal.me/jamocle</span>
+</div>
+</div><div class="venmo-qr-wrap">
+<img alt="Venmo-QR-koodi käyttäjälle @Jamocle" class="venmo-qr" src="jamocle.jpeg"/>
+<div class="venmo-caption">
             Lahjoita Venmossa: <span class="venmo-handle-inline">@Jamocle</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="content">
-      <p class="lead-quote">
+</div>
+</div>
+</div>
+</section>
+<section class="content">
+<p class="lead-quote">
         Poor Man’s Throttlea ei rakenna yritys, rahoitettu startup tai budjetilla toimiva tiimi. Sen rakentaa yksi ihminen, joka näkee ongelman pienoisrautatieyhteisössä ja päättää tehdä asialle jotain.
         <span class="me">Minä.</span>
-      </p>
-
-      <p>
+</p>
+<p>
         Tämä projekti on aidosti yhden hengen tiimi. Sen jokainen osa tulee minulta: laiteohjelmisto, sovelluskoodi, tekninen suunnittelu, dokumentaatio, videot, testaus, vianmääritys, päivitykset ja tuki, joiden avulla siitä tulee todellinen ja käyttökelpoinen.
       </p>
-
-      <p>
+<p>
         Loin Poor Man’s Throttlen, koska tiedän, kuinka kallis tämä harrastus voi olla. Tiedän, kuinka nopeasti kustannukset kasaantuvat. Tiedän, miltä tuntuu haluta parempi tapa ajaa junia ja huomata, että kaupallisen ratkaisun hinta tekee siitä saavuttamattoman. Monille harrastajille merkkivalmistajien ajosäätimet ja suljetut järjestelmät ovat yksinkertaisesti liian kalliita perusteltaviksi.
       </p>
-
-      <p>
+<p>
         Se ei vieläkään tunnu minusta oikealta.
       </p>
-
-      <hr class="section-break" />
-
-      <p>
+<hr class="section-break"/>
+<p>
         Uskon, että pitäisi olla toinenkin polku. Käytännöllinen polku. Edullinen polku. Polku harrastajille, jotka ovat valmiita rakentamaan, oppimaan ja luomaan, mutta joiden ei pitäisi joutua käyttämään pientä omaisuutta vain saadakseen sujuvan langattoman ohjauksen. Uskon, että helposti saatavilla oleva laitteisto, harkittu suunnittelu ja huolellinen toteutus pitäisi voida yhdistää joksikin, jota ihmiset voivat oikeasti käyttää.
       </p>
-
-      <p>
+<p>
         Tästä ajatuksesta syntyi <span class="emphasis">Poor Man’s Throttle</span>.
       </p>
-
-      <p>
+<p>
         Päältäpäin se voi vaikuttaa yksinkertaiselta: älypuhelinohjaus, ESP32, edullinen moottoriohjain ja halpa tapa ajaa veturia langattomasti. Mutta jokainen, joka on rakentanut jotain merkityksellistä, tietää totuuden. Ulospäin yksinkertaiselta näyttävä ratkaisu on usein valtavan näkymättömän työn tulos. Yksinkertaisuus vie aikaa. Yksinkertaisuus vaatii iterointia. Yksinkertaisuus ansaitaan.
       </p>
-
-      <p class="pull-line">Teen tämän, jotta sinun ei tarvitse.</p>
-
-      <p>
+<p class="pull-line">Teen tämän, jotta sinun ei tarvitse.</p>
+<p>
         Poor Man’s Throttle ei syntynyt yhdessä yössä. Se ei ole nopea kokeilu, joka sattuu toimimaan. Sen taustalla on pitkä ja jatkuva panostus aikaa, energiaa, sinnikkyyttä ja huolellisuutta. Se vaatii suunnittelua. Se vaatii testausta. Se vaatii epäonnistuneita aloituksia, harhapolkuja, korjauksia, uudelleenarviointia ja uudelleenrakentamista. Vie aikaa tehdä laitteistosta käytännöllinen, ohjauskokemuksesta hyödyllinen ja dokumentaatiosta niin selkeä, että muut voivat seurata sitä.
       </p>
-
-      <p>
+<p>
         Kun ihmiset näkevät projektisivun, toimivan sovelluksen, laiteohjelmistoversion tai videodemon, he näkevät lopputuloksen. He eivät aina näe sen takana olevaa työvuorta. He eivät näe tunteja, jotka kuluvat sitkeiden ongelmien vianmääritykseen, koodin hiomiseen, selitysten uudelleenkirjoittamiseen, ohjeiden parantamiseen tai siihen, että seuraavasta versiosta yritetään tehdä edellistä parempi. He eivät näe, kuinka paljon vaivaa tarvitaan, jotta jokin tuntuu helposti lähestyttävältä ensi kertaa sitä katsovalle.
       </p>
-
-      <p>
+<p>
         Mutta tuo työ on todellista. Itse asiassa suurin osa työstä on juuri siinä.
       </p>
-
-      <hr class="section-break" />
-
-      <p>
+<hr class="section-break"/>
+<p>
         Rakensin laiteohjelmiston, jotta muiden ei tarvitsisi aloittaa tyhjästä. Työstin sovellusta, jotta muilla olisi pelkän idean sijaan käyttökelpoinen käyttöliittymä. Kehitin teknisen lähestymistavan, jotta muut voisivat seurata valmiiksi mietittyä polkua. Kirjoitin dokumentaation, jotta muiden ei tarvitsisi edetä arvailemalla. Tein tukimateriaalia ja tarjosin apua, koska projekti on aidosti hyödyllinen vasta silloin, kun ihmiset voivat onnistua sen avulla.
       </p>
-
-      <p>
+<p>
         Teen tämän, koska haluan antaa jotain takaisin pienoisrautatieyhteisölle.
       </p>
-
-      <p>
+<p>
         Tämä harrastus on aina ollut täynnä rakentajia, näpertelijöitä, tekijöitä ja ihmisiä, jotka yksinkertaisesti rakastavat junia niin paljon, että haluavat jatkaa oppimista. Mutta intohimoisimmallakin harrastajalla on rajansa, ja yksi suurimmista rajoitteista monille on hinta. Kaupalliset järjestelmät voivat olla erinomaisia, mutta ne eivät aina ole helposti saavutettavia. Joillekin harrastajille ne ovat täysin ulottumattomissa. Toisille niitä on vaikea perustella, kun huomio kilpailee jo monien muiden menojen kanssa.
       </p>
-
-      <p>
+<p>
         Siksi tämä projekti on minulle tärkeä. Poor Man’s Throttlessa ei ole kyse vain rahan säästämisestä, vaikka silläkin on merkitystä. Kyse on ominaisuuksien tekemisestä helpommin saavutettaviksi. Kyse on sen osoittamisesta, ettei parempaa ohjausta, langatonta käyttöä ja nykyaikaisempaa kokemusta varten pitäisi tarvita kallista suljettua ekosysteemiä.
       </p>
-
-      <p>
+<p>
         Dead-rail-rakentajille tämä projekti tarjoaa edullisen langattoman ratkaisun helposti saatavilla olevilla komponenteilla ja tavallisilla akkuvaihtoehdoilla. Perinteisille DC-käyttäjille se tarjoaa merkittävän parannuksen PWM-moottoriohjauksen ja älypuhelinkäytön avulla. Laajemmalle DIY-pienoisrautatieyhteisölle se merkitsee vielä enemmän: ymmärrettävää, joustavaa ja edullista tietä eteenpäin.
       </p>
-
-      <section class="support-block">
-        <h2>Tue PMT:n taustalla tehtävää työtä</h2>
-
-        <p>
+<section class="support-block">
+<h2>Tue PMT:n taustalla tehtävää työtä</h2>
+<p>
           Tällainen projekti ei ylläpidä itse itseään. Jokainen parannus vaatii lisää aikaa. Jokainen täsmennys vaatii lisää työtä. Jokainen päivitys vaatii lisää testausta. Jokainen vastattu kysymys, korjattu ongelma, parannettu opas, tehty video ja hiottu koodirivi tulevat kaikki samasta paikasta.
         </p>
-
-        <p><span class="emphasis">Minä.</span></p>
-
-        <p>
+<p><span class="emphasis">Minä.</span></p>
+<p>
           Siksi pyydän tukeasi.
         </p>
-
-        <p>
-          Jos Poor Man’s Throttle on auttanut sinua, säästänyt sinulta rahaa, mahdollistanut oman projektisi, opettanut sinulle jotakin tai jos vain arvostat sitä, mitä se edustaa, arvostaisin suuresti lahjoitusta Venmo-tililleni: <span class="emphasis">@Jamocle</span>.
-        </p>
-
-        <p>
+<p>Jos Poor Man’s Throttle on auttanut sinua, säästänyt rahaa, mahdollistanut oman projektisi, opettanut sinulle jotain tai jos yksinkertaisesti arvostat sitä, mitä se edustaa, arvostaisin suuresti lahjoitusta PayPal-tililleni: <span class="emphasis">paypal.me/jamocle</span>, tai Venmo-tililleni: <span class="emphasis">@Jamocle</span>.</p>
+<p>
           Lahjoituksesi on enemmän kuin tippi. Se on tunnustus. Se on kannustus. Se on tukea jo käytetyille tunneille ja vielä edessä oleville tunneille. Se auttaa tukemaan jatkuvaa työtä laiteohjelmiston, sovelluksen, dokumentaation, videoiden ja tuen parissa, jotka pitävät tämän projektin elossa ja kehittymässä.
         </p>
-
-        <p>
+<p>
           Ennen kaikkea se auttaa ylläpitämään yhden ihmisen työtä, joka on tehty muiden hyödyksi.
         </p>
-
-        <p>
+<p>
           Minä otan monimutkaisuuden harteilleni, jotta sinä voit aloittaa jostakin jo toimivaksi todetusta. Käytän tunnit oppimiseen, testaamiseen, epäonnistumiseen, hiomiseen, dokumentointiin ja uudelleenrakentamiseen, jotta sinulla olisi selkeämpi polku. Rakennan tätä, koska uskon yhteisön ansaitsevan edullisen vaihtoehdon nyt, ei vasta silloin, jos jokin yritys päättää siinä olevan tarpeeksi voittoa.
         </p>
-
-        <p>
+<p>
           Tämä on työtä. Oikeaa työtä. Ammattitaitoista työtä. Aikaa vievää työtä. Ja kaiken tekee yksi ihminen.
         </p>
-
-        <p class="final-ask">
-          Jos uskot tämän työn olevan tukemisen arvoista, olisin syvästi kiitollinen avustasi. Harkitse lahjoittamista osoitteeseen
-          <span class="emphasis">@Jamocle</span>.
-        </p>
-
-        <p>
+<p class="final-ask">Jos koet tämän työn tukemisen arvoiseksi, olisin syvästi kiitollinen avustasi. Harkitse lahjoitusta PayPalissa osoitteeseen <span class="emphasis">paypal.me/jamocle</span> tai Venmossa käyttäjälle <span class="emphasis">@Jamocle</span>.</p>
+<p>
           Kiitos, että olet täällä. Kiitos, että välität tästä harrastuksesta. Ja vilpitön kiitos siitä, että tuet yhden hengen tiimin työtä, jonka tavoitteena on antaa jotain merkityksellistä takaisin pienoisrautatieyhteisölle.
         </p>
-      </section>
-    </section>
-
-    <footer>
+</section>
+</section>
+<footer>
       Poor Man’s Throttle — rakennettu tekemään pienoisjunien langattomasta ohjauksesta helpommin saavutettavaa.
     </footer>
-  </main>
+</main>
 </body>
 
 </html>
