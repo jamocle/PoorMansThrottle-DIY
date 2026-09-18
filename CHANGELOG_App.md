@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 3.3.1
+* **Added new CV in firmware to backup** Added CV15 to backup.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.0
 * **Aupport for Automation scripts** No the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
 * **Bug Fixes**
