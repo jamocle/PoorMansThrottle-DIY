@@ -51,7 +51,8 @@ OTA behavior:
 - OTA is supported on the ESP32-S3 throttle builds only. Classic ESP32-WROOM throttle hardware uses the USB installer.
 - The app asks the device whether OTA is supported before offering the update.
 - OTA installs the board target's catalog `latest` firmware. It does not install a version selected from the USB installer's version list.
-- Older versions, specific-version installs, downgrades, and recovery installs remain USB-only.
+- `CV15=0` (default) rejects OTA when catalog `latest` is older than the running semantic firmware version. `CV15=1` explicitly permits OTA to install that older catalog `latest`.
+- USB remains the path for recovery and for choosing a specific or arbitrary older firmware version. `CV15=1` does not make OTA a historical-version selector.
 - When OTA is accepted, the throttle first performs its normal stop behavior and waits until it is fully stopped before firmware transfer begins.
 - During the actual firmware transfer, the app can receive progress in 10% steps from `0%` through `100%`.
 - `0%` means the firmware image transfer/write phase has started. Manifest lookup and OTA preparation happen before `0%`.
@@ -109,10 +110,10 @@ After installation:
 2. Power the controller.
 3. Confirm the board begins advertising over BLE.
 4. Open the PMT smartphone app and scan for the throttle.
-5. For an exact firmware build check, open a terminal connection and send `VV`. Firmware 3.3.0 revision 241 replies:
+5. For an exact firmware build check, open a terminal connection and send `VV`. Firmware 3.3.0 revision 248 replies:
 
 ```text
-ACK:V3.3.0.241
+ACK:V3.3.0.248
 ```
 
 `V` remains available when only the semantic firmware version is needed and returns `ACK:V3.3.0`.

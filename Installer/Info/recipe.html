@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="Poor Man's Throttle full hardware recipe: ESP32 core, 5V USB-C power, motor driver, and I2S audio amplifier." />
+  <title>Poor Man's Throttle — Full Recipe</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;--surface:rgba(255,255,255,.88);--surface-solid:#ffffff;--text:#1d1d1f;
+      --muted:#6e6e73;--line:#d2d2d7;--accent:#0071e3;--accent-soft:rgba(0,113,227,.08);
+      --green:#137a43;--green-soft:rgba(19,122,67,.08);--gold:#9b6500;--gold-soft:rgba(155,101,0,.09);
+      --shadow:0 16px 46px rgba(0,0,0,.08);--radius:28px;--max:1120px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{
+      margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top, #ffffff 0%, #f7f7f9 46%, #ececf1 100%);
+      color:var(--text);line-height:1.58;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    a{color:inherit}
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:24px 16px 72px}
+    .hero{text-align:center;padding:10px 4px 12px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;padding:7px 13px;border-radius:999px;
+      background:rgba(255,255,255,.82);border:1px solid rgba(0,113,227,.16);color:var(--accent);
+      font-size:.86rem;font-weight:700;letter-spacing:.02em;backdrop-filter:blur(12px)
+    }
+    h1{margin:17px auto 10px;max-width:900px;font-size:clamp(2.2rem,7vw,4.4rem);line-height:1.02;letter-spacing:-.045em;font-weight:760}
+    .lead{max-width:860px;margin:0 auto;color:var(--muted);font-size:clamp(1.04rem,2.8vw,1.27rem)}
+    .hero-image{margin-top:26px;overflow:hidden;border-radius:30px;background:#111;box-shadow:0 24px 64px rgba(0,0,0,.16)}
+    .hero-image img{display:block;width:100%;height:auto}
+    .section{margin-top:28px;background:var(--surface);border:1px solid rgba(255,255,255,.8);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+    .section-header{padding:28px 22px 0}
+    h2{margin:0 0 10px;font-size:clamp(1.45rem,4vw,2.35rem);line-height:1.08;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.18rem;letter-spacing:-.015em}
+    .section-header p{margin:0 0 20px;color:var(--muted)}
+    .content{padding:22px}
+    .recipe-strip,.image-grid{display:grid;gap:10px;padding:16px;background:linear-gradient(180deg,rgba(255,255,255,.97),rgba(248,248,250,.93));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .recipe-item{display:flex;align-items:center;gap:12px;padding:15px 16px;background:#fff;border:1px solid #e6e6eb;border-radius:20px}
+    .icon{flex:0 0 42px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-size:1.3rem;font-weight:800}
+    .recipe-item.required{border-color:rgba(19,122,67,.25);background:linear-gradient(180deg,#fff,rgba(19,122,67,.035))}
+    .recipe-item.required .icon{background:var(--green-soft);color:var(--green)}
+    .recipe-item strong{display:block}.recipe-item small{display:block;color:var(--muted);margin-top:2px}
+    .grid{display:grid;gap:14px}
+    .card,.image-card{padding:19px;background:var(--surface-solid);border:1px solid #e5e5ea;border-radius:22px;box-shadow:0 10px 22px rgba(0,0,0,.05)}
+    .image-card{padding:0;overflow:hidden}
+    .image-card img{
+      display:block;
+      width:100%;
+      height:clamp(220px,32vw,340px);
+      object-fit:contain;
+      object-position:center;
+      background:#fff;
+      padding:18px;
+    }
+    .image-card.single-product{
+      max-width:560px;
+      margin:0 auto;
+    }
+    .image-card .caption{padding:12px 14px 14px;border-top:1px solid #ececf1;color:var(--muted);font-size:.94rem}
+    .label{display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.8rem;font-weight:750;letter-spacing:.02em}
+    .label.required{background:var(--green-soft);color:var(--green)}
+    .label.flexible{background:var(--gold-soft);color:var(--gold)}
+    .card p{margin:0 0 12px;color:#353538}
+    .card ul{margin:10px 0 0;padding-left:20px}
+    .card li{margin-bottom:7px}
+    .link-card{display:block;text-decoration:none;padding:18px;background:#fff;border:1px solid #e4e4e9;border-radius:22px;transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease}
+    .link-card:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.08);border-color:rgba(0,113,227,.28)}
+    .link-card .arrow{float:right;color:var(--accent);font-size:1.25rem;font-weight:700}
+    .link-card p{margin:6px 0 0;color:var(--muted)}
+    .amazon{
+      margin-top:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      text-decoration:none;
+      background:#fff5e8;
+      border:1px solid #f1b45f;
+      color:#6b4300;
+      font-size:.94rem;
+      font-weight:750;
+      box-shadow:0 5px 14px rgba(241,180,95,.16);
+    }
+    .amazon:hover{
+      background:#ffecd2;
+      border-color:#e9a13d;
+    }
+    .amazon-logo{
+      flex:0 0 32px;
+      width:32px;
+      height:32px;
+      object-fit:cover;
+      border-radius:8px;
+      display:block;
+      box-shadow:0 2px 6px rgba(0,0,0,.12);
+    }
+    .callout{margin-top:18px;padding:18px 20px;border-radius:20px;background:var(--green-soft);border-left:4px solid var(--green);color:#184f31}
+    .note{margin-top:18px;padding:17px 19px;border-radius:20px;background:var(--gold-soft);border:1px solid rgba(155,101,0,.15);color:#684309}
+    .cta{margin-top:18px;padding:24px;border-radius:24px;text-align:center;background:linear-gradient(135deg,#151517,#2b2b2f);color:#fff}
+    .cta strong{display:block;font-size:clamp(1.35rem,4.5vw,2.15rem);letter-spacing:-.025em;line-height:1.12;margin-bottom:8px}
+    .cta span{color:#d9d9df}
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+    @media(min-width:760px){
+      .wrap{padding:36px 24px 82px}.section-header{padding:34px 30px 0}.content{padding:28px 30px 34px}
+      .recipe-strip{grid-template-columns:repeat(4,minmax(0,1fr))}.grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .image-grid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">POOR MAN'S THROTTLE • FULL HARDWARE RECIPE</div>
+    <h1>Four building blocks. One seriously capable throttle.</h1>
+    <p class="lead">
+      PMT is intentionally flexible: the <strong>ESP32 is the core requirement</strong>, while power conversion,
+      motor control, and audio can be matched to the size, power, and layout you are building.
+    </p>
+    <div class="hero-image">
+      <img src="poor-mans-throttle-recipe-hero.png" alt="Poor Man's Throttle full hardware recipe showing ESP32, 5V power converter, motor driver, and audio amplifier." />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>From here, the recipe splits into two parts</h2>
+      <p>
+        Start with the <strong>Base PMT Installation</strong> for control, power, and motor drive.
+        Then add the <strong>Optional Audio Addition</strong> when you want locomotive sound. Specific brands are not required;
+        choose compatible parts that fit your locomotive, current needs, available space, and budget.
+      </p>
+    </div>
+
+    <div class="recipe-strip">
+      <div class="recipe-item required">
+        <div class="icon">1</div>
+        <div><strong>ESP32</strong><small>Base PMT • required core</small></div>
+      </div>
+      <div class="recipe-item">
+        <div class="icon">2</div>
+        <div><strong>5V USB-C Power</strong><small>Base PMT • choose a converter</small></div>
+      </div>
+      <div class="recipe-item">
+        <div class="icon">3</div>
+        <div><strong>Motor Driver</strong><small>Base PMT • choose for size &amp; current</small></div>
+      </div>
+      <div class="recipe-item">
+        <div class="icon">+</div>
+        <div><strong>I2S Audio Amp</strong><small>Optional sound addition</small></div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div class="callout">
+        <strong>Base PMT hardware: about $21.</strong>
+        That gets you the controller, 5V power conversion, and motor driver needed for the core throttle installation.
+        With the recommended parts, you get a future-capable ESP32-S3 and a high-power motor driver without paying premium-system prices.
+      </div>
+      <div class="note">
+        <strong>Optional audio addition: about $4 in hardware.</strong>
+        Add a compact I2S amplifier and speaker when you want sound. The base throttle works without audio, so you can build the core system first
+        and add sound later without rethinking the whole installation.
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Base PMT Installation — 1. ESP32 Controller</h2>
+      <p>
+        The ESP32 is the brains of the base Poor Man's Throttle installation. For new builds, the S3 family gives you the most headroom
+        for modern PMT features while keeping the base hardware target around <strong>$21 total</strong>.
+      </p>
+    </div>
+
+    <div class="image-grid">
+      <figure class="image-card single-product">
+        <img src="esp32-s3-cam-example.png" alt="ESP32-S3-CAM development board with camera." />
+        <figcaption class="caption">One ESP32-S3 example. PMT supports ESP32-S3-N16R8 and ESP32-S3-N8R8 configurations; choose the board that best fits your build.</figcaption>
+      </figure>
+    </div>
+
+    <div class="content">
+      <div class="grid two">
+        <article class="card">
+          <span class="label required">RECOMMENDED ESP32-S3</span>
+          <h3>ESP32-S3-N16R8</h3>
+          <p>
+            A strong choice when you want maximum memory headroom for a full-featured build, especially when combining
+            throttle control, audio, and other advanced PMT capabilities.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="label required">RECOMMENDED ESP32-S3</span>
+          <h3>ESP32-S3-N8R8</h3>
+          <p>
+            Another supported S3 option with plenty of capability for PMT. Choose between N8R8 and N16R8 based on availability,
+            price, and the amount of storage headroom you want.
+          </p>
+        </article>
+      </div>
+
+      <article class="card" style="margin-top:14px">
+        <span class="label">CAMERA BOARD EXAMPLE</span>
+        <h3>ESP32-S3-CAM Development Board with OV3660 Camera</h3>
+        <p>
+          An example of an all-in-one ESP32-S3 camera board using an ESP32-S3-WROOM N16R8 module and dual USB-C interfaces.
+          This is an example, not a required brand or exact model.
+        </p>
+        <a class="amazon" href="https://www.amazon.com/dp/B0GD2BZ9B1?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_1&amp;th=1" target="_blank" rel="noopener noreferrer">
+            <img class="amazon-logo" src="amazon-product-link-icon.png" alt="" aria-hidden="true" />Link to product on Amazon ↗
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Base PMT Installation — 2. 5V USB-C Power</h2>
+      <p>
+        Your locomotive or layout may provide 12V or 24V, but the ESP32 needs an appropriate 5V supply.
+        A compact DC-DC buck converter makes that conversion easy.
+      </p>
+    </div>
+
+    <div class="image-grid">
+      <figure class="image-card single-product">
+        <img src="buck-converter-example.png" alt="5V USB-C buck converter example for Poor Man's Throttle." />
+        <figcaption class="caption">Example 12V/24V to 5V USB-C buck converter. The exact seller is not important — the role is clean, stable 5V power for the ESP32.</figcaption>
+      </figure>
+    </div>
+
+    <div class="content">
+      <article class="card">
+        <span class="label flexible">FLEXIBLE PART</span>
+        <h3>5V Buck Converter</h3>
+        <p>
+          Example specification: <strong>DC 12V/24V to 5V USB-C, 3A / 15W Type-C output</strong>.
+          The exact brand is not important; use a reliable converter with the correct input range and enough output current for your build.
+        </p>
+        <ul>
+          <li>Accepts the locomotive/layout supply voltage.</li>
+          <li>Provides stable 5V power for the ESP32.</li>
+          <li>USB-C output can make the controller connection clean and serviceable.</li>
+        </ul>
+        <a class="amazon" href="https://www.amazon.com/dp/B0BNQ9XXCZ" target="_blank" rel="noopener noreferrer">
+          <img class="amazon-logo" src="amazon-product-link-icon.png" alt="" aria-hidden="true" />Link to product on Amazon ↗
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Base PMT Installation — 3. Motor Driver</h2>
+      <p>
+        This is where PMT's flexibility really pays off. Choose the driver based on motor current, physical size,
+        voltage, and the locomotive or accessory you are powering.
+      </p>
+    </div>
+
+    <div class="image-grid">
+      <figure class="image-card single-product">
+        <img src="motor-driver-ibt2-example.png" alt="IBT-2 motor driver example for Poor Man's Throttle." />
+        <figcaption class="caption">IBT-2 / BTS7960 style board shown as one example of a higher-current motor driver option.</figcaption>
+      </figure>
+    </div>
+
+    <div class="content">
+      <article class="card">
+        <span class="label flexible">FLEXIBLE PART</span>
+        <h3>Motor Driver</h3>
+        <p>
+          PMT supports a wide variety of common motor-driver control styles. An IBT-2 / BTS7960 is one example for higher-current applications,
+          but smaller drivers can be used when space and current requirements are lower.
+        </p>
+        <p>
+          The important decision is not the logo on the board — it is choosing a driver with the right electrical capacity and control interface for your build.
+        </p>
+        <a class="amazon" href="https://www.amazon.com/QCCAN-BTS7960-H-Bridge-Current-Diagnostic/dp/B0B71HRDH3/ref=sr_1_7?crid=3S4QRPZ1HA9W1&amp;dib=eyJ2IjoiMSJ9.QAg7cNb8deCnj4TTXFpX0vkMpVcddSLdKrG3_M6R5KL49n4Bab8SssnM7V7CgE7BK6jlQ3uC1tLX3ER3FoHfb6x0vSJgMgUaJGZQo3FpFhZn6dIk0nROw_iGiBJWB_c0S7t5Lgir6fLVMUvioqgvMzMytZbiHgSMwuK6BlEdtr1spJVrTcs7sfR7122wGLGD2td0qFEjz8YUQQNtqT38sqiK9PBlbxOryN5zG8OEXRkHY6N-ncZ_O6QCeQRFlxzYAydxkFXz-NFCchYa6dFoi8aMePTvVA3bQu5wYEkgSmw.yQSYyWGVR5e-eebiWKIQ6RVCIXboXJ1YcmLrL9pt054&amp;dib_tag=se&amp;keywords=ibt2&amp;qid=1789757806&amp;s=home-garden&amp;sprefix=ibt2%2Cgarden%2C110&amp;sr=1-7" target="_blank" rel="noopener noreferrer">
+            <img class="amazon-logo" src="amazon-product-link-icon.png" alt="" aria-hidden="true" />Link to product on Amazon ↗
+        </a>
+      </article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Optional Audio Addition</h2>
+      <p>
+        Audio is an optional add-on to the base PMT installation. For about <strong>$4 in additional hardware</strong>,
+        an I2S amplifier and speaker turn the ESP32's digital audio stream into real locomotive sound.
+      </p>
+    </div>
+
+    <div class="image-grid two">
+      <figure class="image-card">
+        <img src="max98357a-amp-example.png" alt="MAX98357A style I2S audio amplifier example." />
+        <figcaption class="caption">MAX98357A-style amplifier boards are compact, affordable, and well suited to PMT audio builds.</figcaption>
+      </figure>
+      <figure class="image-card">
+        <img src="audio-controller-speaker-example.png" alt="Audio controller and speaker example." />
+        <figcaption class="caption">Another audio example showing a controller-and-speaker style setup for users planning a complete sound installation.</figcaption>
+      </figure>
+    </div>
+
+    <div class="content">
+      <article class="card">
+        <span class="label flexible">FLEXIBLE PART</span>
+        <h3>I2S Audio Amplifier</h3>
+        <p>
+          MAX98357A-style I2S mono amplifier boards are compact, inexpensive, and well suited to embedded locomotive audio.
+          A roughly 4W amplifier driving a 4Ω or 8Ω speaker can deliver plenty of volume in a locomotive-sized installation.
+          You are not locked to one seller or brand — choose a compatible I2S amplifier that fits your speaker and installation.
+        </p>
+
+        <div>
+          <a class="amazon" href="https://www.amazon.com/dp/B0GV7S7V77?ref=ppx_yo2ov_dt_b_fed_asin_title&amp;th=1" target="_blank" rel="noopener noreferrer">
+            <img class="amazon-logo" src="amazon-product-link-icon.png" alt="" aria-hidden="true" />Link to product on Amazon ↗
+          </a>
+          <a class="amazon" href="https://www.amazon.com/dp/B0B4J93M9N?ref_=ppx_hzsearch_conn_dt_b_fed_asin_title_2&amp;th=1" target="_blank" rel="noopener noreferrer">
+            <img class="amazon-logo" src="amazon-product-link-icon.png" alt="" aria-hidden="true" />Link to product on Amazon ↗
+          </a>
+        </div>
+      </article>
+      <article class="card" style="margin-top:14px">
+        <span class="label flexible">ALSO REQUIRED FOR AUDIO</span>
+        <h3>Complete the Optional Audio Addition</h3>
+        <p>
+          To finish the sound upgrade, you will also need an <strong>8Ω or 4Ω 5W speaker</strong> and a
+          <strong>small micro SD flash card</strong>. A <strong>128MB card is sufficient</strong> for the audio recipe.
+        </p>
+      </article>
+
+      <div class="image-grid two" style="margin-top:14px">
+        <figure class="image-card">
+          <img src="speaker-8ohm-5w-required.png" alt="8 ohm or 4 ohm 5 watt speaker required for the optional audio addition." />
+          <figcaption class="caption">Speaker requirement for audio: use a 4Ω or 8Ω 5W speaker.</figcaption>
+        </figure>
+        <figure class="image-card">
+          <img src="micro-sd-128mb-required.png" alt="Micro SD flash card required for the optional audio addition." />
+          <figcaption class="caption">Storage requirement for audio: a small micro SD flash card is also required. 128MB is enough.</figcaption>
+        </figure>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Base first. Sound when you want it.</h2>
+      <p>
+        The hardware cost stays easy to understand: roughly <strong>$21 for the base PMT installation</strong>,
+        then about <strong>$4 more for the optional audio addition</strong>.
+      </p>
+    </div>
+
+    <div class="content">
+      <div class="grid two">
+        <article class="card">
+          <span class="label required">BASE PMT • ~$21</span>
+          <h3>Controller + Power + Motor Drive</h3>
+          <p>
+            The base installation gives you the future-capable ESP32-S3, 5V power conversion, and motor-driver hardware needed
+            to build a complete Poor Man's Throttle control system.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="label flexible">OPTIONAL AUDIO • +~$4</span>
+          <h3>Add sound without rebuilding the base</h3>
+          <p>
+            Add an I2S amplifier and speaker whenever you want audio. The sound hardware is an addition to the base PMT recipe,
+            not a requirement for the throttle itself.
+          </p>
+        </article>
+      </div>
+
+      <div class="cta">
+        <strong>About $21 gets the base throttle running. About $4 more adds real sound.</strong>
+        <span>
+          A future-ready ESP32-S3, flexible motor-driver choices, and an inexpensive audio path when you want it —
+          serious model railroad capability without the premium-system price tag.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2>Installation Guides</h2>
+      <p>
+        Once you have the hardware, use these two guides in order: build the base PMT installation first,
+        then follow the audio guide only if you are adding sound.
+      </p>
+    </div>
+
+    <div class="content">
+      <div class="grid two">
+        <a class="link-card" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_IBT2_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
+          <span class="arrow">↗</span>
+          <strong>Base PMT Installation</strong>
+          <p>
+            Start here. This is the core installation guide for building and wiring the Poor Man's Throttle hardware,
+            including the controller, power, and motor-drive side of the system.
+          </p>
+        </a>
+
+        <a class="link-card" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
+          <span class="arrow">↗</span>
+          <strong>Optional Audio Addition</strong>
+          <p>
+            Use this after the base PMT installation when you want to add locomotive sound.
+            It covers the audio hardware, amplifier, speaker, and PMT audio setup.
+          </p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">
+    Poor Man's Throttle — more choice, more capability, fewer artificial limits.
+  </div>
+
+</main>
+</body>
+</html>

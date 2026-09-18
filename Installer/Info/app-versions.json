@@ -1,42 +1,6 @@
 {
     "versions": [
         {
-            "version": "3.3.0",
-            "title": "Automation and Scripting",
-            "description": "PMT now supports Automation and Scripting capabilities to bring your trains to life....repeatedly!",
-            "info": "automation.html",
-            "show-again": "2026-04-24 16:24:04"
-        },
-        {
-            "version": "3.2.0",
-            "title": "Firmware Update Wirelessly!",
-            "description": "PMT now supports Over-The-Air (OTA) Firmware updates (Requires firmware 3.2.0 or later and the ESP32-S3).",
-            "info": "ota_firmware_update.html",
-            "show-again": "2026-04-24 16:24:04"
-        },
-        {
-            "version": "3.1.0",
-            "title": "Individual sound volume control",
-            "description": "PMT now supports the avility to set the relatiuve volume between different sounds.",
-            "info": "individual_sound_control.html",
-            "show-again": "2026-04-24 16:24:04"
-        },
-        {
-            "version": "3.0.0",
-            "title": "Let there be sound!",
-            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
-            "info": "soundfinally.html",
-            "show-again": "2026-04-24 16:24:04"
-        },
-        {
-            "version": "1.1.0",
-            "title": "Let there be sound!",
-            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
-            "info": "soundfinally.html",
-            "show-again": "2026-04-24 16:24:04",
-            "info-only": true
-        },
-        {
             "version": "1.0.0",
             "title": "Hardware Installation",
             "description": "Various Motor Driver installation options supported by PMT",
@@ -56,6 +20,21 @@
             "description": "Match the throttle to the motor for maximum reality",
             "info": "throttle-limits.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "1.0.3",
+            "title": "Build Poor Man's Throttle",
+            "description": "Full recipe on how to build PMT for your layout",
+            "info": "recipe.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "1.1.0",
+            "title": "Let there be sound!",
+            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
+            "info": "soundfinally.html",
+            "show-again": "2026-04-24 16:24:04",
+            "info-only": true
         },
         {
             "version": "1.6.0",
@@ -180,6 +159,34 @@
             "title": "Record While You Control",
             "description": "You can now record video and control your locomotive at the same time with the camera overlay.",
             "info": "camera_overlay.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "3.3.0",
+            "title": "Automation and Scripting",
+            "description": "PMT now supports Automation and Scripting capabilities to bring your trains to life....repeatedly!",
+            "info": "automation.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "3.2.0",
+            "title": "Firmware Update Wirelessly!",
+            "description": "PMT now supports Over-The-Air (OTA) Firmware updates (Requires firmware 3.2.0 or later and the ESP32-S3).",
+            "info": "ota_firmware_update.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "3.1.0",
+            "title": "Individual sound volume control",
+            "description": "PMT now supports the avility to set the relatiuve volume between different sounds.",
+            "info": "individual_sound_control.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "3.0.0",
+            "title": "Let there be sound!",
+            "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
+            "info": "soundfinally.html",
             "show-again": "2026-04-24 16:24:04"
         }
     ]

@@ -175,7 +175,7 @@
   <main class="wrap">
     <a class="back" href="soundfinally.html">← Back to PMT 3.0 Audio</a>
     <header class="hero">
-      <div class="eyebrow">PMT FIRMWARE 3.0.0</div>
+      <div class="eyebrow">PMT FIRMWARE 3.3.0</div>
       <h1>PMTPlayer Audio Installation Guide</h1>
       <p>Installer-focused wiring, setup, first-power-on, troubleshooting, and reference information for Classic ESP32, standard ESP32-S3 N16R8/N8R8, and ESP32-S3 CAM N16R8.</p>
     </header>
@@ -193,7 +193,7 @@
     <article class="guide">
       <h1>PMTPlayer Audio Installation Guide</h1>
 <h2>Classic ESP32, ESP32-S3 N16R8, and ESP32-S3 CAM N16R8</h2>
-<p><strong>For PMT firmware 3.0.0</strong></p>
+<p><strong>For PMT firmware 3.3.0</strong></p>
 <p>This guide is written for installers. Use the section for your board and wire it exactly as shown.</p>
 <h2 id="bill-of-materials">Bill of Materials</h2>
 <p>For the <strong>ESP32-S3-N16R8</strong> audio installation:</p>
@@ -985,6 +985,40 @@ The board read and checked the WAV file, but it could not save the generated <co
 </tr>
 </tbody>
 </table>
+<h2>Advanced PMTPlayer tuning</h2>
+<p>Most installations should leave these values at their defaults. These CVs tune PMTPlayer behavior after the basic audio wiring/configuration above is working.</p>
+<table>
+<thead>
+<tr>
+  <th style="text-align:right">CV</th>
+  <th>Setting</th>
+  <th>Values / Default</th>
+</tr>
+</thead>
+<tbody>
+<tr><td style="text-align:right">CV410</td><td>Default audio priority</td><td><code>0..100</code> / <code>30</code></td></tr>
+<tr><td style="text-align:right">CV411</td><td>Conflict policy</td><td><code>0..2</code> / <code>1</code>; <code>0=IgnoreLowerPriority</code>, <code>1=InterruptThenResume</code>, <code>2=ReplaceSameGroup</code></td></tr>
+<tr><td style="text-align:right">CV412</td><td>Startup delay</td><td><code>0..10000 ms</code> / <code>0</code></td></tr>
+<tr><td style="text-align:right">CV413</td><td>Shutdown delay</td><td><code>0..10000 ms</code> / <code>0</code></td></tr>
+<tr><td style="text-align:right">CV414</td><td>Amplifier enable pin</td><td><code>-1</code> or valid output GPIO / <code>-1</code></td></tr>
+<tr><td style="text-align:right">CV415</td><td>Amplifier mute pin</td><td><code>-1</code> or valid output GPIO / <code>-1</code></td></tr>
+<tr><td style="text-align:right">CV416</td><td>Amplifier standby pin</td><td><code>-1</code> or valid output GPIO / <code>-1</code></td></tr>
+<tr><td style="text-align:right">CV417</td><td>Fault input pin</td><td><code>-1</code> or valid input GPIO / <code>-1</code></td></tr>
+<tr><td style="text-align:right">CV418</td><td>PMTPlayer profile</td><td><code>0..3</code> / <code>3</code>; profiles <code>0..2</code> reapply predefined advanced settings, <code>3</code> preserves explicit values</td></tr>
+<tr><td style="text-align:right">CV419</td><td>WAV gain</td><td><code>1..12</code> / <code>1</code></td></tr>
+<tr><td style="text-align:right">CV420</td><td>Output headroom</td><td><code>50..100%</code> / <code>100</code></td></tr>
+<tr><td style="text-align:right">CV421</td><td>Limiter / loudness mode</td><td><code>0..10</code> / <code>10</code></td></tr>
+<tr><td style="text-align:right">CV422</td><td>Speaker size profile</td><td><code>0..2</code> / <code>2</code>; <code>0=large</code>, <code>1=medium</code>, <code>2=small</code></td></tr>
+<tr><td style="text-align:right">CV423</td><td>Maximum active voices</td><td><code>0..255</code> / board default; <code>0</code> uses the board default (Classic <code>3</code>, S3 <code>13</code>)</td></tr>
+<tr><td style="text-align:right">CV424</td><td>Overlap mode</td><td>effective <code>0..2</code> / <code>1</code></td></tr>
+<tr><td style="text-align:right">CV425</td><td>Async overlap start</td><td><code>0</code>, <code>1</code> / <code>1</code></td></tr>
+<tr><td style="text-align:right">CV426</td><td>Start prime bytes</td><td><code>0..16384</code> / <code>12288</code></td></tr>
+<tr><td style="text-align:right">CV427</td><td>Overlap prime bytes</td><td><code>0..16384</code> / <code>0</code></td></tr>
+<tr><td style="text-align:right">CV428</td><td>Mixer attenuation</td><td><code>25..100%</code> / <code>100</code></td></tr>
+<tr><td style="text-align:right">CV429</td><td>Clip telemetry</td><td><code>0</code>, <code>1</code> / default constant <code>1</code>; normal non-verbose builds normalize to <code>0</code></td></tr>
+</tbody>
+</table>
+<p>For the exact interaction details of profiles, speaker-size presets, board defaults, and diagnostic-only behavior, see <code>appendix_Configuration_Variables.md</code>.</p>
 <h2>ESP32-S3 CAM onboard microSD</h2>
 <p>For normal CAM use, the onboard microSD card is already wired internally.</p>
 <p>If you need to explicitly force the firmware to use the onboard card reader, use:</p>

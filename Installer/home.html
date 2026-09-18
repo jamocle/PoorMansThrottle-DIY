@@ -345,8 +345,10 @@
           </div>
           <p class="note">
             Supported ESP32-S3 N16R8 and N8R8 throttle devices can install the catalog's latest firmware
-            from the Poor Man's Throttle app when Wi-Fi is connected. OTA is for the current latest release;
-            use the USB installer below for Classic ESP32, recovery, rollback, or a specific/older version.
+            from the Poor Man's Throttle app when Wi-Fi is connected. OTA always targets the catalog
+            <code>latest</code>; by default <code>CV15=0</code> refuses an older catalog version, while
+            <code>CV15=1</code> explicitly permits that catalog downgrade. Use the USB installer below for
+            Classic ESP32, recovery, or selecting a specific/older version.
           </p>
           <p>
             <a class="doc-link" href="Info/ota_firmware_update.html">Read the ESP32-S3 OTA firmware update guide</a>
@@ -514,7 +516,7 @@
               <li>Confirm the installation.</li>
               <li>For a normal update, keep <strong>Erase device</strong> off/unchecked.</li>
               <li>Wait until ESP Web Tools says the installation has finished. Do not unplug the board while it is writing.</li>
-              <li>Optional exact-build check: after reconnecting, send <code>VV</code> from the PMT terminal. Firmware 3.3.0 revision 241 replies <code>ACK:V3.3.0.241</code>.</li>
+              <li>Optional exact-build check: after reconnecting, send <code>VV</code> from the PMT terminal. Firmware 3.3.0 revision 248 replies <code>ACK:V3.3.0.248</code>.</li>
             </ol>
           </div>
 

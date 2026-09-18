@@ -1,6 +1,7 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.0.0
+**Firmware Version:** 3.3.0
+**Firmware Revision:** 248
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -19,7 +20,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 3.0.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 3.3.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -107,7 +108,7 @@ A:CV2=25
 | **All** | Shared CV available on Throttle, Module, and Turbine firmware. |
 | **Throttle** | Available only on locomotive throttle firmware. |
 | **Turbine** | Available only on PoorMansTurbine firmware. |
-| **Module** | Available only on module firmware. In firmware 3.0.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
+| **Module** | Available only on module firmware. In firmware 3.3.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
 
 ---
 
@@ -124,6 +125,7 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV12** | All | Wi-Fi Password | Text / blank | Set-only from the terminal. Query returns `ERR`. |
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
+| **CV15** | All | OTA Allow Downgrade | `0`, `1` / `0` | Controls downgrade protection for supported ESP32-S3 Throttle OTA. `0` rejects a catalog `latest` semantic version older than the firmware currently running; `1` permits OTA to install that older catalog `latest`. This does not select an arbitrary historical version; use the USB installer when a specific version or recovery image must be chosen. |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
 | **CV21** | All | Onboard LED Output Gate | `0`, `1`, `2` / `1` | Final hardware-output gate for the firmware-controlled onboard status LED. `0` forces the onboard LED output off. `1` passes the LED state currently proposed by the firmware, including its current color and blink pattern. `2` forces the onboard LED output off while either BLE or WebSocket control is connected and passes the proposed LED state while disconnected. The LED state machine continues running while output is gated. |
 | **CV30** | All | INA219 Enable | `0`, `1` / `0` | Enables or disables optional INA219 battery telemetry. Disabled by default. |
@@ -305,7 +307,7 @@ Turbine output is controlled with `F` commands, not locomotive throttle commands
 
 # Module-Specific CVs
 
-In firmware 3.0.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
+In firmware 3.3.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
 
 Use the **Shared CVs** table for Module configuration.
 
@@ -514,7 +516,7 @@ In this example:
 
 Throttle firmware supports **12 function outputs** with per-function configuration.
 
-Each function uses a 7-CV block. In firmware 3.0.0 revision 215, the first five CVs in each block are implemented; the last two positions remain reserved.
+Each function uses a 7-CV block. In firmware 3.3.0 revision 248, the first five CVs in each block are implemented; the last two positions remain reserved.
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | --- | ---: | ---: | ---: | ---: | ---: |

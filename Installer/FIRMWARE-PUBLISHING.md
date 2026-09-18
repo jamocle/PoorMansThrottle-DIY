@@ -169,9 +169,11 @@ Publishing rules:
 
 `latest` is the OTA release pointer. `dropdownDefault` remains a USB-installer UI choice and can intentionally differ from `latest`. Entries in `versions[]` are also USB-installer choices; they do not make a version selectable by OTA.
 
+Firmware compares the selected target's catalog `latest` semantic version with the version currently running. `CV15=0` (default) rejects an OTA downgrade; `CV15=1` permits OTA to install an older catalog `latest`. This does not allow OTA to select another entry from `versions[]`.
+
 OTA never uses `PoorMansThrottle.ino.merged.bin`. The OTA updater writes the application image through the ESP32 OTA partition mechanism. The merged image remains inappropriate for the normal PMT USB update path and for OTA.
 
-USB remains the required recovery, rollback, downgrade, and specific-version path.
+USB remains the required recovery and specific-version path, including arbitrary rollback/downgrade selection.
 
 ---
 

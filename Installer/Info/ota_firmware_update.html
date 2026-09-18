@@ -483,7 +483,7 @@
 
         <div class="callout">
           <strong>Need the exact firmware build?</strong>
-          <p>For manual diagnostics, send <code>VV</code> from the PMT terminal. Firmware 3.3.0 revision 241 returns <code>ACK:V3.3.0.241</code>. The existing <code>V</code> command still returns the semantic version only, for example <code>ACK:V3.3.0</code>.</p>
+          <p>For manual diagnostics, send <code>VV</code> from the PMT terminal. Firmware 3.3.0 revision 248 returns <code>ACK:V3.3.0.248</code>. The existing <code>V</code> command still returns the semantic version only, for example <code>ACK:V3.3.0</code>.</p>
         </div>
 
         <div class="status-strip">
@@ -589,7 +589,9 @@
             <p>
               Supported S3 hardware can update over the air when connected to Wi-Fi.
               The S3 N16R8 and N8R8 variants use the same OTA experience in the app.
-              OTA always installs the current catalog <code>latest</code> firmware for the detected S3 target.
+              OTA always targets the current catalog <code>latest</code> firmware for the detected S3 target.
+              If that catalog version is older than the firmware currently running, <code>CV15=0</code>
+              (the default) rejects the downgrade and <code>CV15=1</code> explicitly permits it.
             </p>
           </div>
           <div class="support">
@@ -597,7 +599,8 @@
             <p>
               Classic ESP32 hardware continues to use the existing USB firmware-update process.
               The app will not present OTA as available when the device reports that it is unsupported.
-              USB also remains the recovery and specific-version/rollback path for S3 hardware.
+              USB also remains the recovery and specific-version/rollback path for S3 hardware;
+              <code>CV15=1</code> only permits an older catalog <code>latest</code> and does not select a historical version.
             </p>
           </div>
         </div>

@@ -1,7 +1,7 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
 **Firmware Version:** 3.3.0  
-**Firmware Revision:** 242  
+**Firmware Revision:** 248  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -239,10 +239,10 @@ Semantic version plus firmware build revision:
 VV
 ```
 
-Example response for revision 241:
+Example response for revision 248:
 
 ```text
-ACK:V3.3.0.241
+ACK:V3.3.0.248
 ```
 
 Both `V` and `VV` are shared commands for Throttle, Module, and Turbine firmware and are ACK-wrapped. `VV` is useful when two firmware builds share the same semantic version but have different build revisions.
@@ -1081,6 +1081,13 @@ The firmware then invokes the existing `S` stop behavior, waits until the thrott
 
 OTA does not accept a requested firmware version. The catalog `versions[]` list and `dropdownDefault` value are for USB installer selection and are not OTA version selectors.
 
+`CV15` controls whether OTA may install a catalog `latest` version that is older than the semantic firmware version currently running:
+
+* `CV15=0` (default) rejects a catalog downgrade and the OTA attempt fails with `ERR:OTA`.
+* `CV15=1` allows OTA to install that board target's catalog `latest` even when it is older than the running semantic version.
+
+`CV15` does not turn OTA into a historical-version selector. OTA still installs only the detected board target's catalog `latest`. Use the USB installer for recovery or when a specific firmware version must be selected.
+
 During the actual firmware image transfer/write phase, the initiating transport receives:
 
 ```text
@@ -1404,13 +1411,9 @@ Behavior:
 
 ---
 
-## Sound `.set` Field Get / Set (`ST`) — Approved Protocol Design
+## Sound `.set` Field Get / Set (`ST`)
 
-> **Status:** Approved protocol design; firmware command implementation is pending.
->
-> This section records the agreed wire format and behavior so the firmware and client implementations use the same addressing rules.
-
-The `ST` command reads or writes one field in a sound `.set` file.
+The implemented `ST` command reads or writes one field in a sound `.set` file.
 
 Set:
 
@@ -1455,6 +1458,8 @@ The hexadecimal target namespace is:
 | `2A04` | `cab.set` |
 | `2A05` | `brake.set` |
 | `2A06` | `steamfx.set` |
+| `2A07` | `chuff.set` |
+| `2A08` | `steambg.set` |
 
 Custom WAV IDs are the WAV's decimal track number represented in hexadecimal.
 
@@ -1599,7 +1604,7 @@ The protocol should therefore preserve compact hexadecimal set IDs, decimal fiel
 
 ### Authorization
 
-Authorization behavior for the new `ST` family has not yet been defined in this approved protocol design. It must be decided during firmware implementation rather than inferred from unrelated command families.
+`ST` commands use the normal externally authorized command path. They are not part of the pre-authorization command set.
 
 ---
 
@@ -1833,6 +1838,7 @@ The following CVs remain here only because they directly change command behavior
 | `CV8` | Shared | Operational restart/reset control. `CV8=0` requests a safe restart without wiping configuration. `CV8=8` wipes persisted configuration and reboots. Querying CV8 returns `ERR`. `PS1` does not stage/suppress CV8. |
 | `CV10`, `CV13` | Shared | Control Wi-Fi enablement and WebSocket port used by the command transport. |
 | `CV14` | Shared | Offset applied when establishing/adjusting the firmware clock; therefore affects `T?`, `T=<unix>`, and schedule evaluation. |
+| `CV15` | Shared | OTA downgrade gate. `0` (default) rejects a catalog `latest` version older than the running semantic firmware version; `1` permits that catalog downgrade. OTA still selects only the board target's catalog `latest`. |
 | `CV2`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
@@ -1958,6 +1964,8 @@ Runtime override:
 | `SP0` | Shared | Stop active script playback |
 | `SS?` | Shared | Query script state |
 | `SD=<name>` | Shared* | Delete a saved firmware script |
+| `SA=<name>,+<ms>` / `SA=<name>,-<ms>` | Shared* | Lengthen or shorten total pause time in a named script and save the adjusted script |
+| `SA=+<ms>` / `SA=-<ms>` | Shared* | Lengthen or shorten the currently playing script; repeating playback uses the adjusted script at the next repeat boundary |
 | `F<n>` | Throttle | Forward momentum ramp |
 | `R<n>` | Throttle | Reverse momentum ramp |
 | `FQ<n>` | Throttle | Forward quick ramp |
@@ -1973,8 +1981,8 @@ Runtime override:
 | `A?` | Throttle | Analyze default audio track manifest |
 | `A? N=<tracks>` | Throttle | Analyze explicit audio track list |
 | `AudioMark` / `AM` | Throttle | Emit manual audio diagnostic marker |
-| `ST<set-id>.<field-id>=<value>` | Throttle | Set a sound `.set` field; approved design, implementation pending |
-| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field; approved design, implementation pending |
+| `ST<set-id>.<field-id>=<value>` | Throttle | Set and persist a sound `.set` field |
+| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field |
 | `F?` | Turbine | Requested turbine output query |
 | `F<n>` | Turbine | Ramp turbine output |
 | `F<n>*` | Turbine | Immediate turbine output |
@@ -2007,6 +2015,7 @@ Command-generated script status lines:
 |---|---|
 | `A:SS=IDLE` | Script service is idle |
 | `A:SS=REC` | Recording is active |
+| `A:SS=SAVE` | Recording has stopped and is waiting to be named/saved or discarded |
 | `A:SS=PLAY` | One-shot playback is active |
 | `A:SS=REPEAT` | Repeating playback is active |
 

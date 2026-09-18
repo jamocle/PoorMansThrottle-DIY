@@ -1,7 +1,7 @@
 # PMTPlayer Audio Installation Guide
 ## Classic ESP32, ESP32-S3 N16R8, and ESP32-S3 CAM N16R8
 
-**For PMT firmware 3.0.0**
+**For PMT firmware 3.3.0**
 
 This guide is written for installers. Use the section for your board and wire it exactly as shown.
 
@@ -582,6 +582,35 @@ On Classic ESP32, CV404, CV405, and CV406 may display `-1`. **That is normal.** 
 | CV407 | BCLK | GPIO12 |
 | CV408 | LRCLK / WS | GPIO13 |
 | CV409 | DIN | GPIO14 |
+
+## Advanced PMTPlayer tuning
+
+Most installations should leave these values at their defaults. These CVs tune PMTPlayer behavior after the basic audio wiring/configuration above is working.
+
+| CV | Setting | Values / Default |
+|---:|---|---|
+| CV410 | Default audio priority | `0..100` / `30` |
+| CV411 | Conflict policy | `0..2` / `1`; `0=IgnoreLowerPriority`, `1=InterruptThenResume`, `2=ReplaceSameGroup` |
+| CV412 | Startup delay | `0..10000 ms` / `0` |
+| CV413 | Shutdown delay | `0..10000 ms` / `0` |
+| CV414 | Amplifier enable pin | `-1` or valid output GPIO / `-1` |
+| CV415 | Amplifier mute pin | `-1` or valid output GPIO / `-1` |
+| CV416 | Amplifier standby pin | `-1` or valid output GPIO / `-1` |
+| CV417 | Fault input pin | `-1` or valid input GPIO / `-1` |
+| CV418 | PMTPlayer profile | `0..3` / `3`; profiles `0..2` reapply predefined advanced settings, `3` preserves explicit values |
+| CV419 | WAV gain | `1..12` / `1` |
+| CV420 | Output headroom | `50..100%` / `100` |
+| CV421 | Limiter / loudness mode | `0..10` / `10` |
+| CV422 | Speaker size profile | `0..2` / `2`; `0=large`, `1=medium`, `2=small` |
+| CV423 | Maximum active voices | `0..255` / board default; `0` uses the board default (Classic `3`, S3 `13`) |
+| CV424 | Overlap mode | effective `0..2` / `1` |
+| CV425 | Async overlap start | `0`, `1` / `1` |
+| CV426 | Start prime bytes | `0..16384` / `12288` |
+| CV427 | Overlap prime bytes | `0..16384` / `0` |
+| CV428 | Mixer attenuation | `25..100%` / `100` |
+| CV429 | Clip telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` |
+
+For the exact interaction details of profiles, speaker-size presets, board defaults, and diagnostic-only behavior, see `appendix_Configuration_Variables.md`.
 
 ## ESP32-S3 CAM onboard microSD
 

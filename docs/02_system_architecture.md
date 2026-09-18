@@ -84,11 +84,11 @@ The firmware keeps standard TLS CA and hostname verification enabled. The privat
 
 OTA is supported only by the S3 throttle builds. Classic ESP32 throttle, Module, and Turbine firmware do not use this OTA update path.
 
-The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version.
+The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version. `CV15=0` (default) rejects the OTA attempt when catalog `latest` is semantically older than the running firmware; `CV15=1` explicitly permits that catalog downgrade.
 
 During firmware image transfer/write, progress is sent back to the transport that initiated OTA as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress events are independent of the normal `A1` / `A0` async-state setting.
 
-USB remains the recovery, rollback, downgrade, and specific-version installation path.
+USB remains the recovery path and the path for selecting a specific firmware version. OTA never selects from historical `versions[]`; with `CV15=1`, it can only downgrade to the detected board target's catalog `latest`.
 
 ## Combined Device View
 

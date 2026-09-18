@@ -283,7 +283,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 |-----|-------|
 | `ERR:NS` from `OTA?` | OTA is not supported on this hardware. Classic ESP32 uses the USB installer. |
 | `ERR:NO WIFI` | The S3 device is not connected to Wi-Fi, or Wi-Fi was lost during OTA. Restore Wi-Fi and try again. |
-| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, or another pre-transfer error. |
+| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, a catalog downgrade blocked by `CV15=0`, or another pre-transfer error. |
 | `ERR:OTA` after progress begins | Firmware transfer/write did not complete. Keep the current firmware running if possible and use USB recovery if OTA cannot be retried successfully. |
 | Progress reaches `A:OTA 100` and the connection drops | Normal successful behavior. The firmware image completed and the device is rebooting. |
 | No progress percentages yet | This can be normal while OTA is stopping the throttle, obtaining validation time, or reading/validating the manifest. `0%` begins only when the firmware image transfer/write phase starts. |
@@ -294,7 +294,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 - Confirm Wi-Fi is connected before starting OTA.
 - Do not remove power while GREEN/PURPLE OTA indication is active.
 - If OTA repeatedly fails, use the normal USB installer as the recovery path.
-- Use USB when installing a specific older version or intentionally downgrading; OTA always installs the catalog's current `latest` version for the detected S3 target.
+- OTA always targets the detected S3 board's catalog `latest`. If that `latest` is older than the running semantic version, `CV15=0` (default) rejects it and `CV15=1` explicitly allows that catalog downgrade. Use USB to select a specific older version or for recovery.
 
 ---
 
@@ -314,7 +314,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 | Firmware type | Confirm whether the device is Throttle, Module, or Turbine firmware |
 | App flow | Make sure you are opening the matching control/configuration screen |
 | Known devices | Forget or refresh the remembered device if stale information appears to be used |
-| Firmware version/revision | Send `VV` in the terminal to identify the exact build. A 3.3.0 revision 241 device replies `ACK:V3.3.0.241`. Confirm that the installed build is compatible with the app version. |
+| Firmware version/revision | Send `VV` in the terminal to identify the exact build. A 3.3.0 revision 248 device replies `ACK:V3.3.0.248`. Confirm that the installed build is compatible with the app version. |
 
 ---
 
