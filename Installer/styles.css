@@ -1569,6 +1569,24 @@ code {
     backdrop-filter: blur(6px);
 }
 
+#documentationDialog {
+    width: min(1440px, calc(100vw - 64px));
+    max-width: none;
+    max-height: calc(100vh - 48px);
+}
+
+#documentationDialog .changelog-shell {
+    max-height: calc(100vh - 48px);
+    min-width: 0;
+}
+
+#documentationDialog .changelog-content {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .changelog-shell {
     display: flex;
     flex-direction: column;
@@ -1820,9 +1838,11 @@ code {
 }
 
 .markdown-content .markdown-table-wrap {
+    display: block;
     width: 100%;
     max-width: 100%;
-    overflow-x: scroll;
+    min-width: 0;
+    overflow-x: auto;
     overflow-y: hidden;
     margin: 0 0 18px;
     border: 1px solid #e7e2dc;
@@ -1832,12 +1852,15 @@ code {
 }
 
 .markdown-content {
+    width: 100%;
+    max-width: 100%;
     min-width: 0;
 }
 
 .markdown-content table {
-    width: 100%;
-    min-width: 620px;
+    width: max-content;
+    min-width: 100%;
+    max-width: none;
     border-collapse: collapse;
 }
 
@@ -1866,6 +1889,15 @@ code {
 }
 
 @media (max-width: 640px) {
+    #documentationDialog {
+        width: calc(100vw - 24px);
+        max-height: 88vh;
+    }
+
+    #documentationDialog .changelog-shell {
+        max-height: 88vh;
+    }
+
     .documentation-header-actions {
         align-self: flex-start;
     }
