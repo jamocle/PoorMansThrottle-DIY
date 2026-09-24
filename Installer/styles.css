@@ -1806,7 +1806,17 @@ code {
 }
 
 .documentation-download {
-    white-space: nowrap;
+    text-decoration: none;
+}
+
+.documentation-download svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .markdown-content .markdown-table-wrap {
@@ -1851,9 +1861,5 @@ code {
         align-self: flex-start;
     }
 
-    .documentation-download {
-        padding-left: 12px;
-        padding-right: 12px;
-    }
 }
 
