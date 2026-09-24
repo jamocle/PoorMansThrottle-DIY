@@ -386,48 +386,6 @@
       *{animation:none !important; transition:none !important}
     }
   </style>
-  <script>
-    document.addEventListener('click', function (event) {
-      const link = event.target.closest('a[data-open-external="true"]');
-      if (!link)
-        return;
-
-      const href = link.getAttribute('href');
-      if (!href)
-        return;
-
-      const absoluteUrl = new URL(href, window.location.href).href;
-
-      event.preventDefault();
-
-      let fallbackOpened = false;
-
-      const fallbackTimer = setTimeout(function () {
-        if (document.visibilityState === 'visible' && !fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }, 700);
-
-      window.addEventListener('pagehide', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      window.addEventListener('blur', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      try {
-        window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
-      } catch (error) {
-        clearTimeout(fallbackTimer);
-        if (!fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }
-    });
-  </script>
 </head>
 <body>
   <main class="wrap">
@@ -441,11 +399,11 @@
       </p>
 
       <div class="link-grid">
-        <a class="top-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md" data-open-external="true">
+        <a class="top-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/00_Why_Poor_Mans_Throttle.md" target="_blank" rel="noopener noreferrer">
           <strong>Open PMT Online Documentation</strong>
           <span>Launch the online guide in a separate browser window for the full documentation set.</span>
         </a>
-        <a class="top-link" href="installation.html" data-open-external="true">
+        <a class="top-link" href="installation.html" target="_blank" rel="noopener noreferrer">
           <strong>Open PMT Installation Guide</strong>
           <span>Launch this installation page in a separate browser window for easier viewing and reference.</span>
         </a>

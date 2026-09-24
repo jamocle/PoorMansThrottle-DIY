@@ -352,48 +352,6 @@
       *{ animation:none !important; transition:none !important; }
     }
   </style>
-  <script>
-    document.addEventListener('click', function (event) {
-      const link = event.target.closest('a[data-open-external="true"]');
-      if (!link)
-        return;
-
-      const href = link.getAttribute('href');
-      if (!href)
-        return;
-
-      const absoluteUrl = new URL(href, window.location.href).href;
-
-      event.preventDefault();
-
-      let fallbackOpened = false;
-
-      const fallbackTimer = setTimeout(function () {
-        if (document.visibilityState === 'visible' && !fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }, 700);
-
-      window.addEventListener('pagehide', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      window.addEventListener('blur', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      try {
-        window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
-      } catch (error) {
-        clearTimeout(fallbackTimer);
-        if (!fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }
-    });
-  </script>
 </head>
 <body>
   <main class="wrap">
@@ -407,7 +365,7 @@
       </p>
 
       <div class="link-grid">
-        <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" data-open-external="true">
+        <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
           <strong>Open PMT Battery Management Hardware Installation</strong>
           <span>Launch the INA219 battery monitor installation guide in a separate browser window for wiring and setup reference.</span>
         </a>
@@ -635,7 +593,7 @@
         </p>
 
         <div class="link-grid">
-          <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" data-open-external="true">
+          <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
             <strong>Open INA219 Battery Monitor Installation Guide</strong>
             <span>Follow the wiring and setup instructions for connecting and configuring the INA219 battery monitor with Poor Man's Throttle.</span>
           </a>
