@@ -911,8 +911,13 @@
           <h2 id="documentationDialogTitle">Project documentation</h2>
           <p>Read the selected Poor Man's Throttle guide.</p>
         </div>
-        <button class="changelog-close" id="closeDocumentationButton" type="button"
-          aria-label="Close documentation">×</button>
+        <div class="documentation-header-actions">
+          <a class="button secondary documentation-download" id="downloadDocumentationButton" href="#" download hidden>
+            Download .md
+          </a>
+          <button class="changelog-close" id="closeDocumentationButton" type="button"
+            aria-label="Close documentation">×</button>
+        </div>
       </div>
 
       <div class="changelog-status" id="documentationStatus" role="status" aria-live="polite"></div>

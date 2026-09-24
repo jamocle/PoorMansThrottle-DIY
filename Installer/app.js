@@ -1360,6 +1360,7 @@ function showDocumentationNotFound(fileName) {
     const dialog = document.getElementById("documentationDialog");
     const title = document.getElementById("documentationDialogTitle");
     const status = document.getElementById("documentationStatus");
+    const downloadButton = document.getElementById("downloadDocumentationButton");
 
     if (!dialog || !title || !status) {
         return;
@@ -1368,6 +1369,11 @@ function showDocumentationNotFound(fileName) {
     documentationRequestId += 1;
     title.textContent = "Project documentation";
     status.textContent = "";
+    if (downloadButton) {
+        downloadButton.hidden = true;
+        downloadButton.removeAttribute("href");
+        downloadButton.removeAttribute("download");
+    }
     setDocumentationViewerMessage(
         'The requested Markdown guide "' + fileName + '" was not found.',
         true
@@ -1383,6 +1389,7 @@ async function loadDocumentationFile(file, updateHistory = true) {
     const title = document.getElementById("documentationDialogTitle");
     const status = document.getElementById("documentationStatus");
     const target = document.getElementById("documentationContent");
+    const downloadButton = document.getElementById("downloadDocumentationButton");
 
     if (!dialog || !title || !status || !target) {
         return;
@@ -1399,6 +1406,11 @@ async function loadDocumentationFile(file, updateHistory = true) {
     target.replaceChildren();
     target.setAttribute("aria-busy", "true");
     target.scrollTop = 0;
+    if (downloadButton) {
+        downloadButton.hidden = true;
+        downloadButton.removeAttribute("href");
+        downloadButton.removeAttribute("download");
+    }
 
     if (!dialog.open) {
         dialog.showModal();
@@ -1451,9 +1463,21 @@ async function loadDocumentationFile(file, updateHistory = true) {
             }
         }
 
+        for (const table of template.content.querySelectorAll("table")) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "markdown-table-wrap";
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        }
+
         target.replaceChildren(template.content);
         target.scrollTop = 0;
         status.textContent = "";
+        if (downloadButton) {
+            downloadButton.href = markdownUrl;
+            downloadButton.setAttribute("download", file.name);
+            downloadButton.hidden = false;
+        }
     } catch (error) {
         if (requestId !== documentationRequestId) {
             return;

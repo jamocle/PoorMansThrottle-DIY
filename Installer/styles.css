@@ -1798,3 +1798,62 @@ code {
     background: #fafafa;
     color: var(--muted);
 }
+
+.documentation-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.documentation-download {
+    white-space: nowrap;
+}
+
+.markdown-content .markdown-table-wrap {
+    overflow-x: auto;
+    margin: 0 0 18px;
+    border: 1px solid #e7e2dc;
+    border-radius: 14px;
+}
+
+.markdown-content table {
+    width: 100%;
+    min-width: 620px;
+    border-collapse: collapse;
+}
+
+.markdown-content th,
+.markdown-content td {
+    padding: 10px 14px;
+    border-right: 1px solid #ece9e5;
+    border-bottom: 1px solid #ece9e5;
+    text-align: left;
+    vertical-align: top;
+}
+
+.markdown-content th:last-child,
+.markdown-content td:last-child {
+    border-right: 0;
+}
+
+.markdown-content th {
+    background: #f7f4f0;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.markdown-content tr:last-child td {
+    border-bottom: 0;
+}
+
+@media (max-width: 640px) {
+    .documentation-header-actions {
+        align-self: flex-start;
+    }
+
+    .documentation-download {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+}
+
