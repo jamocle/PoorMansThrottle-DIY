@@ -1820,10 +1820,19 @@ code {
 }
 
 .markdown-content .markdown-table-wrap {
-    overflow-x: auto;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: scroll;
+    overflow-y: hidden;
     margin: 0 0 18px;
     border: 1px solid #e7e2dc;
     border-radius: 14px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-gutter: stable;
+}
+
+.markdown-content {
+    min-width: 0;
 }
 
 .markdown-content table {
