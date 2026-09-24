@@ -1904,3 +1904,49 @@ code {
 
 }
 
+.markdown-table-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    margin: 0 0 18px;
+}
+
+.markdown-table-container .markdown-table-wrap {
+    margin-bottom: 0;
+}
+
+.markdown-table-scrollbar {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 18px;
+    background: #fff;
+    border: 1px solid #e7e2dc;
+    border-bottom: 0;
+    border-radius: 14px 14px 0 0;
+    scrollbar-gutter: stable;
+}
+
+.markdown-table-scrollbar[hidden] {
+    display: none;
+}
+
+.markdown-table-scrollbar-content {
+    height: 1px;
+}
+
+.markdown-table-container:has(.markdown-table-scrollbar:not([hidden])) .markdown-table-wrap {
+    border-radius: 0 0 14px 14px;
+}
+
+@media (max-width: 640px) {
+    .markdown-table-scrollbar {
+        display: none;
+    }
+}
+

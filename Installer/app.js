@@ -1464,10 +1464,43 @@ async function loadDocumentationFile(file, updateHistory = true) {
         }
 
         for (const table of template.content.querySelectorAll("table")) {
+            const container = document.createElement("div");
+            container.className = "markdown-table-container";
+
+            const scrollbar = document.createElement("div");
+            scrollbar.className = "markdown-table-scrollbar";
+            scrollbar.setAttribute("aria-label", "Horizontal table scroll");
+
+            const scrollbarContent = document.createElement("div");
+            scrollbarContent.className = "markdown-table-scrollbar-content";
+            scrollbar.appendChild(scrollbarContent);
+
             const wrapper = document.createElement("div");
             wrapper.className = "markdown-table-wrap";
-            table.parentNode.insertBefore(wrapper, table);
+
+            table.parentNode.insertBefore(container, table);
+            container.appendChild(scrollbar);
+            container.appendChild(wrapper);
             wrapper.appendChild(table);
+
+            let syncingScroll = false;
+            const syncScroll = (source, target) => {
+                if (syncingScroll) {
+                    return;
+                }
+
+                syncingScroll = true;
+                target.scrollLeft = source.scrollLeft;
+                syncingScroll = false;
+            };
+
+            scrollbar.addEventListener("scroll", () => syncScroll(scrollbar, wrapper));
+            wrapper.addEventListener("scroll", () => syncScroll(wrapper, scrollbar));
+
+            requestAnimationFrame(() => {
+                scrollbarContent.style.width = `${table.scrollWidth}px`;
+                scrollbar.hidden = table.scrollWidth <= wrapper.clientWidth;
+            });
         }
 
         target.replaceChildren(template.content);
