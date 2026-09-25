@@ -113,7 +113,8 @@
     host.setAttribute("aria-label", "Return navigation");
     host.appendChild(link);
 
-    document.body.appendChild(host);
+    const openDialog = document.querySelector("dialog[open]");
+    (openDialog || document.body).appendChild(host);
   }
 
   function installStyles() {
@@ -137,9 +138,9 @@
         gap: 8px;
         max-width: min(420px, calc(100vw - 28px));
         padding: 10px 14px;
-        border: 1px solid rgba(210, 210, 215, .92);
+        border: 1px solid rgba(159, 207, 168, .95);
         border-radius: 999px;
-        background: rgba(255, 255, 255, .94);
+        background: rgba(220, 245, 224, .96);
         color: #1d1d1f;
         box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         text-decoration: none;
@@ -177,10 +178,44 @@
     document.head.appendChild(style);
   }
 
+  function decorateLink(link) {
+    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download")) {
+      return;
+    }
+
+    let target;
+    try {
+      target = new URL(link.href, window.location.href);
+    } catch {
+      return;
+    }
+
+    const returnUrl = currentReturnUrl();
+    if (!isNavigablePmtTarget(target) || target.href === returnUrl) {
+      return;
+    }
+
+    target.searchParams.set(returnParam, returnUrl);
+    target.searchParams.set(labelParam, pageLabel());
+    link.href = target.href;
+  }
+
+  function decorateLinkFromEvent(event) {
+    const link = event.target.closest?.("a[href]");
+    if (link) {
+      decorateLink(link);
+    }
+  }
+
   function initialize() {
     installStyles();
     renderReturnControl();
     decorateInternalLinks();
+
+    document.addEventListener("pointerdown", decorateLinkFromEvent, true);
+    document.addEventListener("click", decorateLinkFromEvent, true);
+    document.addEventListener("auxclick", decorateLinkFromEvent, true);
+    document.addEventListener("contextmenu", decorateLinkFromEvent, true);
   }
 
   if (document.readyState === "loading") {
