@@ -314,7 +314,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 | Firmware type | Confirm whether the device is Throttle, Module, or Turbine firmware |
 | App flow | Make sure you are opening the matching control/configuration screen |
 | Known devices | Forget or refresh the remembered device if stale information appears to be used |
-| Firmware version/revision | Send `VV` in the terminal to identify the exact build. A 3.3.0 revision 248 device replies `ACK:V3.3.0.248`. Confirm that the installed build is compatible with the app version. |
+| Firmware build | Send `VV` in the terminal to identify the exact build. Confirm that the installed build is compatible with the app version. |
 
 ---
 

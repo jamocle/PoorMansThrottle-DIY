@@ -1,7 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.0
-**Firmware Revision:** 248
+**Firmware Version:** 3.3.3
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -20,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 3.3.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 3.3.3 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -149,7 +148,7 @@ These CVs are part of the shared PMT firmware foundation.
 
 ## Shared Audio CVs
 
-The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
+The `CV400–CV430` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
 
 | CV | Purpose | Values / Default | What it means |
 | ---: | --- | --- | --- |
@@ -183,6 +182,7 @@ The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throt
 | **CV427** | Overlap Prime Bytes | `0..16384` / `0` | Overlap-stream priming target. |
 | **CV428** | Mixer Attenuation | `25..100%` / `100` | Mixer attenuation percentage. |
 | **CV429** | Clip Telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` | Diagnostic request. In verbose-audio-diagnostic builds, `0`/`1` controls clip telemetry. In normal non-verbose builds, firmware normalizes this CV to `0`, so clip telemetry remains disabled. |
+| **CV430** | PMTPlayer Learned Attenuation Enable | `0`, `1` / `0` | `0` bypasses persisted learned attenuation and disables self-heal learning/persistence without deleting existing `.csh` history. `1` enables applying persisted learned attenuation and self-heal learning/persistence for eligible non-transparent PMTPlayer playback. `CV430` is independent of `CV418` profiles. |
 
 ### Classic `-1` SPI sentinel behavior
 
@@ -516,7 +516,7 @@ In this example:
 
 Throttle firmware supports **12 function outputs** with per-function configuration.
 
-Each function uses a 7-CV block. In firmware 3.3.0 revision 248, the first five CVs in each block are implemented; the last two positions remain reserved.
+Each function uses a 7-CV block. In firmware 3.3.3, the first five CVs in each block are implemented; the last two positions remain reserved.
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | --- | ---: | ---: | ---: | ---: | ---: |

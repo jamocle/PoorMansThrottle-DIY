@@ -199,7 +199,7 @@ Notes:
 
 # Optional Function Output Wiring
 
-Firmware v3.0.0 rev215 provides **12 configurable FX slots**. A slot can drive a physical output or invoke an audio pattern.
+Firmware v3.0.0 provides **12 configurable FX slots**. A slot can drive a physical output or invoke an audio pattern.
 
 ## Function names used by firmware
 

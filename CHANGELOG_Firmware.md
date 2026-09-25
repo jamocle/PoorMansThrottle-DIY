@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.3.3
+* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.2
 * **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
