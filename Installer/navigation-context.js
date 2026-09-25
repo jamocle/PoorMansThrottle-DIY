@@ -4,6 +4,7 @@
   const returnParam = "pmtReturn";
   const labelParam = "pmtReturnLabel";
   const cacheParam = "cb";
+  const returnedParam = "pmtReturned";
 
   function freshCacheToken() {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -49,7 +50,49 @@
     return url.href;
   }
 
+  function isReturnArrival() {
+    return new URL(window.location.href).searchParams.get(returnedParam) === "1";
+  }
+
+  function clearReturnArrivalMarker() {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has(returnedParam)) {
+      return;
+    }
+
+    url.searchParams.delete(returnedParam);
+    window.history.replaceState(window.history.state, "", url.href);
+  }
+
+  function clearReturnContextFromInternalLinks() {
+    for (const link of document.querySelectorAll("a[href]")) {
+      if (link.hasAttribute("download") || link.classList.contains("pmt-return-link")) {
+        continue;
+      }
+
+      let target;
+      try {
+        target = new URL(link.href, window.location.href);
+      } catch {
+        continue;
+      }
+
+      if (!isNavigablePmtTarget(target)) {
+        continue;
+      }
+
+      target.searchParams.delete(returnParam);
+      target.searchParams.delete(labelParam);
+      target.searchParams.delete(returnedParam);
+      link.href = target.href;
+    }
+  }
+
   function decorateInternalLinks() {
+    if (isReturnArrival()) {
+      return;
+    }
+
     const returnUrl = currentReturnUrl();
     const returnLabel = pageLabel();
 
@@ -120,6 +163,7 @@
     // create an A -> B -> A -> B loop.
     target.searchParams.delete(returnParam);
     target.searchParams.delete(labelParam);
+    target.searchParams.set(returnedParam, "1");
     applyFreshCacheToken(target);
     link.href = target.href;
     link.setAttribute("aria-label", returnLabel());
@@ -128,8 +172,8 @@
 
     const version = document.createElement("span");
     version.className = "pmt-return-version";
-    version.textContent = "P12";
-    version.setAttribute("aria-label", "Patch 12");
+    version.textContent = "P13";
+    version.setAttribute("aria-label", "Patch 13");
     link.appendChild(version);
 
     const host = document.createElement("div");
@@ -185,9 +229,9 @@
         gap: 8px;
         max-width: min(420px, calc(100vw - 28px));
         padding: 10px 14px;
-        border: 1px solid rgba(159, 207, 168, .95);
+        border: 1px solid rgba(190, 168, 224, .96);
         border-radius: 999px;
-        background: rgba(220, 245, 224, .96);
+        background: rgba(235, 224, 250, .97);
         color: #1d1d1f;
         box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         text-decoration: none;
@@ -264,9 +308,17 @@
   }
 
   function initialize() {
+    const returnedHere = isReturnArrival();
+
     installStyles();
     renderReturnControl();
-    decorateInternalLinks();
+
+    if (!returnedHere) {
+      decorateInternalLinks();
+    } else {
+      clearReturnContextFromInternalLinks();
+      clearReturnArrivalMarker();
+    }
 
     document.addEventListener("pointerdown", decorateLinkFromEvent, true);
     document.addEventListener("click", decorateLinkFromEvent, true);
