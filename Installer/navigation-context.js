@@ -4,7 +4,6 @@
   const returnParam = "pmtReturn";
   const labelParam = "pmtReturnLabel";
   const cacheParam = "cb";
-  const historyKey = "pmtNavigationStackV1";
 
   function freshCacheToken() {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -13,76 +12,6 @@
   function applyFreshCacheToken(url) {
     url.searchParams.set(cacheParam, freshCacheToken());
     return url;
-  }
-
-  function canonicalPageUrl(input = window.location.href) {
-    const url = new URL(input, window.location.href);
-    url.searchParams.delete(returnParam);
-    url.searchParams.delete(labelParam);
-    url.searchParams.delete("pmtReturned");
-    url.searchParams.delete(cacheParam);
-    url.hash = "";
-    return url.href;
-  }
-
-  function readNavigationStack() {
-    try {
-      const value = JSON.parse(window.sessionStorage.getItem(historyKey) || "[]");
-      return Array.isArray(value) ? value.filter(item =>
-        item &&
-        typeof item.url === "string" &&
-        typeof item.label === "string"
-      ) : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function writeNavigationStack(stack) {
-    try {
-      window.sessionStorage.setItem(historyKey, JSON.stringify(stack));
-    } catch {
-      // Navigation still works without persistence; no unsafe fallback is used.
-    }
-  }
-
-  function pushCurrentPageForForwardNavigation() {
-    const stack = readNavigationStack();
-    const currentUrl = canonicalPageUrl();
-    const last = stack.at(-1);
-
-    if (!last || canonicalPageUrl(last.url) !== currentUrl) {
-      stack.push({ url: currentUrl, label: pageLabel() });
-      writeNavigationStack(stack);
-    }
-  }
-
-  function popPreviousPage() {
-    const stack = readNavigationStack();
-
-    while (stack.length > 0) {
-      const previous = stack.pop();
-      if (canonicalPageUrl(previous.url) !== canonicalPageUrl()) {
-        writeNavigationStack(stack);
-        return previous;
-      }
-    }
-
-    writeNavigationStack([]);
-    return null;
-  }
-
-  function peekPreviousPage() {
-    const stack = readNavigationStack();
-    const currentUrl = canonicalPageUrl();
-
-    for (let index = stack.length - 1; index >= 0; index -= 1) {
-      if (canonicalPageUrl(stack[index].url) !== currentUrl) {
-        return stack[index];
-      }
-    }
-
-    return null;
   }
 
   function isHttpProtocol(url) {
@@ -139,7 +68,7 @@
 
       target.searchParams.delete(returnParam);
       target.searchParams.delete(labelParam);
-      target.searchParams.delete(returnedParam);
+      target.searchParams.delete("pmtReturned");
       link.href = target.href;
     }
   }
@@ -206,60 +135,25 @@
   }
 
   function renderReturnControl() {
-    const stackTarget = peekPreviousPage();
-    const legacyTarget = validatedReturnTarget();
-
-    if (!stackTarget && !legacyTarget) {
+    const target = validatedReturnTarget();
+    if (!target) {
       return;
     }
 
-    const target = stackTarget
-      ? new URL(stackTarget.url, window.location.href)
-      : legacyTarget;
-    const label = stackTarget
-      ? `Back to ${stackTarget.label.slice(0, 80)}`
-      : returnLabel();
+    const link = document.createElement("a");
+    link.className = "pmt-return-link";
 
+    // A return navigation terminates the current return chain. Without this,
+    // the previous page can inherit a return target pointing back here and
+    // create an A -> B -> A -> B loop.
     target.searchParams.delete(returnParam);
     target.searchParams.delete(labelParam);
     target.searchParams.delete("pmtReturned");
     applyFreshCacheToken(target);
-
-    const link = document.createElement("a");
-    link.className = "pmt-return-link";
     link.href = target.href;
-    link.setAttribute("aria-label", label);
+    link.setAttribute("aria-label", returnLabel());
     link.innerHTML = '<span aria-hidden="true">←</span><span class="pmt-return-text"></span>';
-    link.querySelector(".pmt-return-text").textContent = label;
-
-    const activateReturn = (event) => {
-      if (event.type === "click" && event.button !== 0) {
-        return;
-      }
-
-      if (stackTarget) {
-        const previous = popPreviousPage();
-        if (previous) {
-          const destination = new URL(previous.url, window.location.href);
-          applyFreshCacheToken(destination);
-          link.href = destination.href;
-        }
-      } else {
-        // Seed the stack from legacy return metadata so older/deep links transition
-        // into the stack model without creating a forward/back loop.
-        const stack = readNavigationStack();
-        stack.push({
-          url: canonicalPageUrl(target.href),
-          label: label.replace(/^Back to\s+/, "") || "Previous page"
-        });
-        writeNavigationStack(stack);
-        popPreviousPage();
-      }
-    };
-
-    link.addEventListener("pointerdown", activateReturn, { capture: true, once: true });
-    link.addEventListener("auxclick", activateReturn, { capture: true, once: true });
-    link.addEventListener("click", activateReturn, { capture: true, once: true });
+    link.querySelector(".pmt-return-text").textContent = returnLabel();
 
     const host = document.createElement("div");
     host.className = "pmt-return-nav";
@@ -381,32 +275,17 @@
 
   function decorateLinkFromEvent(event) {
     const link = event.target.closest?.("a[href]");
-    if (!link) {
+    if (!link ||
+        link.classList.contains("pmt-return-link") ||
+        link.closest(".pmt-return-nav")) {
       return;
     }
 
     decorateLink(link);
-
-    if (link.classList.contains("pmt-return-link") ||
-        link.hasAttribute("download")) {
-      return;
-    }
-
-    let target;
-    try {
-      target = new URL(link.href, window.location.href);
-    } catch {
-      return;
-    }
-
-    if (isNavigablePmtTarget(target)) {
-      pushCurrentPageForForwardNavigation();
-    }
   }
 
   function initialize() {
     installStyles();
-    clearReturnContextFromInternalLinks();
     renderReturnControl();
     decorateInternalLinks();
 
