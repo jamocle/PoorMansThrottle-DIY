@@ -1,7 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
 **Firmware Version:** 3.3.0  
-**Firmware Revision:** 248  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -130,7 +129,7 @@ Asynchronous runtime messages may also be sent without being directly requested.
 
 CV commands require a successful authorization handshake.
 
-Before authorization, firmware allows a limited safe command set including identity, version/revision, connection status, `A0` / `A1`, `D0` / `D1` / `D2`, supported state queries, IP query, and time query/set. Exact configured autonomous schedule commands may also be accepted while autonomous schedule mode is active.
+Before authorization, firmware allows a limited safe command set including identity, firmware build information, connection status, `A0` / `A1`, `D0` / `D1` / `D2`, supported state queries, IP query, and time query/set. Exact configured autonomous schedule commands may also be accepted while autonomous schedule mode is active.
 
 `PS?`, `PS1`, `PS0`, `A?`, `AudioMark`, and `AM` are not part of the normal pre-authorization allow-list.
 
@@ -233,19 +232,13 @@ Example response:
 ACK:V3.3.0
 ```
 
-Semantic version plus firmware build revision:
+Full firmware build identifier:
 
 ```text
 VV
 ```
 
-Example response for revision 248:
-
-```text
-ACK:V3.3.0.248
-```
-
-Both `V` and `VV` are shared commands for Throttle, Module, and Turbine firmware and are ACK-wrapped. `VV` is useful when two firmware builds share the same semantic version but have different build revisions.
+Both `V` and `VV` are shared commands for Throttle, Module, and Turbine firmware and are ACK-wrapped. `VV` is useful when two firmware builds share the same semantic version but need to be distinguished by their full build identifiers.
 
 ## PX/1 Bulk-Transfer Capability
 
@@ -755,7 +748,7 @@ Behavior:
 
 ## Adjust Script Timing
 
-Firmware revision 242 adds the `SA` (**Script Adjust**) command. It changes the script's total pause time, saves the adjusted script automatically, and preserves the order of non-pause commands.
+The `SA` (**Script Adjust**) command changes the script's total pause time, saves the adjusted script automatically, and preserves the order of non-pause commands.
 
 Named-script forms:
 
@@ -1937,7 +1930,7 @@ Runtime override:
 | `I,<token>` | Shared | Authorize normal connection |
 | `IB,<token>` | Shared | Authorize backup socket connection |
 | `V` | Shared | Firmware semantic version |
-| `VV` | Shared | Firmware semantic version plus build revision |
+| `VV` | Shared | Full firmware build identifier |
 | `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
 | `C?` | Shared | Connection status |
 | `IP?` | Shared | IP address query |

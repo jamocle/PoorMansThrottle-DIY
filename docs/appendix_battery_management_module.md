@@ -1,6 +1,6 @@
 # INA219 Wiring & Configuration (ESP32 Throttle)
 
-**Firmware source baseline:** PMT `3.0.0`, revision `215`
+**Firmware source baseline:** PMT `3.0.0`
 
 ## Overview
 

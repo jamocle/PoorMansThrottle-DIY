@@ -889,7 +889,7 @@ The current runtime uses `0190.wav` as the continuous moving-bed file.
 
 Although `0191` and `0192` identifiers exist in the source code, the current moving-bed runtime explicitly operates in an **0190-only continuous mode**.
 
-For firmware 3.0.0 revision 221, you do not need to create:
+For firmware 3.0.0, you do not need to create:
 
 ```text
 0191.wav
@@ -2035,7 +2035,7 @@ Signed 16-bit PCM
 
 Important implementation details used in this guide include:
 
-- firmware version `3.0.0`, revision `221`;
+- firmware version `3.0.0`;
 - sound roots `/diesel` and `/steam`;
 - filename pattern `/diesel/####.wav` or `/steam/####.wav`;
 - RIFF/WAVE PCM parser requirements;

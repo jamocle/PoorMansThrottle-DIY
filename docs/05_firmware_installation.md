@@ -110,11 +110,7 @@ After installation:
 2. Power the controller.
 3. Confirm the board begins advertising over BLE.
 4. Open the PMT smartphone app and scan for the throttle.
-5. For an exact firmware build check, open a terminal connection and send `VV`. Firmware 3.3.0 revision 248 replies:
-
-```text
-ACK:V3.3.0.248
-```
+5. For an exact firmware build check, open a terminal connection and send `VV`. The response identifies the installed firmware build.
 
 `V` remains available when only the semantic firmware version is needed and returns `ACK:V3.3.0`.
 

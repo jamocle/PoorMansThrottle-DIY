@@ -609,6 +609,7 @@ Most installations should leave these values at their defaults. These CVs tune P
 | CV427 | Overlap prime bytes | `0..16384` / `0` |
 | CV428 | Mixer attenuation | `25..100%` / `100` |
 | CV429 | Clip telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` |
+| CV430 | Learned attenuation | `0`, `1` / `0`; `0` bypasses persisted learned attenuation and disables self-heal learning/persistence without deleting existing `.csh` history; `1` enables learned attenuation and self-heal; independent of CV418 profiles |
 
 For the exact interaction details of profiles, speaker-size presets, board defaults, and diagnostic-only behavior, see `appendix_Configuration_Variables.md`.
 

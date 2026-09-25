@@ -1024,6 +1024,7 @@ The board read and checked the WAV file, but it could not save the generated <co
 <tr><td style="text-align:right">CV427</td><td>Overlap prime bytes</td><td><code>0..16384</code> / <code>0</code></td></tr>
 <tr><td style="text-align:right">CV428</td><td>Mixer attenuation</td><td><code>25..100%</code> / <code>100</code></td></tr>
 <tr><td style="text-align:right">CV429</td><td>Clip telemetry</td><td><code>0</code>, <code>1</code> / default constant <code>1</code>; normal non-verbose builds normalize to <code>0</code></td></tr>
+<tr><td style="text-align:right">CV430</td><td>Learned attenuation</td><td><code>0</code>, <code>1</code> / <code>0</code>; <code>0</code> bypasses persisted learned attenuation and disables self-heal learning/persistence without deleting existing <code>.csh</code> history; <code>1</code> enables learned attenuation and self-heal; independent of CV418 profiles</td></tr>
 </tbody>
 </table>
 <p>For the exact interaction details of profiles, speaker-size presets, board defaults, and diagnostic-only behavior, see <code>appendix_Configuration_Variables.md</code>.</p>
