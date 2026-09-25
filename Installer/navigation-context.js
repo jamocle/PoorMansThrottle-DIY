@@ -74,10 +74,6 @@
   }
 
   function decorateInternalLinks() {
-    if (isReturnArrival()) {
-      return;
-    }
-
     const returnUrl = currentReturnUrl();
     const returnLabel = pageLabel();
 
