@@ -125,8 +125,29 @@
     host.setAttribute("aria-label", "Return navigation");
     host.appendChild(link);
 
-    const openDialog = document.querySelector("dialog[open]");
-    (openDialog || document.body).appendChild(host);
+    document.body.appendChild(host);
+    synchronizeReturnControlHost();
+
+    const dialogObserver = new MutationObserver(synchronizeReturnControlHost);
+    dialogObserver.observe(document.documentElement, {
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["open"]
+    });
+  }
+
+  function synchronizeReturnControlHost() {
+    const host = document.querySelector(".pmt-return-nav");
+    if (!host) {
+      return;
+    }
+
+    const openDialogs = Array.from(document.querySelectorAll("dialog[open]"));
+    const targetHost = openDialogs.at(-1) || document.body;
+
+    if (host.parentElement !== targetHost) {
+      targetHost.appendChild(host);
+    }
   }
 
   function installStyles() {
