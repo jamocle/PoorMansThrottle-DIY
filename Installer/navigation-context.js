@@ -120,6 +120,12 @@
     link.innerHTML = '<span aria-hidden="true">←</span><span class="pmt-return-text"></span>';
     link.querySelector(".pmt-return-text").textContent = returnLabel();
 
+    const version = document.createElement("span");
+    version.className = "pmt-return-version";
+    version.textContent = "P11";
+    version.setAttribute("aria-label", "Patch 11");
+    link.appendChild(version);
+
     const host = document.createElement("div");
     host.className = "pmt-return-nav";
     host.setAttribute("aria-label", "Return navigation");
@@ -173,9 +179,9 @@
         gap: 8px;
         max-width: min(420px, calc(100vw - 28px));
         padding: 10px 14px;
-        border: 1px solid rgba(159, 207, 168, .95);
+        border: 1px solid rgba(226, 174, 104, .96);
         border-radius: 999px;
-        background: rgba(220, 245, 224, .96);
+        background: rgba(255, 229, 191, .97);
         color: #1d1d1f;
         box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         text-decoration: none;
@@ -187,6 +193,12 @@
       .pmt-return-link:hover {
         transform: translateY(-1px);
         box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
+      }
+      .pmt-return-version {
+        padding-left: 2px;
+        font-size: 11px;
+        font-weight: 800;
+        opacity: .72;
       }
       .pmt-return-text {
         overflow: hidden;

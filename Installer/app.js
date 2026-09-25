@@ -1469,11 +1469,15 @@ async function loadDocumentationFile(file, updateHistory = true) {
 
             const scrollbar = document.createElement("div");
             scrollbar.className = "markdown-table-scrollbar";
-            scrollbar.setAttribute("aria-label", "Horizontal table scroll");
 
-            const scrollbarContent = document.createElement("div");
-            scrollbarContent.className = "markdown-table-scrollbar-content";
-            scrollbar.appendChild(scrollbarContent);
+            const scrollRange = document.createElement("input");
+            scrollRange.className = "markdown-table-scroll-range";
+            scrollRange.type = "range";
+            scrollRange.min = "0";
+            scrollRange.step = "1";
+            scrollRange.value = "0";
+            scrollRange.setAttribute("aria-label", "Scroll table horizontally");
+            scrollbar.appendChild(scrollRange);
 
             const wrapper = document.createElement("div");
             wrapper.className = "markdown-table-wrap";
@@ -1483,24 +1487,28 @@ async function loadDocumentationFile(file, updateHistory = true) {
             container.appendChild(wrapper);
             wrapper.appendChild(table);
 
-            let syncingScroll = false;
-            const syncScroll = (source, target) => {
-                if (syncingScroll) {
-                    return;
-                }
-
-                syncingScroll = true;
-                target.scrollLeft = source.scrollLeft;
-                syncingScroll = false;
+            const updateScrollRange = () => {
+                const maximumScroll = Math.max(0, table.scrollWidth - wrapper.clientWidth);
+                scrollRange.max = String(maximumScroll);
+                scrollRange.value = String(Math.min(wrapper.scrollLeft, maximumScroll));
+                scrollbar.hidden = maximumScroll === 0;
             };
 
-            scrollbar.addEventListener("scroll", () => syncScroll(scrollbar, wrapper));
-            wrapper.addEventListener("scroll", () => syncScroll(wrapper, scrollbar));
-
-            requestAnimationFrame(() => {
-                scrollbarContent.style.width = `${table.scrollWidth}px`;
-                scrollbar.hidden = table.scrollWidth <= wrapper.clientWidth;
+            scrollRange.addEventListener("input", () => {
+                wrapper.scrollLeft = Number(scrollRange.value);
             });
+
+            wrapper.addEventListener("scroll", () => {
+                scrollRange.value = String(wrapper.scrollLeft);
+            });
+
+            requestAnimationFrame(updateScrollRange);
+
+            if ("ResizeObserver" in window) {
+                const resizeObserver = new ResizeObserver(updateScrollRange);
+                resizeObserver.observe(table);
+                resizeObserver.observe(wrapper);
+            }
         }
 
         target.replaceChildren(template.content);
