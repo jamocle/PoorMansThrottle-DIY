@@ -114,6 +114,12 @@
 
     const link = document.createElement("a");
     link.className = "pmt-return-link";
+
+    // A return navigation terminates the current return chain. Without this,
+    // the previous page can inherit a return target pointing back here and
+    // create an A -> B -> A -> B loop.
+    target.searchParams.delete(returnParam);
+    target.searchParams.delete(labelParam);
     applyFreshCacheToken(target);
     link.href = target.href;
     link.setAttribute("aria-label", returnLabel());
@@ -122,8 +128,8 @@
 
     const version = document.createElement("span");
     version.className = "pmt-return-version";
-    version.textContent = "P11";
-    version.setAttribute("aria-label", "Patch 11");
+    version.textContent = "P12";
+    version.setAttribute("aria-label", "Patch 12");
     link.appendChild(version);
 
     const host = document.createElement("div");
@@ -179,9 +185,9 @@
         gap: 8px;
         max-width: min(420px, calc(100vw - 28px));
         padding: 10px 14px;
-        border: 1px solid rgba(226, 174, 104, .96);
+        border: 1px solid rgba(159, 207, 168, .95);
         border-radius: 999px;
-        background: rgba(255, 229, 191, .97);
+        background: rgba(220, 245, 224, .96);
         color: #1d1d1f;
         box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         text-decoration: none;
