@@ -4,7 +4,7 @@
   const returnParam = "pmtReturn";
   const labelParam = "pmtReturnLabel";
   const cacheParam = "cb";
-  const returnedParam = "pmtReturned";
+  const returnSessionKey = "pmtReturnInProgress";
 
   function freshCacheToken() {
     return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -50,17 +50,36 @@
     return url.href;
   }
 
-  function isReturnArrival() {
-    return new URL(window.location.href).searchParams.get(returnedParam) === "1";
+  function consumeReturnNavigation() {
+    try {
+      const value = window.sessionStorage.getItem(returnSessionKey);
+      window.sessionStorage.removeItem(returnSessionKey);
+      return value === "1";
+    } catch {
+      return false;
+    }
   }
 
-  function clearReturnArrivalMarker() {
-    const url = new URL(window.location.href);
-    if (!url.searchParams.has(returnedParam)) {
-      return;
+  function markReturnNavigation() {
+    try {
+      window.sessionStorage.setItem(returnSessionKey, "1");
+    } catch {
+      // URL cleanup still prevents return metadata from reaching the destination.
     }
+  }
 
-    url.searchParams.delete(returnedParam);
+  function cleanCurrentReturnMetadata() {
+    const url = new URL(window.location.href);
+    const hadReturnMetadata =
+      url.searchParams.has(returnParam) ||
+      url.searchParams.has(labelParam) ||
+      url.searchParams.has("pmtReturned");
+
+    if (!hadReturnMetadata) return;
+
+    url.searchParams.delete(returnParam);
+    url.searchParams.delete(labelParam);
+    url.searchParams.delete("pmtReturned");
     window.history.replaceState(window.history.state, "", url.href);
   }
 
@@ -83,7 +102,7 @@
 
       target.searchParams.delete(returnParam);
       target.searchParams.delete(labelParam);
-      target.searchParams.delete(returnedParam);
+      target.searchParams.delete("pmtReturned");
       link.href = target.href;
     }
   }
@@ -163,18 +182,17 @@
     // create an A -> B -> A -> B loop.
     target.searchParams.delete(returnParam);
     target.searchParams.delete(labelParam);
-    target.searchParams.set(returnedParam, "1");
+    target.searchParams.delete("pmtReturned");
     applyFreshCacheToken(target);
     link.href = target.href;
+
+    const markReturn = () => markReturnNavigation();
+    link.addEventListener("pointerdown", markReturn, { capture: true });
+    link.addEventListener("click", markReturn, { capture: true });
+    link.addEventListener("auxclick", markReturn, { capture: true });
     link.setAttribute("aria-label", returnLabel());
     link.innerHTML = '<span aria-hidden="true">←</span><span class="pmt-return-text"></span>';
     link.querySelector(".pmt-return-text").textContent = returnLabel();
-
-    const version = document.createElement("span");
-    version.className = "pmt-return-version";
-    version.textContent = "P13";
-    version.setAttribute("aria-label", "Patch 13");
-    link.appendChild(version);
 
     const host = document.createElement("div");
     host.className = "pmt-return-nav";
@@ -229,9 +247,9 @@
         gap: 8px;
         max-width: min(420px, calc(100vw - 28px));
         padding: 10px 14px;
-        border: 1px solid rgba(190, 168, 224, .96);
+        border: 1px solid rgba(159, 207, 168, .95);
         border-radius: 999px;
-        background: rgba(235, 224, 250, .97);
+        background: rgba(220, 245, 224, .96);
         color: #1d1d1f;
         box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
         text-decoration: none;
@@ -243,12 +261,6 @@
       .pmt-return-link:hover {
         transform: translateY(-1px);
         box-shadow: 0 10px 28px rgba(0, 0, 0, .16);
-      }
-      .pmt-return-version {
-        padding-left: 2px;
-        font-size: 11px;
-        font-weight: 800;
-        opacity: .72;
       }
       .pmt-return-text {
         overflow: hidden;
@@ -308,16 +320,16 @@
   }
 
   function initialize() {
-    const returnedHere = isReturnArrival();
+    const returnedHere = consumeReturnNavigation();
 
     installStyles();
-    renderReturnControl();
 
-    if (!returnedHere) {
-      decorateInternalLinks();
-    } else {
+    if (returnedHere) {
+      cleanCurrentReturnMetadata();
       clearReturnContextFromInternalLinks();
-      clearReturnArrivalMarker();
+    } else {
+      renderReturnControl();
+      decorateInternalLinks();
     }
 
     document.addEventListener("pointerdown", decorateLinkFromEvent, true);
