@@ -3,6 +3,16 @@
 
   const returnParam = "pmtReturn";
   const labelParam = "pmtReturnLabel";
+  const cacheParam = "cb";
+
+  function freshCacheToken() {
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  function applyFreshCacheToken(url) {
+    url.searchParams.set(cacheParam, freshCacheToken());
+    return url;
+  }
 
   function isHttpProtocol(url) {
     return url.protocol === "http:" || url.protocol === "https:";
@@ -61,6 +71,7 @@
 
       target.searchParams.set(returnParam, returnUrl);
       target.searchParams.set(labelParam, returnLabel);
+      applyFreshCacheToken(target);
       link.href = target.href;
     }
   }
@@ -103,6 +114,7 @@
 
     const link = document.createElement("a");
     link.className = "pmt-return-link";
+    applyFreshCacheToken(target);
     link.href = target.href;
     link.setAttribute("aria-label", returnLabel());
     link.innerHTML = '<span aria-hidden="true">←</span><span class="pmt-return-text"></span>';
@@ -130,9 +142,11 @@
         left: max(14px, env(safe-area-inset-left));
         bottom: max(14px, env(safe-area-inset-bottom));
         z-index: 10000;
-        pointer-events: none;
+        pointer-events: auto;
       }
       .pmt-return-link {
+        position: relative;
+        z-index: 10001;
         display: inline-flex;
         align-items: center;
         gap: 8px;
@@ -179,7 +193,9 @@
   }
 
   function decorateLink(link) {
-    if (!(link instanceof HTMLAnchorElement) || link.hasAttribute("download")) {
+    if (!(link instanceof HTMLAnchorElement) ||
+        link.hasAttribute("download") ||
+        link.classList.contains("pmt-return-link")) {
       return;
     }
 
@@ -197,6 +213,7 @@
 
     target.searchParams.set(returnParam, returnUrl);
     target.searchParams.set(labelParam, pageLabel());
+    applyFreshCacheToken(target);
     link.href = target.href;
   }
 
