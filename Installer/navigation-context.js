@@ -78,7 +78,9 @@
     const returnLabel = pageLabel();
 
     for (const link of document.querySelectorAll("a[href]")) {
-      if (link.hasAttribute("download")) {
+      if (link.hasAttribute("download") ||
+          link.classList.contains("pmt-return-link") ||
+          link.closest(".pmt-return-nav")) {
         continue;
       }
 
