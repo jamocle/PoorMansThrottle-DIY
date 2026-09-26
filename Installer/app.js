@@ -2075,7 +2075,148 @@ function initializeSoundPackCrowdsourcing() {
     prepareWhenOpen();
 }
 
+const SECTION_URL_ATTRIBUTE = "data-section-url";
+
+function getSectionUrlElements() {
+    return Array.from(document.querySelectorAll(`details[${SECTION_URL_ATTRIBUTE}]`));
+}
+
+function getSectionUrlKey(section) {
+    return section.getAttribute(SECTION_URL_ATTRIBUTE) || "";
+}
+
+function getRequestedSectionUrlKeys() {
+    const rawHash = window.location.hash.slice(1);
+    if (!rawHash) {
+        return [];
+    }
+
+    return rawHash
+        .split(",")
+        .map((value) => {
+            try {
+                return decodeURIComponent(value).trim();
+            } catch {
+                return value.trim();
+            }
+        })
+        .filter(Boolean);
+}
+
+function getSectionUrlParent(section) {
+    return section.parentElement?.closest(`details[${SECTION_URL_ATTRIBUTE}]`) || null;
+}
+
+function openSectionUrlPath(section) {
+    const parents = [];
+    let parent = getSectionUrlParent(section);
+
+    while (parent) {
+        parents.push(parent);
+        parent = getSectionUrlParent(parent);
+    }
+
+    for (let index = parents.length - 1; index >= 0; index -= 1) {
+        parents[index].open = true;
+    }
+
+    section.open = true;
+}
+
+function isSectionEffectivelyOpen(section) {
+    if (!section.open) {
+        return false;
+    }
+
+    let parent = getSectionUrlParent(section);
+    while (parent) {
+        if (!parent.open) {
+            return false;
+        }
+
+        parent = getSectionUrlParent(parent);
+    }
+
+    return true;
+}
+
+function updateSectionUrlFromOpenState() {
+    const url = new URL(window.location.href);
+    const openKeys = getSectionUrlElements()
+        .filter(isSectionEffectivelyOpen)
+        .map(getSectionUrlKey)
+        .filter(Boolean);
+
+    url.hash = openKeys.length > 0 ? openKeys.map(encodeURIComponent).join(",") : "";
+    window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+}
+
+function initializeSectionUrls() {
+    const sections = getSectionUrlElements();
+    if (sections.length === 0) {
+        return;
+    }
+
+    const sectionsByKey = new Map(
+        sections
+            .map((section) => [getSectionUrlKey(section), section])
+            .filter(([key]) => Boolean(key))
+    );
+
+    let applyingHash = false;
+
+    const synchronizeFromHash = () => {
+        const requestedKeys = getRequestedSectionUrlKeys();
+        const requestedSections = requestedKeys
+            .map((key) => sectionsByKey.get(key))
+            .filter(Boolean);
+
+        if (requestedKeys.length === 0) {
+            updateSectionUrlFromOpenState();
+            return;
+        }
+
+        if (requestedSections.length === 0) {
+            updateSectionUrlFromOpenState();
+            return;
+        }
+
+        applyingHash = true;
+
+        for (const section of sections) {
+            section.open = false;
+        }
+
+        for (const section of requestedSections) {
+            openSectionUrlPath(section);
+        }
+
+        updateSectionUrlFromOpenState();
+
+        window.setTimeout(() => {
+            applyingHash = false;
+        }, 0);
+
+        const firstRequestedSection = requestedSections[0];
+        window.requestAnimationFrame(() => {
+            firstRequestedSection.scrollIntoView({ block: "start" });
+        });
+    };
+
+    for (const section of sections) {
+        section.addEventListener("toggle", () => {
+            if (!applyingHash) {
+                updateSectionUrlFromOpenState();
+            }
+        });
+    }
+
+    window.addEventListener("hashchange", synchronizeFromHash);
+    synchronizeFromHash();
+}
+
 async function initialize() {
+    initializeSectionUrls();
     await updateFirmwareInstaller();
     initializeSoundPacks();
     initializeDocumentation();
