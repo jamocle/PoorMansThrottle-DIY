@@ -2075,6 +2075,30 @@ function initializeSoundPackCrowdsourcing() {
     prepareWhenOpen();
 }
 
+function initializeWelcomeOverlay() {
+    const dialog = document.getElementById("welcomeDialog");
+    const closeX = document.getElementById("welcomeDialogCloseX");
+    const closeButton = document.getElementById("welcomeDialogCloseButton");
+
+    if (!dialog || !closeX || !closeButton || window.location.hash) {
+        return;
+    }
+
+    const closeWelcomeOverlay = () => {
+        if (dialog.open) {
+            dialog.close();
+        }
+    };
+
+    closeX.addEventListener("click", closeWelcomeOverlay);
+    closeButton.addEventListener("click", closeWelcomeOverlay);
+
+    if (!dialog.open) {
+        dialog.showModal();
+    }
+}
+
+
 const SECTION_URL_ATTRIBUTE = "data-section-url";
 
 function getSectionUrlElements() {
@@ -2216,6 +2240,7 @@ function initializeSectionUrls() {
 }
 
 async function initialize() {
+    initializeWelcomeOverlay();
     initializeSectionUrls();
     await updateFirmwareInstaller();
     initializeSoundPacks();
