@@ -1643,7 +1643,7 @@ code {
 
 .welcome-link-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     margin-top: 26px;
 }
@@ -1652,7 +1652,12 @@ code {
     display: grid;
     grid-template-rows: 180px auto;
     min-width: 0;
+    padding: 0;
     overflow: hidden;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     border: 1px solid rgba(29, 29, 31, 0.08);
     border-radius: 24px;
     background: rgba(255, 255, 255, 0.86);
@@ -1722,6 +1727,31 @@ code {
     fill: #ffffff;
 }
 
+.welcome-link-art-hub {
+    background:
+        radial-gradient(circle at 50% 48%, rgba(255, 255, 255, 0.76), rgba(255, 255, 255, 0) 38%),
+        linear-gradient(145deg, #eee6f6 0%, #ddd0ec 100%);
+}
+
+.welcome-link-art-hub svg {
+    fill: none;
+    stroke: #68417f;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.welcome-link-art-hub svg circle:nth-of-type(2),
+.welcome-link-art-hub svg path:nth-of-type(2) {
+    fill: #68417f;
+    stroke: none;
+}
+
+.welcome-link-art-hub svg circle:nth-of-type(3) {
+    fill: #ffffff;
+    stroke: none;
+}
+
 .welcome-link-copy {
     display: grid;
     gap: 7px;
@@ -1737,17 +1767,6 @@ code {
     color: var(--muted);
     font-size: 0.93rem;
     line-height: 1.45;
-}
-
-.welcome-dialog-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 24px;
-}
-
-.welcome-dialog-close-button {
-    min-width: 140px;
-    justify-content: center;
 }
 
 @media (max-width: 760px) {

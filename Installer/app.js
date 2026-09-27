@@ -2078,9 +2078,9 @@ function initializeSoundPackCrowdsourcing() {
 function initializeWelcomeOverlay() {
     const dialog = document.getElementById("welcomeDialog");
     const closeX = document.getElementById("welcomeDialogCloseX");
-    const closeButton = document.getElementById("welcomeDialogCloseButton");
+    const continueButton = document.getElementById("welcomeDialogContinueButton");
 
-    if (!dialog || !closeX || !closeButton || window.location.hash) {
+    if (!dialog || !closeX || !continueButton || window.location.hash) {
         return;
     }
 
@@ -2091,7 +2091,7 @@ function initializeWelcomeOverlay() {
     };
 
     closeX.addEventListener("click", closeWelcomeOverlay);
-    closeButton.addEventListener("click", closeWelcomeOverlay);
+    continueButton.addEventListener("click", closeWelcomeOverlay);
 
     if (!dialog.open) {
         dialog.showModal();
