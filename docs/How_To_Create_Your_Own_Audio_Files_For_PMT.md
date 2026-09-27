@@ -1248,6 +1248,33 @@ The current code accepts custom track numbers from:
 0001.wav through 9999.wav
 ```
 
+> **WARNING — Do not overwrite standard PMT audio files.**
+>
+> The `0001.wav` through `9999.wav` range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is **not reserved below** and is not already present for another purpose in the active sound folder. Overwriting a standard PMT filename will replace or interfere with that normal locomotive sound.
+>
+> **Treat these diesel filenames as reserved for PMT:**
+>
+> - `0080.wav`–`0082.wav` — brake start / sustain / release
+> - `0090.wav`–`0091.wav` — diesel startup / shutdown
+> - `0100.wav`–`0108.wav` — idle and notches 1–8
+> - `0202.wav` — bell
+> - `0211.wav`–`0213.wav` — horn start / sustain / release
+> - `0300.wav`–`0399.wav` — cab chatter range
+>
+> **Treat these steam filenames as reserved for PMT:**
+>
+> - `0080.wav`–`0082.wav` — brake start / sustain / release
+> - `0093.wav`–`0095.wav` — stationary/stopped steam sounds
+> - `0100.wav`–`0115.wav` — low-speed chuffs
+> - `0120.wav`–`0135.wav` — medium-speed chuffs
+> - `0140.wav`–`0155.wav` — high-speed chuffs
+> - `0190.wav` — moving steam background
+> - `0202.wav` — bell
+> - `0211.wav`–`0213.wav` — whistle start / sustain / release
+> - `0300.wav`–`0399.wav` — cab chatter range
+>
+> The worked example uses `9000.wav` because `9000` is outside the PMT standard ranges listed above.
+
 A custom function can be configured as either:
 
 - a one-shot sound; or
@@ -1266,6 +1293,103 @@ A custom function can be configured as either:
 - auxiliary pump: **"mmmmmmmm"**
 - warning tone: **"beeeeeep"**
 
+### How to Attach Custom Audio to an FX
+
+Custom function audio uses an FX slot just like the other function outputs, but for PMTPlayer custom-audio patterns the function's Pin/Track CV stores a **track number from `1..9999`** instead of a GPIO number. The selected number must not be one of the reserved PMT filenames listed above.
+
+The two custom-audio pattern values are:
+
+| Pattern | Meaning |
+|---:|---|
+| `103` | PMTPlayer custom one-shot |
+| `104` | PMTPlayer custom replay / loop |
+
+The WAV filename is the four-digit version of the selected track number. For example, track `9000` uses:
+
+```text
+9000.wav
+```
+
+Put the file under the active PMTPlayer sound root, which for the normal PMT sound layout is the active `/diesel` or `/steam` folder.
+
+#### Worked example — Fiddle Music on FX3
+
+Suppose you want a fiddle tune assigned to FX3.
+
+First, prepare the fiddle recording as a PMT WAV file using the same format rules in this guide. Export it as:
+
+```text
+9000.wav
+```
+
+FX3 uses these implemented CVs:
+
+| FX3 field | CV |
+|---|---:|
+| Name | `164` |
+| Pin / Track | `165` |
+| Pattern | `166` |
+| Direction | `167` |
+| AppFlags | `168` |
+
+For fiddle music that should replay/loop:
+
+```text
+CV164=FiddleMusic
+CV165=9000
+CV166=104
+CV167=BOTH
+```
+
+This means:
+
+- FX3 is named `FiddleMusic`;
+- FX3 uses PMTPlayer track `9000`, so PMTPlayer looks for `9000.wav`;
+- pattern `104` selects custom replay / loop audio;
+- `BOTH` allows the function in either direction.
+
+> **SPECIAL NOTE — Function Output direction also controls custom audio.**
+>
+> - `BOTH` allows the custom audio to play in either locomotive direction.
+> - `FWD` allows the custom audio to play only while the locomotive is in the forward direction.
+> - `REV` allows the custom audio to play only while the locomotive is in the reverse direction.
+>
+> If the configured Function Output direction does not match the locomotive's active direction, the direction-gated function can be forced off automatically. This applies to custom audio FX as well as other Function Outputs.
+
+For a fiddle clip that should play once instead of replaying, use:
+
+```text
+CV166=103
+```
+
+The normal FX runtime commands activate and deactivate the function:
+
+```text
+FX3=1
+FX3=0
+```
+
+For any other FX slot, use that slot's corresponding Name, Pin/Track, Pattern, and Direction CVs from the PMT configuration reference.
+
+#### Choosing one-shot or replay / loop
+
+Use pattern `103` when the recording is a complete event that should play once, such as:
+
+- a short fiddle flourish;
+- a station announcement;
+- a coupler sound;
+- a whistle or other special effect.
+
+Use pattern `104` when the sound should replay, such as:
+
+- continuous fiddle music;
+- a fan;
+- a pump;
+- a warning tone;
+- another repeating ambience.
+
+If you use pattern `104`, edit the WAV so its end joins its beginning cleanly. A noticeable seam will repeat every time the track wraps.
+
 ### Recommended length
 
 For one-shots:
@@ -1278,7 +1402,7 @@ For loops:
 
 ### Important
 
-Do not accidentally reuse a filename already needed by the standard locomotive sound set unless you intentionally want the custom function to play that same file.
+Always check the reserved PMT filename list above before assigning a custom track. Do not overwrite a standard locomotive sound file.
 
 ---
 

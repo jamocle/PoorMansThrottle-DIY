@@ -1329,6 +1329,32 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <p>Custom function audio can use track numbers from:</p>
 <pre><code class="language-text">0001.wav through 9999.wav
 </code></pre>
+<blockquote>
+<p><strong>WARNING — Do not overwrite standard PMT audio files.</strong></p>
+<p>The <code>0001.wav</code> through <code>9999.wav</code> range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is <strong>not reserved below</strong> and is not already present for another purpose in the active sound folder. Overwriting a standard PMT filename will replace or interfere with that normal locomotive sound.</p>
+<p><strong>Treat these diesel filenames as reserved for PMT:</strong></p>
+<ul>
+<li><code>0080.wav</code>–<code>0082.wav</code> — brake start / sustain / release</li>
+<li><code>0090.wav</code>–<code>0091.wav</code> — diesel startup / shutdown</li>
+<li><code>0100.wav</code>–<code>0108.wav</code> — idle and notches 1–8</li>
+<li><code>0202.wav</code> — bell</li>
+<li><code>0211.wav</code>–<code>0213.wav</code> — horn start / sustain / release</li>
+<li><code>0300.wav</code>–<code>0399.wav</code> — cab chatter range</li>
+</ul>
+<p><strong>Treat these steam filenames as reserved for PMT:</strong></p>
+<ul>
+<li><code>0080.wav</code>–<code>0082.wav</code> — brake start / sustain / release</li>
+<li><code>0093.wav</code>–<code>0095.wav</code> — stationary/stopped steam sounds</li>
+<li><code>0100.wav</code>–<code>0115.wav</code> — low-speed chuffs</li>
+<li><code>0120.wav</code>–<code>0135.wav</code> — medium-speed chuffs</li>
+<li><code>0140.wav</code>–<code>0155.wav</code> — high-speed chuffs</li>
+<li><code>0190.wav</code> — moving steam background</li>
+<li><code>0202.wav</code> — bell</li>
+<li><code>0211.wav</code>–<code>0213.wav</code> — whistle start / sustain / release</li>
+<li><code>0300.wav</code>–<code>0399.wav</code> — cab chatter range</li>
+</ul>
+<p>The worked example uses <code>9000.wav</code> because <code>9000</code> is outside the PMT standard ranges listed above.</p>
+</blockquote>
 <p>A custom function can be configured as either:</p>
 <ul>
 <li>a one-shot sound; or</li>
@@ -1347,13 +1373,106 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <li>auxiliary pump: <strong>&quot;mmmmmmmm&quot;</strong></li>
 <li>warning tone: <strong>&quot;beeeeeep&quot;</strong></li>
 </ul>
+<h3>How to Attach Custom Audio to an FX</h3>
+<p>Custom function audio uses an FX slot just like the other function outputs, but for PMTPlayer custom-audio patterns the function's Pin/Track CV stores a <strong>track number from <code>1..9999</code></strong> instead of a GPIO number. The selected number must not be one of the reserved PMT filenames listed above.</p>
+<p>The two custom-audio pattern values are:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Pattern</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;"><code>103</code></td>
+<td>PMTPlayer custom one-shot</td>
+</tr>
+<tr>
+<td style="text-align: right;"><code>104</code></td>
+<td>PMTPlayer custom replay / loop</td>
+</tr>
+</tbody>
+</table>
+<p>The WAV filename is the four-digit version of the selected track number. For example, track <code>9000</code> uses:</p>
+<pre><code class="language-text">9000.wav
+</code></pre>
+<p>Put the file under the active PMTPlayer sound root, which for the normal PMT sound layout is the active <code>/diesel</code> or <code>/steam</code> folder.</p>
+<h4>Worked example — Fiddle Music on FX3</h4>
+<p>Suppose you want a fiddle tune assigned to FX3.</p>
+<p>First, prepare the fiddle recording as a PMT WAV file using the same format rules in this guide. Export it as:</p>
+<pre><code class="language-text">9000.wav
+</code></pre>
+<p>FX3 uses these implemented CVs:</p>
+<table>
+<thead>
+<tr>
+<th>FX3 field</th>
+<th style="text-align: right;">CV</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>Name</td><td style="text-align: right;"><code>164</code></td></tr>
+<tr><td>Pin / Track</td><td style="text-align: right;"><code>165</code></td></tr>
+<tr><td>Pattern</td><td style="text-align: right;"><code>166</code></td></tr>
+<tr><td>Direction</td><td style="text-align: right;"><code>167</code></td></tr>
+<tr><td>AppFlags</td><td style="text-align: right;"><code>168</code></td></tr>
+</tbody>
+</table>
+<p>For fiddle music that should replay/loop:</p>
+<pre><code class="language-text">CV164=FiddleMusic
+CV165=9000
+CV166=104
+CV167=BOTH
+</code></pre>
+<p>This means:</p>
+<ul>
+<li>FX3 is named <code>FiddleMusic</code>;</li>
+<li>FX3 uses PMTPlayer track <code>9000</code>, so PMTPlayer looks for <code>9000.wav</code>;</li>
+<li>pattern <code>104</code> selects custom replay / loop audio;</li>
+<li><code>BOTH</code> allows the function in either direction.</li>
+</ul>
+<blockquote>
+<p><strong>SPECIAL NOTE — Function Output direction also controls custom audio.</strong></p>
+<ul>
+<li><code>BOTH</code> allows the custom audio to play in either locomotive direction.</li>
+<li><code>FWD</code> allows the custom audio to play only while the locomotive is in the forward direction.</li>
+<li><code>REV</code> allows the custom audio to play only while the locomotive is in the reverse direction.</li>
+</ul>
+<p>If the configured Function Output direction does not match the locomotive's active direction, the direction-gated function can be forced off automatically. This applies to custom audio FX as well as other Function Outputs.</p>
+</blockquote>
+<p>For a fiddle clip that should play once instead of replaying, use:</p>
+<pre><code class="language-text">CV166=103
+</code></pre>
+<p>The normal FX runtime commands activate and deactivate the function:</p>
+<pre><code class="language-text">FX3=1
+FX3=0
+</code></pre>
+<p>For any other FX slot, use that slot's corresponding Name, Pin/Track, Pattern, and Direction CVs from the PMT configuration reference.</p>
+<h4>Choosing one-shot or replay / loop</h4>
+<p>Use pattern <code>103</code> when the recording is a complete event that should play once, such as:</p>
+<ul>
+<li>a short fiddle flourish;</li>
+<li>a station announcement;</li>
+<li>a coupler sound;</li>
+<li>a whistle or other special effect.</li>
+</ul>
+<p>Use pattern <code>104</code> when the sound should replay, such as:</p>
+<ul>
+<li>continuous fiddle music;</li>
+<li>a fan;</li>
+<li>a pump;</li>
+<li>a warning tone;</li>
+<li>another repeating ambience.</li>
+</ul>
+<p>If you use pattern <code>104</code>, edit the WAV so its end joins its beginning cleanly. A noticeable seam will repeat every time the track wraps.</p>
 <h3>Recommended length</h3>
 <p>For one-shots:</p>
 <p><strong>0.2 to 15 seconds</strong>, depending on the sound.</p>
 <p>For loops:</p>
 <p><strong>1 to 8 seconds</strong> is usually practical.</p>
 <h3>Important</h3>
-<p>Do not accidentally reuse a filename already needed by the standard locomotive sound set unless you intentionally want the custom function to play that same file.</p>
+<p>Always check the reserved PMT filename list above before assigning a custom track. Do not overwrite a standard locomotive sound file.</p>
 <hr />
 <h1>18. Quick File Checklist</h1>
 <h2>Diesel</h2>
