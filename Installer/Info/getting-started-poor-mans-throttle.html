@@ -65,7 +65,7 @@ section{scroll-margin-top:75px}.section{margin-top:56px}.section-head{max-width:
 .video-card img{width:100%;height:100%;min-height:190px;object-fit:cover}
 .video-copy{padding:20px}.video-copy h3{font-size:1.7rem;margin-bottom:10px}.video-copy p{margin:0;color:var(--muted);line-height:1.65}
 .dark{margin-top:60px;padding:30px;border-radius:26px;color:#f8eee6;background:radial-gradient(circle at 90% 5%,rgba(215,166,78,.16),transparent 25rem),linear-gradient(145deg,#300f12,#1b0d0b 65%,#2c150d);box-shadow:0 25px 60px rgba(40,15,9,.2)}
-.dark .eyebrow{color:#efc77b}.dark .section-head p{color:#c9b6aa}.dark .doc{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.14);color:#fff}.dark .doc small{color:#c9b6aa}.dark .ico{color:#241107;background:linear-gradient(145deg,#f0d08d,#bd7433)}
+.dark .eyebrow{color:#efc77b}.dark .section-head p{color:#c9b6aa}.dark .doc{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14);color:#fff}.dark .doc strong{color:#fff}.dark .doc small{color:#eaded6}.dark .ico{color:#241107;background:linear-gradient(145deg,#f0d08d,#bd7433)}
 footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding:28px 0 0}
 @media(max-width:920px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:680px){main{width:calc(100% - 18px);padding-top:35px}.docs,.resources-grid,.grid{grid-template-columns:1fr}.hero{padding:0}.hero img{width:100%;height:auto;min-height:0;max-height:none;object-fit:contain;object-position:center;max-width:100%}.video-card{grid-template-columns:1fr}.video-card img{max-height:190px}.dark{padding:22px 15px}.optional{padding:18px 14px}}
@@ -76,6 +76,25 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
   nav div{width:100%;gap:4px;padding:7px max(14px, env(safe-area-inset-right)) 7px max(14px, env(safe-area-inset-left))}
   nav a{font-size:.78rem;padding:7px 9px}
 }
+
+.battery-basics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 22px}
+.battery-basic{padding:19px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.82);box-shadow:0 10px 28px rgba(52,29,17,.05)}
+.battery-basic .symbol{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;margin-bottom:12px;color:#fff;background:linear-gradient(145deg,var(--wine),var(--brown));font-weight:900;font-size:1.03rem}
+.battery-basic h3{margin:0 0 7px}.battery-basic p{margin:0;color:var(--muted);line-height:1.58;font-size:.94rem}
+.battery-example{margin:18px 0;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,rgba(143,0,41,.07),rgba(215,166,78,.09));border:1px solid rgba(143,0,41,.13);line-height:1.62}
+.scale-table-wrap{overflow-x:auto;margin-top:18px;border:1px solid var(--line);border-radius:20px;background:rgba(255,255,255,.86);box-shadow:0 12px 32px rgba(52,29,17,.05)}
+.scale-table{width:100%;border-collapse:collapse;min-width:760px}
+.scale-table th,.scale-table td{padding:15px 16px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+.scale-table th{background:#2a1510;color:#f7ece2;font-size:.82rem;letter-spacing:.03em;text-transform:uppercase}
+.scale-table tr:last-child td{border-bottom:0}
+.scale-table td:first-child{font-weight:850;color:var(--wine);white-space:nowrap}
+.scale-table small{display:block;color:var(--muted);line-height:1.45;margin-top:4px}
+.battery-warning{margin-top:18px;padding:19px 20px;border-left:5px solid var(--wine);border-radius:16px;background:#fff8f1;color:#59463a}
+.battery-warning strong{display:block;margin-bottom:5px;color:#321d14}
+.battery-sources{margin-top:15px;color:var(--muted);font-size:.84rem;line-height:1.55}
+.battery-sources a{color:var(--wine);font-weight:700}
+@media(max-width:760px){.battery-basics{grid-template-columns:1fr}}
+
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -88,6 +107,7 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 <a href="#optional">Optional Hardware</a>
 <a href="#drivers">Motor Drivers</a>
 <a href="#esp32">ESP32 Boards</a>
+<a href="#batteries">Batteries</a>
 <a href="#guides">Installer Guides</a>
 <a href="#resources">More Documentation</a>
 </div></nav>
@@ -211,6 +231,164 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 <article class="card"><div class="pic"><img src="assets/esp32-s3-generic.jpg" alt="Generic ESP32 S3"></div><div class="body"><div class="tags"><span class="tag opt">Optional board</span><span class="tag">Amazon listing: 3-pack</span></div><h3>ESP32-S3 N16R8 Development Board with GPIO Expansion Board</h3><div class="spec">Optional S3 board</div><p>For basic throttle control, no SD-card reader is required. If the installation uses audio or automation, add an SD-card reader.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0G7JGFW12" target="_blank" rel="noopener">Amazon</a></div></div></article>
 <article class="card"><div class="pic"><img src="assets/esp32-classic.jpg" alt="Classic ESP32"></div><div class="body"><div class="tags"><span class="tag opt">Optional board</span><span class="tag">Amazon listing: 3-pack</span></div><h3>ESP32-WROOM-32 30-Pin USB-C Development Board</h3><div class="spec">Classic ESP32</div><p>Works great for basic throttle control and non-audio installations. If automation is required, add an SD-card reader.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0DNYR973V" target="_blank" rel="noopener">Amazon</a></div></div></article>
 </div>
+</section>
+
+
+<section class="section" id="batteries">
+<div class="section-head">
+  <div class="eyebrow">Choosing battery power</div>
+  <h2>Batteries for model railroading</h2>
+  <p>
+    Battery selection becomes much easier when you separate two ideas:
+    <strong>voltage determines the electrical pressure available to the locomotive</strong>,
+    while <strong>mAh describes how much energy capacity you are carrying</strong>.
+    The right pack is the one that fits your locomotive, motor driver, electronics, and physical space — not simply the pack with the biggest numbers.
+  </p>
+</div>
+
+<div class="battery-basics">
+  <article class="battery-basic">
+    <div class="symbol">V</div>
+    <h3>Voltage = power headroom</h3>
+    <p>
+      Higher battery voltage gives the motor driver more voltage to work with and can increase available top speed.
+      Too much voltage can damage the motor or electronics, so always stay within the ratings of the locomotive, motor driver, buck converter, and accessories.
+    </p>
+  </article>
+
+  <article class="battery-basic">
+    <div class="symbol">mAh</div>
+    <h3>mAh = fuel-tank size</h3>
+    <p>
+      A 2,000&nbsp;mAh pack is a 2.0&nbsp;Ah battery. More mAh generally means longer runtime, but also a physically larger and heavier battery.
+      Sound, lighting, smoke, automation, and heavy trains all increase current draw.
+    </p>
+  </article>
+
+  <article class="battery-basic">
+    <div class="symbol">Wh</div>
+    <h3>Wh = best energy comparison</h3>
+    <p>
+      Watt-hours account for both voltage and capacity: <strong>Wh = volts × amp-hours</strong>.
+      This is the best way to compare the total stored energy of packs that use different voltages.
+    </p>
+  </article>
+</div>
+
+<div class="battery-example">
+  <strong>Quick runtime example:</strong>
+  a 2,000&nbsp;mAh battery is 2.0&nbsp;Ah. If a locomotive averages about 0.5&nbsp;A while running,
+  the simple theoretical estimate is 2.0 ÷ 0.5 = 4 hours. Real-world runtime will be lower because current draw changes with load,
+  acceleration, grades, sound, lights, and the amount of battery capacity you choose to use before recharging.
+</div>
+
+<div class="section-head" style="margin-top:28px">
+  <div class="eyebrow">Practical starting points</div>
+  <h2 style="font-size:clamp(1.65rem,3.5vw,2.45rem)">Battery recommendations by scale</h2>
+  <p>
+    These are <strong>starting-point recommendations, not hard limits</strong>. Individual locomotives can vary substantially.
+    Measure the locomotive's current draw and confirm its motor voltage before choosing a pack.
+    The recommendations assume common lithium-ion / LiPo-style packs, where a cell is roughly 3.6–3.7&nbsp;V nominal and about 4.2&nbsp;V when fully charged.
+  </p>
+</div>
+
+<div class="scale-table-wrap">
+<table class="scale-table">
+  <thead>
+    <tr>
+      <th>Scale</th>
+      <th>Good starting voltage</th>
+      <th>Useful capacity range</th>
+      <th>Why / notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>G Scale</td>
+      <td>
+        4S–5S Li-ion / LiPo<br>
+        <small>14.8–18.5 V nominal · 16.8–21.0 V fully charged</small>
+      </td>
+      <td>
+        5,000–10,000 mAh
+      </td>
+      <td>
+        Large-scale locomotives usually have the most room for batteries and often draw the most current.
+        Start around 4S for moderate-voltage locomotives; use 5S only when the motor and the complete PMT power path are rated for it.
+      </td>
+    </tr>
+    <tr>
+      <td>O Scale</td>
+      <td>
+        4S Li-ion / LiPo<br>
+        <small>14.8 V nominal · 16.8 V fully charged</small>
+      </td>
+      <td>
+        3,000–6,000 mAh
+      </td>
+      <td>
+        A strong general starting point for larger O-scale locomotives. Smaller locomotives or lower-voltage motors may be happier on 3S.
+      </td>
+    </tr>
+    <tr>
+      <td>S Scale</td>
+      <td>
+        3S–4S Li-ion / LiPo<br>
+        <small>11.1–14.8 V nominal · 12.6–16.8 V fully charged</small>
+      </td>
+      <td>
+        2,000–4,000 mAh
+      </td>
+      <td>
+        3S is a conservative starting point. Move to 4S only when the locomotive motor and driver are comfortable with the higher full-charge voltage.
+      </td>
+    </tr>
+    <tr>
+      <td>HO Scale</td>
+      <td>
+        3S Li-ion / LiPo<br>
+        <small>11.1 V nominal · 12.6 V fully charged</small>
+      </td>
+      <td>
+        1,500–3,000 mAh
+      </td>
+      <td>
+        A practical match for many HO installations while keeping battery size manageable. Capacity is often limited by available internal space.
+      </td>
+    </tr>
+    <tr>
+      <td>N Scale</td>
+      <td>
+        2S Li-ion / LiPo<br>
+        <small>7.4 V nominal · 8.4 V fully charged</small>
+      </td>
+      <td>
+        500–1,500 mAh
+      </td>
+      <td>
+        Space and weight dominate N-scale battery choices. 2S is the safest general starting point.
+        A 3S pack can provide more voltage, but only use it when the motor, driver, and available space make it appropriate.
+      </td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+<div class="battery-warning">
+  <strong>Battery safety matters more than scale.</strong>
+  Use a protected pack or appropriate BMS for the battery chemistry and cell count, use the correct charger, and add a fuse close to the battery.
+  Never choose a pack based only on nominal voltage — check the <em>fully charged</em> voltage too.
+  An INA219 is useful for monitoring, but battery monitoring should not be treated as the only protection against cell over-discharge.
+</div>
+
+<p class="battery-sources">
+  Reference context: the NMRA's DCC electrical standard uses typical power-station values around 12&nbsp;V for N,
+  15&nbsp;V for HO/S/O, and 18&nbsp;V for large scales. PMT is not a DCC command station, so those values are useful context rather than direct battery-pack prescriptions.
+  Common lithium-ion cells are typically about 3.6–3.7&nbsp;V nominal and charge to about 4.2&nbsp;V per cell.
+  <a href="https://www.nmra.org/sites/default/files/standards/sandrp/DCC/S/s-9.1_electrical_standards_for_digital_command_control.pdf" target="_blank" rel="noopener">NMRA S-9.1</a>
+  ·
+  <a href="https://www.batteryuniversity.com/article/bu-303-confusion-with-voltages" target="_blank" rel="noopener">Battery University: Lithium-ion voltages</a>
+</p>
 </section>
 
 <section class="section" id="guides">
