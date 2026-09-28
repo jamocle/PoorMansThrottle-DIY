@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2a100d">
+<title>Getting Started with Poor Man's Throttle</title>
+<style>
+:root{
+  --wine:#8f0029; --wine2:#5b0019; --brown:#73441c; --gold:#d8a54d; --ink:#2b1a12;
+  --muted:#77665a; --line:rgba(80,42,24,.15); --paper:#f7f2eb; --max:1180px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;min-width:320px;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(#eee6dc,#faf7f2 500px,#f5f0e9)}
+.hero{background:#160b08;line-height:0;box-shadow:0 18px 50px rgba(35,13,7,.22)}
+.hero img{display:block;width:100%;max-height:620px;object-fit:cover}
+nav{position:sticky;top:0;z-index:20;background:rgba(25,12,9,.93);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.11)}
+nav div{width:min(var(--max),calc(100% - 20px));margin:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;overflow:visible;padding:9px 0;scrollbar-width:none}
+nav a{flex:0 0 auto;color:#ecdfd4;text-decoration:none;font-weight:750;font-size:.84rem;padding:8px 10px;border-radius:999px;white-space:nowrap}
+nav a:hover{background:rgba(255,255,255,.09);color:white}
+main{width:min(var(--max),calc(100% - 28px));margin:auto;padding:48px 0 70px}
+.intro{text-align:center;max-width:900px;margin:0 auto 46px}
+.eyebrow{color:var(--wine);font-size:.77rem;font-weight:850;letter-spacing:.13em;text-transform:uppercase}
+h1,h2{letter-spacing:-.04em} h1{font-size:clamp(2.4rem,6vw,4.8rem);line-height:.98;margin:10px 0 16px}
+h2{font-size:clamp(2rem,4.5vw,3.15rem);line-height:1.03;margin:7px 0 10px}
+h3{margin:0 0 8px;font-size:1.18rem;line-height:1.22}
+.lead,.section-head p{color:var(--muted);line-height:1.7}
+.lead{font-size:clamp(1rem,2vw,1.2rem)}
+section{scroll-margin-top:75px}.section{margin-top:56px}.section-head{max-width:860px;margin-bottom:22px}
+.docs,.resources-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.doc{display:flex;gap:14px;align-items:flex-start;padding:19px;border:1px solid var(--line);border-radius:19px;text-decoration:none;background:rgba(255,255,255,.78);box-shadow:0 9px 28px rgba(55,30,17,.05);transition:.2s}
+.doc:hover{transform:translateY(-3px);box-shadow:0 17px 38px rgba(55,30,17,.1)}
+.ico{flex:0 0 43px;height:43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,var(--wine),var(--brown));color:#fff}
+.doc strong{display:block;color:var(--ink);margin-bottom:4px}.doc small{display:block;color:var(--muted);font-size:.92rem;line-height:1.5}
+.note{padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,rgba(143,0,41,.07),rgba(215,166,78,.08));border:1px solid rgba(143,0,41,.14);color:#5b483e}
+.shop{margin:20px 0 18px;padding:19px 20px;border-radius:18px;color:#dac8bb;background:linear-gradient(135deg,#32140f,#170c09)}
+.shop strong{color:#f2cf8b}.stores{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.stores a{color:white;text-decoration:none;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:7px 10px;font-size:.82rem}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.card{overflow:hidden;border:1px solid var(--line);border-radius:22px;background:rgba(255,255,255,.88);box-shadow:0 18px 48px rgba(52,29,17,.08)}
+.pic{height:220px;display:grid;place-items:center;padding:14px;background:#f7f2eb;border-bottom:1px solid var(--line)}
+.pic img{width:100%;height:100%;object-fit:contain;max-width:88%;max-height:88%;margin:auto}
+.body{padding:18px 19px 20px}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}.tag{display:inline-flex;align-items:center;min-height:26px;padding:0 9px;border-radius:999px;background:#ead8b8;color:#5d3a16;font-size:.73rem;font-weight:800}
+.tag.rec{background:var(--wine);color:white}.tag.opt{background:#ffe8ab;color:#60440f;border:1px solid #e1c367}.tag.blue{background:#ddebf5;color:#23435c}
+.spec{color:var(--wine);font-weight:800;font-size:.88rem;margin-bottom:10px}.body p{color:var(--muted);font-size:.95rem;line-height:1.55;margin:0}
+.buttons{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:41px;padding:0 14px;border-radius:12px;font-size:.86rem;font-weight:800;text-decoration:none;border:1px solid rgba(77,43,23,.15)}
+.amazon{color:#211407;background:linear-gradient(135deg,#ffd98a,#eab45a)} .docbtn{color:white;background:linear-gradient(135deg,var(--wine),var(--wine2))} .video{color:#fff;background:#b3261e}
+.optional{margin-top:28px;padding:23px;border-radius:23px;border:1px solid rgba(215,166,78,.34);background:linear-gradient(145deg,rgba(255,246,219,.9),rgba(255,255,255,.74))}
+.recipe{margin-top:18px;padding:26px;border-radius:26px;border:1px solid rgba(143,0,41,.14);background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(247,242,235,.96));box-shadow:0 18px 46px rgba(52,29,17,.08)}
+.recipe-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:18px;margin-top:18px}
+.recipe-card{padding:20px;border-radius:22px;border:1px solid var(--line);background:rgba(255,255,255,.9)}
+.recipe-card h3{font-size:1.35rem;margin:0 0 10px}
+.recipe-card p{margin:0 0 12px;color:var(--muted);line-height:1.6}
+.recipe-list{display:grid;gap:10px;margin-top:10px}
+.recipe-item{display:flex;align-items:flex-start;gap:10px;padding:11px 12px;border-radius:14px;background:#f7f2eb;border:1px solid rgba(80,42,24,.08)}
+.recipe-item .dot{flex:0 0 28px;height:28px;border-radius:999px;display:grid;place-items:center;font-size:.9rem;font-weight:800;color:white;background:linear-gradient(135deg,var(--wine),var(--brown))}
+.recipe-item strong{display:block;font-size:.96rem}
+.recipe-item small{display:block;color:var(--muted);line-height:1.45}
+.recipe-banner{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(143,0,41,.08),rgba(215,166,78,.1));border:1px solid rgba(143,0,41,.12);margin-top:16px}
+.recipe-badge{display:inline-flex;align-items:center;justify-content:center;min-width:72px;height:36px;padding:0 12px;border-radius:999px;background:var(--wine);color:#fff;font-weight:800;font-size:.8rem;letter-spacing:.04em;text-transform:uppercase}
+@media(max-width:920px){.recipe-grid{grid-template-columns:1fr}}
+
+.optional h3{font-size:1.35rem;margin:0 0 12px}
+.video-card{display:grid;grid-template-columns:260px 1fr;margin-top:18px;overflow:hidden;border:1px solid rgba(179,38,30,.18);border-radius:20px;background:#fff8f4}
+.video-card img{width:100%;height:100%;min-height:190px;object-fit:cover}
+.video-copy{padding:20px}.video-copy h3{font-size:1.7rem;margin-bottom:10px}.video-copy p{margin:0;color:var(--muted);line-height:1.65}
+.dark{margin-top:60px;padding:30px;border-radius:26px;color:#f8eee6;background:radial-gradient(circle at 90% 5%,rgba(215,166,78,.16),transparent 25rem),linear-gradient(145deg,#300f12,#1b0d0b 65%,#2c150d);box-shadow:0 25px 60px rgba(40,15,9,.2)}
+.dark .eyebrow{color:#efc77b}.dark .section-head p{color:#c9b6aa}.dark .doc{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.14);color:#fff}.dark .doc small{color:#c9b6aa}.dark .ico{color:#241107;background:linear-gradient(145deg,#f0d08d,#bd7433)}
+footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding:28px 0 0}
+@media(max-width:920px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){main{width:calc(100% - 18px);padding-top:35px}.docs,.resources-grid,.grid{grid-template-columns:1fr}.hero{padding:0}.hero img{width:100%;height:auto;min-height:0;max-height:none;object-fit:contain;object-position:center;max-width:100%}.video-card{grid-template-columns:1fr}.video-card img{max-height:190px}.dark{padding:22px 15px}.optional{padding:18px 14px}}
+
+@media(max-width:460px){
+  .hero{padding:0;box-shadow:0 10px 28px rgba(35,13,7,.18)}
+  .hero img{border-radius:0}
+  nav div{width:100%;gap:4px;padding:7px max(14px, env(safe-area-inset-right)) 7px max(14px, env(safe-area-inset-left))}
+  nav a{font-size:.78rem;padding:7px 9px}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero"><img src="assets/hero-banner.jpg" alt="Getting Started with Poor Man's Throttle banner"></header>
+<nav><div>
+<a href="#start">Start</a>
+<a href="#recipe">The PMT Recipe</a>
+<a href="#recommended">Recommended Hardware</a>
+<a href="#optional">Optional Hardware</a>
+<a href="#drivers">Motor Drivers</a>
+<a href="#esp32">ESP32 Boards</a>
+<a href="#guides">Installer Guides</a>
+<a href="#resources">More Documentation</a>
+</div></nav>
+<main>
+<section class="intro" id="start">
+<div class="eyebrow">Build · Install · Configure · Run</div>
+<h1>Getting Started with Poor Man's Throttle</h1>
+<p class="lead">A single starting point for installation documentation, recommended hardware, alternative motor drivers, ESP32 choices, audio, firmware, apps, sound packs, and reference material.</p>
+
+</section>
+
+<section class="section" id="recipe">
+<div class="section-head"><div class="eyebrow">Start here</div><h2>The PMT Recipe</h2><p>A simple way to think about a Poor Man’s Throttle build is to start with the basic recipe, then add only the extra ingredients your project needs.</p></div>
+
+<div class="recipe">
+  <div class="recipe-banner">
+    <span class="recipe-badge">PMT Recipe</span>
+    <div><strong>Build in layers.</strong><br><span class="lead" style="font-size:1rem">Start with the core throttle hardware, then add sound and battery management only if your installation needs them.</span></div>
+  </div>
+
+  <div class="recipe-grid">
+    <article class="recipe-card">
+      <h3>Basic Recipe</h3>
+      <p>This is the foundation for a working PMT throttle installation.</p>
+      <div class="recipe-list">
+        <div class="recipe-item"><span class="dot">1</span><div><strong>ESP32</strong><small>Use either a Classic ESP32 or an ESP32-S3.</small></div></div>
+        <div class="recipe-item"><span class="dot">2</span><div><strong>Motor Driver</strong><small>Choose the driver that matches your locomotive’s voltage, current, and available space.</small></div></div>
+        <div class="recipe-item"><span class="dot">3</span><div><strong>Buck Converter</strong><small>Steps common track or battery voltage down to the regulated power your controller needs.</small></div></div>
+        <div class="recipe-item"><span class="dot">+</span><div><strong>Automation needs an SD reader</strong><small>If you want automation capabilities, add an SD-card reader unless you are using a board that already includes one.</small></div></div>
+      </div>
+    </article>
+
+    <article class="recipe-card">
+      <h3>Sound Add-on</h3>
+      <p>Add this on top of the Basic Recipe when you want PMT audio features.</p>
+      <div class="recipe-list">
+        <div class="recipe-item"><span class="dot">S</span><div><strong>Highly recommended: ESP32-S3</strong><small>The S3 is the preferred choice when adding sound capabilities.</small></div></div>
+        <div class="recipe-item"><span class="dot">1</span><div><strong>Amplifier</strong><small>Use one of the optional sound-card / amplifier modules shown below.</small></div></div>
+        <div class="recipe-item"><span class="dot">2</span><div><strong>Speaker</strong><small>Pair the amplifier with a suitable speaker for your installation.</small></div></div>
+        <div class="recipe-item"><span class="dot">3</span><div><strong>SD-card reader</strong><small>Required if you are not using the CAM board, which already includes one.</small></div></div>
+      </div>
+    </article>
+
+    <article class="recipe-card">
+      <h3>Battery Management Add-on</h3>
+      <p>Add this when you want PMT to monitor battery conditions and help prevent undervoltage issues.</p>
+      <div class="recipe-list">
+        <div class="recipe-item"><span class="dot">B</span><div><strong>INA219</strong><small>Add the INA219 module for battery monitoring and management support.</small></div></div>
+      </div>
+    </article>
+  </div>
+</div>
+
+
+<section class="section" id="recommended">
+<div class="section-head"><div class="eyebrow">Recommended hardware</div><h2>A practical starting hardware set</h2><p>These Amazon links are provided for convenient, rapid delivery. Equivalent modules are often much cheaper from AliExpress, ESP32s.com, RobotShop, DFRobot, and other electronics suppliers.</p></div>
+<div class="shop"><strong>Amazon for speed, specialist suppliers for price.</strong><div>When delivery time is not critical, compare the same chipset or board elsewhere before ordering.</div><div class="stores">
+<a href="https://www.aliexpress.us/" target="_blank" rel="noopener">AliExpress</a>
+<a href="https://www.esp32s.com/shop/" target="_blank" rel="noopener">ESP32s.com</a>
+<a href="https://www.robotshop.com/" target="_blank" rel="noopener">RobotShop</a>
+<a href="https://www.dfrobot.com/" target="_blank" rel="noopener">DFRobot</a>
+</div></div>
+
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/ibt2.jpg" alt="IBT-2"></div><div class="body"><div class="tags"><span class="tag rec">Recommended</span><span class="tag">Amazon listing: 2-pack</span></div><h3>BTS7960 / IBT-2 43A High-Power Motor Driver Module</h3><div class="spec">Large · up to 27V · up to 43A</div><p>The recommended high-current motor driver. It is an excellent board when you receive a good one, but board quality can vary between sellers.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0DXKXKYRK" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_IBT2_Installation_Guide.md" target="_blank" rel="noopener">Install Guide</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/esp32-s3-cam.jpg" alt="ESP32-S3-CAM"></div><div class="body"><div class="tags"><span class="tag rec">Recommended</span><span class="tag blue">Built-in SD reader</span><span class="tag">Amazon listing: 3-pack</span></div><h3>FORIOT ESP32-S3-CAM N16R8 Development Board with OV3660 Camera</h3><div class="spec">ESP32-S3 · dual USB-C · built-in SD reader</div><p>Recommended controller board. Its integrated SD-card reader means you do not need a separate SD module when PMT audio or automation uses removable storage.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0GD2BZ9B1" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/buck-converter.jpg" alt="Buck Converter"></div><div class="body"><div class="tags"><span class="tag rec">Recommended</span><span class="tag">Amazon listing: 2-pack</span></div><h3>12V/24V-to-5V USB-C 3A Buck Converter</h3><div class="spec">3A · 15W · USB-C output</div><p>A compact step-down converter for supplying regulated 5V power from common 12V or 24V sources.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0BNQ5JNWZ" target="_blank" rel="noopener">Amazon</a></div></div></article>
+</div>
+
+<div class="video-card">
+<img src="assets/ibt-video.jpg" alt="IBT-2 board quality video">
+<div class="video-copy"><h3>IBT-2: great board, inconsistent quality control</h3><p>Bad IBT-2 boards do show up. Before committing one to a locomotive, use this video to see how to identify a bad board so you do not spend time troubleshooting a motor-driver defect as if it were a PMT problem.</p><div class="buttons"><a class="btn video" href="https://youtu.be/VNKrYldYAV4?si=aHcBYjjGoOVhKB59" target="_blank" rel="noopener">▶ Watch the IBT-2 Board Check Video</a></div></div>
+</div>
+</section>
+
+
+<section class="section" id="optional">
+<div class="section-head"><div class="eyebrow">Optional hardware</div><h2>Add only what your installation needs</h2><p>These modules are useful for specific PMT features but are not required for every basic throttle installation.</p></div>
+
+<div class="optional">
+<h3><span class="tag opt">OPTIONAL</span> Sound cards</h3>
+<div class="note"><strong>Use these only when your installation includes PMT audio features.</strong><br>For basic throttle control without audio, these sound-card modules are not required.</div>
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/sound-nullab.jpg" alt="NULLLAB sound card"></div><div class="body"><div class="tags"><span class="tag rec">Recommended</span><span class="tag">Amazon listing: 2-pack</span></div><h3>NULLLAB Audio Module</h3><div class="spec">Optional sound card</div><p>Recommended sound-card option for Poor Man's Throttle audio installations. This option is more forgiving during installation and includes a quality speaker, making it the easier all-around choice for most builds.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0GV7S7V77" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md" target="_blank" rel="noopener">Audio Guide</a></div></div></article>
+
+<article class="card"><div class="pic"><img src="assets/sound-aitrip.jpg" alt="AITRIP MAX98357 audio amplifier module"></div><div class="body"><div class="tags"><span class="tag opt">Alternative</span><span class="tag">Amazon listing: 3-pack</span></div><h3>AITRIP MAX98357 I²S Audio Amplifier Module</h3><div class="spec">Optional sound card</div><p>An alternative sound-card option that works well with Poor Man's Throttle audio. It is less forgiving of wiring length, so keep the connecting wires short for reliable operation.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0B4J93M9N" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md" target="_blank" rel="noopener">Audio Guide</a></div></div></article>
+</div>
+</div>
+
+<div class="optional">
+<h3><span class="tag opt">OPTIONAL / CONDITIONAL</span> SD-card readers</h3>
+<div class="note"><strong>The recommended ESP32-S3-CAM above does not need a separate SD-card reader.</strong><br>For other ESP32 boards, add an SD reader only when the installation includes audio or automation. Basic throttle control does not require one.</div>
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/sd-compact.jpg" alt="Compact SD reader"></div><div class="body"><div class="tags"><span class="tag opt">Optional</span><span class="tag">Amazon listing: 6-pack</span></div><h3>WWZMDiB Micro SD TF Card Adapter Mini Reader Module</h3><div class="spec">Compact · 3.3V · 6-pin SPI</div><p>Use only when a non-CAM ESP32 installation needs removable storage for audio or automation.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0BV8ZQ81F" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/sd-small.jpg" alt="Small SD reader"></div><div class="body"><div class="tags"><span class="tag opt">Optional</span><span class="tag">Amazon listing: 5-pack</span></div><h3>HiLetgo Micro SD TF Card Adapter Reader Module</h3><div class="spec">Small · 5V-friendly · 6-pin SPI</div><p>A larger SD interface with onboard level conversion for installations that need removable storage.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B07BJ2P6X6" target="_blank" rel="noopener">Amazon</a></div></div></article>
+</div>
+</div>
+
+<div class="optional">
+<h3><span class="tag opt">OPTIONAL</span> Battery monitoring</h3>
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/ina219.jpg" alt="INA219"></div><div class="body"><div class="tags"><span class="tag opt">Optional</span><span class="tag">Amazon listing: 4-pack</span></div><h3>INA219 I²C Bi-Directional Current / Power Sensor Module</h3><div class="spec">Battery monitoring</div><p>Allows Poor Man's Throttle to monitor the battery and help prevent undervoltage conditions.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B091DRHL79" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener">Install Guide</a></div></div></article>
+</div>
+</div>
+
+<section class="section" id="drivers">
+<div class="section-head"><div class="eyebrow">Alternative motor drivers</div><h2>Match the driver to the locomotive</h2><p>Physical size, motor voltage, current draw, and available installation space should drive the choice.</p></div>
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/ibt2.jpg" alt="IBT-2"></div><div class="body"><div class="tags"><span class="tag rec">High-current choice</span></div><h3>BTS7960 / IBT-2 43A High-Power Motor Driver Module</h3><div class="spec">Large · up to 27V · up to 43A</div><p>The high-current choice when the installation needs the most current headroom of the listed drivers.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0DXKXKYRK" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_IBT2_Installation_Guide.md" target="_blank" rel="noopener">Install Guide</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/l298n.jpg" alt="L298N"></div><div class="body"><div class="tags"><span class="tag">Amazon listing: 4-pack</span></div><h3>BOJACK L298N Dual H-Bridge Motor Driver Module</h3><div class="spec">Medium · up to 46V · 3A class</div><p>A familiar medium-size H-bridge option when you do not need the physical size or current capacity of the IBT-2.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0C5JCF5RS" target="_blank" rel="noopener">Amazon</a><a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_L298N_Installation_Guide.md" target="_blank" rel="noopener">Install Guide</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/l9110s.jpg" alt="L9110S"></div><div class="body"><div class="tags"><span class="tag">Amazon listing: 5-pack</span></div><h3>hiBCTR L9110S H-Bridge Motor Driver Module</h3><div class="spec">Compact · 2.5–12V · 0.8A per channel</div><p>A very small option for low-voltage, low-current installations where space is the priority.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0FBWW6D8H" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/tb6612fng.jpg" alt="TB6612FNG"></div><div class="body"><div class="tags"><span class="tag">Amazon listing: 4-pack</span></div><h3>WWZMDiB TB6612FNG Dual Motor Driver Module</h3><div class="spec">Compact · up to 15V class · 3.2A peak class</div><p>A compact MOSFET-based alternative when the motor requirements fit within its limits.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0F43L7LLD" target="_blank" rel="noopener">Amazon</a></div></div></article>
+</div>
+</section>
+
+<section class="section" id="esp32">
+<div class="section-head"><div class="eyebrow">Optional ESP32 boards</div><h2>Choose the board that fits the feature set</h2><p>The CAM board is the most convenient option when you want integrated SD storage. Other ESP32 boards work well too, with an external reader added only when required.</p></div>
+<div class="grid">
+<article class="card"><div class="pic"><img src="assets/esp32-s3-cam.jpg" alt="ESP32-S3-CAM"></div><div class="body"><div class="tags"><span class="tag rec">Recommended</span><span class="tag blue">Built-in SD reader</span><span class="tag">Amazon listing: 3-pack</span></div><h3>FORIOT ESP32-S3-CAM N16R8 Development Board</h3><div class="spec">Recommended · built-in SD reader</div><p>The simplest option when you want PMT features that use SD storage because the reader is already on the board.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0GD2BZ9B1" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/lonely-binary.jpg" alt="Lonely Binary S3"></div><div class="body"><div class="tags"><span class="tag opt">Optional board</span><span class="tag">Amazon listing: 3-pack</span></div><h3>Lonely Binary ESP32-S3 N16R8 Development Board</h3><div class="spec">Optional S3 board</div><p>For basic throttle control, no SD-card reader is required. If the installation uses audio or automation, add an SD-card reader.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0FL149DGM" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/esp32-s3-generic.jpg" alt="Generic ESP32 S3"></div><div class="body"><div class="tags"><span class="tag opt">Optional board</span><span class="tag">Amazon listing: 3-pack</span></div><h3>ESP32-S3 N16R8 Development Board with GPIO Expansion Board</h3><div class="spec">Optional S3 board</div><p>For basic throttle control, no SD-card reader is required. If the installation uses audio or automation, add an SD-card reader.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0G7JGFW12" target="_blank" rel="noopener">Amazon</a></div></div></article>
+<article class="card"><div class="pic"><img src="assets/esp32-classic.jpg" alt="Classic ESP32"></div><div class="body"><div class="tags"><span class="tag opt">Optional board</span><span class="tag">Amazon listing: 3-pack</span></div><h3>ESP32-WROOM-32 30-Pin USB-C Development Board</h3><div class="spec">Classic ESP32</div><p>Works great for basic throttle control and non-audio installations. If automation is required, add an SD-card reader.</p><div class="buttons"><a class="btn amazon" href="https://www.amazon.com/dp/B0DNYR973V" target="_blank" rel="noopener">Amazon</a></div></div></article>
+</div>
+</section>
+
+<section class="section" id="guides">
+<div class="section-head"><div class="eyebrow">Hardware installer documentation</div><h2>Installation guides</h2><p>Start with the guide that matches the hardware in your build.</p></div>
+<div class="docs">
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_IBT2_Installation_Guide.md" target="_blank" rel="noopener"><span class="ico">↗</span><span><strong>IBT-2 / BTS7960 Installation Guide</strong><small>Wiring and setup for the high-current motor driver.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_L298N_Installation_Guide.md" target="_blank" rel="noopener"><span class="ico">↗</span><span><strong>L298N Installation Guide</strong><small>Installation documentation for the L298N motor driver.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md" target="_blank" rel="noopener"><span class="ico">♪</span><span><strong>PMTPlayer Audio Installation Guide</strong><small>Hardware and setup information for PMT audio.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener"><span class="ico">⚡</span><span><strong>INA219 Battery Monitor Installation Guide</strong><small>Add battery monitoring and undervoltage awareness.</small></span></a>
+</div>
+</section>
+
+
+<section class="dark" id="resources">
+<div class="section-head"><div class="eyebrow">More documentation</div><h2>Apps, firmware, audio, commands &amp; reference material</h2><p>Use these links for the software side of the build and deeper Poor Man's Throttle documentation.</p></div>
+<div class="resources-grid">
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html#ai-assistant,poor-mans-features,documentation" target="_blank" rel="noopener"><span class="ico">⌂</span><span><strong>Information Hub</strong><small>Features, AI assistant, and project documentation.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html#app-installation,app-installation-android,app-installation-apple" target="_blank" rel="noopener"><span class="ico">↓</span><span><strong>App Download</strong><small>Android and Apple app installation information.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html#firmware-installation" target="_blank" rel="noopener"><span class="ico">⚙</span><span><strong>Firmware Installation</strong><small>Install or update Poor Man's Throttle firmware.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html#sounds-sound-packs" target="_blank" rel="noopener"><span class="ico">♫</span><span><strong>Sound Packs</strong><small>Sound resources for audio-enabled installations.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html" target="_blank" rel="noopener"><span class="ico">♪</span><span><strong>BYOA — Bring Your Own Audio</strong><small>Complete Bring Your Own Audio guide.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html" target="_blank" rel="noopener"><span class="ico">⚡</span><span><strong>Abridged</strong><small>Abridged Bring Your Own Audio guide.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md" target="_blank" rel="noopener"><span class="ico">&gt;_</span><span><strong>Terminal Command Reference</strong><small>Command protocol and terminal reference.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md" target="_blank" rel="noopener"><span class="ico">CV</span><span><strong>Configuration Variables</strong><small>CV documentation and configuration reference.</small></span></a>
+<a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer" target="_blank" rel="noopener"><span class="ico">◎</span><span><strong>Project / Social Links</strong><small>Main installer and project page.</small></span></a>
+</div>
+</section>
+<footer>All page artwork and card images are packaged locally in this ZIP so the page renders consistently offline. Some card images are simplified local representations sized for clean layout and reliable delivery.</footer>
+</main>
+</body>
+</html>
+
+<style>
+@media(max-width:680px){
+  nav div{
+    width:calc(100% - 14px) !important;
+    display:flex !important;
+    flex-wrap:wrap !important;
+    justify-content:center !important;
+    overflow:visible !important;
+    gap:5px !important;
+    padding:8px 0 !important;
+  }
+
+  nav a{
+    flex:0 0 auto !important;
+    white-space:nowrap !important;
+    font-size:.78rem !important;
+    padding:7px 9px !important;
+  }
+}
+
+@media(max-width:420px){
+  nav div{
+    width:calc(100% - 10px) !important;
+    gap:4px !important;
+  }
+
+  nav a{
+    font-size:.74rem !important;
+    padding:6px 8px !important;
+  }
+}
+</style>
