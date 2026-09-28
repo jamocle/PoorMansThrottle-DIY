@@ -95,6 +95,18 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 .battery-sources a{color:var(--wine);font-weight:700}
 @media(max-width:760px){.battery-basics{grid-template-columns:1fr}}
 
+
+.config-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:18px}
+.config-card{position:relative;padding:20px;border:1px solid var(--line);border-radius:21px;background:rgba(255,255,255,.86);box-shadow:0 10px 30px rgba(52,29,17,.06)}
+.config-card .num{width:36px;height:36px;display:grid;place-items:center;border-radius:12px;margin-bottom:12px;color:#fff;background:linear-gradient(145deg,var(--wine),var(--brown));font-weight:900}
+.config-card h3{margin:0 0 8px;font-size:1.2rem}
+.config-card p{margin:0;color:var(--muted);line-height:1.58;font-size:.95rem}
+.config-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#2f1510,#1b0d0a);color:#eadcd1}
+.config-cta strong{display:block;color:#fff4e6;margin-bottom:4px}
+.config-cta span{display:block;line-height:1.5}
+.config-cta .btn{flex:0 0 auto}
+@media(max-width:720px){.config-grid{grid-template-columns:1fr}.config-cta{align-items:flex-start}}
+
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -103,6 +115,7 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 <nav><div>
 <a href="#start">Start</a>
 <a href="#recipe">The PMT Recipe</a>
+<a href="#configurations">Power Configurations</a>
 <a href="#recommended">Recommended Hardware</a>
 <a href="#optional">Optional Hardware</a>
 <a href="#drivers">Motor Drivers</a>
@@ -161,6 +174,53 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
   </div>
 </div>
 
+
+
+<section class="section" id="configurations">
+<div class="section-head">
+  <div class="eyebrow">How PMT can be installed</div>
+  <h2>Choose the power arrangement that fits your railroad</h2>
+  <p>
+    Poor Man's Throttle can be used in several different power configurations.
+    The detailed guide below walks through the major arrangements so you can see where PMT sits in the power path
+    and decide which approach best matches your locomotive and operating style.
+  </p>
+</div>
+
+<div class="config-grid">
+  <article class="config-card">
+    <div class="num">1</div>
+    <h3>PMT between transformer and track</h3>
+    <p>PMT is installed between the transformer and the track, allowing the throttle system to control power before it reaches the rails.</p>
+  </article>
+
+  <article class="config-card">
+    <div class="num">2</div>
+    <h3>PMT installed in the locomotive with track power</h3>
+    <p>PMT rides onboard the locomotive while the locomotive still receives its primary power from the rails.</p>
+  </article>
+
+  <article class="config-card">
+    <div class="num">3</div>
+    <h3>Deadrail operation with onboard battery only</h3>
+    <p>The locomotive operates from its own onboard battery, eliminating the need to depend on track power for propulsion.</p>
+  </article>
+
+  <article class="config-card">
+    <div class="num">4</div>
+    <h3>Transformer and battery hybrid</h3>
+    <p>A hybrid arrangement combines transformer/track power with onboard battery capability for a more flexible installation.</p>
+  </article>
+</div>
+
+<div class="config-cta">
+  <div>
+    <strong>See the complete PMT power-configuration guide</strong>
+    <span>View the diagrams and full explanation of each installation method before deciding how you want to wire your system.</span>
+  </div>
+  <a class="btn docbtn" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html" target="_blank" rel="noopener">Open Power Configuration Guide</a>
+</div>
+</section>
 
 <section class="section" id="recommended">
 <div class="section-head"><div class="eyebrow">Recommended hardware</div><h2>A practical starting hardware set</h2><p>These Amazon links are provided for convenient, rapid delivery. Equivalent modules are often much cheaper from AliExpress, ESP32s.com, RobotShop, DFRobot, and other electronics suppliers.</p></div>
@@ -416,7 +476,7 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 <a class="doc" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer" target="_blank" rel="noopener"><span class="ico">◎</span><span><strong>Project / Social Links</strong><small>Main installer and project page.</small></span></a>
 </div>
 </section>
-<footer>All page artwork and card images are packaged locally in this ZIP so the page renders consistently offline. Some card images are simplified local representations sized for clean layout and reliable delivery.</footer>
+<footer>Copyright (C) 2026 James Theimer</footer>
 </main>
 </body>
 </html>
