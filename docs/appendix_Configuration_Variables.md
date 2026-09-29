@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.3
+**Firmware Version:** 3.3.6
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -213,6 +213,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
+| **CV44** | Force Lights PWM | `0` (AUTO) or `1 – (CV2 - 1)` / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. `0` selects AUTO, which resolves to `CV2 - 3`. `FL1` requires `CV2 > 9`. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -225,6 +226,51 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV106** | PWM_BIDIR PWM / Enable Pin | Classic `25`; S3 `6` | PWM/enable pin for `PWM_BIDIR`. |
 | **CV107** | PWM_BIDIR Forward Pin | Classic `27`; S3 `4` | Forward logic pin for `PWM_BIDIR`. |
 | **CV108** | PWM_BIDIR Reverse Pin | Classic `33`; S3 `5` | Reverse logic pin for `PWM_BIDIR`. |
+
+## CV44 — Force Lights PWM
+
+CV44 applies only to **Poor Man's Throttle** locomotive firmware. It configures the physical motor-driver PWM that can remain active after the logical throttle has reached STOP so locomotive lights powered in parallel with the motor can remain on.
+
+This is used in conjunctiopn with FL1/FL0 commands. The purpose of these commands is to send voltage through the motor driver to light LED's in the engine but not move the motor block motors.  This is used to mimmic Light on/off behavior when all of PMT is installed in a training car and all that is senty to the engine is motor power.
+The runtime commands are:
+
+```text
+FL1
+FL0
+```
+
+`FL1` enables Force Lights and `FL0` disables it. The enable state is runtime-only and is not persisted across reboot.
+
+CV44 behavior:
+
+* `CV44=0` is the default and selects **AUTO**. The effective Force Lights PWM is `CV2 - 3`.
+* A non-zero CV44 is an explicit **raw hardware PWM percentage**. It bypasses normal CV2 minimum-start remapping.
+* An explicit CV44 must be in the range `1` through `CV2 - 1`. Because CV2 itself is limited to `0 – 100`, the largest possible explicit CV44 is `99`.
+* `FL1` is accepted only when `CV2 > 9`.
+* If CV2 is lowered so an existing explicit CV44 is above the new `CV2 - 1` limit, CV44 is clamped down to `CV2 - 1`.
+* If CV2 is lowered to `9` or less while Force Lights is active, Force Lights is disabled.
+* Changing CV2 or CV44 while Force Lights is active and the locomotive is stopped reapplies the stopped hardware PWM immediately.
+* `CV44?` returns the stored CV44 setting. In AUTO mode it returns `0`; it does not return the calculated `CV2 - 3` value.
+
+Example:
+
+```text
+CV2=25
+CV44=0
+FL1
+```
+
+With those settings, AUTO resolves the stopped hardware PWM to `22`.
+
+Force Lights does not change the logical stopped state. While active at stop:
+
+* the `?` hardware query can report a real output such as `HW-STOPPED M0 HW22`;
+* stored/logical state remains STOP/0;
+* normal asynchronous `A:` state notification remains `A:HW-STOPPED M0 HW0`.
+
+INA219 battery-disconnect and shutdown protection remain authoritative and can force the motor output fully off even when Force Lights is enabled.
+
+---
 
 ## CV90 — Motor PWM Frequency Curve
 

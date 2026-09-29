@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.3.0  
+**Firmware Version:** 3.3.6  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -1216,6 +1216,50 @@ ACK:B0
 
 ---
 
+## Force Lights
+
+Enable Force Lights:
+
+```text
+FL1
+```
+
+Disable Force Lights:
+
+```text
+FL0
+```
+
+Successful responses:
+
+```text
+ACK:FL1
+ACK:FL0
+```
+
+If `FL1` is requested while `CV2 <= 9`, the command is rejected:
+
+```text
+ERR:FL1
+```
+
+Notes:
+
+* The purpose of this command is to send voltage through the motor driver to light LED's in the engine but not move the motor block motors.  This is used to mimmic Light on/off behavior when all of PMT is installed in a training car and all that is senty to the engine is motor power.
+* Force Lights is **Throttle-only** and runtime-only. It is disabled after reboot until `FL1` is sent again.
+* `FL1` does not change normal acceleration, braking, reversing, or throttle mapping while the locomotive is moving.
+* When the logical throttle reaches STOP, Force Lights keeps the physical motor-driver PWM at the effective `CV44` level instead of reducing it to zero.
+* `CV44=0` selects AUTO, where the effective stopped PWM is `CV2 - 3`.
+* An explicit non-zero `CV44` is a raw hardware PWM percentage and must not exceed `CV2 - 1`.
+* If `CV2` is lowered, an explicit `CV44` above the new `CV2 - 1` limit is clamped down. If `CV2` becomes `9` or lower, active Force Lights is disabled.
+* `FL0` disables Force Lights. If the locomotive is already stopped, the physical motor output returns to zero immediately.
+* Force Lights does not make the logical throttle appear to be moving. `??` remains STOP/0, and normal asynchronous `A:` state notifications deliberately report `A:HW-STOPPED M0 HW0`.
+* The `?` hardware query is intentionally different: while Force Lights is active at stop it reports the actual stopped PWM, for example `HW-STOPPED M0 HW22`.
+* INA219 battery-disconnect and shutdown protection override Force Lights and can force a true zero-output stop.
+* `FL1` and `FL0` are not recordable firmware `.pmt` control commands.
+
+---
+
 ## Hardware State Query
 
 ```text
@@ -1228,7 +1272,10 @@ Example responses:
 HW-FWD M40 HW60
 HW-REV M25 HW35
 HW-STOPPED M0 HW0
+HW-STOPPED M0 HW22
 ```
+
+`HW-STOPPED M0 HW<n>` with a non-zero `HW<n>` can occur while Force Lights is active. `M0` remains the logical stopped throttle; `HW<n>` is the actual hardware PWM being applied.
 
 Fields:
 
@@ -1834,6 +1881,7 @@ The following CVs remain here only because they directly change command behavior
 | `CV15` | Shared | OTA downgrade gate. `0` (default) rejects a catalog `latest` version older than the running semantic firmware version; `1` permits that catalog downgrade. OTA still selects only the board target's catalog `latest`. |
 | `CV2`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
+| `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects AUTO (`CV2 - 3`); explicit non-zero values must not exceed `CV2 - 1`. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
@@ -1966,6 +2014,7 @@ Runtime override:
 | `S` | Throttle | Quick stop |
 | `B` | Throttle | Brake stop |
 | `B<n>` | Throttle | Variable brake |
+| `FL1` / `FL0` | Throttle | Enable / disable Force Lights stopped PWM |
 | `?` | Throttle | Hardware state query |
 | `??` | Throttle | Stored state query |
 | `P0` | Throttle | Periodic mismatch debug only |
