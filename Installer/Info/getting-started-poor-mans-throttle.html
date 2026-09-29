@@ -109,6 +109,14 @@ footer{text-align:center;color:#8b786b;font-size:.82rem;line-height:1.55;padding
 
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `../navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
 </head>
 <body>
 <header class="hero"><img src="assets/hero-banner.jpg" alt="Getting Started with Poor Man's Throttle banner"></header>
