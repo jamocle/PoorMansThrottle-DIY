@@ -147,13 +147,14 @@ In current firmware, motion commands are gated by the control session state. A r
 
 # Firmware Script Recording / Playback Does Not Work
 
-Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
+Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR0`, `SRX`, `SR=<name>`, `SP1=<name>`, `SPR=<name>`, `SP0`, `SS?`, and `SD=<name>`.
 
 ### First Checks
 
 | Check | Action |
 |---|---|
-| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| Script state | Send `SS?` and confirm whether the device reports `A:SS=IDLE`, `A:SS=REC`, `A:SS=SAVE`, `A:SS=PLAY`, or `A:SS=REPEAT` |
+| Pending save | `A:SS=SAVE` means recording has already stopped and is waiting to be saved with `SR=<name>` or discarded with `SRX` |
 | SD availability | Confirm the device has an active PMT SD filesystem; SD-backed script operations return `ERR:SD` when storage is unavailable |
 | Script name | Use 1–16 base-name characters from `a-z`, `0-9`, `_`, or `-`; `.pmt` is optional in the command |
 | File location | Firmware scripts are stored as `/scripts/<name>.pmt` |
@@ -175,26 +176,42 @@ Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR=<name>`, `SP1
 | `ERR:EMPTY` | The saved script contains no executable content. Record at least one eligible control command before saving. |
 | `ERR:SCRIPT` | A line in the `.pmt` file is not a valid `PAUSE` or recordable control command for that firmware image. |
 | `ERR:MEM` | Firmware could not reserve the required script buffer memory. Reboot and retry; if it repeats, investigate memory pressure. |
-| `ERR:BUSY` | Recording or playback is already active. Use `SS?`; stop playback with `SP0` before starting/deleting another script. |
-| `ERR:STATE` | The requested state transition is invalid, such as sending `SP0` when no script is running or trying `SR=<name>` when recording is not active. |
+| `ERR:BUSY` | Recording, pending save (`SAVE`), or playback is active. Use `SS?`; stop playback with `SP0`, or resolve `SAVE` with `SR=<name>` / `SRX`, before starting/deleting another script. |
+| `ERR:STATE` | The requested state transition is invalid, such as `SP0` while idle, `SR0` when not recording, `SRX` when not in `SAVE`, or `SR=<name>` when neither recording nor `SAVE` is active. |
 
 ### Recording Timing Does Not Look Right
 
-Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. When `SR=<name>` is sent, it also records the elapsed time from the **last recorded control command to the stop-recording command** as the final pause.
+Firmware records elapsed time **between eligible control commands** as `PAUSE <milliseconds>` lines. In the current app workflow, `SR0` stops recording and captures the elapsed time from the **last recorded control command to `SR0`** as the final pause. The subsequent `SR=<name>` only names/saves the already-stopped recording, so time spent entering the name is not added.
 
 The time between the initial `SR` and the first recorded control command is not stored.
 
-This means a recording such as:
+For example:
 
 ```text
+SR
 F40
 ...wait...
 B
 ...wait 10 seconds...
+SR0
+SS?
+A:SS=SAVE
 SR=yard
 ```
 
-will end with a final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+The saved script ends with the roughly 10-second final pause after `B`. That trailing delay is especially important for `SPR=<name>` because it prevents the next repetition from starting immediately after the final command.
+
+The older direct form is still valid: sending `SR=yard` while recording stops and saves in one command, and the final pause is measured at that command.
+
+### Recording Is Stuck at `A:SS=SAVE`
+
+`SAVE` is not an active recording. The recording has already stopped and is being held in memory until you choose what to do:
+
+* Send `SR=<name>` to save it as `/scripts/<name>.pmt`.
+* Send `SRX` to discard it and return to `A:SS=IDLE`.
+* In the throttle app's firmware-script floater, **Save** sends `SR=<name>` and the `<` chevron discards the pending recording with `SRX`.
+
+Closing the floater does not resolve `SAVE`; reopening it queries firmware state and shows the pending-save prompt again.
 
 ### A Command Does Not Appear in the Saved Script
 
@@ -266,7 +283,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 |-----|-------|
 | `ERR:NS` from `OTA?` | OTA is not supported on this hardware. Classic ESP32 uses the USB installer. |
 | `ERR:NO WIFI` | The S3 device is not connected to Wi-Fi, or Wi-Fi was lost during OTA. Restore Wi-Fi and try again. |
-| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, or another pre-transfer error. |
+| `ERR:OTA` before `A:OTA 0` | OTA preparation failed, such as secure catalog access, manifest validation, board-target selection, a catalog downgrade blocked by `CV15=0`, or another pre-transfer error. |
 | `ERR:OTA` after progress begins | Firmware transfer/write did not complete. Keep the current firmware running if possible and use USB recovery if OTA cannot be retried successfully. |
 | Progress reaches `A:OTA 100` and the connection drops | Normal successful behavior. The firmware image completed and the device is rebooting. |
 | No progress percentages yet | This can be normal while OTA is stopping the throttle, obtaining validation time, or reading/validating the manifest. `0%` begins only when the firmware image transfer/write phase starts. |
@@ -277,7 +294,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 - Confirm Wi-Fi is connected before starting OTA.
 - Do not remove power while GREEN/PURPLE OTA indication is active.
 - If OTA repeatedly fails, use the normal USB installer as the recovery path.
-- Use USB when installing a specific older version or intentionally downgrading; OTA always installs the catalog's current `latest` version for the detected S3 target.
+- OTA always targets the detected S3 board's catalog `latest`. If that `latest` is older than the running semantic version, `CV15=0` (default) rejects it and `CV15=1` explicitly allows that catalog downgrade. Use USB to select a specific older version or for recovery.
 
 ---
 
@@ -297,7 +314,7 @@ The GREEN/PURPLE onboard RGB indication is expected throughout the active OTA li
 | Firmware type | Confirm whether the device is Throttle, Module, or Turbine firmware |
 | App flow | Make sure you are opening the matching control/configuration screen |
 | Known devices | Forget or refresh the remembered device if stale information appears to be used |
-| Firmware version | Confirm the installed firmware is compatible with the app version |
+| Firmware build | Send `VV` in the terminal to identify the exact build. Confirm that the installed build is compatible with the app version. |
 
 ---
 
@@ -710,11 +727,13 @@ If INA219 support is enabled, the firmware can:
 - for a physical LED pattern, another active function is using the same pin
 - for an audio pattern, audio is disabled or the selected PMTPlayer sound mode is not usable
 - for custom audio, the function pin/track CV is not a valid PMTPlayer track number
+- for firmware-command pattern `200`, the function data CV is missing, malformed, or contains more or less than one comma
+- a firmware command assigned to pattern `200` is invalid for the current throttle firmware
 - LED wiring expects a higher voltage or includes a resistor sized for 12V or 5V use
 
 ### What to Know
 
-Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family and values `100..199` are the audio family.
+Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family, values `100..199` are the audio family, and values `200..299` are reserved for firmware-command FX.
 
 Implemented values are:
 
@@ -728,10 +747,13 @@ Implemented values are:
 - `102` = audio cab chatter
 - `103` = custom audio one-shot
 - `104` = custom audio replay / loop
+- `200` = firmware command
 
-Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted. Queries return numeric pattern values.
+Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted. Queries return numeric pattern values.
 
-Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`).
+Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`). For pattern `200`, the same CV stores `<command on>,<command off>` text. The pair must contain exactly one comma and both sides must be non-empty after trimming.
+
+When configuring pattern `200`, set the Pattern CV first and then write the command pair to the Data CV. `FXn=1` executes the ON command and `FXn=0` executes the OFF command. Existing `BOTH` / `FWD` / `REV` direction gating still applies, so a direction transition can execute the ON or OFF command when the effective FX state changes.
 
 ### Checks
 
@@ -745,6 +767,9 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 | PMTPlayer sound mode | Confirm `CV401` selects the intended sound mode (`2` Diesel, `3` Steam) |
 | Audio volume | Confirm `CV402` is not zero |
 | Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
+| FW Command data | For pattern `200`, confirm the pin/track/data CV contains exactly `<command on>,<command off>` with one comma and non-empty commands |
+| FW Command validity | Test the configured ON and OFF commands directly to confirm both are valid throttle firmware commands |
+| FW Command direction | Confirm the slot's `BOTH`, `FWD`, or `REV` rule allows the expected effective state in the current direction |
 
 ---
 

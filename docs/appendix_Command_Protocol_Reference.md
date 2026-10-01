@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.3.0  
+**Firmware Version:** 3.3.6  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -63,7 +63,8 @@ Command characteristics:
 | Command family | Throttle | Module | Turbine |
 |---|---:|---:|---:|
 | Identity / authorization | Yes | Yes | Yes |
-| Version query | Yes | Yes | Yes |
+| Version queries (`V` / `VV`) | Yes | Yes | Yes |
+| PX/1 bulk-transfer capability (`XFER?`) | Yes | Yes | Yes |
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
@@ -72,7 +73,7 @@ Command characteristics:
 | OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
 | Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
-| Shared script record/playback/delete (`SR` / `SP...` / `SS?` / `SD=`) | Yes* | Yes* | Yes* |
+| Shared script record/playback/delete/timing adjustment (`SR` / `SR0` / `SRX` / `SP...` / `SS?` / `SD=` / `SA=`) | Yes* | Yes* | Yes* |
 | Throttle motion commands | Yes | No | No |
 | Hardware/stored throttle state query | Yes | No | No |
 | Periodic throttle debug commands | Yes | No | No |
@@ -128,7 +129,7 @@ Asynchronous runtime messages may also be sent without being directly requested.
 
 CV commands require a successful authorization handshake.
 
-Before authorization, firmware allows a limited safe command set including identity, version, connection status, `A0` / `A1`, `D0` / `D1` / `D2`, supported state queries, IP query, and time query/set. Exact configured autonomous schedule commands may also be accepted while autonomous schedule mode is active.
+Before authorization, firmware allows a limited safe command set including identity, firmware build information, connection status, `A0` / `A1`, `D0` / `D1` / `D2`, supported state queries, IP query, and time query/set. Exact configured autonomous schedule commands may also be accepted while autonomous schedule mode is active.
 
 `PS?`, `PS1`, `PS0`, `A?`, `AudioMark`, and `AM` are not part of the normal pre-authorization allow-list.
 
@@ -219,6 +220,8 @@ These commands are part of the shared PMT firmware foundation.
 
 ## Firmware Version
 
+Semantic version only:
+
 ```text
 V
 ```
@@ -229,7 +232,42 @@ Example response:
 ACK:V3.3.0
 ```
 
-`V` is ACK-wrapped.
+Full firmware build identifier:
+
+```text
+VV
+```
+
+Both `V` and `VV` are shared commands for Throttle, Module, and Turbine firmware and are ACK-wrapped. `VV` is useful when two firmware builds share the same semantic version but need to be distinguished by their full build identifiers.
+
+## PX/1 Bulk-Transfer Capability
+
+The existing text protocol is also used to discover whether the firmware supports the separate PX/1 binary bulk-transfer data plane:
+
+```text
+XFER?
+```
+
+Successful response:
+
+```text
+A:XFER=1
+```
+
+`XFER?` is a text command. The bulk transfer itself is **not** carried as ordinary text commands:
+
+* BLE uses the dedicated PX bulk RX/TX characteristics.
+* WebSocket uses binary frames rather than the normal text-command path.
+* PX/1 uses transfer IDs, byte offsets, frame integrity checks, whole-resource CRC32 validation, ACK/retry, resume, and transport rebind/failover semantics.
+
+Current PX/1 script resources are:
+
+| Resource | Value | Access | Contents |
+|---|---:|---|---|
+| `Script` | `1` | Read / Write | Exact bytes of `/scripts/<name>.pmt` |
+| `ScriptList` | `2` | Read only | Snapshot of saved logical script names, UTF-8, one name per line, without `.pmt` |
+
+An empty script directory returns a valid zero-byte `ScriptList`. The list is a snapshot for the lifetime of the transfer so its announced length and CRC remain stable. Directory enumeration order is not defined; clients may sort the returned names for display.
 
 ---
 
@@ -534,9 +572,9 @@ Important exception:
 
 ---
 
-# Shared Script Recording / Playback
+# Shared Script Recording / Playback / Timing Adjustment
 
-Firmware 3.3 adds a shared SD-backed script service for recording eligible control commands with timing, playing saved scripts once or repeatedly, checking script state, stopping playback, and deleting saved scripts.
+Firmware 3.3 adds a shared SD-backed script service for recording eligible control commands with timing, playing saved scripts once or repeatedly, checking script state, stopping playback, deleting saved scripts, and adjusting a script's total pause time.
 
 The management commands are shared across PMT firmware images. Actual recordable control commands remain device-specific.
 
@@ -579,10 +617,32 @@ Behavior:
 * Playback-generated commands are not re-recorded.
 * The first recorded control command is written immediately; firmware does **not** add a leading pause from `SR` to that first command.
 * Between recorded control commands, firmware inserts `PAUSE <milliseconds>` using the elapsed time between those commands.
-* If recording is already active, or playback is running, `SR` returns `ERR:BUSY`.
+* If recording is already active, a stopped recording is pending save (`SAVE`), or playback is running, `SR` returns `ERR:BUSY`.
 * Starting recording requires active SD storage so the `/scripts` directory can be verified or created.
 
-## Stop Recording and Save
+## Stop Recording and Wait for a Name
+
+```text
+SR0
+```
+
+Successful response:
+
+```text
+ACK:SR0
+```
+
+Behavior:
+
+* `SR0` immediately stops an active recording.
+* If at least one control command was recorded, firmware measures the elapsed time from the **last recorded control command to `SR0`** and appends that as the final `PAUSE`.
+* The completed recording remains in memory and is not yet written to SD.
+* Script status changes to `A:SS=SAVE`.
+* While `SAVE` is active, starting another recording or playback, deleting a script, and other conflicting script operations return `ERR:BUSY`.
+* If no recording is active, `SR0` returns `ERR:STATE`.
+* If the recording exceeded the 32 KiB in-memory limit, stopping returns `ERR:FULL` and the failed recording is discarded.
+
+## Save the Recording
 
 ```text
 SR=<name>
@@ -602,16 +662,37 @@ ACK:SR
 
 Behavior:
 
-* `SR=<name>` ends the recording and writes `/scripts/<name>.pmt`.
-* If at least one control command was recorded, firmware measures the elapsed time from the **last recorded control command to `SR=<name>`** and appends that as the final `PAUSE`.
-* That trailing pause is important for repeated playback because it preserves the time spent in the final recorded state before the next repetition begins.
+* In the normal app workflow, `SR=<name>` is sent while status is `SAVE` and writes the pending recording as `/scripts/<name>.pmt`.
+* The time spent choosing or typing the name after `SR0` is **not** added to the script. The final recorded pause was already captured when `SR0` stopped recording.
+* For backward compatibility, `SR=<name>` may also be sent directly while recording. In that case it stops the recording, measures the trailing pause at the `SR=<name>` command, and saves immediately.
 * `SR=<name>` itself is not written into the script.
 * If no eligible control commands were captured, an empty script file can be saved; attempting to play that file returns `ERR:EMPTY`.
-* If the in-memory recording exceeds the 32 KiB script limit, saving returns `ERR:FULL`.
+* If neither recording nor `SAVE` is active, `SR=<name>` returns `ERR:STATE`.
+* If saving fails while status is `SAVE`, the pending recording remains available so the save can be retried or discarded.
 
-Example recording:
+## Discard a Pending Recording
 
 ```text
+SRX
+```
+
+Successful response:
+
+```text
+ACK:SRX
+```
+
+Behavior:
+
+* `SRX` is valid only while `SS?` reports `A:SS=SAVE`.
+* It discards the unsaved recording buffer and returns script state to `IDLE`.
+* It does not create or overwrite a `.pmt` file.
+* If no pending recording exists, `SRX` returns `ERR:STATE`.
+
+Example recording using the current stop-then-name workflow:
+
+```text
+SR
 F40
 PAUSE 9910
 FX4=1
@@ -619,8 +700,12 @@ PAUSE 1110
 FX4=0
 PAUSE 90
 B
-PAUSE 10080
+...wait 10 seconds...
+SR0
+SR=yard1
 ```
+
+The final pause after `B` is captured at `SR0`; the time spent entering `yard1` is not part of the script.
 
 ## Play Once
 
@@ -657,9 +742,103 @@ Behavior:
 
 * Loads and validates the script from SD.
 * Repeats from the beginning after the final line completes.
-* A trailing `PAUSE` recorded by `SR=<name>` is honored before the next repetition begins.
+* A trailing `PAUSE` recorded when the recording is stopped (`SR0`, or direct `SR=<name>`) is honored before the next repetition begins.
 * Playback uses an absolute logical timeline. Normal command-processing time or loop jitter does not shift later pause deadlines, so small lateness does not accumulate as repeat-cycle drift.
 * At a repeat boundary, firmware rewinds the script content without resetting the logical timeline to the current time.
+
+## Adjust Script Timing
+
+The `SA` (**Script Adjust**) command changes the script's total pause time, saves the adjusted script automatically, and preserves the order of non-pause commands.
+
+Named-script forms:
+
+```text
+SA=<name>,-<milliseconds>
+SA=<name>,+<milliseconds>
+```
+
+Examples:
+
+```text
+SA=yard1,-1000
+SA=yard1,+500
+```
+
+Current-playback forms:
+
+```text
+SA=-<milliseconds>
+SA=+<milliseconds>
+```
+
+Successful response:
+
+```text
+ACK:SA
+```
+
+Meaning:
+
+* A **negative** adjustment shortens the script by reducing its total `PAUSE` time.
+* A **positive** adjustment lengthens the script by increasing its total `PAUSE` time.
+* The adjustment must include an explicit `+` or `-` sign.
+* The magnitude must be from **1 through 2147483647 ms**. Zero, an omitted sign, invalid decimal text, or a larger magnitude returns `ERR:VALUE`.
+* `SA=<name>,...` adjusts the named saved script.
+* `SA=...` without a name is valid only while a script is currently playing and targets that active script. If no script is playing, it returns `ERR:STATE`.
+* While playback is active, a named `SA=<name>,...` request must name the active script. Trying to adjust a different script returns `ERR:BUSY`.
+
+Pause normalization:
+
+* Firmware calculates the script's existing total pause time and redistributes the new target pause total **proportionally across the existing positive `PAUSE` positions**.
+* Existing `PAUSE 0` positions remain zero while positive pause time still exists elsewhere.
+* If a reduction is equal to or greater than the script's total pause time, every existing pause position is written as **`PAUSE 0`**. The pause lines are deliberately retained rather than removed.
+* Retaining `PAUSE 0` positions allows a later positive adjustment to restore time at those same positions.
+* When every existing pause position is `PAUSE 0`, a positive adjustment is distributed as evenly as possible across those saved pause positions.
+* If the script has no `PAUSE` lines at all, a positive adjustment adds the requested time as a trailing pause. A negative adjustment leaves the timing unchanged.
+* If an adjusted pause must exceed the maximum single parsed pause value, firmware splits it into multiple valid `PAUSE` lines.
+* The adjusted file must remain within the existing **32 KiB** script limit.
+
+Saving and active playback:
+
+* The adjusted script is committed to SD automatically using the firmware's protected temporary/backup replacement path.
+* If the script is not running, the saved file changes immediately.
+* If the script is currently running **once**, the current pass continues unchanged; the saved adjustment is used the next time that script starts.
+* If the script is currently **repeating**, the current cycle continues unchanged. The adjusted content is swapped in at the **next repeat boundary**.
+* Adjusting a script does not stop active playback.
+
+Example:
+
+```text
+F20
+PAUSE 1000
+FX4=1
+PAUSE 3000
+FX4=0
+```
+
+After:
+
+```text
+SA=<name>,-5000
+```
+
+the pause positions remain present as:
+
+```text
+F20
+PAUSE 0
+FX4=1
+PAUSE 0
+FX4=0
+```
+
+A later:
+
+```text
+SA=<name>,+1000
+```
+
+restores the available delay across those retained positions.
 
 ## Stop Playback
 
@@ -690,6 +869,7 @@ Possible responses:
 ```text
 A:SS=IDLE
 A:SS=REC
+A:SS=SAVE
 A:SS=PLAY
 A:SS=REPEAT
 ```
@@ -716,7 +896,7 @@ Behavior:
 
 * Deletes `/scripts/<name>.pmt`.
 * The same name normalization and validation rules used by playback and recording are applied.
-* Deletion is blocked while recording or playback is active and returns `ERR:BUSY`.
+* Deletion is blocked while recording, pending save (`SAVE`), or playback is active and returns `ERR:BUSY`.
 * A missing script returns `ERR:NOFILE`.
 * A filesystem delete failure returns `ERR:DELETE`.
 
@@ -781,7 +961,9 @@ While a script is running:
 * Firmware-internal and scheduled control commands are **not** suppressed by script playback; they continue to apply through their existing command paths.
 * Non-control management/configuration commands continue through the normal command path unless that specific command rejects the current script state.
 * `SP0` remains available to stop playback.
-* Starting another recording or playback, or deleting a script, returns `ERR:BUSY` while playback is active.
+* `SA=+<ms>` / `SA=-<ms>` remains available while playback is active and adjusts the currently playing script without interrupting the current pass.
+* A named `SA=<name>,...` is also allowed during playback only when `<name>` is the currently playing script; naming another script returns `ERR:BUSY`.
+* Starting another recording or playback, or deleting a script, returns `ERR:BUSY` while playback is active. The same conflicting operations are also blocked while a stopped recording is pending save (`A:SS=SAVE`).
 
 ### `S` During Playback
 
@@ -804,16 +986,17 @@ The throttle `S` command has origin-sensitive behavior:
 
 | Response | Meaning |
 |---|---|
-| `ERR:BUSY` | Recording or playback state prevents the requested operation |
+| `ERR:BUSY` | Recording, pending-save (`SAVE`), or playback state prevents the requested operation; during playback, named `SA=` may only target the active script |
 | `ERR:SD` | Active SD storage is unavailable |
 | `ERR:MEM` | Required script buffer memory could not be reserved |
-| `ERR:STATE` | Requested state transition is not valid, such as `SP0` while idle |
+| `ERR:STATE` | Requested state transition is invalid, such as `SP0` while idle, `SR0` when not recording, `SRX` when not in `SAVE`, `SR=<name>` when neither recording nor `SAVE` is active, or unnamed `SA=...` when no script is playing |
 | `ERR:NAME` | Script name is empty, too long, or contains invalid characters |
+| `ERR:VALUE` | `SA` adjustment is missing an explicit sign, is zero, is not a valid decimal value, or exceeds 2147483647 ms |
 | `ERR:FULL` | Recording exceeded the 32 KiB script limit |
-| `ERR:WRITE` | Recording could not be written completely |
+| `ERR:WRITE` | Script data could not be written or safely replaced on SD |
 | `ERR:NOFILE` | Requested script file does not exist |
 | `ERR:READ` | Script file could not be read completely |
-| `ERR:SIZE` | Script file exceeds the 32 KiB limit |
+| `ERR:SIZE` | Script file or adjusted script result exceeds the 32 KiB limit |
 | `ERR:EMPTY` | Script contains no executable content |
 | `ERR:SCRIPT` | Script contains an invalid line or unsupported command |
 | `ERR:DELETE` | Script file could not be deleted |
@@ -890,6 +1073,13 @@ ACK:OTA
 The firmware then invokes the existing `S` stop behavior, waits until the throttle is fully stopped, obtains private OTA validation time, reads the firmware catalog, selects the exact S3 board target, and installs that target's `latest` firmware image.
 
 OTA does not accept a requested firmware version. The catalog `versions[]` list and `dropdownDefault` value are for USB installer selection and are not OTA version selectors.
+
+`CV15` controls whether OTA may install a catalog `latest` version that is older than the semantic firmware version currently running:
+
+* `CV15=0` (default) rejects a catalog downgrade and the OTA attempt fails with `ERR:OTA`.
+* `CV15=1` allows OTA to install that board target's catalog `latest` even when it is older than the running semantic version.
+
+`CV15` does not turn OTA into a historical-version selector. OTA still installs only the detected board target's catalog `latest`. Use the USB installer for recovery or when a specific firmware version must be selected.
 
 During the actual firmware image transfer/write phase, the initiating transport receives:
 
@@ -1026,6 +1216,50 @@ ACK:B0
 
 ---
 
+## Force Lights
+
+Enable Force Lights:
+
+```text
+FL1
+```
+
+Disable Force Lights:
+
+```text
+FL0
+```
+
+Successful responses:
+
+```text
+ACK:FL1
+ACK:FL0
+```
+
+If `FL1` is requested while `CV2 <= 9`, the command is rejected:
+
+```text
+ERR:FL1
+```
+
+Notes:
+
+* The purpose of this command is to send voltage through the motor driver to light LED's in the engine but not move the motor block motors.  This is used to mimmic Light on/off behavior when all of PMT is installed in a training car and all that is senty to the engine is motor power.
+* Force Lights is **Throttle-only** and runtime-only. It is disabled after reboot until `FL1` is sent again.
+* `FL1` does not change normal acceleration, braking, reversing, or throttle mapping while the locomotive is moving.
+* When the logical throttle reaches STOP, Force Lights keeps the physical motor-driver PWM at the effective `CV44` level instead of reducing it to zero.
+* `CV44=0` selects AUTO, where the effective stopped PWM is `CV2 - 3`.
+* An explicit non-zero `CV44` is a raw hardware PWM percentage and must not exceed `CV2 - 1`.
+* If `CV2` is lowered, an explicit `CV44` above the new `CV2 - 1` limit is clamped down. If `CV2` becomes `9` or lower, active Force Lights is disabled.
+* `FL0` disables Force Lights. If the locomotive is already stopped, the physical motor output returns to zero immediately.
+* Force Lights does not make the logical throttle appear to be moving. `??` remains STOP/0, and normal asynchronous `A:` state notifications deliberately report `A:HW-STOPPED M0 HW0`.
+* The `?` hardware query is intentionally different: while Force Lights is active at stop it reports the actual stopped PWM, for example `HW-STOPPED M0 HW22`.
+* INA219 battery-disconnect and shutdown protection override Force Lights and can force a true zero-output stop.
+* `FL1` and `FL0` are not recordable firmware `.pmt` control commands.
+
+---
+
 ## Hardware State Query
 
 ```text
@@ -1038,7 +1272,10 @@ Example responses:
 HW-FWD M40 HW60
 HW-REV M25 HW35
 HW-STOPPED M0 HW0
+HW-STOPPED M0 HW22
 ```
+
+`HW-STOPPED M0 HW<n>` with a non-zero `HW<n>` can occur while Force Lights is active. `M0` remains the logical stopped throttle; `HW<n>` is the actual hardware PWM being applied.
 
 Fields:
 
@@ -1125,7 +1362,9 @@ Notes:
 
 * Function behavior is configured by the function CV blocks in the `CV150–CV231` range.
 * Direction-gated functions can be forced off automatically when the active direction does not match their configured direction rule.
-* Function CV layouts, patterns, pin/track semantics, defaults, and reserved positions are documented only in `appendix_Configuration_Variables.md`.
+* For firmware-command pattern `200`, the function's data CV contains `<command on>,<command off>`. `FX<n>=1` dispatches the ON command and `FX<n>=0` dispatches the OFF command through the normal firmware command parser.
+* Pattern `200` still obeys direction gating. If an enabled slot becomes direction-disallowed, firmware dispatches its OFF command; if it becomes allowed again while still enabled, firmware dispatches its ON command.
+* Function CV layouts, patterns, pin/track/data semantics, defaults, validation, and reserved positions are documented only in `appendix_Configuration_Variables.md`.
 
 ---
 
@@ -1214,13 +1453,9 @@ Behavior:
 
 ---
 
-## Sound `.set` Field Get / Set (`ST`) — Approved Protocol Design
+## Sound `.set` Field Get / Set (`ST`)
 
-> **Status:** Approved protocol design; firmware command implementation is pending.
->
-> This section records the agreed wire format and behavior so the firmware and client implementations use the same addressing rules.
-
-The `ST` command reads or writes one field in a sound `.set` file.
+The implemented `ST` command reads or writes one field in a sound `.set` file.
 
 Set:
 
@@ -1265,6 +1500,8 @@ The hexadecimal target namespace is:
 | `2A04` | `cab.set` |
 | `2A05` | `brake.set` |
 | `2A06` | `steamfx.set` |
+| `2A07` | `chuff.set` |
+| `2A08` | `steambg.set` |
 
 Custom WAV IDs are the WAV's decimal track number represented in hexadecimal.
 
@@ -1409,7 +1646,7 @@ The protocol should therefore preserve compact hexadecimal set IDs, decimal fiel
 
 ### Authorization
 
-Authorization behavior for the new `ST` family has not yet been defined in this approved protocol design. It must be decided during firmware implementation rather than inferred from unrelated command families.
+`ST` commands use the normal externally authorized command path. They are not part of the pre-authorization command set.
 
 ---
 
@@ -1643,8 +1880,10 @@ The following CVs remain here only because they directly change command behavior
 | `CV8` | Shared | Operational restart/reset control. `CV8=0` requests a safe restart without wiping configuration. `CV8=8` wipes persisted configuration and reboots. Querying CV8 returns `ERR`. `PS1` does not stage/suppress CV8. |
 | `CV10`, `CV13` | Shared | Control Wi-Fi enablement and WebSocket port used by the command transport. |
 | `CV14` | Shared | Offset applied when establishing/adjusting the firmware clock; therefore affects `T?`, `T=<unix>`, and schedule evaluation. |
+| `CV15` | Shared | OTA downgrade gate. `0` (default) rejects a catalog `latest` version older than the running semantic firmware version; `1` permits that catalog downgrade. OTA still selects only the board target's catalog `latest`. |
 | `CV2`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
+| `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects AUTO (`CV2 - 3`); explicit non-zero values must not exceed `CV2 - 1`. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
@@ -1740,7 +1979,9 @@ Runtime override:
 | `I?` | Shared | Authorization status |
 | `I,<token>` | Shared | Authorize normal connection |
 | `IB,<token>` | Shared | Authorize backup socket connection |
-| `V` | Shared | Firmware version |
+| `V` | Shared | Firmware semantic version |
+| `VV` | Shared | Full firmware build identifier |
+| `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
 | `C?` | Shared | Connection status |
 | `IP?` | Shared | IP address query |
 | `T?` | Shared | Current adjusted firmware time query |
@@ -1758,12 +1999,16 @@ Runtime override:
 | `PS1` | Shared | Enable persist-only CV staging |
 | `PS0` | Shared | Leave persist-only CV staging |
 | `SR` | Shared* | Start SD-backed control-command recording |
-| `SR=<name>` | Shared* | Stop recording and save `/scripts/<name>.pmt` |
+| `SR0` | Shared* | Stop recording and hold it in `SAVE` state for naming |
+| `SRX` | Shared* | Discard the pending unsaved recording while in `SAVE` |
+| `SR=<name>` | Shared* | Save the pending recording, or directly stop-and-save an active recording, as `/scripts/<name>.pmt` |
 | `SP1=<name>` | Shared* | Play a saved firmware script once |
 | `SPR=<name>` | Shared* | Repeat a saved firmware script |
 | `SP0` | Shared | Stop active script playback |
 | `SS?` | Shared | Query script state |
 | `SD=<name>` | Shared* | Delete a saved firmware script |
+| `SA=<name>,+<ms>` / `SA=<name>,-<ms>` | Shared* | Lengthen or shorten total pause time in a named script and save the adjusted script |
+| `SA=+<ms>` / `SA=-<ms>` | Shared* | Lengthen or shorten the currently playing script; repeating playback uses the adjusted script at the next repeat boundary |
 | `F<n>` | Throttle | Forward momentum ramp |
 | `R<n>` | Throttle | Reverse momentum ramp |
 | `FQ<n>` | Throttle | Forward quick ramp |
@@ -1771,6 +2016,7 @@ Runtime override:
 | `S` | Throttle | Quick stop |
 | `B` | Throttle | Brake stop |
 | `B<n>` | Throttle | Variable brake |
+| `FL1` / `FL0` | Throttle | Enable / disable Force Lights stopped PWM |
 | `?` | Throttle | Hardware state query |
 | `??` | Throttle | Stored state query |
 | `P0` | Throttle | Periodic mismatch debug only |
@@ -1779,8 +2025,8 @@ Runtime override:
 | `A?` | Throttle | Analyze default audio track manifest |
 | `A? N=<tracks>` | Throttle | Analyze explicit audio track list |
 | `AudioMark` / `AM` | Throttle | Emit manual audio diagnostic marker |
-| `ST<set-id>.<field-id>=<value>` | Throttle | Set a sound `.set` field; approved design, implementation pending |
-| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field; approved design, implementation pending |
+| `ST<set-id>.<field-id>=<value>` | Throttle | Set and persist a sound `.set` field |
+| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field |
 | `F?` | Turbine | Requested turbine output query |
 | `F<n>` | Turbine | Ramp turbine output |
 | `F<n>*` | Turbine | Immediate turbine output |
@@ -1813,6 +2059,7 @@ Command-generated script status lines:
 |---|---|
 | `A:SS=IDLE` | Script service is idle |
 | `A:SS=REC` | Recording is active |
+| `A:SS=SAVE` | Recording has stopped and is waiting to be named/saved or discarded |
 | `A:SS=PLAY` | One-shot playback is active |
 | `A:SS=REPEAT` | Repeating playback is active |
 

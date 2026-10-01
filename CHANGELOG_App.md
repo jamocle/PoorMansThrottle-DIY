@@ -2,8 +2,25 @@
 
 ## Smartphone App:
 
-### Version 3.3.0
+### Version 3.3.7
+* **Output Control Enhancements** The output control configuration layout has been enhanced.  allowing for moving outputs around, linking by name, and only showing configured outputs (no blanks).
+* **Automation Script enhancements** Loading and saving automation scripts now show progress in bytes and saving is 90% quicker than previous.
+* **Graph Control Enhancemenbts** The graph control used for Chuff matching and speed matching now is more precise and deterministic on its movements.
+* **Firmware Command and App Command is now an available FX Pattern** Allows you to tie firmware commands to FX Outputs and app commands to FX commands.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
+### Version 3.3.3
+* **Floating window re-ordering** Now you can tap on script and video float-overs to bring them to the foreground.
+* **Fixed camera timeouts** Timeouts would happen on iOS builds for some users.
+* **Added new CV in firmware to backup** Added CV430 to backup.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 3.3.1
+* **Added new CV in firmware to backup** Added CV15 to backup.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 3.3.0
+* **Support for Automation scripts** No the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
 * **Bug Fixes**
     Fixed save failures with the master volume slider on configuration page.
     The code monkey has been busy (me).

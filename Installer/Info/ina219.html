@@ -353,46 +353,12 @@
     }
   </style>
   <script>
-    document.addEventListener('click', function (event) {
-      const link = event.target.closest('a[data-open-external="true"]');
-      if (!link)
-        return;
-
-      const href = link.getAttribute('href');
-      if (!href)
-        return;
-
-      const absoluteUrl = new URL(href, window.location.href).href;
-
-      event.preventDefault();
-
-      let fallbackOpened = false;
-
-      const fallbackTimer = setTimeout(function () {
-        if (document.visibilityState === 'visible' && !fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }, 700);
-
-      window.addEventListener('pagehide', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      window.addEventListener('blur', function () {
-        clearTimeout(fallbackTimer);
-      }, { once: true });
-
-      try {
-        window.location.href = 'pmt-external:' + encodeURIComponent(absoluteUrl);
-      } catch (error) {
-        clearTimeout(fallbackTimer);
-        if (!fallbackOpened) {
-          fallbackOpened = true;
-          window.open(absoluteUrl, '_blank', 'noopener,noreferrer');
-        }
-      }
-    });
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `../navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
   </script>
 </head>
 <body>
@@ -407,9 +373,9 @@
       </p>
 
       <div class="link-grid">
-        <a class="top-link" href="https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/docs/appendix_battery_management_module.md" data-open-external="true">
+        <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
           <strong>Open PMT Battery Management Hardware Installation</strong>
-          <span>Launch the battery-management hardware installation guide in a separate browser window for wiring and setup reference.</span>
+          <span>Launch the INA219 battery monitor installation guide in a separate browser window for wiring and setup reference.</span>
         </a>
       </div>
     </section>
@@ -623,6 +589,22 @@
               subsystem does not automatically change train behavior.
             </p>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="pad">
+        <h2>Installation Guide</h2>
+        <p class="muted">
+          Use the INA219 battery monitor installation guide for wiring and setup instructions.
+        </p>
+
+        <div class="link-grid">
+          <a class="top-link" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md" target="_blank" rel="noopener noreferrer">
+            <strong>Open INA219 Battery Monitor Installation Guide</strong>
+            <span>Follow the wiring and setup instructions for connecting and configuring the INA219 battery monitor with Poor Man's Throttle.</span>
+          </a>
         </div>
       </div>
     </section>

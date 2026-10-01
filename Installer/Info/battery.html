@@ -327,6 +327,14 @@
       *{animation:none !important; transition:none !important}
     }
   </style>
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `../navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
 </head>
 <body>
   <main class="wrap">
@@ -375,7 +383,7 @@
           </div>
           <div class="benefit">
             <strong>Works with unmodified trains</strong>
-            The image highlights that all trains on the track can be controlled by PMT without needing changes inside the locomotive.
+            All trains on the track can be controlled by PMT without needing changes inside the locomotive.
           </div>
           <div class="benefit">
             <strong>Wireless smartphone operation</strong>
@@ -416,7 +424,7 @@
           </div>
           <div class="benefit">
             <strong>Independent multi-train operation</strong>
-            The image notes that multiple trains can be run independently on the same track.
+            Multiple trains can be run independently on the same track.
           </div>
           <div class="benefit">
             <strong>Balanced flexibility</strong>
@@ -449,7 +457,7 @@
           </div>
           <div class="benefit">
             <strong>Runs anywhere</strong>
-            The image emphasizes that no transformer is required, making the setup more portable and self-contained.
+            No transformer is required, making the setup more portable and self-contained.
           </div>
           <div class="benefit">
             <strong>Individual train control</strong>
@@ -482,7 +490,7 @@
         <div class="benefits">
           <div class="benefit">
             <strong>Best of both worlds</strong>
-            The image explicitly describes this as track power plus wireless engine control.
+            Track power plus wireless engine control.
           </div>
           <div class="benefit">
             <strong>Powered accessories stay active</strong>

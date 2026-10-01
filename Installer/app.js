@@ -1360,6 +1360,7 @@ function showDocumentationNotFound(fileName) {
     const dialog = document.getElementById("documentationDialog");
     const title = document.getElementById("documentationDialogTitle");
     const status = document.getElementById("documentationStatus");
+    const downloadButton = document.getElementById("downloadDocumentationButton");
 
     if (!dialog || !title || !status) {
         return;
@@ -1368,6 +1369,11 @@ function showDocumentationNotFound(fileName) {
     documentationRequestId += 1;
     title.textContent = "Project documentation";
     status.textContent = "";
+    if (downloadButton) {
+        downloadButton.hidden = true;
+        downloadButton.removeAttribute("href");
+        downloadButton.removeAttribute("download");
+    }
     setDocumentationViewerMessage(
         'The requested Markdown guide "' + fileName + '" was not found.',
         true
@@ -1383,6 +1389,7 @@ async function loadDocumentationFile(file, updateHistory = true) {
     const title = document.getElementById("documentationDialogTitle");
     const status = document.getElementById("documentationStatus");
     const target = document.getElementById("documentationContent");
+    const downloadButton = document.getElementById("downloadDocumentationButton");
 
     if (!dialog || !title || !status || !target) {
         return;
@@ -1399,6 +1406,11 @@ async function loadDocumentationFile(file, updateHistory = true) {
     target.replaceChildren();
     target.setAttribute("aria-busy", "true");
     target.scrollTop = 0;
+    if (downloadButton) {
+        downloadButton.hidden = true;
+        downloadButton.removeAttribute("href");
+        downloadButton.removeAttribute("download");
+    }
 
     if (!dialog.open) {
         dialog.showModal();
@@ -1451,9 +1463,62 @@ async function loadDocumentationFile(file, updateHistory = true) {
             }
         }
 
+        for (const table of template.content.querySelectorAll("table")) {
+            const container = document.createElement("div");
+            container.className = "markdown-table-container";
+
+            const scrollbar = document.createElement("div");
+            scrollbar.className = "markdown-table-scrollbar";
+
+            const scrollRange = document.createElement("input");
+            scrollRange.className = "markdown-table-scroll-range";
+            scrollRange.type = "range";
+            scrollRange.min = "0";
+            scrollRange.step = "1";
+            scrollRange.value = "0";
+            scrollRange.setAttribute("aria-label", "Scroll table horizontally");
+            scrollbar.appendChild(scrollRange);
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "markdown-table-wrap";
+
+            table.parentNode.insertBefore(container, table);
+            container.appendChild(scrollbar);
+            container.appendChild(wrapper);
+            wrapper.appendChild(table);
+
+            const updateScrollRange = () => {
+                const maximumScroll = Math.max(0, table.scrollWidth - wrapper.clientWidth);
+                scrollRange.max = String(maximumScroll);
+                scrollRange.value = String(Math.min(wrapper.scrollLeft, maximumScroll));
+                scrollbar.hidden = maximumScroll === 0;
+            };
+
+            scrollRange.addEventListener("input", () => {
+                wrapper.scrollLeft = Number(scrollRange.value);
+            });
+
+            wrapper.addEventListener("scroll", () => {
+                scrollRange.value = String(wrapper.scrollLeft);
+            });
+
+            requestAnimationFrame(updateScrollRange);
+
+            if ("ResizeObserver" in window) {
+                const resizeObserver = new ResizeObserver(updateScrollRange);
+                resizeObserver.observe(table);
+                resizeObserver.observe(wrapper);
+            }
+        }
+
         target.replaceChildren(template.content);
         target.scrollTop = 0;
         status.textContent = "";
+        if (downloadButton) {
+            downloadButton.href = markdownUrl;
+            downloadButton.setAttribute("download", file.name);
+            downloadButton.hidden = false;
+        }
     } catch (error) {
         if (requestId !== documentationRequestId) {
             return;
@@ -2010,7 +2075,173 @@ function initializeSoundPackCrowdsourcing() {
     prepareWhenOpen();
 }
 
+function initializeWelcomeOverlay() {
+    const dialog = document.getElementById("welcomeDialog");
+    const closeX = document.getElementById("welcomeDialogCloseX");
+    const continueButton = document.getElementById("welcomeDialogContinueButton");
+
+    if (!dialog || !closeX || !continueButton || window.location.hash) {
+        return;
+    }
+
+    const closeWelcomeOverlay = () => {
+        if (dialog.open) {
+            dialog.close();
+        }
+    };
+
+    closeX.addEventListener("click", closeWelcomeOverlay);
+    continueButton.addEventListener("click", closeWelcomeOverlay);
+
+    if (!dialog.open) {
+        dialog.showModal();
+    }
+}
+
+
+const SECTION_URL_ATTRIBUTE = "data-section-url";
+
+function getSectionUrlElements() {
+    return Array.from(document.querySelectorAll(`details[${SECTION_URL_ATTRIBUTE}]`));
+}
+
+function getSectionUrlKey(section) {
+    return section.getAttribute(SECTION_URL_ATTRIBUTE) || "";
+}
+
+function getRequestedSectionUrlKeys() {
+    const rawHash = window.location.hash.slice(1);
+    if (!rawHash) {
+        return [];
+    }
+
+    return rawHash
+        .split(",")
+        .map((value) => {
+            try {
+                return decodeURIComponent(value).trim();
+            } catch {
+                return value.trim();
+            }
+        })
+        .filter(Boolean);
+}
+
+function getSectionUrlParent(section) {
+    return section.parentElement?.closest(`details[${SECTION_URL_ATTRIBUTE}]`) || null;
+}
+
+function openSectionUrlPath(section) {
+    const parents = [];
+    let parent = getSectionUrlParent(section);
+
+    while (parent) {
+        parents.push(parent);
+        parent = getSectionUrlParent(parent);
+    }
+
+    for (let index = parents.length - 1; index >= 0; index -= 1) {
+        parents[index].open = true;
+    }
+
+    section.open = true;
+}
+
+function isSectionEffectivelyOpen(section) {
+    if (!section.open) {
+        return false;
+    }
+
+    let parent = getSectionUrlParent(section);
+    while (parent) {
+        if (!parent.open) {
+            return false;
+        }
+
+        parent = getSectionUrlParent(parent);
+    }
+
+    return true;
+}
+
+function updateSectionUrlFromOpenState() {
+    const url = new URL(window.location.href);
+    const openKeys = getSectionUrlElements()
+        .filter(isSectionEffectivelyOpen)
+        .map(getSectionUrlKey)
+        .filter(Boolean);
+
+    url.hash = openKeys.length > 0 ? openKeys.map(encodeURIComponent).join(",") : "";
+    window.history.replaceState(null, "", url.pathname + url.search + url.hash);
+}
+
+function initializeSectionUrls() {
+    const sections = getSectionUrlElements();
+    if (sections.length === 0) {
+        return;
+    }
+
+    const sectionsByKey = new Map(
+        sections
+            .map((section) => [getSectionUrlKey(section), section])
+            .filter(([key]) => Boolean(key))
+    );
+
+    let applyingHash = false;
+
+    const synchronizeFromHash = () => {
+        const requestedKeys = getRequestedSectionUrlKeys();
+        const requestedSections = requestedKeys
+            .map((key) => sectionsByKey.get(key))
+            .filter(Boolean);
+
+        if (requestedKeys.length === 0) {
+            updateSectionUrlFromOpenState();
+            return;
+        }
+
+        if (requestedSections.length === 0) {
+            updateSectionUrlFromOpenState();
+            return;
+        }
+
+        applyingHash = true;
+
+        for (const section of sections) {
+            section.open = false;
+        }
+
+        for (const section of requestedSections) {
+            openSectionUrlPath(section);
+        }
+
+        updateSectionUrlFromOpenState();
+
+        window.setTimeout(() => {
+            applyingHash = false;
+        }, 0);
+
+        const firstRequestedSection = requestedSections[0];
+        window.requestAnimationFrame(() => {
+            firstRequestedSection.scrollIntoView({ block: "start" });
+        });
+    };
+
+    for (const section of sections) {
+        section.addEventListener("toggle", () => {
+            if (!applyingHash) {
+                updateSectionUrlFromOpenState();
+            }
+        });
+    }
+
+    window.addEventListener("hashchange", synchronizeFromHash);
+    synchronizeFromHash();
+}
+
 async function initialize() {
+    initializeWelcomeOverlay();
+    initializeSectionUrls();
     await updateFirmwareInstaller();
     initializeSoundPacks();
     initializeDocumentation();

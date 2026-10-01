@@ -2,7 +2,21 @@
 
 ## Firmware:
 
+### Version 3.3.6
+* **Newly available FX Pattern** Allows you to tie firmware commands to FX Outputs.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 3.3.3
+* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 3.3.2
+* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.0
+** **Added script recording and playback with named scripts** single-run and repeat modes, script deletion, recorded command timing with trailing pauses, non-drifting absolute playback timing, playback status/control, graceful stop behavior, and cycle timing diagnostics for repeatability.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.2.0
 * **Over The Air Firmware Flashing** Flash all firmware AFTER this version wirelessly (Available only in the firmware for the S3 version of the ESP32 Module)

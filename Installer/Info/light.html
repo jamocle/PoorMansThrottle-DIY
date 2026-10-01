@@ -329,6 +329,14 @@
       *{animation:none !important; transition:none !important}
     }
   </style>
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `../navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
 </head>
 <body>
   <main class="wrap">
@@ -337,8 +345,8 @@
       <h1>Lighting and control outputs are now fully configurable.</h1>
       <p class="subhead">
         The app supports up to <strong>12 FX outputs</strong> for auxiliary control and lighting. Each output can be named,
-        assigned to an ESP32 output GPIO pin, given a behavior pattern, linked to another output when needed, and configured
-        as either a normal toggle or a momentary action.
+        given a behavior pattern and direction rule, and configured with pattern-specific data such as an ESP32 GPIO pin,
+        a PMTPlayer track number, or a firmware ON/OFF command pair.
       </p>
     </section>
 
@@ -368,8 +376,9 @@
             <span class="label">Per-output configuration</span>
             <h3>Each output is individually defined</h3>
             <p>
-              Every output can have its own name, GPIO pin assignment, pattern, direction setting, linked relationship, and
-              interaction style. That means the outputs can be tailored to the layout and purpose of a specific throttle.
+              Every output can have its own name, pattern-specific data, pattern, direction setting, linked relationship, and
+              interaction style. Physical patterns use a GPIO, custom audio patterns use a track number, and FW Command uses
+              an ON/OFF firmware command pair.
             </p>
           </div>
 
@@ -384,11 +393,12 @@
           </div>
 
           <div class="card">
-            <span class="label">GPIO assignment</span>
-            <h3>Mapped to ESP32 output pins</h3>
+            <span class="label">Pattern-specific data</span>
+            <h3>GPIO, audio track, or firmware command</h3>
             <p>
-              Each output can be assigned to an ESP32 output GPIO pin. This lets the app configuration match the physical
-              wiring of the accessory or lighting function being controlled.
+              The FX data field follows the selected pattern. Physical lighting patterns use an ESP32 output GPIO, custom audio
+              patterns use a PMTPlayer track number, and FW Command uses <strong>&lt;command on&gt;,&lt;command off&gt;</strong>
+              text with no physical GPIO required.
             </p>
           </div>
         </div>
@@ -451,6 +461,17 @@
             <p>
               Blink- flashes on the negative phase. When paired with Blink+, it can create alternating flashing behavior across
               linked or coordinated outputs.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">FW_COMMAND · Pattern 200</span>
+            <h3>Run firmware commands from an FX control</h3>
+            <p>
+              FW Command stores two firmware commands in the FX data field as
+              <strong>&lt;command on&gt;,&lt;command off&gt;</strong>. Turning the FX on runs the first command; turning it off
+              runs the second through the normal firmware command parser. The pair must contain exactly one comma and both
+              commands must be non-empty. Existing BOTH, FWD, and REV direction rules still apply.
             </p>
           </div>
         </div>

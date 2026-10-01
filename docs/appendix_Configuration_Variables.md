@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.0.0
+**Firmware Version:** 3.3.6
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 3.0.0 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 3.3.3 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -107,7 +107,7 @@ A:CV2=25
 | **All** | Shared CV available on Throttle, Module, and Turbine firmware. |
 | **Throttle** | Available only on locomotive throttle firmware. |
 | **Turbine** | Available only on PoorMansTurbine firmware. |
-| **Module** | Available only on module firmware. In firmware 3.0.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
+| **Module** | Available only on module firmware. In firmware 3.3.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
 
 ---
 
@@ -124,6 +124,7 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV12** | All | Wi-Fi Password | Text / blank | Set-only from the terminal. Query returns `ERR`. |
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
+| **CV15** | All | OTA Allow Downgrade | `0`, `1` / `0` | Controls downgrade protection for supported ESP32-S3 Throttle OTA. `0` rejects a catalog `latest` semantic version older than the firmware currently running; `1` permits OTA to install that older catalog `latest`. This does not select an arbitrary historical version; use the USB installer when a specific version or recovery image must be chosen. |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
 | **CV21** | All | Onboard LED Output Gate | `0`, `1`, `2` / `1` | Final hardware-output gate for the firmware-controlled onboard status LED. `0` forces the onboard LED output off. `1` passes the LED state currently proposed by the firmware, including its current color and blink pattern. `2` forces the onboard LED output off while either BLE or WebSocket control is connected and passes the proposed LED state while disconnected. The LED state machine continues running while output is gated. |
 | **CV30** | All | INA219 Enable | `0`, `1` / `0` | Enables or disables optional INA219 battery telemetry. Disabled by default. |
@@ -147,7 +148,7 @@ These CVs are part of the shared PMT firmware foundation.
 
 ## Shared Audio CVs
 
-The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
+The `CV400–CV430` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
 
 | CV | Purpose | Values / Default | What it means |
 | ---: | --- | --- | --- |
@@ -181,6 +182,7 @@ The `CV400–CV429` bank is stored by the shared CV layer. On a locomotive Throt
 | **CV427** | Overlap Prime Bytes | `0..16384` / `0` | Overlap-stream priming target. |
 | **CV428** | Mixer Attenuation | `25..100%` / `100` | Mixer attenuation percentage. |
 | **CV429** | Clip Telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` | Diagnostic request. In verbose-audio-diagnostic builds, `0`/`1` controls clip telemetry. In normal non-verbose builds, firmware normalizes this CV to `0`, so clip telemetry remains disabled. |
+| **CV430** | PMTPlayer Learned Attenuation Enable | `0`, `1` / `0` | `0` bypasses persisted learned attenuation and disables self-heal learning/persistence without deleting existing `.csh` history. `1` enables applying persisted learned attenuation and self-heal learning/persistence for eligible non-transparent PMTPlayer playback. `CV430` is independent of `CV418` profiles. |
 
 ### Classic `-1` SPI sentinel behavior
 
@@ -211,6 +213,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
+| **CV44** | Force Lights PWM | `0` (AUTO) or `1 – (CV2 - 1)` / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. `0` selects AUTO, which resolves to `CV2 - 3`. `FL1` requires `CV2 > 9`. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -223,6 +226,51 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV106** | PWM_BIDIR PWM / Enable Pin | Classic `25`; S3 `6` | PWM/enable pin for `PWM_BIDIR`. |
 | **CV107** | PWM_BIDIR Forward Pin | Classic `27`; S3 `4` | Forward logic pin for `PWM_BIDIR`. |
 | **CV108** | PWM_BIDIR Reverse Pin | Classic `33`; S3 `5` | Reverse logic pin for `PWM_BIDIR`. |
+
+## CV44 — Force Lights PWM
+
+CV44 applies only to **Poor Man's Throttle** locomotive firmware. It configures the physical motor-driver PWM that can remain active after the logical throttle has reached STOP so locomotive lights powered in parallel with the motor can remain on.
+
+This is used in conjunctiopn with FL1/FL0 commands. The purpose of these commands is to send voltage through the motor driver to light LED's in the engine but not move the motor block motors.  This is used to mimmic Light on/off behavior when all of PMT is installed in a training car and all that is senty to the engine is motor power.
+The runtime commands are:
+
+```text
+FL1
+FL0
+```
+
+`FL1` enables Force Lights and `FL0` disables it. The enable state is runtime-only and is not persisted across reboot.
+
+CV44 behavior:
+
+* `CV44=0` is the default and selects **AUTO**. The effective Force Lights PWM is `CV2 - 3`.
+* A non-zero CV44 is an explicit **raw hardware PWM percentage**. It bypasses normal CV2 minimum-start remapping.
+* An explicit CV44 must be in the range `1` through `CV2 - 1`. Because CV2 itself is limited to `0 – 100`, the largest possible explicit CV44 is `99`.
+* `FL1` is accepted only when `CV2 > 9`.
+* If CV2 is lowered so an existing explicit CV44 is above the new `CV2 - 1` limit, CV44 is clamped down to `CV2 - 1`.
+* If CV2 is lowered to `9` or less while Force Lights is active, Force Lights is disabled.
+* Changing CV2 or CV44 while Force Lights is active and the locomotive is stopped reapplies the stopped hardware PWM immediately.
+* `CV44?` returns the stored CV44 setting. In AUTO mode it returns `0`; it does not return the calculated `CV2 - 3` value.
+
+Example:
+
+```text
+CV2=25
+CV44=0
+FL1
+```
+
+With those settings, AUTO resolves the stopped hardware PWM to `22`.
+
+Force Lights does not change the logical stopped state. While active at stop:
+
+* the `?` hardware query can report a real output such as `HW-STOPPED M0 HW22`;
+* stored/logical state remains STOP/0;
+* normal asynchronous `A:` state notification remains `A:HW-STOPPED M0 HW0`.
+
+INA219 battery-disconnect and shutdown protection remain authoritative and can force the motor output fully off even when Force Lights is enabled.
+
+---
 
 ## CV90 — Motor PWM Frequency Curve
 
@@ -305,7 +353,7 @@ Turbine output is controlled with `F` commands, not locomotive throttle commands
 
 # Module-Specific CVs
 
-In firmware 3.0.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
+In firmware 3.3.0, **PoorMansModule** uses the shared CV foundation and does not add its own separate module-specific CV block in this appendix.
 
 Use the **Shared CVs** table for Module configuration.
 
@@ -514,7 +562,7 @@ In this example:
 
 Throttle firmware supports **12 function outputs** with per-function configuration.
 
-Each function uses a 7-CV block. In firmware 3.0.0 revision 215, the first five CVs in each block are implemented; the last two positions remain reserved.
+Each function uses a 7-CV block. In firmware 3.3.3, the first five CVs in each block are implemented; the last two positions remain reserved.
 
 | Function | Name CV | Pin CV | Pattern CV | Direction CV | AppFlags CV |
 | --- | ---: | ---: | ---: | ---: | ---: |
@@ -549,9 +597,9 @@ Factory defaults:
 * FX2 = `ReverseLgt`
 * FX3 through FX12 = `FX3` through `FX12`
 
-## Function Pin / Track CVs
+## Function Pin / Track / Data CVs
 
-The meaning of the function's pin CV depends on the selected pattern.
+The meaning of the function's data CV depends on the selected pattern.
 
 For a physical/LED pattern (`1..99`), the value is a GPIO number. `0` means unassigned.
 
@@ -565,6 +613,23 @@ CV158=5
 For custom PMTPlayer audio patterns `103` and `104`, the same CV stores a **track number from 1..9999** instead of a GPIO.
 
 Bell, horn, and cab-chatter patterns (`100`, `101`, `102`) do not need a physical FX GPIO.
+
+For firmware-command pattern `200`, the same CV stores a command pair:
+
+```text
+<command on>,<command off>
+```
+
+Example:
+
+```text
+CV166=200
+CV165=D1,D0
+```
+
+The command pair must contain exactly one comma. Both commands must be non-empty after leading/trailing whitespace is trimmed. Firmware stores and reports the normalized form without surrounding whitespace, such as `D1,D0`.
+
+When changing a slot to pattern `200`, write the Pattern CV first and then write the command-pair Data CV. The Data CV is interpreted according to the slot's current or staged pattern.
 
 ## Function Pattern CVs
 
@@ -597,8 +662,9 @@ Current pattern values:
 | `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |
 | `103` | PMTPlayer custom one-shot | `AUDIO_CUSTOM`, `CUSTOM` |
 | `104` | PMTPlayer custom replay / loop | `AUDIO_CUSTOM_REPLAY` and accepted aliases |
+| `200` | Firmware command | `FW_COMMAND`, `COMMAND` |
 
-Values `1..99` are reserved for physical/LED patterns. Values `100..199` are reserved for audio patterns. Queries return numeric values.
+Values `1..99` are reserved for physical/LED patterns. Values `100..199` are reserved for audio patterns. Values `200..299` are reserved for firmware-command patterns. Queries return numeric values.
 
 `BLINK+` and `BLINK-` use the timing configured by `CV20`.
 
@@ -654,7 +720,9 @@ Rules:
 * valid function numbers are `1 – 12`
 * `FXn=1` activates the function
 * `FXn=0` deactivates the function
-* physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track CV
+* physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track/data CV
+* firmware-command pattern `200` requires a valid `<command on>,<command off>` pair in the pin/track/data CV; `FXn=1` executes the ON command and `FXn=0` executes the OFF command through the normal firmware command parser
+* direction rules still apply to pattern `200`: an enabled FX executes its ON command when direction gating allows it and its OFF command when gating transitions it to an effective OFF state
 
 **Electrical note:** ESP32 GPIO pins are low-current logic outputs. Use appropriate resistors, drivers, transistors, MOSFETs, or LED modules for your load. Do not assume a GPIO pin can safely power an LED, lamp, relay, smoke unit, or accessory directly.
 

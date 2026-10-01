@@ -84,11 +84,11 @@ The firmware keeps standard TLS CA and hostname verification enabled. The privat
 
 OTA is supported only by the S3 throttle builds. Classic ESP32 throttle, Module, and Turbine firmware do not use this OTA update path.
 
-The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version.
+The firmware catalog is the release authority: OTA selects the detected S3 board target and installs that target's `latest` application image. `dropdownDefault` and historical `versions[]` entries belong to the USB installer and do not select an OTA version. `CV15=0` (default) rejects the OTA attempt when catalog `latest` is semantically older than the running firmware; `CV15=1` explicitly permits that catalog downgrade.
 
 During firmware image transfer/write, progress is sent back to the transport that initiated OTA as `A:OTA 0`, `A:OTA 10`, ... `A:OTA 100`. These OTA progress events are independent of the normal `A1` / `A0` async-state setting.
 
-USB remains the recovery, rollback, downgrade, and specific-version installation path.
+USB remains the recovery path and the path for selecting a specific firmware version. OTA never selects from historical `versions[]`; with `CV15=1`, it can only downgrade to the detected board target's catalog `latest`.
 
 ## Combined Device View
 
@@ -436,7 +436,7 @@ Power Source ───────────────► Motor Driver / ESC
 
 # Function / FX Architecture
 
-The throttle firmware includes **12 configurable FX slots**. An FX slot can represent a physical output such as a light, or an audio action.
+The throttle firmware includes **12 configurable FX slots**. An FX slot can represent a physical output such as a light, an audio action, or a firmware-command action.
 
 Typical uses include:
 
@@ -445,6 +445,7 @@ Typical uses include:
 * additional lighting effects
 * bell, horn, or cab-chatter audio
 * user-selected custom PMTPlayer audio
+* firmware commands triggered by FX ON/OFF state
 * other switched accessory outputs
 
 ## Function Behavior
@@ -452,12 +453,12 @@ Typical uses include:
 Each function can be configured with:
 
 * a name
-* a pin/track field
+* a pin/track/data field
 * a numeric pattern
 * a direction rule
 * app flags
 
-The meaning of the pin/track field depends on the pattern. For physical LED patterns, it is a GPIO. For `AUDIO_CUSTOM` / `AUDIO_CUSTOM_REPLAY`, the same CV stores a PMTPlayer track number from `1..9999`. Bell, horn, and cab-chatter audio patterns do not require a physical function GPIO.
+The meaning of the pin/track/data field depends on the pattern. For physical LED patterns, it is a GPIO. For `AUDIO_CUSTOM` / `AUDIO_CUSTOM_REPLAY`, the same CV stores a PMTPlayer track number from `1..9999`. Bell, horn, and cab-chatter audio patterns do not require a physical function GPIO. For firmware-command pattern `200`, the same CV stores `<command on>,<command off>` text; the commands are dispatched through the normal firmware command parser.
 
 ## Supported Pattern Families
 
@@ -476,8 +477,9 @@ Current pattern values are:
 | `102` | Audio cab chatter |
 | `103` | Audio custom one-shot |
 | `104` | Audio custom replay / loop |
+| `200` | Firmware command |
 
-Values `1..99` are reserved for physical/LED patterns and `100..199` for audio patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted, but CV queries report numeric values.
+Values `1..99` are reserved for physical/LED patterns, `100..199` for audio patterns, and `200..299` for firmware-command patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted, but CV queries report numeric values.
 
 ## Direction Awareness
 
@@ -487,7 +489,7 @@ FX behavior can also be gated by locomotive direction:
 * reverse only
 * both directions
 
-For physical patterns, activation additionally requires a valid non-conflicting output GPIO. Audio FX instead use the active audio configuration and, for custom patterns, the configured track number.
+For physical patterns, activation additionally requires a valid non-conflicting output GPIO. Audio FX instead use the active audio configuration and, for custom patterns, the configured track number. Firmware-command FX require a valid ON/OFF command pair. Direction transitions can therefore execute the configured ON or OFF command as the slot's effective gated state changes.
 
 ---
 

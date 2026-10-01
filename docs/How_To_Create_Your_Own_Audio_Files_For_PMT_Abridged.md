@@ -479,6 +479,73 @@ If `0303.wav` is missing, PMT stops discovering cab-chatter tracks at that gap.
 
 Any custom audio configured as a repeating sound must also loop well.
 
+## Custom FX Audio — Example: Fiddle Music on FX3
+
+Custom audio is not limited to the standard bell, horn/whistle, brake, or engine files. Any FX slot can use a PMTPlayer custom track.
+
+For example, suppose you want **fiddle music** on **FX3**.
+
+
+Custom tracks can use numbers from `1` through `9999`, but **do not assume every number in that range is free**.
+
+> **WARNING — Do not overwrite standard PMT audio files.**
+>
+> **Diesel reserved filenames:** `0080.wav`–`0082.wav`, `0090.wav`–`0091.wav`, `0100.wav`–`0108.wav`, `0202.wav`, `0211.wav`–`0213.wav`, and `0300.wav`–`0399.wav`.
+>
+> **Steam reserved filenames:** `0080.wav`–`0082.wav`, `0093.wav`–`0095.wav`, `0100.wav`–`0115.wav`, `0120.wav`–`0135.wav`, `0140.wav`–`0155.wav`, `0190.wav`, `0202.wav`, `0211.wav`–`0213.wav`, and `0300.wav`–`0399.wav`.
+>
+> Choose a number that is not reserved above and is not already present for another purpose in the active sound folder. The `9000.wav` example below is outside the standard PMT ranges.
+
+1. Prepare the fiddle clip using the same PMT WAV format described at the start of this guide: mono, signed 16-bit PCM WAV, with **22,050 Hz** recommended.
+2. Choose an unused custom track number from `1` through `9999` that is not in the reserved PMT filename list above. This example uses track `9000`.
+3. Export the file as:
+
+```text
+9000.wav
+```
+
+4. Put `9000.wav` in the active `/diesel` or `/steam` sound folder.
+5. Configure FX3. FX3 uses:
+   - `CV164` — function name;
+   - `CV165` — pin/track value;
+   - `CV166` — pattern;
+   - `CV167` — direction.
+
+For fiddle music that repeats while the custom audio function is active:
+
+```text
+CV164=FiddleMusic
+CV165=9000
+CV166=104
+CV167=BOTH
+```
+
+> **SPECIAL NOTE — Function Output direction controls whether the custom audio can play.**
+>
+> - `BOTH` — audio can play in either locomotive direction.
+> - `FWD` — audio plays only while the locomotive is in the forward direction.
+> - `REV` — audio plays only while the locomotive is in the reverse direction.
+>
+> If the configured direction does not match the locomotive's active direction, the direction-gated function can be forced off automatically.
+
+For custom PMTPlayer audio:
+
+- pattern `103` = custom **one-shot**;
+- pattern `104` = custom **replay / loop**.
+
+With patterns `103` and `104`, the FX pin/track CV stores the **PMTPlayer track number**, not a GPIO number.
+
+Use the normal FX runtime commands to activate or deactivate FX3:
+
+```text
+FX3=1
+FX3=0
+```
+
+If the fiddle selection should play once, use `CV166=103`. If it should replay as long-form background music, use `CV166=104` and make the WAV loop cleanly.
+
+The same method works for any custom sound and any FX1 through FX12; use that FX slot's Name, Pin/Track, Pattern, and Direction CVs.
+
 ---
 
 # 12. Audacity Fast Workflow
