@@ -1362,7 +1362,9 @@ Notes:
 
 * Function behavior is configured by the function CV blocks in the `CV150–CV231` range.
 * Direction-gated functions can be forced off automatically when the active direction does not match their configured direction rule.
-* Function CV layouts, patterns, pin/track semantics, defaults, and reserved positions are documented only in `appendix_Configuration_Variables.md`.
+* For firmware-command pattern `200`, the function's data CV contains `<command on>,<command off>`. `FX<n>=1` dispatches the ON command and `FX<n>=0` dispatches the OFF command through the normal firmware command parser.
+* Pattern `200` still obeys direction gating. If an enabled slot becomes direction-disallowed, firmware dispatches its OFF command; if it becomes allowed again while still enabled, firmware dispatches its ON command.
+* Function CV layouts, patterns, pin/track/data semantics, defaults, validation, and reserved positions are documented only in `appendix_Configuration_Variables.md`.
 
 ---
 

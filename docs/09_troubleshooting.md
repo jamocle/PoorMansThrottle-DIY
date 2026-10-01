@@ -727,11 +727,13 @@ If INA219 support is enabled, the firmware can:
 - for a physical LED pattern, another active function is using the same pin
 - for an audio pattern, audio is disabled or the selected PMTPlayer sound mode is not usable
 - for custom audio, the function pin/track CV is not a valid PMTPlayer track number
+- for firmware-command pattern `200`, the function data CV is missing, malformed, or contains more or less than one comma
+- a firmware command assigned to pattern `200` is invalid for the current throttle firmware
 - LED wiring expects a higher voltage or includes a resistor sized for 12V or 5V use
 
 ### What to Know
 
-Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family and values `100..199` are the audio family.
+Current firmware provides **12 FX slots**. Pattern values `1..99` are the physical/LED family, values `100..199` are the audio family, and values `200..299` are reserved for firmware-command FX.
 
 Implemented values are:
 
@@ -745,10 +747,13 @@ Implemented values are:
 - `102` = audio cab chatter
 - `103` = custom audio one-shot
 - `104` = custom audio replay / loop
+- `200` = firmware command
 
-Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, and `AUDIO_HORN` are still accepted. Queries return numeric pattern values.
+Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted. Queries return numeric pattern values.
 
-Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`).
+Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO. For patterns `103` and `104`, the function pin CV is repurposed as the PMTPlayer track number (`1..9999`). For pattern `200`, the same CV stores `<command on>,<command off>` text. The pair must contain exactly one comma and both sides must be non-empty after trimming.
+
+When configuring pattern `200`, set the Pattern CV first and then write the command pair to the Data CV. `FXn=1` executes the ON command and `FXn=0` executes the OFF command. Existing `BOTH` / `FWD` / `REV` direction gating still applies, so a direction transition can execute the ON or OFF command when the effective FX state changes.
 
 ### Checks
 
@@ -762,6 +767,9 @@ Bell, horn, and cab-chatter patterns do **not** require a physical function GPIO
 | PMTPlayer sound mode | Confirm `CV401` selects the intended sound mode (`2` Diesel, `3` Steam) |
 | Audio volume | Confirm `CV402` is not zero |
 | Custom track | For pattern `103` or `104`, confirm the function pin/track CV contains a valid track number `1..9999` and the file exists under the active PMTPlayer sound root |
+| FW Command data | For pattern `200`, confirm the pin/track/data CV contains exactly `<command on>,<command off>` with one comma and non-empty commands |
+| FW Command validity | Test the configured ON and OFF commands directly to confirm both are valid throttle firmware commands |
+| FW Command direction | Confirm the slot's `BOTH`, `FWD`, or `REV` rule allows the expected effective state in the current direction |
 
 ---
 

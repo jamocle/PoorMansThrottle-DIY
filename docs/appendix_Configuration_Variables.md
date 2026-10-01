@@ -597,9 +597,9 @@ Factory defaults:
 * FX2 = `ReverseLgt`
 * FX3 through FX12 = `FX3` through `FX12`
 
-## Function Pin / Track CVs
+## Function Pin / Track / Data CVs
 
-The meaning of the function's pin CV depends on the selected pattern.
+The meaning of the function's data CV depends on the selected pattern.
 
 For a physical/LED pattern (`1..99`), the value is a GPIO number. `0` means unassigned.
 
@@ -613,6 +613,23 @@ CV158=5
 For custom PMTPlayer audio patterns `103` and `104`, the same CV stores a **track number from 1..9999** instead of a GPIO.
 
 Bell, horn, and cab-chatter patterns (`100`, `101`, `102`) do not need a physical FX GPIO.
+
+For firmware-command pattern `200`, the same CV stores a command pair:
+
+```text
+<command on>,<command off>
+```
+
+Example:
+
+```text
+CV166=200
+CV165=D1,D0
+```
+
+The command pair must contain exactly one comma. Both commands must be non-empty after leading/trailing whitespace is trimmed. Firmware stores and reports the normalized form without surrounding whitespace, such as `D1,D0`.
+
+When changing a slot to pattern `200`, write the Pattern CV first and then write the command-pair Data CV. The Data CV is interpreted according to the slot's current or staged pattern.
 
 ## Function Pattern CVs
 
@@ -645,8 +662,9 @@ Current pattern values:
 | `102` | Audio cab chatter | `AUDIO_CAB_CHATTER` and accepted aliases |
 | `103` | PMTPlayer custom one-shot | `AUDIO_CUSTOM`, `CUSTOM` |
 | `104` | PMTPlayer custom replay / loop | `AUDIO_CUSTOM_REPLAY` and accepted aliases |
+| `200` | Firmware command | `FW_COMMAND`, `COMMAND` |
 
-Values `1..99` are reserved for physical/LED patterns. Values `100..199` are reserved for audio patterns. Queries return numeric values.
+Values `1..99` are reserved for physical/LED patterns. Values `100..199` are reserved for audio patterns. Values `200..299` are reserved for firmware-command patterns. Queries return numeric values.
 
 `BLINK+` and `BLINK-` use the timing configured by `CV20`.
 
@@ -702,7 +720,9 @@ Rules:
 * valid function numbers are `1 – 12`
 * `FXn=1` activates the function
 * `FXn=0` deactivates the function
-* physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track CV
+* physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track/data CV
+* firmware-command pattern `200` requires a valid `<command on>,<command off>` pair in the pin/track/data CV; `FXn=1` executes the ON command and `FXn=0` executes the OFF command through the normal firmware command parser
+* direction rules still apply to pattern `200`: an enabled FX executes its ON command when direction gating allows it and its OFF command when gating transitions it to an effective OFF state
 
 **Electrical note:** ESP32 GPIO pins are low-current logic outputs. Use appropriate resistors, drivers, transistors, MOSFETs, or LED modules for your load. Do not assume a GPIO pin can safely power an LED, lamp, relay, smoke unit, or accessory directly.
 
