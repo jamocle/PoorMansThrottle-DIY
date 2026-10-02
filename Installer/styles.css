@@ -1686,6 +1686,18 @@ code {
     overflow: visible;
 }
 
+.welcome-link-art-getting-started {
+    background: linear-gradient(145deg, #eaf4ec 0%, #d4e8d8 100%);
+}
+
+.welcome-link-art-getting-started svg {
+    fill: none;
+    stroke: #456b4f;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
 .welcome-link-art-forum {
     background: linear-gradient(145deg, #efe3d3 0%, #dac3a9 100%);
 }
