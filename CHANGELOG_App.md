@@ -3,6 +3,11 @@
 ## Smartphone App:
 
 ### Version 3.3.7
+* **Version History Added** The full version history is added to the global configuration page
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+
+### Version 3.3.7
 * **Output Control Enhancements** The output control configuration layout has been enhanced.  allowing for moving outputs around, linking by name, and only showing configured outputs (no blanks).
 * **Automation Script enhancements** Loading and saving automation scripts now show progress in bytes and saving is 90% quicker than previous.
 * **Graph Control Enhancemenbts** The graph control used for Chuff matching and speed matching now is more precise and deterministic on its movements.
