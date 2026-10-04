@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="PMT now supports physical controls. Any HID-compatible device can control Poor Man's Throttle, from off-the-shelf controllers to custom throttles." />
+  <title>Let's Get Physical - PMT Physical Controls</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.92);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.08);
+      --gold:#b87400;
+      --gold-soft:rgba(184,116,0,.1);
+      --success:#14804a;
+      --success-soft:rgba(20,128,74,.08);
+      --shadow:0 16px 44px rgba(0,0,0,.08);
+      --radius:26px;
+      --max:1120px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:radial-gradient(circle at top,#fff 0%,#f5f5f7 48%,#ececf1 100%);
+      color:var(--text);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:22px 16px 68px}
+    .hero{text-align:center;padding:12px 4px 10px}
+    .eyebrow{
+      display:inline-block;padding:6px 12px;border-radius:999px;
+      border:1px solid rgba(184,116,0,.22);background:rgba(255,255,255,.84);
+      color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em;
+    }
+    h1{
+      margin:16px auto 10px;max-width:920px;
+      font-size:clamp(2rem,7vw,4.4rem);line-height:1.08;letter-spacing:-.04em;font-weight:780;
+    }
+    .headline-note{
+      display:inline-block;
+      font-size:.7em;
+      vertical-align:.08em;
+      margin:0 .12em;
+      color:var(--gold);
+    }
+    .lead{
+      max-width:930px;margin:0 auto;color:var(--muted);
+      font-size:clamp(1.03rem,2.8vw,1.24rem);
+    }
+    .hero-graphic{
+      margin-top:24px;background:#0e0e12;border-radius:28px;overflow:hidden;
+      box-shadow:0 24px 60px rgba(0,0,0,.18);
+    }
+    .hero-graphic img{display:block;width:100%;height:auto}
+    .section{
+      margin-top:26px;background:var(--surface);border:1px solid rgba(255,255,255,.8);
+      border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+    .section-header{padding:28px 22px 0}
+    .content{padding:22px 22px 30px}
+    h2{margin:0 0 10px;font-size:clamp(1.45rem,4vw,2.2rem);line-height:1.1;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.15rem;letter-spacing:-.015em}
+    p{margin:0 0 16px}
+    .section-header p{color:var(--muted);margin-bottom:18px}
+    .grid,.gallery,.steps{display:grid;gap:14px}
+    .gallery{
+      padding:14px;background:linear-gradient(180deg,rgba(255,255,255,.95),rgba(248,248,250,.9));
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    }
+    .card,.image-card,.step{
+      background:var(--surface-solid);border:1px solid #e5e5ea;border-radius:22px;
+      box-shadow:0 10px 22px rgba(0,0,0,.055);
+    }
+    .card{padding:18px}
+    .image-card{overflow:hidden}
+    .image-card img{display:block;width:100%;height:auto;background:#fff}
+    .caption{padding:12px 14px 14px;border-top:1px solid #ececf1;color:var(--muted);font-size:.94rem}
+    .step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{
+      flex:0 0 36px;width:36px;height:36px;border-radius:50%;
+      display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);font-weight:800;
+    }
+    .label{
+      display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;
+      background:var(--accent-soft);color:var(--accent);font-size:.82rem;font-weight:700;
+    }
+    .label.gold{background:var(--gold-soft);color:var(--gold)}
+    .label.green{background:var(--success-soft);color:var(--success)}
+    .callout{
+      margin-top:18px;padding:17px 19px;border-radius:18px;
+      background:var(--gold-soft);border-left:4px solid var(--gold);color:#684309;
+    }
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 76px}
+      .section-header{padding:32px 30px 0}
+      .content{padding:28px 30px 34px}
+      .grid,.gallery,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(min-width:980px){
+      .gallery.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media(prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      *{animation:none!important;transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">NEW FEATURE</div>
+      <h1><span class="headline-note">♪</span> &ldquo;Let&rsquo;s Get Physical&rdquo; <span class="headline-note">♪</span></h1>
+      <p class="lead">
+        PMT now supports physical throttles — all wirelessly over Bluetooth Low Energy (BLE). You can keep using your phone or tablet,
+        or add real buttons, knobs, switches, and throttle controls for a more hands-on operating experience without tethering the controller to the train.
+      </p>
+      <div class="hero-graphic">
+        <img src="hero-physical-controls.png" alt="PMT now supports physical controls with multiple HID-compatible devices controlling Poor Man's Throttle." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Why this matters</h2>
+        <p>
+          There are users who would rather operate with a real device in their hands than rely only on a phone or tablet.
+          They want actual buttons, real knobs, and physical switches. Now PMT supports that too.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">REAL CONTROLS</span>
+            <h3>Operate the railroad your way</h3>
+            <p>
+              Run PMT with a physical controller instead of touch-only operation. That can make the experience feel more tactile,
+              more natural, and more immersive for users who want hardware they can grab, twist, press, and throw.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label blue">WIRELESS BLE</span>
+            <h3>No cable between you and the train</h3>
+            <p>
+              Physical controllers connect to PMT over Bluetooth Low Energy (BLE). That means you can walk with the throttle,
+              operate from around the layout, and keep the experience fully wireless.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label green">HID COMPATIBLE</span>
+            <h3>Bring your own device</h3>
+            <p>
+              If it is HID compatible — the same standard used by keyboards, game controllers, and button pads — it can control PMT.
+              The controller talks to PMT wirelessly using Bluetooth Low Energy (BLE), so your physical controls stay untethered while you operate.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          Your imagination is the limit. PMT is not dictating what your throttle must be — it now supports the way <em>you</em> want to operate.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Build a one-of-a-kind throttle</h2>
+        <p>
+          A custom physical throttle can be as simple or as elaborate as you want.
+          An inexpensive Adafruit HID interface can connect your own buttons, knobs, switches, and throttle hardware locally,
+          then send those controls wirelessly to PMT over Bluetooth Low Energy (BLE).
+        </p>
+      </div>
+
+      <div class="gallery">
+        <figure class="image-card">
+          <img src="adafruit-hid-device.png" alt="Adafruit HID-compatible board for building a custom controller." />
+          <figcaption class="caption">
+            An inexpensive Adafruit HID device can act as the brains that connect your custom hardware to PMT.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="custom-emd-throttle.png" alt="Custom EMD throttle control stand." />
+          <figcaption class="caption">
+            Combine it with a custom wired EMD throttle or other purpose-built hardware for a throttle experience that feels truly personal.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <p>
+          Want a classic locomotive-style control stand? A custom desktop throttle? A panel full of labeled railroad controls?
+          PMT can now be the software side of that vision.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Or just use something off the shelf</h2>
+        <p>
+          You do not have to build anything from scratch. There are thousands of ready-made Bluetooth HID controllers on the market,
+          from compact wireless button decks to larger knob-and-switch control surfaces.
+        </p>
+      </div>
+
+      <div class="gallery three">
+        <figure class="image-card">
+          <img src="compact-wireless-controller.png" alt="Compact wireless controller with illuminated buttons and a control knob." />
+          <figcaption class="caption">
+            A compact wireless controller is a fast way to add knobs and buttons to PMT with almost no custom hardware work.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="desktop-throttle-controller.png" alt="Desktop controller with keys and large knobs." />
+          <figcaption class="caption">
+            Desktop controllers can provide a larger, more dedicated operating surface with room for multiple controls.
+          </figcaption>
+        </figure>
+
+        <figure class="image-card">
+          <img src="macro-pad-controller.png" alt="Macro pad with dials and RGB lighting." />
+          <figcaption class="caption">
+            Macro pads and control decks are especially attractive because they are easy to map and easy to personalize.
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label">QUICK START</span>
+            <h3>Minimal effort</h3>
+            <p>
+              Buy a compatible device, connect it, map the buttons, and start running trains with real hardware in the loop.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label">GROW LATER</span>
+            <h3>Endless upgrade paths</h3>
+            <p>
+              Start simple today, then move to more advanced controllers or even a fully custom throttle as your ideas evolve.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>The app side is already there</h2>
+        <p>
+          PMT includes a dedicated Physical Control screen so you can see your mapped functions, current control mode,
+          and the most recent input while your controller communicates wirelessly over BLE.
+        </p>
+      </div>
+
+      <div class="gallery">
+        <figure class="image-card">
+          <img src="pmt-physical-control-screen.png" alt="PMT app physical control screen." />
+          <figcaption class="caption">
+            PMT includes a dedicated physical control screen so the app and the hardware work together as one operating experience.
+          </figcaption>
+        </figure>
+
+        <article class="card">
+          <span class="label gold">APP + HARDWARE</span>
+          <h3>Best of both worlds</h3>
+          <p>
+            PMT does not force you to choose between mobile and physical control. Use the app when that makes sense, use a hardware controller when that feels better,
+            or mix both together as part of the same session.
+          </p>
+          <p>
+            That flexibility is exactly what makes this feature so powerful.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Only limited by your imagination</h2>
+        <p>
+          A simple wireless controller, a macro pad, a desktop panel, a custom EMD throttle, or something nobody has thought of yet — PMT now supports the physical side of operation.
+          This is a big step for users who want their railroad controls to feel as real and hands-on as the railroad itself.
+        </p>
+      </div>
+      <div class="content">
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Choose your hardware</h3>
+              <p>Use something you can buy today or build the exact throttle you have always wanted.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>Connect it to PMT</h3>
+              <p>Pair a compatible Bluetooth HID controller and make it part of the PMT operating experience over BLE.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>Map the functions</h3>
+              <p>Assign buttons, knobs, switches, and controls to the train functions you use most.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Run trains your way</h3>
+              <p>Operate with real physical hardware and make PMT feel even more like your railroad.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          PMT physical control support means you are no longer confined to a mobile device — and you are not tied down by wires either.
+          The entire control path is wireless over Bluetooth Low Energy (BLE).
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Let’s Get Physical — PMT now supports physical throttles, real hardware controls, and a whole new level of personalized operation.
+    </div>
+  </main>
+</body>
+</html>

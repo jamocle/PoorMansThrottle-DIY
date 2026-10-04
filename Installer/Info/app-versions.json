@@ -195,6 +195,13 @@
             "description": "PMT now supports full featured audio for your locomotives, including sound effects, horns, whistles, and more.",
             "info": "soundfinally.html",
             "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "4.0.0",
+            "title": "PMT Goes Physical",
+            "description": "PMT now supports physical Human Interface Devices (HID) devices to control your layout and locomotives..",
+            "info": "lets-get-physical.html",
+            "show-again": "2026-04-24 16:24:04"
         }
     ]
 }
