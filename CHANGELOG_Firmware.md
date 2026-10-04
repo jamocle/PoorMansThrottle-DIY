@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.3.7
+* **Added automatic sounds** CV45 now controls whether or not automatic sounds play. Default is off.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.6
 * **Newly available FX Pattern** Allows you to tie firmware commands to FX Outputs.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
