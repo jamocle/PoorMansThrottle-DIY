@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.6
+**Firmware Version:** 3.3.7
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -214,6 +214,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
 | **CV44** | Force Lights PWM | `0` (AUTO) or `1 – (CV2 - 1)` / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. `0` selects AUTO, which resolves to `CV2 - 3`. `FL1` requires `CV2 > 9`. |
+| **CV45** | Automatic Horn/Bell Sounds | `0`, `1` / `0` | Enables automatic operating cues from real locomotive motion transitions. `0` disables the feature; `1` enables it. Requires PMTPlayer audio (`CV400=1`) but does not require locomotive background audio (`CV43=1`). |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -269,6 +270,58 @@ Force Lights does not change the logical stopped state. While active at stop:
 * normal asynchronous `A:` state notification remains `A:HW-STOPPED M0 HW0`.
 
 INA219 battery-disconnect and shutdown protection remain authoritative and can force the motor output fully off even when Force Lights is enabled.
+
+---
+
+## CV45 — Automatic Horn/Bell Sounds
+
+CV45 applies only to **Poor Man's Throttle** locomotive firmware. It enables automatic horn/whistle and bell cues based on the locomotive's **actual applied motion state**, rather than merely on receipt of a direction or speed command.
+
+CV45 behavior:
+
+* `CV45=0` is the default and disables automatic horn/bell cues.
+* `CV45=1` enables automatic horn/bell cues.
+* PMTPlayer audio must be enabled with `CV400=1`.
+* `CV43` is **not required**. The prime mover, steam background, chuffs, and other locomotive background audio can remain disabled with `CV43=0` while CV45 automatic horn/bell cues continue to operate.
+* Manual horn or bell operation takes precedence. If the operator manually requests the horn or bell while an automatic sequence is active, the automatic sequence is cancelled so it cannot later turn off the manually held sound.
+
+Automatic motion cues:
+
+| Motion event | Automatic cue |
+| --- | --- |
+| Actual STOP → forward motion | Bell + **2** horn/whistle blasts |
+| Actual moving → STOP | **1** horn/whistle blast after the locomotive reaches stop |
+| Actual STOP → reverse motion | Bell + **3** horn/whistle blasts |
+| Forward motion → stop-first reversal → reverse motion | Intermediate stop cue is suppressed; reverse departure gets bell + **3** horn/whistle blasts |
+
+The automatic sequence uses the normal PMTPlayer bell and managed three-part horn/whistle assets:
+
+```text
+0202.wav  Bell
+0211.wav  Horn/whistle start
+0212.wav  Horn/whistle sustain
+0213.wav  Horn/whistle release
+```
+
+The selected PMTPlayer sound root determines whether the diesel or steam versions of those files are used.
+
+The automatic horn timing is non-blocking. Each automatic blast is approximately `600 ms`, the gap between blasts is approximately `350 ms`, and departure sequences keep the bell active for approximately `750 ms` after the final horn/whistle blast.
+
+Example setup with automatic sounds enabled and prime-mover/background audio disabled:
+
+```text
+CV400=1
+CV43=0
+CV45=1
+```
+
+To disable the feature again:
+
+```text
+CV45=0
+```
+
+A normal safety or forced stop is not treated as an operator-requested automatic stop cue. Stop-first direction reversal is also handled specially so the temporary zero-speed state does not add an extra one-blast stop cue before the reverse departure sequence.
 
 ---
 
