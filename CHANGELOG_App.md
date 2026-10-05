@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 4.1.0
+* **Added Device Command** Now the command slideout on throttle screens can contain buttons to control other devices like switch modules, Horns on other locos, etc.
+* **FX Output Control Name persistence** Now the full name of a command control is fully persisted on the app.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.0.0
 * **Physical Throttle Support** Now any physical HID compatible device can be used along with PMT to control Locomotives and your layout.
 * **Version History Added** The full version history is added to the global configuration page
