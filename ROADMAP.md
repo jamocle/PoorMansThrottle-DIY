@@ -199,9 +199,11 @@ Future documentation improvements may include:
 
 Contributing
 
-Contributions and ideas are welcome.
+Ideas, bug reports, testing feedback, and documentation suggestions are welcome.
 
-If you have a feature suggestion or improvement, please open a GitHub issue to discuss it.
+Code contributions are considered only from vetted contributors approved by the project owner. PMT application and firmware source code is not publicly available. Approved contributors may be granted controlled source access subject to the PMT Contributor License Agreement and any required confidentiality terms.
+
+If you have a feature suggestion or improvement, please open a GitHub issue to discuss it before requesting contributor access.
 
 Builder feedback is especially useful when it includes:
 

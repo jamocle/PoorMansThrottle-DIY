@@ -2,12 +2,12 @@
 
 ![Build Difficulty](https://img.shields.io/badge/build-difficulty%3A%20beginner-green)
 ![Platform](https://img.shields.io/badge/platform-ESP32-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen)
+![License](https://img.shields.io/badge/license-proprietary-orange)
+![Contributions](https://img.shields.io/badge/contributions-vetted-blue)
 
-## Open-Source Wireless Model Railroad Control
+## Wireless Model Railroad Control
 
-**Poor Man's Throttle** is an open-source wireless control platform for DC and dead-rail model railroads using ESP32 controllers, a smartphone app, and low-cost off-the-shelf hardware.
+**Poor Man's Throttle** is a privately developed wireless control platform for DC and dead-rail model railroads using ESP32 controllers, a smartphone app, and low-cost off-the-shelf hardware.
 
 At its core, PMT lets a phone control an ESP32-based locomotive controller over **Bluetooth Low Energy (BLE)**. The controller then drives a DC motor driver using **PWM motor control**, giving hobbyists smooth wireless control without expensive proprietary throttle hardware.
 
@@ -36,7 +36,7 @@ Documentation, installers, videos, and setup resources:
 * Poor Man's Turbine support for ESC-style turbine / blower output
 * Multilingual and accessibility-friendly smartphone app improvements
 * Low-cost DIY hardware platform
-* ESP32-based open firmware
+* ESP32-based PMT firmware
 
 ---
 
@@ -94,7 +94,7 @@ Benefits include:
 
 Poor Man's Throttle is:
 
-* an open-source wireless model railroad control platform
+* a privately developed wireless model railroad control platform
 * a smartphone-based throttle system
 * a PWM motor-control system for DC locomotives
 * a dead-rail compatible control system
@@ -583,15 +583,23 @@ Support information:
 
 # License
 
-Released under the MIT License.
+Poor Man's Throttle is proprietary, closed-source software. The PMT application and firmware source code has never been publicly distributed or made available.
 
-👉 [LICENSE](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE)
+Beginning October 6, 2026, copies of PMT releases distributed by the project are provided under the [Poor Man's Throttle Proprietary Software License](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/LICENSE), unless a release is expressly accompanied by different license terms.
+
+Prior public PMT releases consisted of compiled binaries and related materials distributed under the MIT License. Copies distributed under those earlier terms remain subject to the license terms that applied when they were distributed. The MIT License did not require PMT to disclose or deliver the private PMT application or firmware source code, and no right to receive or access that private source code was granted.
+
+References in earlier PMT documentation describing the project as "open-source" or its firmware as "open" were inaccurate and have been corrected.
 
 ---
 
 # Contributing
 
-Community feedback, testing, pull requests, and documentation improvements are welcome.
+Community feedback, testing, bug reports, feature ideas, and documentation suggestions are welcome.
+
+Code contributions are considered only from vetted contributors approved by the project owner. Source-code access is not public and may be provided only to approved contributors subject to the PMT Contributor License Agreement and any required confidentiality terms.
+
+See [CONTRIBUTING.md](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CONTRIBUTING.md) for the contribution process.
 
 Builder feedback helps improve compatibility, documentation quality, and future platform features.
 

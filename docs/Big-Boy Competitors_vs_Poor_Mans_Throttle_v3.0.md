@@ -12,8 +12,8 @@
 | **Hardware architecture** | 🔒 **Proprietary Big-Boy hardware/platform** | ✅ **Based on the Espressif ESP32 architecture family** |
 | **Uses widely available general-purpose hardware** | ❌ **No — proprietary decoder hardware** | ✅ **Yes — ESP32-family hardware is widely available; you may already have compatible boards lying around** |
 | **Hardware ecosystem** | 🔒 **Closed/proprietary** | ✅ **Commodity ESP32-based architecture with selectable supporting hardware** |
-| **Software / firmware cost** | 💰 **Commercial product** | ✅ **FREE** |
-| **Cost to get started** | 💰💰💰💰 **$$$$ — purchase Big-Boy decoder** | ✅ **FREE software/firmware; build from inexpensive commodity hardware** |
+| **Software / firmware cost** | 💰 **Commercial product** | ✅ **No cost** |
+| **Cost to get started** | 💰💰💰💰 **$$$$ — purchase Big-Boy decoder** | ✅ **No-cost software/firmware; build from inexpensive commodity hardware** |
 | **Reuse hardware you may already own** | ❌ Typically requires purchasing the Big-Boy | ✅ **Yes — compatible ESP32 hardware may already be in your parts bin** |
 
 ---
@@ -87,9 +87,9 @@
 | **Rapid addition of new firmware capabilities** | ❌ Vendor controlled | ✅ **Yes** |
 | **User-suggested features regularly implemented** | ❌ Manufacturer roadmap determines implementation | ✅ **Yes — regularly added** |
 | **Community directly influences development** | ⚠️ User feedback possible; implementation vendor-controlled | ✅ **Yes** |
-| **Users can modify firmware** | ❌ Proprietary | ⚠️ **Yes — NDA and approval required** |
-| **Community firmware contributions** | ❌ No public contribution model | ⚠️ **Yes — NDA and approval required** |
-| **User-accessible firmware source** | ❌ No | ⚠️ **Controlled access — NDA/approval requirements apply** |
+| **Approved contributors can modify firmware** | ❌ Proprietary | ⚠️ **Yes — vetting, NDA, and approval required** |
+| **Community firmware contributions** | ❌ No public contribution model | ⚠️ **Controlled — vetted contributors only; NDA and approval required** |
+| **Publicly accessible firmware source** | ❌ No | ❌ **No — source is private; controlled access may be granted to approved contributors** |
 | **App update cadence** | ⚠️ **Periodic — vendor controlled** | ⚠️ **Continual** |
 | **Active app development** | ✅ Yes | ✅ Yes |
 
@@ -422,9 +422,9 @@
 
 | Feature | "Big-Boy" Systems | Poor Man’s Throttle v3.3 |
 |---|---|---|
-| **User firmware modification** | ❌ No | ⚠️ **Yes — NDA + approval required** |
-| **Community firmware contribution** | ❌ No public model | ⚠️ **Yes — NDA + approval required** |
-| **User-accessible firmware source** | ❌ No | ⚠️ **Controlled access** |
+| **Approved contributor firmware modification** | ❌ No | ⚠️ **Yes — vetting, NDA + approval required** |
+| **Community firmware contribution** | ❌ No public model | ⚠️ **Controlled — vetted contributors only; NDA + approval required** |
+| **Publicly accessible firmware source** | ❌ No | ❌ **No — private source; controlled access for approved contributors only** |
 | **User-expandable audio library** | ❌ No arbitrary user audio | ✅ **Yes** |
 | **Crowdsourced audio ecosystem** | ❌ No | ✅ **Yes** |
 | **Custom FX-audio platform** | ❌ No arbitrary WAV import | ✅ **Yes** |
@@ -496,4 +496,4 @@
 
 **"Big-Boy" Systems** is a sophisticated proprietary commercial locomotive sound/motor decoder with Bluetooth control, extensive factory sound libraries, advanced motor control, braking, lighting, CV configuration, and strong locomotive-focused app features.
 
-**Poor Man’s Throttle v3.3** is an ESP32-family, free software/firmware platform designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.
+**Poor Man’s Throttle v3.3** is an ESP32-family, proprietary closed-source software/firmware platform available at no cost and designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.

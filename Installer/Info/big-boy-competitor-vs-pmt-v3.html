@@ -574,8 +574,8 @@ For &quot;Big-Boy&quot; Systems, “No” should be read as “not supported or 
 <tr><td><strong>Hardware architecture</strong></td><td>✅ <strong>Based on the Espressif ESP32 architecture family</strong></td><td>🔒 <strong>Proprietary Big-Boy hardware/platform</strong></td></tr>
 <tr><td><strong>Uses widely available general-purpose hardware</strong></td><td>✅ <strong>Yes — ESP32-family hardware is widely available; you may already have compatible boards lying around</strong></td><td>❌ <strong>No — proprietary decoder hardware</strong></td></tr>
 <tr><td><strong>Hardware ecosystem</strong></td><td>✅ <strong>Commodity ESP32-based architecture with selectable supporting hardware</strong></td><td>🔒 <strong>Closed/proprietary</strong></td></tr>
-<tr><td><strong>Software / firmware cost</strong></td><td>✅ <strong>FREE</strong></td><td>💰 <strong>Commercial product</strong></td></tr>
-<tr><td><strong>Cost to get started</strong></td><td>✅ <strong>FREE software/firmware; build from inexpensive commodity hardware</strong></td><td>💰💰💰💰 <strong>$$$$ — purchase &quot;Big-Boy&quot; Systems decoder</strong></td></tr>
+<tr><td><strong>Software / firmware cost</strong></td><td>✅ <strong>No cost</strong></td><td>💰 <strong>Commercial product</strong></td></tr>
+<tr><td><strong>Cost to get started</strong></td><td>✅ <strong>No-cost software/firmware; build from inexpensive commodity hardware</strong></td><td>💰💰💰💰 <strong>$$$$ — purchase &quot;Big-Boy&quot; Systems decoder</strong></td></tr>
 <tr><td><strong>Reuse hardware you may already own</strong></td><td>✅ <strong>Yes — compatible ESP32 hardware may already be in your parts bin</strong></td><td>❌ Typically requires purchasing the &quot;Big-Boy&quot; Systems decoder</td></tr>
 </tbody>
 </table>
@@ -663,9 +663,9 @@ For &quot;Big-Boy&quot; Systems, “No” should be read as “not supported or 
 <tr><td><strong>Rapid addition of new firmware capabilities</strong></td><td>✅ <strong>Yes</strong></td><td>❌ Vendor controlled</td></tr>
 <tr><td><strong>User-suggested features regularly implemented</strong></td><td>✅ <strong>Yes — regularly added</strong></td><td>❌ Manufacturer roadmap determines implementation</td></tr>
 <tr><td><strong>Community directly influences development</strong></td><td>✅ <strong>Yes</strong></td><td>⚠️ User feedback possible; implementation vendor-controlled</td></tr>
-<tr><td><strong>Users can modify firmware</strong></td><td>⚠️ <strong>Yes — NDA and approval required</strong></td><td>❌ Proprietary</td></tr>
-<tr><td><strong>Community firmware contributions</strong></td><td>⚠️ <strong>Yes — NDA and approval required</strong></td><td>❌ No public contribution model</td></tr>
-<tr><td><strong>User-accessible firmware source</strong></td><td>⚠️ <strong>Controlled access — NDA/approval requirements apply</strong></td><td>❌ No</td></tr>
+<tr><td><strong>Approved contributors can modify firmware</strong></td><td>⚠️ <strong>Yes — vetting, NDA, and approval required</strong></td><td>❌ Proprietary</td></tr>
+<tr><td><strong>Community firmware contributions</strong></td><td>⚠️ <strong>Controlled — vetted contributors only; NDA and approval required</strong></td><td>❌ No public contribution model</td></tr>
+<tr><td><strong>Publicly accessible firmware source</strong></td><td>❌ <strong>No — source is private; controlled access may be granted to approved contributors</strong></td><td>❌ No</td></tr>
 <tr><td><strong>App update cadence</strong></td><td>✅ <strong>Daily/weekly when development requires</strong></td><td>⚠️ <strong>Periodic — typically weeks/months between releases</strong></td></tr>
 <tr><td><strong>Active app development</strong></td><td>✅ Yes</td><td>✅ Yes</td></tr>
 </tbody>
@@ -1112,9 +1112,9 @@ For &quot;Big-Boy&quot; Systems, “No” should be read as “not supported or 
 <tr><th scope="col">Feature</th><th scope="col">Poor Man’s Throttle v3.3</th><th scope="col">&quot;Big-Boy&quot; Systems</th></tr>
 </thead>
 <tbody>
-<tr><td><strong>User firmware modification</strong></td><td>⚠️ <strong>Yes — NDA + approval required</strong></td><td>❌ No</td></tr>
-<tr><td><strong>Community firmware contribution</strong></td><td>⚠️ <strong>Yes — NDA + approval required</strong></td><td>❌ No public model</td></tr>
-<tr><td><strong>User-accessible firmware source</strong></td><td>⚠️ <strong>Controlled access</strong></td><td>❌ No</td></tr>
+<tr><td><strong>Approved contributor firmware modification</strong></td><td>⚠️ <strong>Yes — vetting, NDA + approval required</strong></td><td>❌ No</td></tr>
+<tr><td><strong>Community firmware contribution</strong></td><td>⚠️ <strong>Controlled — vetted contributors only; NDA + approval required</strong></td><td>❌ No public model</td></tr>
+<tr><td><strong>Publicly accessible firmware source</strong></td><td>❌ <strong>No — private source; controlled access for approved contributors only</strong></td><td>❌ No</td></tr>
 <tr><td><strong>User-expandable audio library</strong></td><td>✅ <strong>Yes</strong></td><td>❌ No arbitrary user audio</td></tr>
 <tr><td><strong>Crowdsourced audio ecosystem</strong></td><td>✅ <strong>Yes</strong></td><td>❌ No</td></tr>
 <tr><td><strong>Custom FX-audio platform</strong></td><td>✅ <strong>Yes</strong></td><td>❌ No arbitrary WAV import</td></tr>
@@ -1197,7 +1197,7 @@ For &quot;Big-Boy&quot; Systems, “No” should be read as “not supported or 
 
 <p><strong>&quot;Big-Boy&quot; Systems</strong> is a sophisticated proprietary commercial locomotive sound/motor decoder with Bluetooth control, extensive factory sound libraries, advanced motor control, braking, lighting, CV configuration, and strong locomotive-focused app features.</p>
 
-<p><strong>Poor Man’s Throttle v3.3</strong> is an ESP32-family, free software/firmware platform designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.</p>
+<p><strong>Poor Man’s Throttle v3.3</strong> is an ESP32-family, proprietary closed-source software/firmware platform available at no cost and designed as a broader model-railroad ecosystem. It adds Wi-Fi/WebSocket transport, BLE/Wi-Fi failover, API control, much higher scalable motor power, graphical consist/speed tools, feathered braking, multiple throttle experiences, a floating camera overlay, layout modules, telemetry, custom and crowdsourced WAV audio, arbitrary FX audio, rapid feature evolution, and controlled community firmware contribution.</p>
       </div>
 
       <div class="footer-note">
