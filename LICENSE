@@ -1,21 +1,133 @@
-MIT License
+Poor Man's Throttle Proprietary Software License
+Effective Date: October 6, 2026
 
 Copyright (c) 2026 Poor Man's Throttle Project
+All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+IMPORTANT: This is a proprietary license. It is not an open-source license.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Scope
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+This license applies to Poor Man's Throttle ("PMT") compiled firmware,
+applications, installers, documentation, website materials, and other PMT
+materials that are expressly distributed under this license (collectively,
+the "Software").
+
+This license does not apply to third-party components that are accompanied by
+their own license terms. It also does not revoke or alter rights that were
+previously granted for copies of PMT software or repository materials
+distributed under the MIT License.
+
+2. Ownership and Source Code
+
+The Software is proprietary and is protected by copyright and other applicable
+law. Except for the limited rights expressly granted below, all rights are
+reserved by the copyright holder.
+
+The source code for the PMT application and firmware is not part of the public
+distribution. This license does not grant any right to receive, access, obtain,
+or demand that private source code.
+
+3. Limited License to Use Official Releases
+
+Subject to compliance with this license, you are granted a limited,
+non-exclusive, non-transferable, non-sublicensable license to:
+
+a. download, install, and use official compiled PMT releases for lawful
+   operation, configuration, evaluation, and maintenance of PMT-compatible
+   model railroad equipment;
+
+b. make reasonable backup copies of official compiled PMT releases solely for
+   your own use; and
+
+c. view and use PMT documentation and website materials for operating,
+   configuring, evaluating, or maintaining PMT-compatible equipment, including
+   making reasonable copies for your own use.
+
+No ownership interest is transferred to you.
+
+4. Restrictions
+
+Except with prior written permission from the copyright holder, or to the
+extent a restriction is prohibited by applicable law, you may not:
+
+a. redistribute, republish, upload, mirror, sublicense, sell, rent, lease, or
+   otherwise make the Software available to third parties;
+
+b. modify, adapt, translate, or create derivative works of the Software;
+
+c. reverse engineer, decompile, disassemble, or otherwise attempt to derive
+   the private PMT application or firmware source code from compiled releases;
+
+d. remove or alter copyright, license, attribution, trademark, or other
+   proprietary notices;
+
+e. use the Poor Man's Throttle name, PMT name, logos, or branding in a manner
+   that states or implies endorsement, sponsorship, affiliation, or that an
+   unofficial release is an official PMT release; or
+
+f. bypass access controls or confidentiality restrictions used to protect
+   private PMT source code or contributor resources.
+
+5. Contributions and Private Source Access
+
+Public availability of PMT binaries, documentation, or website materials does
+not provide public access to the private PMT application or firmware source
+code.
+
+Source access and code-contribution privileges may be granted only to
+contributors who have been vetted and approved by the project owner. Approved
+contributors must comply with the PMT Contributor License Agreement and any
+confidentiality or nondisclosure terms required by the project owner.
+
+Nothing in this license requires the project owner to provide source access,
+accept a contribution, publish a contribution, or continue a contributor's
+access.
+
+6. Feedback
+
+You may provide ideas, bug reports, testing results, and other feedback.
+Unless separately agreed in writing, providing feedback does not grant you
+access to private source code or contributor status.
+
+7. Termination
+
+Your rights under this license terminate automatically if you materially
+violate its terms. Upon termination, you must stop using copies that are
+subject to this license and delete or destroy those copies, except to the
+extent otherwise required by applicable law.
+
+8. Disclaimer of Warranty
+
+THE SOFTWARE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTY OF ANY
+KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NONINFRINGEMENT.
+USE OF THE SOFTWARE IS AT YOUR OWN RISK.
+
+9. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THE COPYRIGHT HOLDER AND
+PMT CONTRIBUTORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL,
+CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, OR FOR LOSS OF DATA, PROFITS,
+REVENUE, USE, OR BUSINESS, ARISING FROM OR RELATED TO THE SOFTWARE OR THIS
+LICENSE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+10. Historical MIT-Licensed Copies
+
+Before October 6, 2026, PMT materials were presented and distributed under the
+MIT License. Copies that were obtained under those earlier MIT terms remain
+subject to the rights and conditions granted with those copies.
+
+Beginning October 6, 2026, copies distributed by the PMT project under this
+license are governed by this license unless they are expressly accompanied by
+different license terms.
+
+The prior MIT License did not require disclosure or delivery of the private PMT
+application or firmware source code, and no right to receive or access that
+private source code was granted merely by receiving an MIT-licensed compiled
+binary or other PMT material.
+
+11. Reservation of Rights
+
+Any permission not expressly granted by this license is reserved by the
+copyright holder.
