@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 4.1.1
+* **Added battery saving voew for physical throttle** The physical throttle view can now go into battery saving mode for the smart device.
+* **Added support for Min Reverse Throttle** The app now supports min throttle for reverse and has a wizard to guide the user intop setting it properly.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.1.0
 * **Added Device Command** Now the command slideout on throttle screens can contain buttons to control other devices like switch modules, Horns on other locos, etc.
 * **FX Output Control Name persistence** Now the full name of a command control is fully persisted on the app.

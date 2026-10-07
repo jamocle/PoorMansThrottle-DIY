@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.3.8
+* **Added min throttle for reverse** CV46 now controld min throttle for reverse.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.7
 * **Added automatic sounds** CV45 now controls whether or not automatic sounds play. Default is off.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
