@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.7
+**Firmware Version:** 3.3.8
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -205,7 +205,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | CV | Purpose | Values / Default | Description |
 | ---: | --- | --- | --- |
 | **CV1** | Motor Driver Mode | `DUAL_PWM`, `PWM_DIR`, `PWM_BIDIR`, `DUAL_INPT` / `DUAL_PWM` | Selects the motor-driver control style. |
-| **CV2** | Minimum Start / Floor | `0 – 100` / `0` | Minimum hardware output when a non-zero mapped throttle is commanded. |
+| **CV2** | Forward Minimum Start / Floor | `0 – 100` / `0` | Forward minimum hardware output when a non-zero mapped throttle is commanded. Reverse also uses CV2 when `CV46=0`. |
 | **CV3** | Maximum Output / Ceiling | `0 – 100` / `100` | Caps maximum motor output. `0` means no ceiling cap, which behaves as `100`. |
 | **CV5** | Direction Inversion | `0`, `1` / `0` | Reverses motor direction logic. |
 | **CV6** | Async Notify, Steady | `50 – 10000 ms` / `10000` | State update interval when throttle is steady. |
@@ -213,8 +213,9 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
-| **CV44** | Force Lights PWM | `0` (AUTO) or `1 – (CV2 - 1)` / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. `0` selects AUTO, which resolves to `CV2 - 3`. `FL1` requires `CV2 > 9`. |
+| **CV44** | Force Lights PWM | `0` (AUTO) or safe explicit raw PWM / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. AUTO uses the effective minimum-start value for the last logical travel direction minus 3. An explicit value is constrained below the smaller effective forward/reverse start floor. |
 | **CV45** | Automatic Horn/Bell Sounds | `0`, `1` / `0` | Enables automatic operating cues from real locomotive motion transitions. `0` disables the feature; `1` enables it. Requires PMTPlayer audio (`CV400=1`) but does not require locomotive background audio (`CV43=1`). |
+| **CV46** | Reverse Minimum Start Override | `0 – 100` / `0` | Reverse minimum-start floor. `0` means inherit the current CV2 value dynamically; `CV46?` still reports the stored raw value `0`. Values `1 – 100` set an explicit reverse minimum-start floor. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -244,24 +245,24 @@ FL0
 
 CV44 behavior:
 
-* `CV44=0` is the default and selects **AUTO**. The effective Force Lights PWM is `CV2 - 3`.
-* A non-zero CV44 is an explicit **raw hardware PWM percentage**. It bypasses normal CV2 minimum-start remapping.
-* An explicit CV44 must be in the range `1` through `CV2 - 1`. Because CV2 itself is limited to `0 – 100`, the largest possible explicit CV44 is `99`.
-* `FL1` is accepted only when `CV2 > 9`.
-* If CV2 is lowered so an existing explicit CV44 is above the new `CV2 - 1` limit, CV44 is clamped down to `CV2 - 1`.
-* If CV2 is lowered to `9` or less while Force Lights is active, Force Lights is disabled.
-* Changing CV2 or CV44 while Force Lights is active and the locomotive is stopped reapplies the stopped hardware PWM immediately.
-* `CV44?` returns the stored CV44 setting. In AUTO mode it returns `0`; it does not return the calculated `CV2 - 3` value.
+* `CV44=0` is the default and selects **AUTO**. The effective Force Lights PWM is the effective minimum-start value for the **last logical travel direction** minus `3`. Forward uses CV2. Reverse uses CV46 when CV46 is non-zero, otherwise it inherits CV2.
+* A non-zero CV44 is an explicit **raw hardware PWM percentage**. It bypasses normal minimum-start remapping.
+* An explicit CV44 is constrained below the smaller effective forward/reverse minimum-start floor so stopped lighting cannot accidentally reach a movement threshold in either direction. The absolute maximum explicit value remains `99`.
+* `FL1` is accepted only when the effective minimum-start value for the last logical travel direction is greater than `9`.
+* If CV2 or CV46 changes so an existing explicit CV44 is above the new safe limit, CV44 is clamped down to the safe limit.
+* If configuration changes leave no direction with an effective minimum-start value greater than `9`, active Force Lights is disabled. Stopped Force Lights output is recalculated immediately when CV2, CV46, or CV44 changes.
+* `CV44?` returns the stored CV44 setting. In AUTO mode it returns `0`; it does not return the calculated directional PWM value.
 
 Example:
 
 ```text
 CV2=25
+CV46=0
 CV44=0
 FL1
 ```
 
-With those settings, AUTO resolves the stopped hardware PWM to `22`.
+With those settings, reverse inherits CV2, so AUTO resolves the stopped hardware PWM to `22` after either forward or reverse travel. If CV46 is given an explicit reverse minimum, AUTO instead uses that reverse minimum minus `3` after reverse travel.
 
 Force Lights does not change the logical stopped state. While active at stop:
 
@@ -883,7 +884,7 @@ Use this after major hardware changes, incorrect pin assignments, or when you ne
 * Do not apply Throttle CV meanings to Turbine firmware or Turbine CV meanings to Throttle firmware.
 * Change pin CVs carefully. Wrong pin settings can make hardware appear dead or behave unexpectedly.
 * Configure one feature at a time, then test it.
-* For throttle builds, set `CV2` so the locomotive just begins to move and set `CV3` to limit unsafe top speed.
+* For throttle builds, set `CV2` so the locomotive just begins to move forward. Use `CV46` for an independent reverse starting floor, or leave `CV46=0` to inherit CV2. Approach each minimum from fully stopped toward first movement, then set `CV3` to limit unsafe top speed.
 * For turbine builds, calibrate and verify the ESC/output behavior before using high output values.
 * For INA219 battery protection, start with warning only before enabling limit or shutdown behavior.
 * For scheduled operation, verify time first using `T?` and avoid schedules that cross midnight.

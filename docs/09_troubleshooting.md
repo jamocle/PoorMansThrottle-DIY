@@ -548,7 +548,7 @@ Results depend on the motor and driver. Lower frequency does **not** guarantee m
 | Return to known behavior | Set `CV90=20` or `CV90=202020202020` to restore 20 kHz everywhere |
 | Verify stored curve | Query CV90; readback is always the canonical 12-digit form |
 | Tune gradually | Change frequency in small steps and test motor sound, low-speed behavior, and temperature |
-| Separate frequency from duty | If start speed/output is wrong, also review CV2, CV3, and CV9 rather than treating CV90 as a duty-control setting |
+| Separate frequency from duty | If forward start speed/output is wrong, review CV2; if reverse start behavior is wrong, review CV46 (`0` inherits CV2). Also review CV3 and CV9 rather than treating CV90 as a duty-control setting |
 | Watch hardware temperature | Stop testing if the motor or driver becomes unusually hot |
 
 Valid CV90 frequency values are `01..40` kHz per curve point.

@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.3.6  
+**Firmware Version:** 3.3.8  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -1164,7 +1164,8 @@ ACK:RQ60
 
 Notes:
 
-* `CV2` controls minimum start / floor.
+* `CV2` controls the forward minimum-start floor. Reverse uses `CV46` when CV46 is non-zero; `CV46=0` means reverse inherits CV2 while `CV46?` still reports `0`.
+* `CV5` direction inversion changes the physical motor direction but does not swap the logical forward/reverse meaning of CV2 and CV46.
 * `CV3` controls maximum output / ceiling.
 * `CV41` can cap throttle when low-voltage limiting is active.
 * Direction changes while moving are handled as stop-first direction changes.
@@ -1237,7 +1238,7 @@ ACK:FL1
 ACK:FL0
 ```
 
-If `FL1` is requested while `CV2 <= 9`, the command is rejected:
+If `FL1` is requested while the effective minimum-start value for the last logical travel direction is `9` or lower, the command is rejected:
 
 ```text
 ERR:FL1
@@ -1249,9 +1250,9 @@ Notes:
 * Force Lights is **Throttle-only** and runtime-only. It is disabled after reboot until `FL1` is sent again.
 * `FL1` does not change normal acceleration, braking, reversing, or throttle mapping while the locomotive is moving.
 * When the logical throttle reaches STOP, Force Lights keeps the physical motor-driver PWM at the effective `CV44` level instead of reducing it to zero.
-* `CV44=0` selects AUTO, where the effective stopped PWM is `CV2 - 3`.
-* An explicit non-zero `CV44` is a raw hardware PWM percentage and must not exceed `CV2 - 1`.
-* If `CV2` is lowered, an explicit `CV44` above the new `CV2 - 1` limit is clamped down. If `CV2` becomes `9` or lower, active Force Lights is disabled.
+* `CV44=0` selects AUTO. The stopped PWM is the effective minimum-start value for the **last logical travel direction** minus `3`; forward uses CV2, while reverse uses CV46 when non-zero or inherits CV2 when CV46 is `0`.
+* An explicit non-zero `CV44` is a raw hardware PWM percentage and is constrained below the smaller effective forward/reverse minimum-start floor.
+* If CV2 or CV46 changes, an explicit CV44 above the new safe limit is clamped down and stopped Force Lights output is recalculated. `FL1` is accepted only when the last logical travel direction has an effective minimum-start value greater than `9`.
 * `FL0` disables Force Lights. If the locomotive is already stopped, the physical motor output returns to zero immediately.
 * Force Lights does not make the logical throttle appear to be moving. `??` remains STOP/0, and normal asynchronous `A:` state notifications deliberately report `A:HW-STOPPED M0 HW0`.
 * The `?` hardware query is intentionally different: while Force Lights is active at stop it reports the actual stopped PWM, for example `HW-STOPPED M0 HW22`.
@@ -1881,9 +1882,9 @@ The following CVs remain here only because they directly change command behavior
 | `CV10`, `CV13` | Shared | Control Wi-Fi enablement and WebSocket port used by the command transport. |
 | `CV14` | Shared | Offset applied when establishing/adjusting the firmware clock; therefore affects `T?`, `T=<unix>`, and schedule evaluation. |
 | `CV15` | Shared | OTA downgrade gate. `0` (default) rejects a catalog `latest` version older than the running semantic firmware version; `1` permits that catalog downgrade. OTA still selects only the board target's catalog `latest`. |
-| `CV2`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. |
+| `CV2`, `CV46`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. CV2 is the forward minimum-start floor; CV46 is the reverse override, with `0` meaning inherit CV2. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
-| `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects AUTO (`CV2 - 3`); explicit non-zero values must not exceed `CV2 - 1`. |
+| `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects directional AUTO (last logical direction effective MinStart minus `3`); explicit non-zero values are constrained below the smaller effective forward/reverse MinStart floor. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
