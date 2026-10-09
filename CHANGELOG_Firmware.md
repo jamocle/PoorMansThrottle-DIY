@@ -2,6 +2,11 @@
 
 ## Firmware:
 
+### Version 3.3.9
+* **New Model for Feather Braking** A more realistic model for Pro feather braking. If the previous feather braking was preferable set CV47=0.
+* **Added overrides for Defaults for stop and BLE disconnect Grace**. Quick-Stop Full-Scale Time (CV48) and Control-Loss Grace Time(CV49).
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.8
 * **Added min throttle for reverse** CV46 now controld min throttle for reverse.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

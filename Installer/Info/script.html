@@ -557,11 +557,12 @@
           </li>
           <li>
             An external/app-originated <code>S</code> is a deliberate exception: it stops script playback first, then executes
-            the throttle's normal stop behavior.
+            the throttle's normal stop behavior. On current throttle firmware, <code>CV48</code> sets the full-scale
+            <code>QUICKSTOP</code> duration in milliseconds; the default is <code>3000</code>.
           </li>
           <li>
             An <code>S</code> inside the script stops the train normally but does <strong>not</strong> terminate the script.
-            Playback continues with the following pause or command.
+            It uses the same CV48 quick-stop timing, and playback continues with the following pause or command.
           </li>
         </ul>
 
@@ -569,7 +570,8 @@
         <ul class="rule-list">
           <li>
             <code>G1</code> enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is
-            running, the script continues normally during the countdown.
+            running, the script continues normally during the countdown. On current throttle firmware, <code>CV49</code>
+            sets the control-loss grace duration in milliseconds; the default is <code>15000</code>.
           </li>
           <li>
             If the connection returns before grace expires, the countdown is cancelled and the running script continues; it is
@@ -577,7 +579,8 @@
           </li>
           <li>
             If grace actually expires, firmware stops active script playback before continuing with the device's existing
-            grace-expiry shutdown behavior.
+            grace-expiry shutdown behavior. On throttle firmware, that forced stop uses the CV48 quick-stop timing.
+            Control-loss stopping is sequential: CV49 grace first, then the applicable CV48 quick-stop ramp.
           </li>
           <li>
             <code>G0</code> disables grace shutdown and clears any active grace countdown. It does <strong>not</strong> stop a

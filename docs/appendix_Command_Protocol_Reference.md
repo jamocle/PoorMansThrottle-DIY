@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.3.8  
+**Firmware Version:** 3.3.9  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -501,8 +501,9 @@ Notes:
 * This is runtime-only.
 * Reboot restores the default grace behavior.
 * `G1` enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
+* On Throttle firmware, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` permits the countdown to expire on the next shared grace-processing pass.
 * If a connection returns before grace expires, the active grace countdown is cancelled and the running script continues without being restarted.
-* If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior.
+* If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior. On Throttle firmware, that forced stop uses the `CV48` quick-stop timing.
 * `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
 * These commands are shared across supported firmware images, but the visible shutdown effect depends on the device's disconnect behavior.
 
@@ -1215,6 +1216,13 @@ ACK:B35
 ACK:B0
 ```
 
+Notes:
+
+* `S` uses the Throttle `QUICKSTOP` path in either travel direction. `CV48` sets its full-scale quick-stop duration in milliseconds; the default is `3000`.
+* Plain `B` keeps the normal brake-stop behavior and does not use CV48.
+* `B1..B100` feather-brake behavior is selected by `CV47`: `0` = Simple, `1` = Realistic. The default is `1`.
+* `B0` releases the active variable brake.
+
 ---
 
 ## Force Lights
@@ -1885,6 +1893,9 @@ The following CVs remain here only because they directly change command behavior
 | `CV2`, `CV46`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. CV2 is the forward minimum-start floor; CV46 is the reverse override, with `0` meaning inherit CV2. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
 | `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects directional AUTO (last logical direction effective MinStart minus `3`); explicit non-zero values are constrained below the smaller effective forward/reverse MinStart floor. |
+| `CV47` | Throttle | Selects the `B1..B100` feather-brake model: `0` = Simple, `1` = Realistic. |
+| `CV48` | Throttle | Sets the full-scale `QUICKSTOP` duration used by `S` and by the forced quick-stop after control-loss grace expires. |
+| `CV49` | Throttle | Sets the control-loss grace duration before the forced quick-stop path begins. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
@@ -1959,11 +1970,14 @@ For throttle firmware, this is especially important because the controller may b
 Typical behavior:
 
 1. A qualifying disconnect can start a grace period.
-2. If no control connection returns before grace expires, the device can force a safe stop behavior.
-3. BLE advertising recovery is attempted automatically.
-4. When needed, hard recovery is deferred until safe conditions are reached.
-5. Active WebSocket control can suppress BLE-only hard recovery paths.
-6. Autonomous schedule mode can suppress disconnect grace behavior while scheduled operation is active.
+2. On Throttle firmware, `CV49` sets that control-loss grace duration. The default is `15000 ms`.
+3. If no control connection returns before grace expires, the Throttle begins its forced `QUICKSTOP`; `CV48` sets the full-scale quick-stop duration and defaults to `3000 ms`.
+4. BLE advertising recovery is attempted automatically.
+5. When needed, hard recovery is deferred until safe conditions are reached.
+6. Active WebSocket control can suppress BLE-only hard recovery paths.
+7. Autonomous schedule mode can suppress disconnect grace behavior while scheduled operation is active.
+
+For Throttle firmware, the configured stop timing is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. Setting both CVs to `1000` can therefore approach two seconds of commanded stop timing from full throttle.
 
 Runtime override:
 

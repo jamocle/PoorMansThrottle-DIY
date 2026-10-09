@@ -594,13 +594,19 @@ If a consist behaves incorrectly, troubleshoot each locomotive by itself first.
 
 ### What to Know
 
-The firmware maintains a grace period after control loss. If control does not return in time, the locomotive is forced to stop. In some recovery cases, the ESP32 may reboot after the train reaches a safe stop.
+The throttle firmware maintains a configurable grace period after qualifying control loss. `CV49` sets that grace time in milliseconds and defaults to `15000`. If control does not return before grace expires, the locomotive enters the existing forced quick-stop path. `CV48` sets the full-scale quick-stop ramp time and defaults to `3000 ms`.
+
+The two times are sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` and `CV48=1000` can approach two seconds of commanded stop timing from full throttle. Setting `CV49=0` removes the intentional grace delay; the shared grace processor can then expire the countdown on its next processing pass.
+
+These settings control firmware timing to motor STOP output. They do not measure or guarantee the physical stopping time of the locomotive. In some recovery cases, the ESP32 may reboot after the train reaches a safe stop.
 
 ### Checks
 
 | Check | Action |
 |-----|-------|
-| Reconnect promptly | Reconnect before the grace period expires |
+| Reconnect promptly | Reconnect before the CV49 grace period expires |
+| Check grace timing | Query `CV49?`; default is `15000 ms` |
+| Check quick-stop timing | Query `CV48?`; default full-scale quick-stop time is `3000 ms` |
 | Expect stop after loss | Treat this as safety behavior, not automatically as a fault |
 | Reconnect after stop | Reconnect cleanly before testing motion again |
 | Power cycle if needed | If the device is no longer discoverable after a recovery event, power cycle and reconnect |

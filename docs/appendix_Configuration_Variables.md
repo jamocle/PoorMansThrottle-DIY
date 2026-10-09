@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.8
+**Firmware Version:** 3.3.9
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -216,6 +216,9 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV44** | Force Lights PWM | `0` (AUTO) or safe explicit raw PWM / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. AUTO uses the effective minimum-start value for the last logical travel direction minus 3. An explicit value is constrained below the smaller effective forward/reverse start floor. |
 | **CV45** | Automatic Horn/Bell Sounds | `0`, `1` / `0` | Enables automatic operating cues from real locomotive motion transitions. `0` disables the feature; `1` enables it. Requires PMTPlayer audio (`CV400=1`) but does not require locomotive background audio (`CV43=1`). |
 | **CV46** | Reverse Minimum Start Override | `0 – 100` / `0` | Reverse minimum-start floor. `0` means inherit the current CV2 value dynamically; `CV46?` still reports the stored raw value `0`. Values `1 – 100` set an explicit reverse minimum-start floor. |
+| **CV47** | Feather Brake Mode | `0`, `1` / `1` | Selects the `B1..B100` feather-brake model. `0` = Simple; `1` = Realistic. |
+| **CV48** | Quick-Stop Full-Scale Time | `1 – 60000 ms` / `3000` | Full-scale duration used by the existing `QUICKSTOP` ramp, including normal `S` stops and the forced quick-stop that begins after control-loss grace expires. |
+| **CV49** | Control-Loss Grace Time | `0 – 60000 ms` / `15000` | Grace duration after qualifying control loss before the existing forced quick-stop path begins. `0` allows the shared grace processor to expire the countdown on its next processing pass. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -323,6 +326,46 @@ CV45=0
 ```
 
 A normal safety or forced stop is not treated as an operator-requested automatic stop cue. Stop-first direction reversal is also handled specially so the temporary zero-speed state does not add an extra one-blast stop cue before the reverse departure sequence.
+
+---
+
+## CV47 — Feather Brake Mode
+
+CV47 applies only to **Poor Man's Throttle** locomotive firmware and selects how variable feather-brake commands `B1` through `B100` are modeled.
+
+* `CV47=0` selects **Simple** feather braking.
+* `CV47=1` selects **Realistic** feather braking and is the default.
+* Plain `B`, `B0`, and `S` continue to use their normal stop/brake handlers rather than the feather-brake model selected by CV47.
+* An explicitly persisted `CV47=0` remains Simple. A throttle with no stored CV47 uses the current default of `1`.
+
+---
+
+## CV48 — Quick-Stop Full-Scale Time
+
+CV48 applies only to **Poor Man's Throttle** locomotive firmware. It sets the full-scale duration, in milliseconds, used by the existing `QUICKSTOP` ramp.
+
+* Valid range: `1 – 60000 ms`.
+* Default: `3000 ms`, preserving the previous fixed quick-stop timing.
+* Normal `S` stops use CV48 in both forward and reverse.
+* The forced stop that begins after control-loss grace expires also uses the same CV48 quick-stop path.
+* The duration is full-scale. When the current applied throttle is below full output, the existing ramp engine proportionally shortens the applicable quick-stop ramp.
+
+Changing CV48 changes the timing used by subsequent quick stops; it does not itself issue a stop command.
+
+---
+
+## CV49 — Control-Loss Grace Time
+
+CV49 applies only to **Poor Man's Throttle** locomotive firmware. It sets the control-loss grace duration, in milliseconds, before the existing forced quick-stop path begins.
+
+* Valid range: `0 – 60000 ms`.
+* Default: `15000 ms`, preserving the previous fixed grace duration.
+* If control returns before grace expires, the active countdown is cancelled by the existing recovery behavior.
+* `CV49=0` allows the shared grace processor to expire the countdown on its next processing pass.
+
+Control-loss stopping is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` plus `CV48=1000` can approach two seconds of commanded stop timing from full throttle. A configuration such as `CV49=0` and `CV48=1000` removes the intentional grace delay and uses a one-second full-scale commanded quick-stop ramp.
+
+These CVs control firmware timing to motor STOP output. They do not measure or guarantee the physical stopping distance or stopping time of the locomotive.
 
 ---
 
