@@ -2,6 +2,9 @@
 
 ## Firmware:
 
+### Version 3.3.10
+* **Updated sounds commsurate of new Feather Brake Realism**. Now sounds follow new feather braking system more realistically.
+ 
 ### Version 3.3.9
 * **New Model for Feather Braking** A more realistic model for Pro feather braking. If the previous feather braking was preferable set CV47=0.
 * **Added overrides for Defaults for stop and BLE disconnect Grace**. Quick-Stop Full-Scale Time (CV48) and Control-Loss Grace Time(CV49).

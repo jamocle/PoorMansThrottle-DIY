@@ -2,9 +2,12 @@
 
 ## Smartphone App:
 
-### Version 4.1.1
-* **Added battery saving voew for physical throttle** The physical throttle view can now go into battery saving mode for the smart device.
+### Version 4.1.2
+* **Enhanced User Interface for Throttle and Feather Brake** Modified to support Realistic Mode for Feather Brake and enhanced telemetry for UI information.
+* **Added Switcher Mode as a selectable Phydical Control** Users can now assign switcher mode to an HID key.
+* **Added battery saving view for physical throttle** The physical throttle view can now go into battery saving mode for the smart device.
 * **Added support for Min Reverse Throttle** The app now supports min throttle for reverse and has a wizard to guide the user intop setting it properly.
+* **Fixed password Timeout issue** Some users were experiencing timeouts when saving Wifi password.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.1.0
