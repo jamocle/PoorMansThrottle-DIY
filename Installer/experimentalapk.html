@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Bespoke Experimental APK Deployment - Poor Man's Throttle</title>
+
+  <link rel="stylesheet" href="styles.css?v=experimental-20260909-2" />
+
+  <style>
+    .experimental-apk-hero .brand-art {
+      width: min(100%, 240px);
+    }
+
+    .experimental-apk-hero .header-image {
+      max-height: 170px;
+    }
+
+    .experimental-main-installer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border: 1px solid rgba(123, 75, 31, 0.22);
+      border-radius: 999px;
+      color: var(--text);
+      background: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .experimental-main-installer-link:hover {
+      border-color: rgba(123, 75, 31, 0.42);
+      background: rgba(123, 75, 31, 0.045);
+      transform: translateY(-1px);
+    }
+
+    .experimental-main-installer-link:focus-visible {
+      outline: 3px solid rgba(123, 75, 31, 0.22);
+      outline-offset: 3px;
+    }
+
+    .experimental-warning-card {
+      border-width: 2px;
+      border-color: rgba(160, 61, 45, 0.28);
+      background: linear-gradient(180deg, rgba(160, 61, 45, 0.055), #ffffff);
+    }
+  </style>
+
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="hero experimental-apk-hero" aria-label="Bespoke experimental Android APK deployment">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Poor Man's Throttle</div>
+          <h1>Bespoke Experimental Android APK</h1>
+
+          <p class="subhead">
+            This page is for an Android app build supplied directly to you for testing, diagnosis, or a bespoke change.
+            It is separate from the normal Poor Man's Throttle Android release.
+          </p>
+
+          <a
+            class="experimental-main-installer-link"
+            href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html"
+          >
+            <span aria-hidden="true">&larr;</span>
+            <span>Return to Main Installer</span>
+          </a>
+
+          <div class="hero-meta">
+            <div class="pill">Android only</div>
+            <div class="pill">Experimental build</div>
+            <div class="pill">Use only when specifically directed</div>
+          </div>
+        </div>
+
+        <div class="brand-art">
+          <img src="Info/dfrr.png" alt="Poor Man's Throttle header artwork" class="header-image" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card experimental-warning-card" aria-labelledby="experimentalApkWarningTitle">
+      <div class="card-header">
+        <div>
+          <div class="card-kicker">Experimental Android app</div>
+          <h3 id="experimentalApkWarningTitle">Only install this APK if you were specifically asked to test it.</h3>
+        </div>
+      </div>
+
+      <p class="note note-strong">
+        This APK may contain changes that are not part of the normal public Android release.
+        Do not share or install this build on another device unless you were specifically asked to do so.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="experimentalApkDownloadTitle">
+      <div class="platform-layout">
+        <div class="platform-text">
+          <div class="card-header">
+            <div>
+              <div class="card-kicker">Android app</div>
+              <h3 id="experimentalApkDownloadTitle">Download the bespoke experimental APK.</h3>
+            </div>
+          </div>
+
+          <p class="note">
+            Download the APK to your Android device, then open it to begin installation.
+          </p>
+
+          <div class="action-buttons">
+            <a class="app-link" href="android-guide.html">
+              Android installation instructions
+            </a>
+
+            <a
+              class="app-link app-link-primary"
+              id="experimentalApkLink"
+              href="downloads/experimental/poor-mans-throttle-experimental.apk"
+            >
+              Download Experimental Android APK
+            </a>
+          </div>
+        </div>
+
+        <div class="platform-visual">
+          <div class="visual-shell">
+            <img src="android.png" alt="Android" class="platform-large-icon" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    (() => {
+      "use strict";
+
+      // Maintenance model:
+      // Replace only downloads/experimental/poor-mans-throttle-experimental.apk.
+      // The normal public Android APK remains untouched.
+      const experimentalApkLink = document.getElementById("experimentalApkLink");
+
+      if (!experimentalApkLink) {
+        return;
+      }
+
+      const apkUrl = new URL(experimentalApkLink.getAttribute("href"), window.location.href);
+      apkUrl.searchParams.set("v", `${Date.now()}-${Math.random()}`);
+      experimentalApkLink.setAttribute("href", apkUrl.href);
+    })();
+  </script>
+</body>
+
+</html>
