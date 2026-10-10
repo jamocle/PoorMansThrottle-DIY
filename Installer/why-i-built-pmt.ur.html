@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ur">
+<head>
+<meta charset="utf-8"/>
+<!-- PMT dynamic document cache protection -->
+<meta content="no-cache, no-store, must-revalidate, max-age=0" http-equiv="Cache-Control"/>
+<meta content="no-cache" http-equiv="Pragma"/>
+<meta content="0" http-equiv="Expires"/>
+<script>
+    (() => {
+      "use strict";
+
+      const cacheParameter = "v";
+      const freshnessParameter = "pmtFresh";
+      const maximumFreshTokenAgeMs = 120000;
+
+      const createCacheToken = () => Date.now() + "-" + Math.random();
+
+      const isRecentCacheToken = (token) => {
+        if (!token) {
+          return false;
+        }
+
+        const timestamp = Number.parseInt(String(token).split("-", 1)[0], 10);
+        if (!Number.isFinite(timestamp)) {
+          return false;
+        }
+
+        const age = Date.now() - timestamp;
+        return age >= -5000 && age <= maximumFreshTokenAgeMs;
+      };
+
+      const makeFreshUrl = (input) => {
+        const url = new URL(input, window.location.href);
+        url.searchParams.set(cacheParameter, createCacheToken());
+        url.searchParams.set(freshnessParameter, "1");
+        return url;
+      };
+
+      const currentUrl = new URL(window.location.href);
+      const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const appCacheToken = [...currentUrl.searchParams.keys()].find(
+        (key) =>
+          /^\d{12}$/.test(key) &&
+          currentUrl.searchParams.get(key) === ""
+      );
+      const isAppFreshNavigation = appCacheToken !== undefined;
+      const isFreshNavigation =
+        isAppFreshNavigation ||
+        (
+          currentUrl.searchParams.get(freshnessParameter) === "1" &&
+          isRecentCacheToken(currentToken)
+        );
+
+      if (!isFreshNavigation) {
+        window.location.replace(makeFreshUrl(currentUrl).href);
+        return;
+      }
+
+      if (appCacheToken) {
+        currentUrl.searchParams.delete(appCacheToken);
+      }
+
+      currentUrl.searchParams.delete(cacheParameter);
+      currentUrl.searchParams.delete(freshnessParameter);
+
+      try {
+        window.history.replaceState(window.history.state, "", currentUrl.href);
+      } catch {
+        // The freshness query may remain visible on unusual local-file/browser combinations.
+      }
+
+      const updateInternalHtmlLink = (link) => {
+        const href = link.getAttribute("href");
+        if (
+          !href ||
+          href.startsWith("#") ||
+          href.startsWith("mailto:") ||
+          href.startsWith("tel:") ||
+          href.startsWith("javascript:")
+        ) {
+          return;
+        }
+
+        let url;
+        try {
+          url = new URL(href, window.location.href);
+        } catch {
+          return;
+        }
+
+        if (
+          url.origin !== window.location.origin ||
+          !url.pathname.toLowerCase().endsWith(".html")
+        ) {
+          return;
+        }
+
+        link.href = makeFreshUrl(url).href;
+      };
+
+      const updateLinkFromEvent = (event) => {
+        if (!(event.target instanceof Element)) {
+          return;
+        }
+
+        const link = event.target.closest("a[href]");
+        if (link) {
+          updateInternalHtmlLink(link);
+        }
+      };
+
+      document.addEventListener("click", updateLinkFromEvent, true);
+      document.addEventListener("auxclick", updateLinkFromEvent, true);
+      document.addEventListener("contextmenu", updateLinkFromEvent, true);
+
+      window.addEventListener("pageshow", (event) => {
+        if (event.persisted) {
+          window.location.replace(makeFreshUrl(window.location.href).href);
+        }
+      });
+    })();
+  </script>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>میں نے PMT کیوں بنایا</title>
+<style>
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --accent: #0071e3;
+      --line: #d2d2d7;
+      --max-width: 860px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .page {
+      width: min(var(--max-width), calc(100% - 40px));
+      margin: 0 auto;
+      padding: 72px 0 96px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.01em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1.05;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: 20px auto 0;
+      font-size: 1.25rem;
+      color: var(--muted);
+    }
+
+    .donation-callout {
+      margin: 40px auto 0;
+      max-width: 760px;
+      padding: 28px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+    }
+
+    .donation-callout p {
+      margin: 0;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+
+    .paypal-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .paypal-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .paypal-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .paypal-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .venmo-qr-wrap {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .venmo-qr {
+      width: min(100%, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+    }
+
+    .venmo-caption {
+      margin-top: 14px;
+      font-size: 0.98rem;
+      color: var(--muted);
+    }
+
+    .venmo-handle-inline {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .content {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 56px;
+    }
+
+    .lead-quote {
+      margin: 0 0 36px;
+      font-size: 1.55rem;
+      line-height: 1.45;
+      letter-spacing: -0.02em;
+    }
+
+    .me {
+      display: block;
+      margin-top: 14px;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    p {
+      margin: 0 0 24px;
+      font-size: 1.08rem;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-break {
+      margin: 40px 0;
+      border: 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .emphasis {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .pull-line {
+      margin: 36px 0;
+      font-size: 1.5rem;
+      line-height: 1.4;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+
+    .support-block {
+      margin-top: 44px;
+      padding-top: 40px;
+      border-top: 1px solid var(--line);
+    }
+
+    .support-block h2 {
+      margin: 0 0 18px;
+      font-size: 2rem;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+
+    .final-ask {
+      margin-top: 28px;
+      font-size: 1.12rem;
+      font-weight: 500;
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(var(--max-width), calc(100% - 24px));
+        padding: 40px 0 56px;
+      }
+
+      .content {
+        padding: 32px 24px;
+        border-radius: 20px;
+      }
+
+      .lead-quote,
+      .pull-line {
+        font-size: 1.3rem;
+      }
+
+      .intro {
+        font-size: 1.1rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .donation-callout {
+        padding: 20px;
+      }
+
+      .paypal-qr,
+      .venmo-qr {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+<section class="hero">
+<p class="eyebrow">Poor Man’s Throttle</p>
+<h1>میں نے PMT کیوں بنایا</h1>
+<p class="intro">
+        ایک کم لاگت وائرلیس تھروٹل سسٹم، جسے ماڈل ٹرینوں کے کنٹرول کو اس شوق سے محبت کرنے والوں کے لیے زیادہ قابلِ رسائی، زیادہ آسان فہم اور کم خرچ بنانے کے لیے ڈیزائن کیا گیا ہے۔
+      </p>
+<div class="donation-callout">
+<p>
+          اگر Poor Man’s Throttle نے آپ کی مدد کی ہے، آپ کو ترغیب دی ہے، آپ کے پیسے بچائے ہیں، یا اس شوق کو آپ کے لیے زیادہ قابلِ رسائی بنایا ہے تو میں دل سے آپ کی معاونت کا شکر گزار ہوں گا۔
+        </p>
+<div class="paypal-qr-wrap">
+<img alt="paypal.me/jamocle کے لیے PayPal QR کوڈ" class="paypal-qr" src="paypal.png"/>
+<div class="paypal-caption">
+            PayPal پر عطیہ دیں: <span class="paypal-handle-inline" dir="ltr">paypal.me/jamocle</span>
+</div>
+</div>
+<div class="venmo-qr-wrap">
+<img alt="@Jamocle کے لیے Venmo QR کوڈ" class="venmo-qr" src="jamocle.jpeg"/>
+<div class="venmo-caption">
+            Venmo پر عطیہ دیں: <span class="venmo-handle-inline" dir="ltr">@Jamocle</span>
+</div>
+</div>
+</div>
+</section>
+<section class="content">
+<p class="lead-quote">
+        Poor Man’s Throttle کسی کمپنی، مالی معاونت یافتہ اسٹارٹ اپ، یا بجٹ رکھنے والی ٹیم نے نہیں بنایا۔ اسے ایک ایسے شخص نے بنایا ہے جو ماڈل ٹرین کمیونٹی میں ایک مسئلہ دیکھتا ہے اور اس کے بارے میں کچھ کرنے کا فیصلہ کرتا ہے۔
+        <span class="me">میں۔</span>
+</p>
+<p>
+        یہ منصوبہ حقیقتاً ایک فرد کی ٹیم کا کام ہے۔ اس کا ہر حصہ میری طرف سے ہے: فرم ویئر، ایپ کوڈ، انجینئرنگ، دستاویزات، ویڈیوز، ٹیسٹنگ، خرابیوں کی تشخیص و حل، اپ ڈیٹس، اور وہ معاونت جو اسے حقیقی اور قابلِ استعمال بنانے میں مدد دیتی ہے۔
+      </p>
+<p>
+        میں نے Poor Man’s Throttle اس لیے بنایا کیونکہ میں جانتا ہوں کہ یہ شوق کتنا مہنگا ہو سکتا ہے۔ میں جانتا ہوں کہ اخراجات کتنی تیزی سے بڑھتے ہیں۔ میں جانتا ہوں کہ ٹرینیں چلانے کا بہتر طریقہ چاہنے کے بعد یہ معلوم ہونا کیسا لگتا ہے کہ تجارتی حل کی قیمت اسے دسترس سے باہر کر دیتی ہے۔ بہت سے شوقین افراد کے لیے برانڈڈ تھروٹل اور ملکیتی سسٹمز اتنے مہنگے ہوتے ہیں کہ ان کی قیمت کا جواز دینا مشکل ہو جاتا ہے۔
+      </p>
+<p>
+        یہ بات آج بھی مجھے درست نہیں لگتی۔
+      </p>
+<hr class="section-break"/>
+<p>
+        میرا یقین ہے کہ ایک اور راستہ ہونا چاہیے۔ ایک عملی راستہ۔ ایک کم خرچ راستہ۔ ایسا راستہ ان شوقین افراد کے لیے جو خود بنانا، سیکھنا اور تخلیق کرنا چاہتے ہیں، مگر صرف ہموار وائرلیس کنٹرول سے لطف اندوز ہونے کے لیے انہیں بہت بڑی رقم خرچ نہ کرنی پڑے۔ میرا یقین ہے کہ دستیاب ہارڈ ویئر، سوچ سمجھ کر کی گئی انجینئرنگ، اور محتاط ڈیزائن کو ملا کر ایسی چیز بنائی جا سکتی ہے جسے لوگ حقیقتاً استعمال کر سکیں۔
+      </p>
+<p>
+        اسی یقین نے شکل اختیار کی <span class="emphasis">Poor Man’s Throttle</span>۔
+      </p>
+<p>
+        بظاہر یہ سادہ لگ سکتا ہے: اسمارٹ فون کنٹرول، ایک ESP32، ایک کم قیمت موٹر ڈرائیور، اور لوکوموٹیو کو وائرلیس طور پر چلانے کا کم لاگت طریقہ۔ لیکن جس نے بھی کبھی کوئی بامعنی چیز بنائی ہے وہ حقیقت جانتا ہے۔ جو چیز باہر سے سادہ نظر آتی ہے، اس کے پیچھے اکثر بہت زیادہ ایسا کام ہوتا ہے جو دکھائی نہیں دیتا۔ سادگی وقت مانگتی ہے۔ سادگی بار بار بہتری مانگتی ہے۔ سادگی محنت سے حاصل ہوتی ہے۔
+      </p>
+<p class="pull-line">میں یہ سب کرتا ہوں تاکہ آپ کو نہ کرنا پڑے۔</p>
+<p>
+        Poor Man’s Throttle ایک رات میں وجود میں نہیں آیا۔ یہ کوئی فوری تجربہ نہیں جو اتفاقاً کام کر گیا ہو۔ اس کے پیچھے وقت، توانائی، مستقل مزاجی اور توجہ کی طویل اور مسلسل سرمایہ کاری ہے۔ اس میں انجینئرنگ درکار ہے۔ ٹیسٹنگ درکار ہے۔ ناکام آغاز، غلط رخ، ترامیم، دوبارہ سوچنا اور پھر سے بنانا پڑتا ہے۔ ہارڈ ویئر کو عملی، کنٹرول کے تجربے کو مفید، اور دستاویزات کو دوسروں کے لیے اتنا واضح بنانے میں وقت لگتا ہے کہ وہ ان پر عمل کر سکیں۔
+      </p>
+<p>
+        جب لوگ کسی پراجیکٹ کا صفحہ، کام کرتی ہوئی ایپ، فرم ویئر بلڈ، یا ویڈیو ڈیمونسٹریشن دیکھتے ہیں تو انہیں نتیجہ نظر آتا ہے۔ جو چیز انہیں ہمیشہ نظر نہیں آتی، وہ اس کے پیچھے کام کا پہاڑ ہے۔ وہ ضدی مسائل کی ڈیبگنگ، کوڈ بہتر کرنے، وضاحتیں دوبارہ لکھنے، ہدایات نکھارنے، یا اگلے ورژن کو پچھلے سے بہتر بنانے میں صرف ہونے والے گھنٹے نہیں دیکھتے۔ وہ یہ بھی نہیں دیکھتے کہ پہلی بار اسے دیکھنے والے شخص کے لیے کسی چیز کو آسان اور قابلِ رسائی محسوس کرانے میں کتنی محنت لگتی ہے۔
+      </p>
+<p>
+        لیکن وہ کام حقیقی ہے۔ دراصل، زیادہ تر محنت وہیں ہوتی ہے۔
+      </p>
+<hr class="section-break"/>
+<p>
+        میں نے فرم ویئر بنایا تاکہ دوسروں کو صفر سے شروع نہ کرنا پڑے۔ میں نے ایپ پر کام کیا تاکہ دوسروں کے پاس صرف ایک خیال نہیں بلکہ قابلِ استعمال انٹرفیس ہو۔ میں نے انجینئرنگ کا طریقۂ کار تیار کیا تاکہ دوسرے ایسے راستے پر چل سکیں جس پر پہلے ہی اچھی طرح غور کیا جا چکا ہو۔ میں نے دستاویزات لکھیں تاکہ دوسروں کو اندازے لگا کر آگے نہ بڑھنا پڑے۔ میں نے معاون مواد تیار کیا اور مدد فراہم کی، کیونکہ کوئی منصوبہ اسی وقت حقیقتاً مفید ہوتا ہے جب لوگ اسے کامیابی سے استعمال کر سکیں۔
+      </p>
+<p>
+        میں یہ اس لیے کرتا ہوں کیونکہ میں ماڈل ٹرین کمیونٹی کو کچھ واپس دینا چاہتا ہوں۔
+      </p>
+<p>
+        یہ شوق ہمیشہ سے بنانے والوں، تجربہ کرنے والوں، میکرز، اور ان لوگوں سے بھرا رہا ہے جو ٹرینوں سے اتنی محبت کرتے ہیں کہ مسلسل سیکھتے رہتے ہیں۔ لیکن سب سے زیادہ پرجوش شوقین فرد کی بھی حدود ہوتی ہیں، اور بہت سے لوگوں کے لیے سب سے بڑی رکاوٹوں میں سے ایک لاگت ہے۔ تجارتی سسٹمز بہترین ہو سکتے ہیں، مگر وہ ہمیشہ سب کی دسترس میں نہیں ہوتے۔ بعض شوقین افراد کے لیے وہ بالکل ہی دسترس سے باہر ہوتے ہیں۔ دوسروں کے لیے، جب پہلے ہی بہت سے دوسرے اخراجات موجود ہوں، ان کی قیمت کا جواز دینا مشکل ہو جاتا ہے۔
+      </p>
+<p>
+        اسی لیے یہ منصوبہ میرے لیے اہم ہے۔ Poor Man’s Throttle صرف پیسے بچانے کے بارے میں نہیں ہے، اگرچہ پیسے بچانا اہم ہے۔ مقصد بہتر صلاحیتوں کو زیادہ لوگوں کی دسترس میں لانا ہے۔ مقصد یہ ثابت کرنا ہے کہ بہتر کنٹرول، وائرلیس آپریشن، اور زیادہ جدید تجربے سے لطف اندوز ہونے کے لیے آپ کو کسی مہنگے ملکیتی ایکو سسٹم کی ضرورت نہیں ہونی چاہیے۔
+      </p>
+<p>
+        ڈیڈ ریل (dead-rail) بنانے والوں کے لیے یہ منصوبہ آسانی سے دستیاب پرزوں اور عام بیٹری آپشنز کے ذریعے کم لاگت وائرلیس راستہ فراہم کرتا ہے۔ روایتی DC صارفین کے لیے یہ PWM موٹر کنٹرول اور اسمارٹ فون آپریشن کے ذریعے ایک نمایاں بہتری پیش کرتا ہے۔ وسیع تر DIY ماڈل ٹرین کمیونٹی کے لیے یہ اس سے بھی بڑی چیز کی نمائندگی کرتا ہے: آگے بڑھنے کا ایسا راستہ جو سمجھنے میں آسان، لچک دار اور کم خرچ ہو۔
+      </p>
+<section class="support-block">
+<h2>براہِ کرم PMT کے پیچھے ہونے والے کام کی حمایت کریں</h2>
+<p>
+          ایسا منصوبہ خود بخود جاری نہیں رہ سکتا۔ ہر بہتری مزید وقت مانگتی ہے۔ ہر وضاحت مزید محنت مانگتی ہے۔ ہر اپ ڈیٹ کے لیے مزید ٹیسٹنگ درکار ہوتی ہے۔ ہر جواب دیا گیا سوال، ہر حل کیا گیا مسئلہ، ہر بہتر کی گئی گائیڈ، ہر بنائی گئی ویڈیو، اور بہتر کی گئی کوڈ کی ہر سطر—سب ایک ہی جگہ سے آتے ہیں۔
+        </p>
+<p><span class="emphasis">میں۔</span></p>
+<p>
+          اسی لیے میں آپ سے تعاون کی درخواست کر رہا ہوں۔
+        </p>
+<p>
+          اگر Poor Man’s Throttle نے آپ کی مدد کی ہے، آپ کے پیسے بچائے ہیں، آپ کے اپنے منصوبے کو ممکن بنایا ہے، آپ کو کچھ سکھایا ہے، یا آپ صرف اس مقصد کو قدر کی نگاہ سے دیکھتے ہیں جس کی یہ نمائندگی کرتا ہے، تو میں اپنے PayPal پر آپ کے عطیے کا بہت شکر گزار ہوں گا: <span class="emphasis" dir="ltr">paypal.me/jamocle</span>، یا میرے Venmo پر:
+          <span class="emphasis" dir="ltr">@Jamocle</span>۔
+        </p>
+<p>
+          آپ کا عطیہ محض ایک ٹِپ سے بڑھ کر ہے۔ یہ قدردانی ہے۔ یہ حوصلہ افزائی ہے۔ یہ ان گھنٹوں کی حمایت ہے جو پہلے ہی صرف ہو چکے ہیں اور ان گھنٹوں کی بھی جو ابھی آگے ہیں۔ یہ فرم ویئر، ایپ، دستاویزات، ویڈیوز، اور اس معاونت پر مسلسل کام جاری رکھنے میں مدد دیتا ہے جو اس منصوبے کو زندہ اور بہتر بنائے رکھتی ہے۔
+        </p>
+<p>
+          سب سے بڑھ کر، یہ دوسروں کے فائدے کے لیے کی جانے والی ایک فرد کی کوشش کو جاری رکھنے میں مدد دیتا ہے۔
+        </p>
+<p>
+          میں پیچیدگی اپنے ذمے لیتا ہوں تاکہ آپ ایک آزمودہ بنیاد سے آغاز کر سکیں۔ میں سیکھنے، ٹیسٹ کرنے، ناکام ہونے، بہتر بنانے، دستاویزی شکل دینے اور دوبارہ بنانے میں گھنٹے صرف کرتا ہوں تاکہ آپ کے لیے راستہ زیادہ واضح ہو۔ میں یہ اس لیے بناتا ہوں کیونکہ میرا یقین ہے کہ کمیونٹی ابھی ایک قابلِ استطاعت آپشن کی مستحق ہے، نہ کہ صرف اس وقت جب کوئی کمپنی یہ فیصلہ کرے کہ اس میں کافی منافع ہے۔
+        </p>
+<p>
+          یہ محنت ہے۔ حقیقی محنت۔ مہارت والی محنت۔ وقت طلب محنت۔ اور یہ سب ایک ہی شخص کی طرف سے ہے۔
+        </p>
+<p class="final-ask">
+          اگر آپ سمجھتے ہیں کہ یہ کام حمایت کے قابل ہے تو میں آپ کی مدد کا دل سے شکر گزار ہوں گا۔ براہِ کرم PayPal پر عطیہ دینے پر غور کریں: <span class="emphasis" dir="ltr">paypal.me/jamocle</span> یا Venmo پر:
+          <span class="emphasis" dir="ltr">@Jamocle</span>۔
+        </p>
+<p>
+          یہاں موجود ہونے کا شکریہ۔ اس شوق کی پروا کرنے کا شکریہ۔ اور دل سے شکریہ کہ آپ ایک فرد کی ٹیم کے اس کام کی حمایت کر رہے ہیں جو ماڈل ٹرین کمیونٹی کو کچھ بامعنی واپس دینے کی کوشش کر رہی ہے۔
+        </p>
+</section>
+</section>
+<footer>
+      Poor Man’s Throttle — وائرلیس ماڈل ٹرین کنٹرول کو زیادہ قابلِ رسائی بنانے کے لیے تیار کیا گیا۔
+    </footer>
+</main>
+</body>
+</html>
