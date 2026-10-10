@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 4.1.3
+* **Added support for Urdu language in Pakistan** Pakistan residents are using PMT!!
+* **Fixed some localization issues** Some vestigal words weren't being translated and now fixed.
+
 ### Version 4.1.2
 * **Enhanced User Interface for Throttle and Feather Brake** Modified to support Realistic Mode for Feather Brake and enhanced telemetry for UI information.
 * **Added Switcher Mode as a selectable Phydical Control** Users can now assign switcher mode to an HID key.
