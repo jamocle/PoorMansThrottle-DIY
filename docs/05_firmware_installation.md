@@ -38,6 +38,8 @@ For supported **ESP32-S3 N16R8 and N8R8** throttle hardware, the PMT app can als
 
 USB installation remains the recovery and rollback path for all boards, and it is the path to use when a specific or older firmware version must be installed.
 
+> **App compatibility:** PMT app 4.1.10 requires firmware **3.4.1 or newer**. Firmware 3.4.1 introduces the current CV bulk-value protocol, including `CV<n>=*` bulk writes and `CV<n>?*` bulk queries. If the app reports that firmware is below the minimum supported version, update the connected PMT device before continuing.
+
 [ESP32-S3 OTA firmware update guide](https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ota_firmware_update.html)
 
 ---

@@ -879,3 +879,23 @@ View the Appendices
 [<<Back to Home](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/README.md)
 
 [<< Back to Docs](https://github.com/jamocle/PoorMansThrottle-DIY/tree/main/docs)
+
+---
+
+## CV write/query timeout with firmware 3.4.1+
+
+If a CV operation times out, first confirm the firmware version with `V`.
+
+For firmware 3.4.1 or newer:
+
+- `CV<n>=*` starts a bulk CV write.
+- `CV<n>?*` starts a bulk CV query.
+- `A:CV<n>=*` is used twice: once for ready and once for successful completion.
+- The CV value itself is carried in PX/1 resource `CvValue` (`3`), with the CV number in the PX header `value` field.
+- A zero-byte payload is valid. `CV12?*` intentionally returns zero bytes and still completes successfully.
+- `CVABORT` cancels a pending CV bulk transaction and returns `A:CVABORT`.
+
+If a new app is connected to firmware older than 3.4.1, update the firmware. App 4.1.10 requires firmware 3.4.1 or newer.
+
+The ordinary `CV<n>?` and `CV<n>=<value>` text forms remain the legacy protocol. Do not interpret `CV<n>=*` or `CV<n>?*` as legacy literal values on older firmware.
+

@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.3.9
+**Firmware Version:** 3.4.1
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 3.3.3 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 3.4.1 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -64,6 +64,16 @@ Typical response:
 A:CV2=0
 ```
 
+### Bulk query a CV (firmware 3.4.1+)
+
+```text
+CV<number>?*
+```
+
+`CV<number>?*` requests the value through PX/1 resource `CvValue` (`3`) instead of carrying the value in the ordinary text response. The firmware uses `A:CV<number>=*` as both the ready marker and the completion marker; transaction state distinguishes the two. The PX header `value` field carries the CV number and the payload carries the CV value bytes.
+
+A zero-byte payload is valid success. `CV12?*` intentionally returns zero bytes so the Wi-Fi password is not exposed.
+
 ---
 
 ## Set a CV
@@ -84,6 +94,16 @@ Typical response:
 A:CV2=25
 ```
 
+### Bulk write a CV (firmware 3.4.1+)
+
+```text
+CV<number>=*
+```
+
+After the firmware replies `A:CV<number>=*` to indicate readiness, send the value through PX/1 resource `CvValue` (`3`) with the CV number in the PX header `value` field. A second `A:CV<number>=*` confirms successful completion.
+
+The ordinary `CV<number>=<value>` form remains supported and is the compatibility path for older firmware.
+
 ---
 
 # Important Notes
@@ -93,7 +113,7 @@ A:CV2=25
 * `PS1` enables persist-only staging: valid CV writes are saved but not applied live. `PS0` leaves staging mode, but already staged values still require a reboot before they take effect. Use `PS?` to check the mode.
 * Some CV changes reinitialize network services, telemetry services, outputs, or pins.
 * Pin CVs accept only the firmware's allowed runtime GPIO list.
-* Wi-Fi password `CV12` is **set-only**. Querying it returns `ERR`.
+* Wi-Fi password `CV12` is not exposed by the legacy text query. `CV12?` returns `ERR`. Firmware 3.4.1+ also accepts `CV12?*` as a bulk query; it succeeds with a zero-byte `CvValue` payload so the password is still not exposed.
 * Querying unset schedule values such as `CV302?`, `CV303?`, `CV304?`, or `CV305?` can return `ERR` until those values are configured.
 * `CV8=8` wipes saved configuration and reboots the device.
 * Use the app configuration screens when available. The terminal is best for advanced setup, recovery, diagnostics, and features not exposed in the UI.
@@ -121,7 +141,7 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV8** | All | Factory Reset Trigger | Must write `8` | `CV8=8` wipes saved configuration and reboots the ESP32. Not persisted as a normal setting. |
 | **CV10** | All | Wi-Fi Enable | `0`, `1` / `0` | Enables or disables Wi-Fi/WebSocket service when configured. On hardware where the firmware resource guard does not allow concurrent Wi-Fi and audio, setting `CV10=1` while `CV400=1` disables audio (`CV400=0`). |
 | **CV11** | All | Wi-Fi SSID | Text / blank | Wi-Fi network name. |
-| **CV12** | All | Wi-Fi Password | Text / blank | Set-only from the terminal. Query returns `ERR`. |
+| **CV12** | All | Wi-Fi Password | Text / blank | The legacy text query `CV12?` returns `ERR`. On firmware 3.4.1+, `CV12?*` is a valid bulk query but intentionally returns a zero-byte value payload. |
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
 | **CV15** | All | OTA Allow Downgrade | `0`, `1` / `0` | Controls downgrade protection for supported ESP32-S3 Throttle OTA. `0` rejects a catalog `latest` semantic version older than the firmware currently running; `1` permits OTA to install that older catalog `latest`. This does not select an arbitrary historical version; use the USB installer when a specific version or recovery image must be chosen. |

@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.4.1
+* **Extended PMT data protocol to handle long data** Now the firmware supports long data transfer RX/TX beyond 20 bytes.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.3.10
 * **Updated sounds commsurate of new Feather Brake Realism**. Now sounds follow new feather braking system more realistically.
  

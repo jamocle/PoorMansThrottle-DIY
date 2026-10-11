@@ -2,6 +2,9 @@
 
 ## Smartphone App:
 
+### Version 4.1.10
+* **Fixed WIFI password saving for some Android users** Some Androidn users were unable to save passwords.
+
 ### Version 4.1.3
 * **Added support for Urdu language in Pakistan** Pakistan residents are using PMT!!
 * **Fixed some localization issues** Some vestigal words weren't being translated and now fixed.

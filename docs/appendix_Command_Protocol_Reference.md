@@ -229,7 +229,7 @@ V
 Example response:
 
 ```text
-ACK:V3.3.0
+ACK:V3.4.1
 ```
 
 Full firmware build identifier:
@@ -266,8 +266,11 @@ Current PX/1 script resources are:
 |---|---:|---|---|
 | `Script` | `1` | Read / Write | Exact bytes of `/scripts/<name>.pmt` |
 | `ScriptList` | `2` | Read only | Snapshot of saved logical script names, UTF-8, one name per line, without `.pmt` |
+| `CvValue` | `3` | Read / Write | UTF-8 CV value bytes. The PX header `value` field identifies the CV number. |
 
 An empty script directory returns a valid zero-byte `ScriptList`. The list is a snapshot for the lifetime of the transfer so its announced length and CRC remain stable. Directory enumeration order is not defined; clients may sort the returned names for display.
+
+Starting with firmware **3.4.1**, `CvValue` is also used by the CV bulk-value protocol. The normal text command channel is used to open and complete the transaction, while the actual CV value is carried by PX/1.
 
 ---
 
@@ -1852,6 +1855,8 @@ Notes:
 
 CV commands require authorization.
 
+## Legacy text query and set
+
 Query:
 
 ```text
@@ -1869,6 +1874,45 @@ Successful response:
 ```text
 A:CV<n>=<value>
 ```
+
+These legacy forms remain supported. Existing firmware-specific response rules also remain in force; for example, `CV12` does not expose the stored Wi-Fi password through the legacy text query.
+
+## Bulk CV value protocol — firmware 3.4.1+
+
+Firmware 3.4.1 adds an explicit PX/1 path for CV values. The text channel carries the transaction markers and PX/1 resource `CvValue` (`3`) carries the value bytes.
+
+Bulk write:
+
+```text
+CV<n>=*
+A:CV<n>=*          # ready
+<PX CvValue frame, value=<n>, payload=<CV value bytes>>
+A:CV<n>=*          # complete
+```
+
+Bulk query:
+
+```text
+CV<n>?*
+A:CV<n>=*          # ready
+<PX CvValue frame, value=<n>, payload=<current CV value bytes>>
+A:CV<n>=*          # complete
+```
+
+The two identical `A:CV<n>=*` responses are distinguished by transaction state: the first means the firmware is ready for the PX payload/response, and the second means the transaction completed successfully.
+
+A zero-byte PX payload is valid success. In particular, `CV12?*` returns a `CvValue` frame for CV12 with a payload length of `0`, followed by the normal completion marker. The password is not exposed.
+
+`CVABORT` cancels a pending CV bulk-value transaction and is idempotent:
+
+```text
+CVABORT
+A:CVABORT
+```
+
+The firmware also clears pending CV bulk state on timeout or disconnect. Script-transfer state is independent and is not cleared by `CVABORT`.
+
+Clients that support firmware 3.4.1 should keep legacy commands unchanged when the legacy request and response safely fit the text transport. When a CV value cannot be carried safely by the legacy text exchange, the client can use the bulk forms above. A client may translate the transport-level `A:CV<n>=*` completion back into the normal logical `A:CV<n>=<value>` result for higher layers.
 
 Invalid syntax or invalid values return:
 
