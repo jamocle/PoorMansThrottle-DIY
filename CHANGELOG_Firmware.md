@@ -2,7 +2,7 @@
 
 ## Firmware:
 
-### Version 3.4.4
+### Version 3.5.0
 * **Added new Bulk transfer commands** Added Wifi? command.
 * **Added support for DF Player** DF player is supported for simple sound playing.  it is Not supported for full train lifecycle audio.
 * **Fixed crash on some classic ESPs** Some classic ESPs could crash under certain audio loads.
