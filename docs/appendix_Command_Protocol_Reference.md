@@ -65,6 +65,7 @@ Command characteristics:
 | Identity / authorization | Yes | Yes | Yes |
 | Version queries (`V` / `VV`) | Yes | Yes | Yes |
 | PX/1 bulk-transfer capability (`XFER?`) | Yes | Yes | Yes |
+| Wi-Fi scan diagnostic (`WIFI?`) | Yes | Yes | Yes |
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
@@ -267,10 +268,83 @@ Current PX/1 script resources are:
 | `Script` | `1` | Read / Write | Exact bytes of `/scripts/<name>.pmt` |
 | `ScriptList` | `2` | Read only | Snapshot of saved logical script names, UTF-8, one name per line, without `.pmt` |
 | `CvValue` | `3` | Read / Write | UTF-8 CV value bytes. The PX header `value` field identifies the CV number. |
+| `WifiInfo` | `4` | Diagnostic push | Versioned UTF-8 JSON returned by `WIFI?`. Data-frame `value` is the byte offset; Complete-frame `value` is the total JSON byte length. |
 
 An empty script directory returns a valid zero-byte `ScriptList`. The list is a snapshot for the lifetime of the transfer so its announced length and CRC remain stable. Directory enumeration order is not defined; clients may sort the returned names for display.
 
 Starting with firmware **3.4.1**, `CvValue` is also used by the CV bulk-value protocol. The normal text command channel is used to open and complete the transaction, while the actual CV value is carried by PX/1.
+
+---
+
+## Wi-Fi Network Scan Diagnostic
+
+Firmware **3.4.4** adds the shared `WIFI?` command:
+
+```text
+WIFI?
+```
+
+The command scans for nearby Wi-Fi networks and returns a versioned JSON diagnostic payload through PX/1 resource `WifiInfo` (`4`). It does **not** expose the saved Wi-Fi password.
+
+The command is transport-affine:
+
+* when issued over BLE, the `WifiInfo` PX Data and Complete frames return over BLE;
+* when issued over WebSocket, the PX frames return only to the WebSocket client that issued the command;
+* an active transfer is not moved from one transport to another mid-transfer.
+
+The firmware first sends a text acceptance line:
+
+```text
+A:WIFI=*
+```
+
+It then performs the scan. On successful collection, firmware sends one or more `WifiInfo` Data frames followed by a `WifiInfo` Complete frame and then a final:
+
+```text
+A:WIFI=*
+```
+
+For `WifiInfo` Data frames, the PX header `value` is the zero-based byte offset of that frame's payload. For the Complete frame, `value` is the total UTF-8 JSON byte count.
+
+A client may hide the transport-level acceptance/completion lines and expose the assembled result as one logical line:
+
+```text
+A:WIFI={...json...}
+```
+
+### Wi-Fi state behavior
+
+`WIFI?` is intended to work even when normal Wi-Fi/WebSocket service is disabled.
+
+* If Wi-Fi is already running, the scan uses the existing Wi-Fi subsystem and leaves it running.
+* If Wi-Fi is normally off and the firmware memory guard has **not** prohibited Wi-Fi, the command temporarily starts only the Wi-Fi station resources needed for scanning, performs the scan, then shuts those temporary resources back down.
+* The command does not change the persisted `CV10` Wi-Fi-enable setting.
+* If the startup/resource memory guard has prohibited Wi-Fi operation, the command fails instead of overriding that safety decision.
+
+Memory-guard rejection:
+
+```text
+ERR:WIFI=MEMORY
+```
+
+Other diagnostic failures use the `ERR:WIFI=<reason>` form.
+
+### JSON payload
+
+The current version-1 payload contains:
+
+* `version`
+* `elapsedMs`
+* `scanPasses`
+* `timedOut`
+* `configured` — enabled state, saved SSID, and SSID hex representation
+* `station` — connection status/code, IP, RSSI, and channel
+* `configuredNetwork` — whether the configured SSID was found, match count, strongest RSSI, channel, and authentication
+* `scan` — success/error, count, dropped observations, and the discovered-network list
+
+Each discovered network includes its SSID, SSID hex representation, BSSID, strongest RSSI, channel, authentication type/code, hidden flag, and observation count. Multiple BSSIDs may legitimately advertise the same SSID.
+
+The application may present a simplified SSID picker by hiding blank/hidden entries and combining duplicate visible SSIDs while retaining the strongest observation for display.
 
 ---
 
@@ -1990,6 +2064,7 @@ Notes:
 * A third simultaneous socket client is rejected.
 * A backup socket can use `IB,<token>`.
 * WebSocket text payloads are processed through the same command handler as BLE.
+* `WIFI?` is transport-affine: its `WifiInfo` PX response is returned to the same BLE transport or initiating WebSocket client that issued the command.
 * When Wi-Fi connects, firmware can emit an unsolicited `IP:<address>` line.
 * `CV13` configures the WebSocket port; detailed Wi-Fi/CV behavior is in `appendix_Configuration_Variables.md`.
 
@@ -2041,6 +2116,7 @@ Runtime override:
 | `V` | Shared | Firmware semantic version |
 | `VV` | Shared | Full firmware build identifier |
 | `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
+| `WIFI?` | Shared | Scan nearby Wi-Fi networks and return versioned JSON using PX `WifiInfo` resource `4` |
 | `C?` | Shared | Connection status |
 | `IP?` | Shared | IP address query |
 | `T?` | Shared | Current adjusted firmware time query |

@@ -2,6 +2,12 @@
 
 ## Smartphone App:
 
+### Version 4.1.18
+* **Enhanced Output Control Reconciliation**  Enhanced reconciliation of controls for to help older iOS devices show updated data.
+* **Wifi SSID Chooser** The app now will allow you to choose your Wifi SSID from a list.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+
 ### Version 4.1.10
 * **Fixed WIFI password saving for some Android users** Some Androidn users were unable to save passwords.
 

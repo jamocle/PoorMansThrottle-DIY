@@ -2,6 +2,12 @@
 
 ## Firmware:
 
+### Version 3.4.4
+* **Added new Bulk transfer commands** Added Wifi? command.
+* **Added support for DF Player** DF player is supported for simple sound playing.  it is Not supported for full train lifecycle audio.
+* **Fixed crash on some classic ESPs** Some classic ESPs could crash under certain audio loads.
+* **Made audio more stable sounding on Classic ESP's** Some Classic ESP's had audible glitches when not exhausting the 3 voice limit.
+
 ### Version 3.4.1
 * **Extended PMT data protocol to handle long data** Now the firmware supports long data transfer RX/TX beyond 20 bytes.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

@@ -860,6 +860,26 @@ CV12=MyPassword
 CV13=81
 ```
 
+## Scan for Nearby Wi-Fi Networks
+
+On firmware **3.4.4+**, use:
+
+```text
+WIFI?
+```
+
+`WIFI?` returns a versioned Wi-Fi scan result using PX resource `WifiInfo` (`4`). The scan can be requested even when `CV10=0`: if the Wi-Fi radio is otherwise allowed to run, firmware temporarily starts the minimum station resources required for scanning and shuts them down again afterward. The command does **not** change `CV10`.
+
+If the firmware startup/resource memory guard has prohibited Wi-Fi operation, `WIFI?` returns:
+
+```text
+ERR:WIFI=MEMORY
+```
+
+The saved password in `CV12` is never included in the diagnostic payload.
+
+Current PMT app builds can use this command from the Wi-Fi configuration UI to show nearby visible SSIDs. Choosing an SSID updates the normal SSID field and writes it through the existing `CV11` configuration path; cancelling the picker leaves the existing SSID unchanged.
+
 ## Query Device IP Address
 
 ```text

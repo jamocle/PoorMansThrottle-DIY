@@ -459,6 +459,34 @@
           platform.
         </p>
 
+
+        <h2 style="margin-top:28px;">Finding a Wi-Fi network from the PMT app</h2>
+        <p>
+          Current PMT firmware can scan for nearby Wi-Fi networks with the <code>WIFI?</code> diagnostic command.
+          In app builds that include the Wi-Fi picker, use the small scan control next to the SSID field. The app shows
+          a progress indicator while the scan is running, then presents the visible networks with signal and security
+          information so you can select one.
+        </p>
+        <p>
+          Selecting a network fills the normal SSID field and saves that SSID through the existing configuration path.
+          Cancelling the picker leaves the current SSID unchanged. The scan does not reveal or return the saved Wi-Fi
+          password.
+        </p>
+        <div class="callout">
+          Wi-Fi does not have to be enabled for normal PMT network control just to scan. When allowed by the firmware's
+          memory/resource guard, PMT can temporarily start the minimum Wi-Fi resources needed for the scan and shut them
+          back down afterward. If the memory guard has disabled Wi-Fi for safety, the scan is rejected rather than
+          overriding that protection.
+        </div>
+
+        <h2 style="margin-top:28px;">Using the scan for troubleshooting</h2>
+        <p>
+          A scan can help distinguish a discovery problem from a connection problem. If the saved SSID appears with a
+          good signal but PMT still does not join the network, focus on credentials, authentication compatibility, and
+          association/network settings. Seeing the same SSID more than once is normal on mesh or multi-access-point
+          networks because each access point has its own BSSID.
+        </p>
+
         <h2 style="margin-top:28px;">Flexible installation options</h2>
         <div class="grid">
           <div class="card">

@@ -178,6 +178,19 @@ When enabled and configured, the ESP32 can join a Wi-Fi network and accept WebSo
 
 This allows the app to support better connection behavior for configured devices, especially when a known device can be reached over the network.
 
+### Transport-Affine Bulk Diagnostics
+
+The `WIFI?` network-scan diagnostic uses the shared command parser but returns its larger result through the PX/1 binary data plane as `WifiInfo` resource `4`.
+
+The transfer remains bound to the transport that started it:
+
+* BLE command → BLE PX response
+* WebSocket command → PX binary response to that same WebSocket client
+
+The firmware does not migrate an in-progress diagnostic transfer between transports.
+
+The scan service is separate from normal Wi-Fi/WebSocket service enablement. If normal Wi-Fi is off but the resource memory guard allows Wi-Fi, a BLE-originated `WIFI?` can temporarily initialize the minimum station/radio resources needed to scan and then shut them back down. If Wi-Fi is already running, including when the command arrives over WebSocket, the existing Wi-Fi subsystem remains running.
+
 ## Connection Resilience
 
 The firmware and app both contribute to connection resilience.

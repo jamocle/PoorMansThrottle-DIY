@@ -255,6 +255,30 @@ Current firmware supports Wi-Fi / WebSocket as a **secondary, backup, or failove
 | Known-device information | If using a saved device/IP, confirm the saved network address is still valid |
 | WebSocket diagnostics | Enable or review app WebSocket logs if the app provides them |
 
+### Use `WIFI?` to Separate Discovery Problems from Association Problems
+
+Firmware **3.4.4+** can scan nearby networks with:
+
+```text
+WIFI?
+```
+
+A successful result reports whether the configured SSID was seen, the strongest RSSI/channel/authentication match, and the discovered-network list.
+
+This is useful even when normal Wi-Fi service is disabled with `CV10=0`: firmware can temporarily start scan-only Wi-Fi resources, then return them to the off state. It does not change the saved Wi-Fi-enable setting.
+
+Interpretation:
+
+| Result | Meaning / Action |
+|---|---|
+| Configured SSID is found with a reasonable RSSI | The radio can see the network. Focus next on password, authentication compatibility, association state, or network configuration rather than RF discovery. |
+| Configured SSID is not found | Check spelling/case, access-point availability, distance, channel/environment, and whether the intended network is hidden. |
+| Multiple entries have the same SSID | Normal on multi-AP/mesh networks; each BSSID is a separate radio/AP observation. |
+| `ERR:WIFI=MEMORY` | Firmware's startup/resource memory guard prohibited Wi-Fi. Do not treat this as an SSID-not-found result. |
+| Other `ERR:WIFI=...` | The diagnostic itself failed; use the returned reason and firmware logs for the next check. |
+
+The diagnostic never reports the saved Wi-Fi password.
+
 ### Tip
 
 If BLE works but WebSocket does not, the motor side may be fine and the issue may be only Wi-Fi configuration.
