@@ -1384,6 +1384,71 @@ function showDocumentationNotFound(fileName) {
     }
 }
 
+
+function createDocumentationHeadingSlug(value) {
+    return value
+        .trim()
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}\p{M}\s_-]/gu, "")
+        .replace(/\s/g, "-");
+}
+
+function addDocumentationHeadingAnchors(root) {
+    const usedIds = new Set();
+
+    for (const heading of root.querySelectorAll("h1, h2, h3, h4, h5, h6")) {
+        if (heading.id) {
+            usedIds.add(heading.id);
+            continue;
+        }
+
+        const baseId = createDocumentationHeadingSlug(heading.textContent || "");
+        if (!baseId) {
+            continue;
+        }
+
+        let headingId = baseId;
+        let duplicateIndex = 0;
+
+        while (usedIds.has(headingId)) {
+            duplicateIndex += 1;
+            headingId = baseId + "-" + duplicateIndex;
+        }
+
+        heading.id = headingId;
+        usedIds.add(headingId);
+    }
+}
+
+function enableDocumentationFragmentLinks(root, scrollContainer) {
+    for (const link of root.querySelectorAll('a[href^="#"]')) {
+        link.addEventListener("click", (event) => {
+            const href = link.getAttribute("href");
+            if (!href || href === "#") {
+                return;
+            }
+
+            let fragment = href.slice(1);
+            try {
+                fragment = decodeURIComponent(fragment);
+            } catch {
+                // Use the raw fragment when it is not valid percent-encoding.
+            }
+
+            const destination = document.getElementById(fragment);
+            if (!destination || !scrollContainer.contains(destination)) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const containerTop = scrollContainer.getBoundingClientRect().top;
+            const destinationTop = destination.getBoundingClientRect().top;
+            scrollContainer.scrollTop += destinationTop - containerTop;
+        });
+    }
+}
+
 async function loadDocumentationFile(file, updateHistory = true) {
     const dialog = document.getElementById("documentationDialog");
     const title = document.getElementById("documentationDialogTitle");
@@ -1449,6 +1514,9 @@ async function loadDocumentationFile(file, updateHistory = true) {
         const template = document.createElement("template");
         template.innerHTML = renderedHtml;
         const absoluteMarkdownUrl = new URL(markdownUrl, window.location.href);
+
+        addDocumentationHeadingAnchors(template.content);
+        enableDocumentationFragmentLinks(template.content, target);
 
         for (const image of template.content.querySelectorAll("img[src]")) {
             const source = image.getAttribute("src");
