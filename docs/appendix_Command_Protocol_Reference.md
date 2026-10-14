@@ -2231,3 +2231,77 @@ Major documentation changes:
 * Added the firmware 3.3 shared SD-backed script recording/playback/status/delete command family, including trailing recording timing, `.pmt` validation, device-specific recordable controls, and playback command gating.
 * Added the approved, implementation-pending `ST<set-id>.<field-id>` sound `.set` protocol design, including hexadecimal target IDs, future-proof field IDs, immediate in-memory application, SD persistence, Classic/S3 initialization semantics, custom-WAV handling, grouped-vs-custom precedence, and BLE MTU constraints.
 * Reduced duplicated CV catalogs and retained only CV references that directly clarify command behavior.
+
+
+---
+
+# Appendix — Complete Command Index
+
+Commands are listed alphabetically. When a command has different meanings on different device firmware, those meanings appear separately. This index covers commands documented in this reference; response and telemetry lines are not commands.
+
+| Command | Description | Section where to get more information |
+| --- | --- | --- |
+| `?` | Read actual throttle hardware state and output. | [Hardware State Query](#hardware-state-query) |
+| `??` | Read stored/logical throttle state. | [Stored State Query](#stored-state-query) |
+| `A0` | Disable asynchronous state notifications. | [Async State Notify Control](#async-state-notify-control) |
+| `A1` | Enable asynchronous state notifications. | [Async State Notify Control](#async-state-notify-control) |
+| `A?` | Analyze the default audio track manifest. | [Analyze the default audio manifest](#analyze-the-default-audio-manifest) |
+| `A? N=<tracks>` | Analyze specified audio tracks. | [Analyze an explicit track list](#analyze-an-explicit-track-list) |
+| `AM` / `AudioMark` | Insert a manual audio diagnostic marker. | [Audio Diagnostic Marker](#audio-diagnostic-marker) |
+| `B` | Apply normal brake stop (Throttle). | [Stop and Brake](#stop-and-brake) |
+| `B0` | Release variable braking (Throttle). | [Stop and Brake](#stop-and-brake) |
+| `B<n>` | Apply variable feather brake, 1–100 (Throttle). | [Stop and Brake](#stop-and-brake) |
+| `C?` | Query BLE, WebSocket, and Wi-Fi connection status. | [Connection Status](#connection-status) |
+| `CV<n>=*` | Bulk-write a CV value through PX/1. | [Bulk CV value protocol — firmware 3.4.1+](#bulk-cv-value-protocol--firmware-341) |
+| `CV<n>=<value>` | Set a CV using the text protocol. | [Legacy text query and set](#legacy-text-query-and-set) |
+| `CV<n>?` | Query a CV using the text protocol. | [Legacy text query and set](#legacy-text-query-and-set) |
+| `CV<n>?*` | Bulk-query a CV value through PX/1. | [Bulk CV value protocol — firmware 3.4.1+](#bulk-cv-value-protocol--firmware-341) |
+| `CVABORT` | Cancel a pending CV bulk-value transaction. | [Bulk CV value protocol — firmware 3.4.1+](#bulk-cv-value-protocol--firmware-341) |
+| `D0` | Disable debug and SD logging and clear saved overrides. | [Disable debug/logging](#disable-debuglogging) |
+| `D1` | Enable debug and persist startup override. | [Persistent debug enable](#persistent-debug-enable) |
+| `D2` | Enable debug and request SD logging. | [Debug with SD logging request](#debug-with-sd-logging-request) |
+| `F<n>` (Throttle) | Ramp forward locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
+| `F<n>` (Turbine) | Ramp turbine output, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
+| `F<n>*` | Set turbine output immediately, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
+| `F?` | Query requested turbine output. | [Turbine Output Query](#turbine-output-query) |
+| `FL0` | Disable Force Lights (Throttle). | [Force Lights](#force-lights) |
+| `FL1` | Enable stopped-locomotive Force Lights PWM (Throttle). | [Force Lights](#force-lights) |
+| `FQ100` (Turbine) | Run turbine quick-output pulse. | [Turbine Quick Output](#turbine-quick-output) |
+| `FQ<n>` | Quick-ramp forward throttle, 0–100. | [Motion Commands](#motion-commands) |
+| `FX<n>=0` / `FX<n>=1` | Turn throttle function output 1–12 off/on. | [Function Output Commands](#function-output-commands) |
+| `G0` | Disable runtime grace shutdown. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
+| `G1` | Enable runtime grace shutdown. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
+| `I` | Request device identity. | [Request Device Identity](#request-device-identity) |
+| `I,<token>` | Authorize a primary control connection. | [Send Connection Token](#send-connection-token) |
+| `I?` | Verify authorization state. | [Verify Authorization State](#verify-authorization-state) |
+| `IB,<token>` | Authorize a backup WebSocket connection. | [Send Connection Token](#send-connection-token) |
+| `IP?` | Query the device IP address. | [IP Address Query](#ip-address-query) |
+| `OTA` | Start supported ESP32-S3 Throttle firmware update. | [Start OTA](#start-ota) |
+| `OTA?` | Query supported ESP32-S3 Throttle OTA readiness. | [Query OTA capability](#query-ota-capability) |
+| `P0` | Report periodic throttle debug mismatches only. | [Periodic Debug Logging](#periodic-debug-logging) |
+| `P1` | Report throttle debug state every period. | [Periodic Debug Logging](#periodic-debug-logging) |
+| `PS0` | Exit persist-only CV staging. | [Leave persist-only staging](#leave-persist-only-staging) |
+| `PS1` | Enable persist-only CV staging. | [Enable persist-only staging](#enable-persist-only-staging) |
+| `PS?` | Query persist-only CV staging mode. | [Query staging mode](#query-staging-mode) |
+| `R<n>` | Ramp reverse locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
+| `RQ<n>` | Quick-ramp reverse locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
+| `S` | Quick-stop locomotive throttle. | [Stop and Brake](#stop-and-brake) |
+| `SA=+<ms>` / `SA=-<ms>` | Adjust pause time of the actively playing script. | [Adjust Script Timing](#adjust-script-timing) |
+| `SA=<name>,+<ms>` / `SA=<name>,-<ms>` | Adjust total pause time of a named saved script. | [Adjust Script Timing](#adjust-script-timing) |
+| `SD=<name>` | Delete a saved firmware script. | [Delete a Saved Script](#delete-a-saved-script) |
+| `SP0` | Stop script playback. | [Stop Playback](#stop-playback) |
+| `SP1=<name>` | Play a saved script once. | [Play Once](#play-once) |
+| `SPR=<name>` | Repeat a saved script. | [Repeat Playback](#repeat-playback) |
+| `SR` | Start script recording. | [Start Recording](#start-recording) |
+| `SR0` | Stop script recording and await save/discard. | [Stop Recording and Wait for a Name](#stop-recording-and-wait-for-a-name) |
+| `SR=<name>` | Save a recorded script under a name. | [Save the Recording](#save-the-recording) |
+| `SRX` | Discard a pending unsaved recording. | [Discard a Pending Recording](#discard-a-pending-recording) |
+| `SS?` | Query script recording/playback status. | [Script Status](#script-status) |
+| `ST<set-id>.<field-id>=<value>` | Write and persist a sound `.set` field. | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
+| `ST<set-id>.<field-id>?` | Read a sound `.set` field. | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
+| `T=<unix-time>` | Set firmware time from a Unix UTC timestamp. | [Manual Time Set](#manual-time-set) |
+| `T?` | Query CV14-adjusted firmware clock. | [Current Time Query](#current-time-query) |
+| `V` | Query semantic firmware version. | [Firmware Version](#firmware-version) |
+| `VV` | Query full firmware build identifier. | [Firmware Version](#firmware-version) |
+| `WIFI?` | Scan nearby Wi-Fi networks using PX/1. | [Wi-Fi Network Scan Diagnostic](#wi-fi-network-scan-diagnostic) |
+| `XFER?` | Query PX/1 binary bulk-transfer support. | [PX/1 Bulk-Transfer Capability](#px1-bulk-transfer-capability) |

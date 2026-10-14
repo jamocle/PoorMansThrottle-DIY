@@ -972,3 +972,158 @@ Use this after major hardware changes, incorrect pin assignments, or when you ne
 * For INA219 battery protection, start with warning only before enabling limit or shutdown behavior.
 * For scheduled operation, verify time first using `T?` and avoid schedules that cross midnight.
 * For function outputs, use appropriate external components for the load being controlled.
+
+---
+
+# Appendix — Complete CV Index
+
+All documented configuration variables, in numeric order. Where a CV has different meanings for different firmware types, both meanings are shown. Reserved, unimplemented CV slots are not included.
+
+| CV | Description | Section where to get more information |
+| --- | --- | --- |
+| CV1 | Motor Driver Mode | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV2 | Throttle: Forward Minimum Start / Floor; Turbine: Minimum Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV3 | Throttle: Maximum Output / Ceiling; Turbine: Full Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV4 | Device / Component Name | [Shared CVs](#shared-cvs) |
+| CV5 | Throttle: Direction Inversion; Turbine: Quick Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV6 | Async Notify, Steady | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV7 | Async Notify, Changing | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV8 | Factory Reset Trigger | [Resetting Configuration](#resetting-configuration) |
+| CV9 | Throttle: Kick Configuration; Turbine: Ramp to Full Output Time | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV10 | Wi-Fi Enable | [Wi-Fi and WebSocket Control](#wi-fi-and-websocket-control) |
+| CV11 | Wi-Fi SSID | [Wi-Fi and WebSocket Control](#wi-fi-and-websocket-control) |
+| CV12 | Wi-Fi Password | [Wi-Fi and WebSocket Control](#wi-fi-and-websocket-control) |
+| CV13 | WebSocket Port | [Wi-Fi and WebSocket Control](#wi-fi-and-websocket-control) |
+| CV14 | UTC Offset | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV15 | OTA Allow Downgrade | [Shared CVs](#shared-cvs) |
+| CV20 | LED Blink Timing | [Function Pattern CVs](#function-pattern-cvs) |
+| CV21 | Onboard LED Output Gate | [Shared CVs](#shared-cvs) |
+| CV30 | INA219 Enable | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV31 | INA219 SDA Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV32 | INA219 SCL Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV33 | INA219 I²C Address | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV34 | INA219 Sample Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV35 | INA219 Publish Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV36 | Low-Voltage Warn Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV37 | Low-Voltage Limit Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV38 | Low-Voltage Shutdown Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV39 | Recovery Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV40 | Disconnect Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV41 | Throttle: Low-Voltage Throttle Cap; Turbine: Low-Voltage Output Cap | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV42 | Low-Voltage LED Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) |
+| CV43 | Locomotive Background Audio | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV44 | Force Lights PWM | [CV44 — Force Lights PWM](#cv44--force-lights-pwm) |
+| CV45 | Automatic Horn/Bell Sounds | [CV45 — Automatic Horn/Bell Sounds](#cv45--automatic-hornbell-sounds) |
+| CV46 | Reverse Minimum Start Override | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV47 | Feather Brake Mode | [CV47 — Feather Brake Mode](#cv47--feather-brake-mode) |
+| CV48 | Quick-Stop Full-Scale Time | [CV48 — Quick-Stop Full-Scale Time](#cv48--quick-stop-full-scale-time) |
+| CV49 | Control-Loss Grace Time | [CV49 — Control-Loss Grace Time](#cv49--control-loss-grace-time) |
+| CV90 | Motor PWM Frequency Curve | [CV90 — Motor PWM Frequency Curve](#cv90--motor-pwm-frequency-curve) |
+| CV98 | Steam Chuff-Rate Curve, Low-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV99 | Steam Chuff-Rate Curve, High-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV100 | Throttle: Dual PWM Forward Pin; Turbine: ESC PWM Pin | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) |
+| CV101 | Dual PWM Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV102 | Dual PWM Enable A | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV103 | Dual PWM Enable B | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV104 | Two-Pin A | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV105 | Two-Pin B | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV106 | PWM_BIDIR PWM / Enable Pin | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV107 | PWM_BIDIR Forward Pin | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV108 | PWM_BIDIR Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) |
+| CV150 | FX1 Name | [Function Name CVs](#function-name-cvs) |
+| CV151 | FX1 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV152 | FX1 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV153 | FX1 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV154 | FX1 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV157 | FX2 Name | [Function Name CVs](#function-name-cvs) |
+| CV158 | FX2 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV159 | FX2 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV160 | FX2 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV161 | FX2 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV164 | FX3 Name | [Function Name CVs](#function-name-cvs) |
+| CV165 | FX3 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV166 | FX3 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV167 | FX3 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV168 | FX3 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV171 | FX4 Name | [Function Name CVs](#function-name-cvs) |
+| CV172 | FX4 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV173 | FX4 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV174 | FX4 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV175 | FX4 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV178 | FX5 Name | [Function Name CVs](#function-name-cvs) |
+| CV179 | FX5 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV180 | FX5 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV181 | FX5 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV182 | FX5 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV185 | FX6 Name | [Function Name CVs](#function-name-cvs) |
+| CV186 | FX6 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV187 | FX6 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV188 | FX6 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV189 | FX6 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV192 | FX7 Name | [Function Name CVs](#function-name-cvs) |
+| CV193 | FX7 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV194 | FX7 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV195 | FX7 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV196 | FX7 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV199 | FX8 Name | [Function Name CVs](#function-name-cvs) |
+| CV200 | FX8 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV201 | FX8 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV202 | FX8 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV203 | FX8 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV206 | FX9 Name | [Function Name CVs](#function-name-cvs) |
+| CV207 | FX9 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV208 | FX9 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV209 | FX9 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV210 | FX9 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV213 | FX10 Name | [Function Name CVs](#function-name-cvs) |
+| CV214 | FX10 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV215 | FX10 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV216 | FX10 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV217 | FX10 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV220 | FX11 Name | [Function Name CVs](#function-name-cvs) |
+| CV221 | FX11 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV222 | FX11 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV223 | FX11 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV224 | FX11 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV227 | FX12 Name | [Function Name CVs](#function-name-cvs) |
+| CV228 | FX12 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) |
+| CV229 | FX12 Pattern | [Function Pattern CVs](#function-pattern-cvs) |
+| CV230 | FX12 Direction | [Function Direction CVs](#function-direction-cvs) |
+| CV231 | FX12 AppFlags | [AppFlags CVs](#appflags-cvs) |
+| CV300 | Schedule Enable | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV301 | Schedule Weekday Bitmask | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV302 | Schedule ON Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV303 | Schedule OFF Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV304 | Schedule ON Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV305 | Schedule OFF Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) |
+| CV400 | Audio Enable | [Shared Audio CVs](#shared-audio-cvs) |
+| CV401 | PMTPlayer Sound Mode | [Shared Audio CVs](#shared-audio-cvs) |
+| CV402 | Master Volume | [Shared Audio CVs](#shared-audio-cvs) |
+| CV403 | SD Chip Select (CS) | [Shared Audio CVs](#shared-audio-cvs) |
+| CV404 | SD SCK | [Shared Audio CVs](#shared-audio-cvs) |
+| CV405 | SD MISO | [Shared Audio CVs](#shared-audio-cvs) |
+| CV406 | SD MOSI | [Shared Audio CVs](#shared-audio-cvs) |
+| CV407 | I2S BCLK | [Shared Audio CVs](#shared-audio-cvs) |
+| CV408 | I2S LRCLK / WS | [Shared Audio CVs](#shared-audio-cvs) |
+| CV409 | I2S DIN | [Shared Audio CVs](#shared-audio-cvs) |
+| CV410 | Default Audio Priority | [Shared Audio CVs](#shared-audio-cvs) |
+| CV411 | Conflict Policy | [Shared Audio CVs](#shared-audio-cvs) |
+| CV412 | Startup Delay | [Shared Audio CVs](#shared-audio-cvs) |
+| CV413 | Shutdown Delay | [Shared Audio CVs](#shared-audio-cvs) |
+| CV414 | Amplifier Enable Pin | [Shared Audio CVs](#shared-audio-cvs) |
+| CV415 | Amplifier Mute Pin | [Shared Audio CVs](#shared-audio-cvs) |
+| CV416 | Amplifier Standby Pin | [Shared Audio CVs](#shared-audio-cvs) |
+| CV417 | Fault Input Pin | [Shared Audio CVs](#shared-audio-cvs) |
+| CV418 | PMTPlayer Profile | [Shared Audio CVs](#shared-audio-cvs) |
+| CV419 | WAV Gain | [Shared Audio CVs](#shared-audio-cvs) |
+| CV420 | Output Headroom | [Shared Audio CVs](#shared-audio-cvs) |
+| CV421 | Limiter / Loudness Mode | [Shared Audio CVs](#shared-audio-cvs) |
+| CV422 | Speaker Size Profile | [Shared Audio CVs](#shared-audio-cvs) |
+| CV423 | Maximum Active Voices | [Shared Audio CVs](#shared-audio-cvs) |
+| CV424 | Overlap Mode | [Shared Audio CVs](#shared-audio-cvs) |
+| CV425 | Async Overlap Start | [Shared Audio CVs](#shared-audio-cvs) |
+| CV426 | Start Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) |
+| CV427 | Overlap Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) |
+| CV428 | Mixer Attenuation | [Shared Audio CVs](#shared-audio-cvs) |
+| CV429 | Clip Telemetry | [Shared Audio CVs](#shared-audio-cvs) |
+| CV430 | PMTPlayer Learned Attenuation Enable | [Shared Audio CVs](#shared-audio-cvs) |
