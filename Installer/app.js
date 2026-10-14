@@ -1420,33 +1420,56 @@ function addDocumentationHeadingAnchors(root) {
     }
 }
 
-function enableDocumentationFragmentLinks(root, scrollContainer) {
-    for (const link of root.querySelectorAll('a[href^="#"]')) {
-        link.addEventListener("click", (event) => {
-            const href = link.getAttribute("href");
-            if (!href || href === "#") {
-                return;
-            }
-
-            let fragment = href.slice(1);
-            try {
-                fragment = decodeURIComponent(fragment);
-            } catch {
-                // Use the raw fragment when it is not valid percent-encoding.
-            }
-
-            const destination = document.getElementById(fragment);
-            if (!destination || !scrollContainer.contains(destination)) {
-                return;
-            }
-
-            event.preventDefault();
-
-            const containerTop = scrollContainer.getBoundingClientRect().top;
-            const destinationTop = destination.getBoundingClientRect().top;
-            scrollContainer.scrollTop += destinationTop - containerTop;
-        });
+function getDocumentationFragmentDestination(root, fragment) {
+    for (const element of root.querySelectorAll("[id]")) {
+        if (element.id === fragment) {
+            return element;
+        }
     }
+
+    return null;
+}
+
+function handleDocumentationFragmentClick(event, root) {
+    if (!(event.target instanceof Element)) {
+        return;
+    }
+
+    const link = event.target.closest('a[href^="#"]');
+    if (!link || !root.contains(link)) {
+        return;
+    }
+
+    const href = link.getAttribute("href");
+    if (!href) {
+        return;
+    }
+
+    // Documentation fragments belong to the modal viewer, not to home.html.
+    // Always suppress the browser's native hash navigation so the underlying
+    // page's section/hash synchronization cannot run.
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (href === "#") {
+        return;
+    }
+
+    let fragment = href.slice(1);
+    try {
+        fragment = decodeURIComponent(fragment);
+    } catch {
+        // Use the raw fragment when it is not valid percent-encoding.
+    }
+
+    const destination = getDocumentationFragmentDestination(root, fragment);
+    if (!destination) {
+        return;
+    }
+
+    const containerTop = root.getBoundingClientRect().top;
+    const destinationTop = destination.getBoundingClientRect().top;
+    root.scrollTop += destinationTop - containerTop;
 }
 
 async function loadDocumentationFile(file, updateHistory = true) {
@@ -1516,7 +1539,6 @@ async function loadDocumentationFile(file, updateHistory = true) {
         const absoluteMarkdownUrl = new URL(markdownUrl, window.location.href);
 
         addDocumentationHeadingAnchors(template.content);
-        enableDocumentationFragmentLinks(template.content, target);
 
         for (const image of template.content.querySelectorAll("img[src]")) {
             const source = image.getAttribute("src");
@@ -1692,10 +1714,19 @@ function initializeDocumentation() {
     const section = document.getElementById("documentationSection");
     const dialog = document.getElementById("documentationDialog");
     const closeButton = document.getElementById("closeDocumentationButton");
+    const content = document.getElementById("documentationContent");
 
-    if (!section || !dialog || !closeButton) {
+    if (!section || !dialog || !closeButton || !content) {
         return;
     }
+
+    content.addEventListener(
+        "click",
+        (event) => {
+            handleDocumentationFragmentClick(event, content);
+        },
+        true
+    );
 
     const closeWithoutHistoryChange = () => {
         if (!dialog.open) {
