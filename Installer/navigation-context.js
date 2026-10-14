@@ -31,6 +31,11 @@
     return path.endsWith(".html") || (path.endsWith("/home.html") && url.searchParams.has("doc"));
   }
 
+  function isSameDocumentFragmentLink(link) {
+    const href = link.getAttribute("href");
+    return typeof href === "string" && href.startsWith("#");
+  }
+
   function pageLabel() {
     const heading = document.querySelector("h1");
     const text = heading?.textContent?.trim();
@@ -51,7 +56,11 @@
 
   function clearReturnContextFromInternalLinks() {
     for (const link of document.querySelectorAll("a[href]")) {
-      if (link.hasAttribute("download") || link.classList.contains("pmt-return-link")) {
+      if (
+        link.hasAttribute("download") ||
+        link.classList.contains("pmt-return-link") ||
+        isSameDocumentFragmentLink(link)
+      ) {
         continue;
       }
 
@@ -80,7 +89,8 @@
     for (const link of document.querySelectorAll("a[href]")) {
       if (link.hasAttribute("download") ||
           link.classList.contains("pmt-return-link") ||
-          link.closest(".pmt-return-nav")) {
+          link.closest(".pmt-return-nav") ||
+          isSameDocumentFragmentLink(link)) {
         continue;
       }
 
@@ -249,7 +259,8 @@
   function decorateLink(link) {
     if (!(link instanceof HTMLAnchorElement) ||
         link.hasAttribute("download") ||
-        link.classList.contains("pmt-return-link")) {
+        link.classList.contains("pmt-return-link") ||
+        isSameDocumentFragmentLink(link)) {
       return;
     }
 
