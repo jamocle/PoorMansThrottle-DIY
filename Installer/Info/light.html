@@ -346,7 +346,7 @@
       <p class="subhead">
         The app supports up to <strong>12 FX outputs</strong> for auxiliary control and lighting. Each output can be named,
         given a behavior pattern and direction rule, and configured with pattern-specific data such as an ESP32 GPIO pin,
-        a PMTPlayer track number, or a firmware ON/OFF command pair.
+        a PMTPlayer track number, a firmware ON/OFF command pair, an App Orchestrated command, a Firmware Orchestrated Command, or an app-side Relay Command that targets another PMT device.
       </p>
     </section>
 
@@ -377,8 +377,8 @@
             <h3>Each output is individually defined</h3>
             <p>
               Every output can have its own name, pattern-specific data, pattern, direction setting, linked relationship, and
-              interaction style. Physical patterns use a GPIO, custom audio patterns use a track number, and FW Command uses
-              an ON/OFF firmware command pair.
+              interaction style. Physical patterns use a GPIO, custom audio patterns use a track number, FW Command uses an
+              ON/OFF firmware command pair, and Relay Command stores a remote ON/OFF command pair for a selected PMT device.
             </p>
           </div>
 
@@ -472,6 +472,21 @@
               <strong>&lt;command on&gt;,&lt;command off&gt;</strong>. Turning the FX on runs the first command; turning it off
               runs the second through the normal firmware command parser. The pair must contain exactly one comma and both
               commands must be non-empty. Existing BOTH, FWD, and REV direction rules still apply.
+            </p>
+          </div>
+
+          <div class="card">
+            <span class="label">RELAY COMMAND · App-owned</span>
+            <h3>Run a command on another PMT device</h3>
+            <p>
+              Relay Command is stored with the app's command-function definitions rather than as a new firmware FX pattern.
+              The Device picker lists known devices for which the app has a persisted ESP-NOW ID. The user enters the remote
+              ON and OFF PMT commands, and the app stores the complete relay pair as
+              <strong>RY=&lt;id&gt;&lt;command on&gt;,RY=&lt;id&gt;&lt;command off&gt;</strong>.
+            </p>
+            <p>
+              When editing an existing Relay Command, the app matches the stored 10-character ID back to the known device name.
+              If that ID is no longer known, the editor shows the raw ID so the saved relay command remains usable and is not discarded.
             </p>
           </div>
         </div>

@@ -54,6 +54,32 @@ Shared Command Handling
 Device Output
 ```
 
+## ESP-NOW Device-to-Device Relay Architecture
+
+ESP-NOW adds a direct PMT-device-to-PMT-device command path. It uses the ESP32 Wi-Fi radio but does not require the devices to join a Wi-Fi router.
+
+```text
+PMT App
+   │
+   │ BLE or WebSocket
+   ▼
+PMT Device A
+   │
+   │ RY=<target-mac><PMT command>
+   │ ESP-NOW
+   ▼
+PMT Device B
+   │
+   ▼
+Normal PMT Command Handling
+```
+
+`MAC?` returns the device's compact 10-character Base36 ESP-NOW routing address. The app can persist that address for known devices and use it when configuring a Relay Command.
+
+The remote payload remains an ordinary PMT command. For example, `RY=0FSHTJPG90FX3=1` asks Device A to send `FX3=1` to the PMT device at compact address `0FSHTJPG90`.
+
+ESP-NOW is controlled by `CV16`. Normal infrastructure Wi-Fi/WebSocket remains controlled by `CV10`; the two can coexist where the hardware/resource policy allows it.
+
 ## ESP32-S3 OTA Firmware Architecture
 
 Supported ESP32-S3 N16R8 and N8R8 throttle builds add a separate HTTPS OTA path. OTA uses Wi-Fi for firmware retrieval; it is not a WebSocket control operation even when the app initiated the request over BLE or WebSocket.
@@ -190,6 +216,14 @@ The transfer remains bound to the transport that started it:
 The firmware does not migrate an in-progress diagnostic transfer between transports.
 
 The scan service is separate from normal Wi-Fi/WebSocket service enablement. If normal Wi-Fi is off but the resource memory guard allows Wi-Fi, a BLE-originated `WIFI?` can temporarily initialize the minimum station/radio resources needed to scan and then shut them back down. If Wi-Fi is already running, including when the command arrives over WebSocket, the existing Wi-Fi subsystem remains running.
+
+## ESP-NOW Relay Path
+
+ESP-NOW is a relay path between PMT devices rather than an app session transport. A local device receives an `RY=` command over its normal app-facing transport, transmits the embedded PMT command to the specified compact ESP-NOW address, and the remote device processes that embedded payload through its normal command path.
+
+A sender-side `ACK:RY=...` indicates successful ESP-NOW transmission. It does not represent a second application-level acknowledgement from the remote command.
+
+On low-resource Classic ESP32 hardware, the PMTPlayer memory guard prevents PMTPlayer from running at the same time as protected Wi-Fi/ESP-NOW radio features. DFPlayer is exempt from this specific guard.
 
 ## Connection Resilience
 
@@ -493,6 +527,8 @@ Current pattern values are:
 | `200` | Firmware command |
 
 Values `1..99` are reserved for physical/LED patterns, `100..199` for audio patterns, and `200..299` for firmware-command patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted, but CV queries report numeric values.
+
+The app also supports an app-owned **Relay Command** function type. It is persisted alongside App Command definitions rather than as a new firmware FX pattern. The editor selects a known target device by its persisted ESP-NOW MAC and stores the complete relay command pair (`RY=<mac><command on>,RY=<mac><command off>`). When an existing relay definition is edited, the app maps the stored MAC back to the known device name; if the MAC is no longer known, the raw MAC remains visible so the saved command is not lost.
 
 ## Direction Awareness
 

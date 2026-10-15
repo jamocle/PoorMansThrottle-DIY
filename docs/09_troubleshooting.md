@@ -219,9 +219,9 @@ Only commands classified as recordable physical/device controls are captured. Co
 
 Current recordable controls include:
 
-* **Throttle:** `S`, `B`, `B0..100`, `F0..100`, `R0..100`, `FQ0..100`, `RQ0..100`, and `FX1..12=0/1`
-* **Turbine:** `F0..100`, `F0..100*`, and `FQ100`
-* **Generic Module:** no module-specific recordable physical controls are currently defined
+* **Throttle:** `S`, `B`, `B0..100`, `F0..100`, `R0..100`, `FQ0..100`, `RQ0..100`, `FX1..12=0/1`, and shared `RY=<10-character-mac><command>`
+* **Turbine:** `F0..100`, `F0..100*`, `FQ100`, and shared `RY=<10-character-mac><command>`
+* **Generic Module:** no module-specific physical controls are currently defined, but shared `RY=<10-character-mac><command>` is recordable
 
 ### External Controls Do Not Respond During Playback
 
@@ -282,6 +282,55 @@ The diagnostic never reports the saved Wi-Fi password.
 ### Tip
 
 If BLE works but WebSocket does not, the motor side may be fine and the issue may be only Wi-Fi configuration.
+
+---
+
+# ESP-NOW / Relay Command Does Not Work
+
+### Possible Causes
+
+- `CV16=0`
+- the destination MAC is not the fixed-width 10-character PMT ESP-NOW address
+- the `RY=` command is missing the remote command after the MAC
+- the target device is powered off, out of range, or not running compatible ESP-NOW firmware
+- on a low-resource Classic ESP32 using PMTPlayer, the memory guard has disabled `CV16`
+- the app has not yet connected to the target device and therefore does not have a persisted ESP-NOW MAC for the Relay Command device picker
+
+### Checks
+
+1. On the sending device, query:
+   ```text
+   CV16?
+   ```
+   ESP-NOW must be enabled for relay operation.
+
+2. Query the local compact address:
+   ```text
+   MAC?
+   ```
+   A valid reply looks like:
+   ```text
+   A:MAC=0FLJHFE3HO
+   ```
+
+3. Confirm the target address is exactly 10 Base36 characters and test the relay directly:
+   ```text
+   RY=0FSHTJPG90FX3=1
+   ```
+
+4. A successful sender-side result looks like:
+   ```text
+   ACK:RY=0FSHTJPG90FX3=1
+   ```
+   This confirms the ESP-NOW send operation. It is not a second application-level ACK returned from the remote command.
+
+5. If the target is a low-resource Classic ESP32 using PMTPlayer, remember that PMTPlayer cannot coexist with the protected Wi-Fi/ESP-NOW radio features. The resolved settings are persisted. DFPlayer is exempt from this specific guard.
+
+6. In the app's Relay Command editor, only known devices with a persisted ESP-NOW MAC appear by device name. If an existing saved relay command refers to a MAC that is no longer known, the editor preserves and shows the raw MAC instead of discarding the command.
+
+### Recorded Relay Commands
+
+Firmware recording stores the complete `RY=<mac><command>` line. Playback sends that relay again. If an `RY=` action is missing from a saved script, confirm that recording was active when the external relay command was sent.
 
 ---
 

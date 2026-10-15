@@ -341,10 +341,10 @@
   <main class="wrap">
     <section class="hero">
       <div class="eyebrow">PMT Connectivity Explained</div>
-      <h1>BLE and Wi-Fi working together.</h1>
+      <h1>BLE, Wi-Fi, and ESP-NOW working together.</h1>
       <p class="subhead">
-        PMT combines Bluetooth Low Energy, Wi-Fi, and WebSocket connectivity to deliver fast control, broader coverage,
-        and advanced integration options in one flexible platform.
+        PMT combines Bluetooth Low Energy, Wi-Fi/WebSocket, and direct ESP-NOW device relay to deliver responsive app control,
+        broader network coverage, and PMT-to-PMT command forwarding in one flexible platform.
       </p>
     </section>
 
@@ -355,10 +355,9 @@
       <div class="content">
         <h2 id="overview-title">Expanded overview</h2>
         <p>
-          PMT is built around two communication modes that work together to improve reliability and flexibility.
-          Bluetooth Low Energy serves as the primary connection for direct control, giving users a fast and efficient
-          way to communicate between a mobile device and PMT hardware. Wi-Fi acts as the secondary layer, extending
-          communication across larger spaces and supporting more advanced network-based operation.
+          PMT uses complementary communication modes that serve different jobs. Bluetooth Low Energy is the primary app-control
+          connection. Wi-Fi/WebSocket adds infrastructure-based app and integration access. ESP-NOW adds direct PMT-device-to-PMT-device
+          command relay using the Wi-Fi radio without requiring a router connection.
         </p>
         <p>
           This dual-mode approach gives PMT a major advantage. Instead of relying on a single connection type for every
@@ -387,6 +386,11 @@
             <strong>WebSocket interface</strong>
             Users can connect custom software, dashboards, websites, or programs directly to PMT for specialized control
             and integration.
+          </div>
+          <div class="card">
+            <strong>Direct device relay: ESP-NOW</strong>
+            ESP-NOW lets one PMT device forward an ordinary PMT command directly to another PMT device using its compact
+            10-character address. It does not require either device to join a Wi-Fi router.
           </div>
         </div>
 
@@ -460,6 +464,23 @@
         </p>
 
 
+        <h2 style="margin-top:28px;">ESP-NOW device relay</h2>
+        <p>
+          ESP-NOW is controlled by <code>CV16</code> and is enabled by default in current firmware. Query <code>MAC?</code>
+          to read the local compact 10-character Base36 routing address. To send a command to another PMT device, use
+          <code>RY=&lt;10-character-ID&gt;&lt;command&gt;</code> with no separator between the ID and the embedded command.
+        </p>
+        <div class="callout">
+          Example: <code>RY=[ID]FX3=1</code> sends <code>FX3=1</code> to the remote PMT device at
+          <code>[ID]</code>. A sender-side <code>ACK:RY=...</code> confirms the ESP-NOW transmission operation.
+        </div>
+        <p>
+          After the app has connected to a device and learned its relay address, the persisted value can be viewed under
+          <strong>Admin &rarr; Known Devices &rarr; Info</strong> as <strong>ESP-NOW MAC</strong>. Relay Command configuration
+          uses these persisted addresses to populate its Device picker.
+        </p>
+        
+
         <h2 style="margin-top:28px;">Finding a Wi-Fi network from the PMT app</h2>
         <p>
           Current PMT firmware can scan for nearby Wi-Fi networks with the <code>WIFI?</code> diagnostic command.
@@ -513,9 +534,8 @@
 
         <p style="margin-top:20px;">
           PMT is designed to deliver dependable communication, flexible installation, and room for future expansion. BLE
-          provides efficient and responsive local control, Wi-Fi adds reach and infrastructure support, automatic
-          failover helps reduce interruptions, and WebSocket access makes custom integrations possible for advanced
-          users.
+          provides efficient and responsive local app control, Wi-Fi adds reach and infrastructure support, WebSocket access
+          makes custom integrations possible, and ESP-NOW adds direct PMT-to-PMT command relay without requiring a router.
         </p>
 
         <div class="footer-note">

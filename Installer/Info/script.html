@@ -504,6 +504,20 @@
           </li>
         </ul>
 
+        <h2 style="font-size:1.3rem; margin-top:26px;">Recording ESP-NOW relay commands</h2>
+        <p>
+          The shared <code>RY=&lt;10-character-ID&gt;&lt;command&gt;</code> relay command is recordable. Firmware stores the
+          complete original relay line in the <code>.pmt</code> script, including the target ID and the embedded PMT command.
+        </p>
+        <div class="callout">
+          Example: <code>RY=[ID]FX3=1</code>. When that recorded line is played back, firmware runs the relay again and
+          sends <code>FX3=1</code> to the PMT device at <code>[ID]</code>.
+        </div>
+        <p style="margin-top:18px;">
+          ESP-NOW relay requires <code>CV16=1</code>. A sender-side <code>ACK:RY=...</code> confirms the ESP-NOW send operation;
+          it is not a separate application-level acknowledgement returned from the remote command.
+        </p>
+
         <h2 style="font-size:1.3rem; margin-top:26px;">Adjusting firmware-script timing</h2>
         <p>
           Firmware supports <code>SA</code> (Script Adjust). Use

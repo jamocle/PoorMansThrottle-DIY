@@ -43,10 +43,11 @@ PMT commands are ASCII text commands sent over supported control transports.
 
 Supported transports:
 
-* **BLE** — primary control and discovery path
-* **Wi-Fi / WebSocket** — optional secondary / backup path when enabled and configured
+* **BLE** — primary app control and discovery path
+* **Wi-Fi / WebSocket** — optional secondary / backup app-control path when enabled and configured
+* **ESP-NOW** — direct PMT-device-to-PMT-device relay path. It does not require a Wi-Fi router.
 
-Both transports feed the same command parser for a given firmware image.
+BLE and WebSocket feed the same external command parser for a given firmware image. ESP-NOW receives relayed PMT commands into that same command-processing model, so the remote payload is an ordinary PMT command rather than a separate relay language.
 
 Command characteristics:
 
@@ -66,6 +67,7 @@ Command characteristics:
 | Version queries (`V` / `VV`) | Yes | Yes | Yes |
 | PX/1 bulk-transfer capability (`XFER?`) | Yes | Yes | Yes |
 | Wi-Fi scan diagnostic (`WIFI?`) | Yes | Yes | Yes |
+| ESP-NOW identity / relay (`MAC?` / `RY=`) | Yes | Yes | Yes |
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
@@ -86,7 +88,7 @@ Command characteristics:
 | Throttle CV commands | Yes | No | No |
 | Turbine CV commands | No | No | Yes |
 
-`*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of recordable control commands is device-specific. The generic Module image currently has no module-specific recordable control commands.
+`*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of device-specific recordable controls varies by firmware image. `RY=<10-character-mac><command>` is a shared recordable relay control; the generic Module image still has no module-specific physical recordable controls.
 
 ---
 
@@ -347,6 +349,56 @@ Each discovered network includes its SSID, SSID hex representation, BSSID, stron
 The application may present a simplified SSID picker by hiding blank/hidden entries and combining duplicate visible SSIDs while retaining the strongest observation for display.
 
 ---
+
+## ESP-NOW Device Address
+
+```text
+MAC?
+```
+
+Returns the compact ESP-NOW routing address for the current device:
+
+```text
+A:MAC=0FLJHFC3HO
+```
+
+The address is a fixed-width **10-character Base36** representation of the device's 48-bit Wi-Fi station MAC. Letters are uppercase in firmware replies. The PMT app stores this compact address for known devices so it can build Relay Command actions.
+
+## Relay a PMT Command Over ESP-NOW
+
+```text
+RY=<10-character-mac><command>
+```
+
+There is **no separator** between the 10-character MAC and the remote PMT command.
+
+Example:
+
+```text
+RY=0FSHTJPG90FX3=1
+```
+
+This asks the local PMT device to transmit `FX3=1` to the device whose compact ESP-NOW address is `0FSHTJPG90`.
+
+Behavior:
+
+* `CV16=1` must allow ESP-NOW operation on the sending device.
+* The destination field is exactly 10 Base36 characters.
+* The remainder of the line is the PMT command sent to the remote device.
+* The sender returns `ACK:RY=...` only when the ESP-NOW transmission reports success; otherwise it returns `ERR`.
+* The relay sender does **not** receive the remote command's normal command reply over ESP-NOW. An `ACK:RY=...` confirms the ESP-NOW send operation, not a second application-level ACK from the remote command.
+* The remote payload is processed as an ordinary PMT command on the destination device.
+* ESP-NOW can operate without joining a Wi-Fi router. When normal Wi-Fi is disabled, firmware can keep only the minimum station-radio resources required by ESP-NOW.
+
+Example session:
+
+```text
+MAC?
+A:MAC=0FLJHFE3HO
+
+RY=0FSHTJPG90FX3=1
+ACK:RY=0FSHTJPG90FX3=1
+```
 
 ## Connection Status
 
@@ -1014,7 +1066,10 @@ R0..100
 FQ0..100
 RQ0..100
 FX1..12=0/1
+RY=<10-character-mac><command>
 ```
+
+`RY=` is a shared recordable relay control. The complete original relay line is stored in the `.pmt` script. On playback, the saved `RY=` line is re-entered through the normal command path and performs the ESP-NOW relay again.
 
 ### Turbine
 
@@ -1024,11 +1079,12 @@ The current turbine classifier accepts:
 F0..100
 F0..100*
 FQ100
+RY=<10-character-mac><command>
 ```
 
 ### Module
 
-The generic Module firmware currently has no module-specific physical control commands classified as recordable. Script-management commands are present, but a recording with no eligible controls produces an empty script and later playback returns `ERR:EMPTY`.
+The generic Module firmware has no module-specific physical control commands classified as recordable, but the shared `RY=<10-character-mac><command>` relay control is recordable. A recording with no eligible controls still produces an empty script and later playback returns `ERR:EMPTY`.
 
 ## Playback Command Gating
 
@@ -2008,6 +2064,7 @@ The following CVs remain here only because they directly change command behavior
 | `CV10`, `CV13` | Shared | Control Wi-Fi enablement and WebSocket port used by the command transport. |
 | `CV14` | Shared | Offset applied when establishing/adjusting the firmware clock; therefore affects `T?`, `T=<unix>`, and schedule evaluation. |
 | `CV15` | Shared | OTA downgrade gate. `0` (default) rejects a catalog `latest` version older than the running semantic firmware version; `1` permits that catalog downgrade. OTA still selects only the board target's catalog `latest`. |
+| `CV16` | Shared | Enables/disables ESP-NOW relay support used by `MAC?` / `RY=`. Default `1`. On low-resource Classic hardware using PMTPlayer, the shared radio/audio memory guard can resolve and persist CV16 off. |
 | `CV2`, `CV46`, `CV3`, `CV41` | Throttle | Affect effective motor output for throttle motion commands. CV2 is the forward minimum-start floor; CV46 is the reverse override, with `0` meaning inherit CV2. |
 | `CV6`, `CV7` | Throttle | Control steady/changing intervals for asynchronous `A:` state updates. |
 | `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects directional AUTO (last logical direction effective MinStart minus `3`); explicit non-zero values are constrained below the smaller effective forward/reverse MinStart floor. |
@@ -2117,6 +2174,8 @@ Runtime override:
 | `VV` | Shared | Full firmware build identifier |
 | `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
 | `WIFI?` | Shared | Scan nearby Wi-Fi networks and return versioned JSON using PX `WifiInfo` resource `4` |
+| `MAC?` | Shared | Return the local compact 10-character Base36 ESP-NOW routing address |
+| `RY=<mac><command>` | Shared | Relay one ordinary PMT command to the specified ESP-NOW device; the MAC is exactly 10 characters with no separator before the command |
 | `C?` | Shared | Connection status |
 | `IP?` | Shared | IP address query |
 | `T?` | Shared | Current adjusted firmware time query |
@@ -2212,7 +2271,7 @@ Command-generated audio-analysis lines:
 
 # What Changed from the Older 1.12.x Reference
 
-This reference documents the verified command behavior for PMT firmware 3.3.0.
+This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1, alongside the older command families documented here.
 
 Major documentation changes:
 
@@ -2276,6 +2335,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `I?` | Verify authorization state. | [Verify Authorization State](#verify-authorization-state) |
 | `IB,<token>` | Authorize a backup WebSocket connection. | [Send Connection Token](#send-connection-token) |
 | `IP?` | Query the device IP address. | [IP Address Query](#ip-address-query) |
+| `MAC?` | Query the compact 10-character Base36 ESP-NOW routing address. | [ESP-NOW Device Address](#esp-now-device-address) |
 | `OTA` | Start supported ESP32-S3 Throttle firmware update. | [Start OTA](#start-ota) |
 | `OTA?` | Query supported ESP32-S3 Throttle OTA readiness. | [Query OTA capability](#query-ota-capability) |
 | `P0` | Report periodic throttle debug mismatches only. | [Periodic Debug Logging](#periodic-debug-logging) |
@@ -2285,6 +2345,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `PS?` | Query persist-only CV staging mode. | [Query staging mode](#query-staging-mode) |
 | `R<n>` | Ramp reverse locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
 | `RQ<n>` | Quick-ramp reverse locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
+| `RY=<mac><command>` | Relay an ordinary PMT command over ESP-NOW to the specified 10-character compact address. | [Relay a PMT Command Over ESP-NOW](#relay-a-pmt-command-over-esp-now) |
 | `S` | Quick-stop locomotive throttle. | [Stop and Brake](#stop-and-brake) |
 | `SA=+<ms>` / `SA=-<ms>` | Adjust pause time of the actively playing script. | [Adjust Script Timing](#adjust-script-timing) |
 | `SA=<name>,+<ms>` / `SA=<name>,-<ms>` | Adjust total pause time of a named saved script. | [Adjust Script Timing](#adjust-script-timing) |

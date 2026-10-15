@@ -2,11 +2,17 @@
 
 ## Smartphone App:
 
+### Version 4.2.3
+* **Added support for Remote Commands** Now an FX command can be mapped to a remote Command Relay where the target device is instructed to tell another device to perform a command. 
+* **Enhanced Bulk Transfer Resilience** The BTP (Bulk Transfer Protocol) is more resilient.
+* **FX Reorder enhancements** Reordering sometimes caused saving issues. now the reordering uses a quiescing strategy to eliminate this issue.
+* **Added DISCONNECT** App script token to disconnect the current session and return the user back to the scan screen.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.0
 * **Enhanced Output Control Reconciliation**  Enhanced reconciliation of controls for to help older iOS devices show updated data.
 * **Wifi SSID Chooser** The app now will allow you to choose your Wifi SSID from a list.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
-
 
 ### Version 4.1.10
 * **Fixed WIFI password saving for some Android users** Some Androidn users were unable to save passwords.

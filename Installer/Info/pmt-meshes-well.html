@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="PMT Mesh Network lets your layout devices communicate with each other, opening a new level of automation and coordinated control." />
+  <title>PMT Meshes Well with your layout</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.92);
+      --surface-solid:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --accent:#0071e3;
+      --accent-soft:rgba(0,113,227,.09);
+      --gold:#b87400;
+      --gold-soft:rgba(184,116,0,.10);
+      --green:#14804a;
+      --green-soft:rgba(20,128,74,.08);
+      --shadow:0 18px 48px rgba(0,0,0,.08);
+      --radius:28px;
+      --max:1140px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background:radial-gradient(circle at top,#ffffff 0%,#f5f5f7 45%,#ececf1 100%);
+      line-height:1.58;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:24px 16px 72px}
+    .hero{text-align:center;padding-top:6px}
+    .eyebrow{
+      display:inline-block;
+      padding:7px 13px;
+      border-radius:999px;
+      border:1px solid rgba(184,116,0,.24);
+      background:rgba(255,255,255,.82);
+      color:var(--gold);
+      font-size:.86rem;
+      font-weight:700;
+      letter-spacing:.02em;
+    }
+    h1{
+      margin:18px auto 12px;
+      max-width:980px;
+      font-size:clamp(2.3rem,7vw,4.8rem);
+      line-height:1.02;
+      letter-spacing:-.045em;
+      font-weight:800;
+    }
+    .lead{
+      margin:0 auto;
+      max-width:930px;
+      color:var(--muted);
+      font-size:clamp(1.04rem,2.8vw,1.24rem);
+    }
+    .hero-graphic{
+      margin-top:26px;
+      border-radius:32px;
+      overflow:hidden;
+      background:#111;
+      box-shadow:0 28px 70px rgba(0,0,0,.18);
+    }
+    .hero-graphic img{display:block;width:100%;height:auto}
+    .section{
+      margin-top:28px;
+      background:var(--surface);
+      border:1px solid rgba(255,255,255,.9);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      backdrop-filter:blur(18px);
+    }
+    .section-header{padding:30px 22px 0}
+    .content{padding:24px 22px 32px}
+    h2{
+      margin:0 0 10px;
+      font-size:clamp(1.5rem,4vw,2.25rem);
+      line-height:1.08;
+      letter-spacing:-.03em;
+    }
+    h3{
+      margin:0 0 8px;
+      font-size:1.14rem;
+      letter-spacing:-.015em;
+    }
+    p{margin:0 0 16px}
+    .section-header p{color:var(--muted);margin-bottom:18px}
+    .grid,.steps{display:grid;gap:14px}
+    .grid-3{display:grid;gap:14px}
+    .card,.step{
+      background:var(--surface-solid);
+      border:1px solid #e6e6eb;
+      border-radius:22px;
+      box-shadow:0 10px 22px rgba(0,0,0,.055);
+    }
+    .card{padding:18px}
+    .step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{
+      flex:0 0 36px;
+      width:36px;height:36px;border-radius:50%;
+      display:grid;place-items:center;
+      background:var(--accent-soft);color:var(--accent);font-weight:800;
+    }
+    .label{
+      display:inline-block;
+      margin-bottom:10px;
+      padding:5px 10px;
+      border-radius:999px;
+      background:var(--accent-soft);
+      color:var(--accent);
+      font-size:.82rem;
+      font-weight:700;
+    }
+    .label.gold{background:var(--gold-soft);color:var(--gold)}
+    .label.green{background:var(--green-soft);color:var(--green)}
+    .callout{
+      margin-top:18px;
+      padding:18px 20px;
+      border-radius:18px;
+      background:var(--gold-soft);
+      border-left:4px solid var(--gold);
+      color:#684309;
+    }
+    .quote{
+      margin-top:8px;
+      padding:20px 22px;
+      border-radius:22px;
+      background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(248,248,250,.9));
+      border:1px solid var(--line);
+      color:#2b2b2d;
+      font-size:1.08rem;
+    }
+    .footer-note{
+      margin-top:30px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.94rem;
+    }
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 80px}
+      .section-header{padding:34px 30px 0}
+      .content{padding:28px 30px 36px}
+      .grid,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">NEW CAPABILITY — PMT MESH NETWORK</div>
+      <h1>PMT Meshes Well with your layout.</h1>
+      <p class="lead">
+        PMT already lets the app and physical devices control different parts of the railroad. Now those parts can talk to each other too.
+        That means actions from one device can trigger actions on another device, unlocking a smarter, more connected, more automated layout.
+      </p>
+      <div class="hero-graphic">
+        <img src="pmt-mesh-network-hero.png" alt="Poor Man's Throttle mesh communication across a model railroad layout with locomotives, accessories, automation, and app control." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>It is no longer just control. It is coordination.</h2>
+        <p>
+          This is the leap forward. PMT is not only controlling devices individually anymore. With mesh networking, devices across the layout can exchange information and work together.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">DEVICE TO DEVICE</span>
+            <h3>Layout parts can now react to each other</h3>
+            <p>
+              A trigger from one ESP32 can cause something useful to happen somewhere else on the railroad. A sensor, switch, accessory, locomotive,
+              signal, or automation node can all become part of the same conversation.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label green">ONE CONNECTED ECOSYSTEM</span>
+            <h3>Everything starts feeling like one system</h3>
+            <p>
+              Instead of isolated devices doing isolated jobs, PMT creates a connected network where different pieces of the layout can cooperate
+              in ways that feel powerful, fluid, and much more intelligent.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          The headline feature is simple to understand: <strong>one action can now drive another action somewhere else on the layout.</strong>
+          That is where the magic starts.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>What this unlocks</h2>
+        <p>
+          The value of mesh is not abstract. It creates real operating possibilities that make layouts feel more alive and more responsive.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid-3">
+          <article class="card">
+            <span class="label">SMARTER ACCESSORIES</span>
+            <h3>One device can trigger another</h3>
+            <p>
+              A locomotive event can trigger a light. A physical throttle input can fire a sound. An automation node can flip a turnout,
+              start an effect, or coordinate multiple actions at once.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label">LAYOUT-WIDE BEHAVIOR</span>
+            <h3>Distributed intelligence</h3>
+            <p>
+              You are no longer thinking in terms of one ESP32 doing one isolated thing. You can think in terms of the entire layout working together.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label">MORE IMMERSION</span>
+            <h3>Operations feel more alive</h3>
+            <p>
+              When devices can react to each other, the railroad starts to behave like a coordinated system instead of a collection of separate gadgets.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Built into the ways you already use PMT</h2>
+        <p>
+          This capability is not off to the side. It is fully supported where PMT users already work and operate.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">AUTOMATION</span>
+            <h3>Supported in automation recording and scripts</h3>
+            <p>
+              Mesh behavior is fully supported in PMT automation recording and in scripts, so you can capture, define, and replay coordinated layout behavior
+              without having to treat each device as a lonely island.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label green">MULTIPLE CONTROL PATHS</span>
+            <h3>Driven by app or physical throttle</h3>
+            <p>
+              Trigger mesh actions from the PMT app or from physical throttle hardware. Whether you operate from the screen or from real controls,
+              the networked behavior is right there with you.
+            </p>
+          </article>
+        </div>
+
+        <div class="quote">
+          PMT mesh networking gives you a new layer of control: not just commanding devices, but orchestrating relationships between devices.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Coming soon: PMT repeaters</h2>
+        <p>
+          The story keeps getting better. This same technology opens the door for PMT repeaters.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label">DEEP TUNNELS</span>
+            <h3>Reach where direct control struggles</h3>
+            <p>
+              Repeaters will help carry control into deep tunnels, under rockwork, and into the tougher parts of a large railroad where signal coverage can be more challenging.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label">BIGGER LAYOUTS</span>
+            <h3>Extend the railroad even further</h3>
+            <p>
+              Repeaters will also help stretch PMT across larger layouts, making it easier to keep your railroad responsive as the physical footprint grows.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          Mesh networking is exciting right now, and it also lays the groundwork for what comes next. PMT repeaters are a natural extension of this technology.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Why this is such a big deal</h2>
+        <p>
+          PMT keeps moving beyond simple throttle control. First the app controlled trains and layout devices. Then physical controls expanded how you interact.
+          Now the devices themselves can collaborate.
+        </p>
+      </div>
+      <div class="content">
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Connect more devices</h3>
+              <p>Add locomotives, switches, signals, accessories, effects, sensors, and automation nodes across the layout.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>Let them share actions</h3>
+              <p>Have one event on the railroad cause another response somewhere else, instead of controlling every piece in isolation.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>Build richer automation</h3>
+              <p>Use automation recording and scripts to create behaviors that feel layout-wide instead of local and disconnected.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Grow into the future</h3>
+              <p>Take advantage of a technology foundation that is ready for repeaters, larger layouts, and even more coordinated features to come.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="callout">
+          PMT Mesh Network is the kind of feature that changes what people imagine is possible. It turns independent layout devices into a true team.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      PMT Mesh Network — from app control to physical throttles to device-to-device coordination, the layout is becoming one connected system.
+    </div>
+  </main>
+</body>
+</html>

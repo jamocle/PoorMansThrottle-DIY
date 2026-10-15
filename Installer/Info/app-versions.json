@@ -199,8 +199,15 @@
         {
             "version": "4.0.0",
             "title": "PMT Goes Physical",
-            "description": "PMT now supports physical Human Interface Devices (HID) devices to control your layout and locomotives..",
+            "description": "PMT now supports physical Human Interface Devices (HID) devices to control your layout and locomotives.",
             "info": "lets-get-physical.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "4.2.3",
+            "title": "PMT Meshes with your layout",
+            "description": "PMT now supports Device-to-Device communication in a mesh network.",
+            "info": "pmt-meshes-well.html",
             "show-again": "2026-04-24 16:24:04"
         }
     ]

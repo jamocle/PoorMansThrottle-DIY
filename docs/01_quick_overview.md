@@ -63,6 +63,7 @@ The app and firmware can also support optional advanced capabilities such as:
 * optional battery-voltage/current telemetry and low-voltage protection features
 * scheduled command (e.g. start/stop) behavior for supported devices
 * app-managed MU / consist control for multiple locomotive throttles
+* direct PMT-to-PMT ESP-NOW command relay without requiring a Wi-Fi router
 * persistent configuration storage inside the controller
 * over-the-air installation of the catalog's latest firmware on supported ESP32-S3 N16R8/N8R8 throttles when Wi-Fi is connected; Classic ESP32 and recovery/rollback installs continue to use USB
 * multilingual and accessibility-friendly app behavior
@@ -103,8 +104,10 @@ Motor Driver, Function Output, or ESC-Style Output
 Locomotive Motor, Lighting, Accessory, or Turbine Output
 ```
 
-BLE is the primary control method.  
-Wi-Fi / WebSocket is an optional secondary or backup control path for supported setups.
+BLE is the primary app-control method.  
+Wi-Fi / WebSocket is an optional secondary or backup app-control path for supported setups.
+
+PMT firmware can also use **ESP-NOW** for direct device-to-device command relay. The sending device uses `RY=<10-character-mac><command>` to transmit an ordinary PMT command to another PMT device without requiring either device to join a Wi-Fi router.
 
 ---
 
@@ -243,6 +246,7 @@ Depending on the device and configuration, the system can support:
 * scheduled operation for supported firmware
 * app-managed MU / consist operation for multiple locomotives
 * known-device management and connection assistance in the smartphone app
+* app-side Relay Command functions that target known devices by their persisted ESP-NOW MAC
 * onboard status LED behavior that shows connection state
 * app diagnostics, terminal access, and configuration tools
 * multilingual app text and accessibility / screen-reader improvements
