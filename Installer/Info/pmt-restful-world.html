@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="PMT can now communicate RESTfully with HTTP endpoints, allowing your railroad to interact with smart-home services, layout systems, web APIs, and more." />
+  <title>The World is Your Oyster - PMT REST & HTTP</title>
+  <style>
+    :root{
+      --surface:rgba(255,255,255,.92);--surface-solid:#fff;--text:#1d1d1f;--muted:#6e6e73;
+      --line:#d2d2d7;--accent:#0071e3;--accent-soft:rgba(0,113,227,.09);
+      --gold:#b87400;--gold-soft:rgba(184,116,0,.10);--green:#14804a;--green-soft:rgba(20,128,74,.08);
+      --shadow:0 18px 48px rgba(0,0,0,.08);--radius:28px;--max:1140px
+    }
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);background:radial-gradient(circle at top,#fff 0%,#f5f5f7 45%,#ececf1 100%);
+      line-height:1.58;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:24px 16px 72px}
+    .hero{text-align:center;padding-top:6px}
+    .eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;border:1px solid rgba(184,116,0,.24);
+      background:rgba(255,255,255,.82);color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em}
+    h1{margin:18px auto 12px;max-width:980px;font-size:clamp(2.3rem,7vw,4.8rem);line-height:1.02;
+      letter-spacing:-.045em;font-weight:800}
+    .lead{margin:0 auto;max-width:930px;color:var(--muted);font-size:clamp(1.04rem,2.8vw,1.24rem)}
+    .hero-graphic{margin-top:26px;border-radius:32px;overflow:hidden;background:#111;box-shadow:0 28px 70px rgba(0,0,0,.18)}
+    .hero-graphic img{display:block;width:100%;height:auto}
+    .section{margin-top:28px;background:var(--surface);border:1px solid rgba(255,255,255,.9);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+    .section-header{padding:30px 22px 0}.content{padding:24px 22px 32px}
+    h2{margin:0 0 10px;font-size:clamp(1.5rem,4vw,2.25rem);line-height:1.08;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.14rem;letter-spacing:-.015em}p{margin:0 0 16px}
+    .section-header p{color:var(--muted);margin-bottom:18px}.grid,.grid-3,.steps{display:grid;gap:14px}
+    .card,.step{background:var(--surface-solid);border:1px solid #e6e6eb;border-radius:22px;box-shadow:0 10px 22px rgba(0,0,0,.055)}
+    .card{padding:18px}.step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;
+      background:var(--accent-soft);color:var(--accent);font-weight:800}
+    .label{display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;background:var(--accent-soft);
+      color:var(--accent);font-size:.82rem;font-weight:700}
+    .label.gold{background:var(--gold-soft);color:var(--gold)}.label.green{background:var(--green-soft);color:var(--green)}
+    .callout{margin-top:18px;padding:18px 20px;border-radius:18px;background:var(--gold-soft);border-left:4px solid var(--gold);color:#684309}
+    .quote{margin-top:8px;padding:20px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,248,250,.9));
+      border:1px solid var(--line);font-size:1.08rem;color:#2b2b2d}
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 80px}.section-header{padding:34px 30px 0}.content{padding:28px 30px 36px}
+      .grid,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">NEW CAPABILITY — REST & HTTP COMMUNICATION</div>
+      <h1>The World is Your Oyster.</h1>
+      <p class="lead">
+        Poor Man’s Throttle can now communicate RESTfully with HTTP endpoints, connecting your railroad to a much bigger world.
+        Smart-home devices, web services, layout accessories, automation systems, and your own custom endpoints can now become part of the PMT ecosystem.
+      </p>
+      <div class="hero-graphic">
+        <img src="pmt-rest-http-hero.png" alt="Poor Man's Throttle communicating through REST and HTTP with smart-home services, layout lighting, signals, rail switches, structures, accessories, and other endpoints." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Your railroad no longer has to live in its own little world.</h2>
+        <p>
+          PMT already controls locomotives, layout devices, physical throttles, automation, and mesh-connected hardware.
+          REST and HTTP support take the next step by letting PMT talk to systems outside the railroad itself.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">OUTBOUND CONTROL</span>
+            <h3>PMT can trigger outside services</h3>
+            <p>
+              A PMT action can call an HTTP or REST endpoint and cause something outside the throttle ecosystem to happen:
+              turn on a smart light, trigger a home automation routine, send a command to another controller, or call your own web service.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label green">CONNECTED LAYOUT</span>
+            <h3>Bring outside systems into the experience</h3>
+            <p>
+              The railroad can now interact with devices and services that already speak HTTP. That means your layout can become part of a broader
+              smart-home, automation, or custom-control environment instead of being isolated from it.
+            </p>
+          </article>
+        </div>
+        <div class="callout">If a service exposes an HTTP endpoint, PMT now has a path to talk to it.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>What would you actually use this for?</h2>
+        <p>
+          The possibilities range from practical to theatrical. The value is that PMT can now reach beyond railroad-specific hardware.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid-3">
+          <article class="card">
+            <span class="label">SMART LIGHTING</span>
+            <h3>Govee and other smart lights</h3>
+            <p>
+              Tie room lighting or layout lighting to railroad events. Dim the room when an operating session begins, change colors for a nighttime scene,
+              or trigger special lighting effects when a train reaches a certain point.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">VOICE & SMART HOME</span>
+            <h3>Alexa and home automation</h3>
+            <p>
+              Use PMT actions as part of a larger smart-home workflow. Trigger routines, announcements, lighting scenes, or other supported automation
+              through the services you already use around the house.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">CUSTOM SERVICES</span>
+            <h3>Your own REST endpoints</h3>
+            <p>
+              If you run a local web service, Raspberry Pi, home server, Node-RED flow, or custom controller, PMT can call into it and make it part of the layout.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">LAYOUT EFFECTS</span>
+            <h3>Coordinate scenery and accessories</h3>
+            <p>
+              Use HTTP calls to trigger building lights, fans, animated scenery, sound systems, signage, signals, or other controllers that are not directly wired into PMT.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">WEB AUTOMATION</span>
+            <h3>Connect to cloud or local services</h3>
+            <p>
+              Send events to local or remote endpoints for logging, dashboards, notifications, automation, or integrations with services that already understand web requests.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">BRIDGE SYSTEMS</span>
+            <h3>Make unlike systems cooperate</h3>
+            <p>
+              REST can act as the common language between PMT and another ecosystem. One system does not need to know how PMT works internally — it only needs an endpoint.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Real-world ideas</h2>
+        <p>
+          Here are a few examples of how REST and HTTP can make an operating session feel more polished, automated, and alive.
+        </p>
+      </div>
+      <div class="content">
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Start an evening session</h3>
+              <p>Tap a PMT control and have Govee room lights dim, layout lights come on, and a nighttime color scene activate automatically.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>Trigger an announcement</h3>
+              <p>Have a PMT event call a service that plays a station announcement, activates a smart speaker, or starts a custom audio sequence.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>Coordinate arrival effects</h3>
+              <p>When a train enters a scene, trigger structure lighting, animated accessories, ambient audio, or another local controller through an HTTP call.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Send operating data elsewhere</h3>
+              <p>Push events to your own dashboard, logging system, web service, or automation engine so the rest of your technology can react to the railroad.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quote">
+          REST support is powerful because it is not tied to one brand or one type of hardware. It gives PMT a common way to reach almost anything that understands HTTP.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Local or global. Simple or ambitious.</h2>
+        <p>
+          Your endpoint can live on the same network as the layout or somewhere farther away, depending on the service and how you choose to configure it.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">LOCAL</span>
+            <h3>Keep everything on your own network</h3>
+            <p>
+              Call a local controller, server, automation hub, Raspberry Pi, or custom application without needing to involve a cloud service.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label green">GLOBAL</span>
+            <h3>Reach services beyond the layout</h3>
+            <p>
+              Where appropriate, PMT can also communicate with reachable remote endpoints, opening the door to broader web-based integrations and services.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          Start with something simple, like turning on a light. Then keep going. Once PMT can speak HTTP, the number of things it can interact with grows dramatically.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>This is bigger than another feature.</h2>
+        <p>
+          REST and HTTP communication make PMT extensible beyond the hardware that ships with the project.
+          You do not have to wait for a dedicated PMT integration every time you want to connect something new.
+        </p>
+      </div>
+      <div class="content">
+        <p>
+          That is the exciting part: the ecosystem can now reach outward. Your railroad can talk to smart-home gear, custom software,
+          local servers, automation platforms, web APIs, and devices that were never originally designed with model railroading in mind.
+        </p>
+        <div class="callout">
+          <strong>The world really is your oyster.</strong> If you can expose it through REST or HTTP, you can start imagining how it belongs in your railroad.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">PMT REST & HTTP communication — connecting your railroad to a bigger world.</div>
+  </main>
+</body>
+</html>
