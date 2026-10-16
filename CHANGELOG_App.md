@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 4.2.4
+* **Added RESTful Support** PMT can now integrate with RESTful API's or any HTTP(s) endpoint for even more integration possibilities.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.3
 * **Added support for Remote Commands** Now an FX command can be mapped to a remote Command Relay where the target device is instructed to tell another device to perform a command. 
 * **Enhanced Bulk Transfer Resilience** The BTP (Bulk Transfer Protocol) is more resilient.
