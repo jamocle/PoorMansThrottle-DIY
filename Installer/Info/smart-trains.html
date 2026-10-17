@@ -24,6 +24,50 @@
       background:rgba(255,255,255,.84);color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em}
     h1{margin:18px auto 12px;max-width:1050px;font-size:clamp(2.4rem,7vw,4.9rem);line-height:1.02;letter-spacing:-.045em;font-weight:800}
     .lead{margin:0 auto;max-width:960px;color:var(--muted);font-size:clamp(1.05rem,2.8vw,1.24rem)}
+    .info-hub{
+      margin:24px auto 0;
+      max-width:760px;
+      padding:18px;
+      border-radius:24px;
+      background:rgba(255,255,255,.9);
+      border:1px solid rgba(0,113,227,.16);
+      box-shadow:0 14px 34px rgba(0,0,0,.07);
+    }
+    .info-hub-title{
+      margin:0 0 6px;
+      font-size:clamp(1.15rem,3vw,1.4rem);
+      font-weight:750;
+      letter-spacing:-.02em;
+    }
+    .info-hub-copy{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:.98rem;
+    }
+    .info-hub-link{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:48px;
+      padding:12px 22px;
+      border-radius:999px;
+      background:#0071e3;
+      color:#fff;
+      text-decoration:none;
+      font-weight:700;
+      font-size:1rem;
+      box-shadow:0 8px 20px rgba(0,113,227,.22);
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+    .info-hub-link:hover{
+      background:#0077ed;
+      transform:translateY(-1px);
+      box-shadow:0 10px 24px rgba(0,113,227,.28);
+    }
+    .info-hub-link:focus-visible{
+      outline:3px solid rgba(0,113,227,.32);
+      outline-offset:3px;
+    }
     .hero-graphic{margin-top:26px;border-radius:32px;overflow:hidden;background:#111;box-shadow:0 28px 70px rgba(0,0,0,.18)}
     .hero-graphic img{display:block;width:100%;height:auto}
     .section{margin-top:28px;background:var(--surface);border:1px solid rgba(255,255,255,.92);border-radius:var(--radius);
@@ -71,8 +115,23 @@
         Introducing <strong>S.M.A.R.T. Trains - Synchronized Meshed Automated Railroad Technology</strong> by Poor Man’s Throttle — a new category of model railroad technology.
         Your railroad is not just controlled anymore. It is connected. It is intelligent. It is S.M.A.R.T.
       </p>
+
       <div class="hero-graphic">
         <img src="smart-trains-hero.png" alt="S.M.A.R.T. Trains by Poor Man's Throttle showing synchronized, meshed, automated railroad technology across locomotives, accessories, controls, and connected services." />
+      </div>
+
+
+      <div class="info-hub">
+        <div class="info-hub-title">Explore the PMT Information Hub</div>
+        <p class="info-hub-copy">
+          Start here for getting started guides, hardware information, features, setup help, and the rest of the Poor Man’s Throttle documentation.
+        </p>
+        <a class="info-hub-link"
+           href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer"
+           target="_blank"
+           rel="noopener noreferrer">
+          Open the PMT Information Hub
+        </a>
       </div>
     </section>
 
