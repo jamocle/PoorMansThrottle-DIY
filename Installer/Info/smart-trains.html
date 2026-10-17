@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="S.M.A.R.T. Trains by Poor Man's Throttle — Synchronized. Meshed. Automated. Railroad. Technology." />
+  <title>S.M.A.R.T. Trains by Poor Man's Throttle</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;--surface:rgba(255,255,255,.92);--surface-solid:#ffffff;--text:#1d1d1f;--muted:#6e6e73;
+      --line:#d2d2d7;--gold:#b87400;--gold-soft:rgba(184,116,0,.10);--blue:#0071e3;--blue-soft:rgba(0,113,227,.10);
+      --green:#14804a;--green-soft:rgba(20,128,74,.10);--purple:#7c3aed;--purple-soft:rgba(124,58,237,.10);
+      --orange:#c76a00;--orange-soft:rgba(199,106,0,.10);--shadow:0 18px 48px rgba(0,0,0,.08);--radius:28px;--max:1160px
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{
+      margin:0;background:radial-gradient(circle at top,#ffffff 0%,#f5f5f7 44%,#ececf1 100%);
+      color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.58;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    }
+    .wrap{width:min(100%,var(--max));margin:0 auto;padding:24px 16px 72px}
+    .hero{text-align:center;padding-top:8px}
+    .eyebrow{display:inline-block;padding:7px 13px;border-radius:999px;border:1px solid rgba(184,116,0,.26);
+      background:rgba(255,255,255,.84);color:var(--gold);font-size:.86rem;font-weight:700;letter-spacing:.02em}
+    h1{margin:18px auto 12px;max-width:1050px;font-size:clamp(2.4rem,7vw,4.9rem);line-height:1.02;letter-spacing:-.045em;font-weight:800}
+    .lead{margin:0 auto;max-width:960px;color:var(--muted);font-size:clamp(1.05rem,2.8vw,1.24rem)}
+    .hero-graphic{margin-top:26px;border-radius:32px;overflow:hidden;background:#111;box-shadow:0 28px 70px rgba(0,0,0,.18)}
+    .hero-graphic img{display:block;width:100%;height:auto}
+    .section{margin-top:28px;background:var(--surface);border:1px solid rgba(255,255,255,.92);border-radius:var(--radius);
+      box-shadow:var(--shadow);overflow:hidden;backdrop-filter:blur(18px)}
+    .section-header{padding:30px 22px 0}.content{padding:24px 22px 32px}
+    h2{margin:0 0 10px;font-size:clamp(1.5rem,4vw,2.25rem);line-height:1.08;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.14rem;letter-spacing:-.015em}
+    p{margin:0 0 16px}.section-header p{color:var(--muted);margin-bottom:18px}
+    .grid,.steps,.grid-5,.smart-grid{display:grid;gap:14px}
+    .card,.step,.smart-card{
+      background:var(--surface-solid);border:1px solid #e6e6eb;border-radius:22px;box-shadow:0 10px 22px rgba(0,0,0,.055)
+    }
+    .card,.smart-card{padding:18px}
+    .step{display:flex;gap:14px;align-items:flex-start;padding:16px}
+    .step-number{flex:0 0 36px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--blue-soft);color:var(--blue);font-weight:800}
+    .label{display:inline-block;margin-bottom:10px;padding:5px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:.82rem;font-weight:700}
+    .label.gold{background:var(--gold-soft);color:var(--gold)}
+    .label.green{background:var(--green-soft);color:var(--green)}
+    .label.purple{background:var(--purple-soft);color:var(--purple)}
+    .label.orange{background:var(--orange-soft);color:var(--orange)}
+    .callout{margin-top:18px;padding:18px 20px;border-radius:18px;background:var(--gold-soft);border-left:4px solid var(--gold);color:#684309}
+    .quote{margin-top:8px;padding:20px 22px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(248,248,250,.9));
+      border:1px solid var(--line);font-size:1.08rem;color:#2b2b2d}
+    .smart-letter{font-size:2.8rem;line-height:1;font-weight:800;letter-spacing:-.05em;margin-bottom:6px}
+    .smart-sub{font-size:1.08rem;font-weight:700;margin-bottom:8px}
+    .footer-note{margin-top:30px;text-align:center;color:var(--muted);font-size:.94rem}
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 80px}.section-header{padding:34px 30px 0}.content{padding:28px 30px 36px}
+      .grid,.steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .smart-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media(min-width:980px){
+      .smart-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+      .grid-5{grid-template-columns:repeat(5,minmax(0,1fr))}
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">INTRODUCING S.M.A.R.T. TRAINS</div>
+      <h1>Ushering in a New Era of Model Railroading with S.M.A.R.T. Trains</h1>
+      <p class="lead">
+        Introducing <strong>S.M.A.R.T. Trains - Synchronized Meshed Automated Railroad Technology</strong> by Poor Man’s Throttle — a new category of model railroad technology.
+        Your railroad is not just controlled anymore. It is connected. It is intelligent. It is S.M.A.R.T.
+      </p>
+      <div class="hero-graphic">
+        <img src="smart-trains-hero.png" alt="S.M.A.R.T. Trains by Poor Man's Throttle showing synchronized, meshed, automated railroad technology across locomotives, accessories, controls, and connected services." />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>A new era for model railroading</h2>
+        <p>
+          This is not just another wireless throttle. It is a complete ecosystem where locomotives, physical throttles,
+          mobile devices, switches, lights, sounds, buildings, and accessories do not just respond to commands — they can work together.
+        </p>
+      </div>
+      <div class="content">
+        <div class="quote">
+          <strong>Your railroad isn't just controlled anymore. It's connected. It's intelligent. It's S.M.A.R.T.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>What S.M.A.R.T. means</h2>
+        <p>
+          Every letter represents a core part of the PMT vision, and together they define a new kind of railroad system.
+        </p>
+      </div>
+      <div class="content">
+        <div class="smart-grid">
+          <article class="smart-card">
+            <span class="label">S</span>
+            <div class="smart-letter" style="color:#0071e3;">S</div>
+            <div class="smart-sub">Synchronized</div>
+            <p>Locomotives, MU consists, sounds, accessories, and schedules working together seamlessly.</p>
+          </article>
+          <article class="smart-card">
+            <span class="label green">M</span>
+            <div class="smart-letter" style="color:#14804a;">M</div>
+            <div class="smart-sub">Meshed</div>
+            <p>Devices communicating directly with one another, creating an intelligent, interconnected railroad.</p>
+          </article>
+          <article class="smart-card">
+            <span class="label gold">A</span>
+            <div class="smart-letter" style="color:#b87400;">A</div>
+            <div class="smart-sub">Automated</div>
+            <p>Recordable and repeatable operations, powerful scripting, and intelligent scheduling.</p>
+          </article>
+          <article class="smart-card">
+            <span class="label purple">R</span>
+            <div class="smart-letter" style="color:#7c3aed;">R</div>
+            <div class="smart-sub">Railroad</div>
+            <p>Purpose-built for the entire model railroad, from locomotives and switches to lighting, buildings, and accessories.</p>
+          </article>
+          <article class="smart-card">
+            <span class="label orange">T</span>
+            <div class="smart-letter" style="color:#c76a00;">T</div>
+            <div class="smart-sub">Technology</div>
+            <p>Advanced physical and mobile controls, RESTful and HTTP connectivity, premium sound, multilingual support, and a complete ecosystem of throttles and modules.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>What makes S.M.A.R.T. Trains so powerful</h2>
+        <p>
+          PMT is bringing together capabilities that normally live in separate products and making them part of one connected railroad experience.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid">
+          <article class="card">
+            <span class="label gold">CONNECTED OPERATIONS</span>
+            <h3>Synchronization across the railroad</h3>
+            <p>
+              Locomotives, MU consists, sound, accessories, and schedules can all work in concert so your railroad feels coordinated instead of fragmented.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label green">DIRECT DEVICE COMMUNICATION</span>
+            <h3>Mesh networking built in</h3>
+            <p>
+              PMT devices can communicate directly with each other, which means one action on the layout can trigger reactions elsewhere without everything depending on one narrow path.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label">AUTOMATION TOOLS</span>
+            <h3>Recordable, repeatable, scriptable</h3>
+            <p>
+              Automation recording, repeatable operations, scripting, and scheduling all help you move from manual control to more intelligent layout behavior.
+            </p>
+          </article>
+          <article class="card">
+            <span class="label purple">WHOLE-LAYOUT THINKING</span>
+            <h3>Not just trains — the whole railroad</h3>
+            <p>
+              Switches, lighting, buildings, accessories, and locomotive control all belong to the same system, so the whole layout can be designed as one experience.
+            </p>
+          </article>
+        </div>
+        <div class="callout">
+          This is where PMT stops being just a throttle and starts becoming a complete model railroad technology platform.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>The technology stack behind the vision</h2>
+        <p>
+          S.M.A.R.T. Trains pull together an unusually broad set of features into one DIY-friendly ecosystem.
+        </p>
+      </div>
+      <div class="content">
+        <div class="grid-5">
+          <article class="card">
+            <span class="label">REST & HTTP</span>
+            <h3>Connect outward</h3>
+            <p>Communicate with local or internet services, smart-home systems, and compatible HTTP endpoints.</p>
+          </article>
+          <article class="card">
+            <span class="label green">MESH</span>
+            <h3>Connect inward</h3>
+            <p>All devices know about and can communicate with one another across the PMT ecosystem.</p>
+          </article>
+          <article class="card">
+            <span class="label gold">AUTOMATION</span>
+            <h3>Build repeatable behavior</h3>
+            <p>Record, replay, script, and schedule layout operations with increasing sophistication.</p>
+          </article>
+          <article class="card">
+            <span class="label purple">CONTROL</span>
+            <h3>Physical or mobile</h3>
+            <p>Operate from phones, tablets, or physical controls depending on what feels best for your railroad.</p>
+          </article>
+          <article class="card">
+            <span class="label orange">SOUND</span>
+            <h3>Premium railroad audio</h3>
+            <p>Automated and manual sounds help bring locomotives and scenes to life with higher realism.</p>
+          </article>
+          <article class="card">
+            <span class="label">MU CONSISTING</span>
+            <h3>Advanced multi-unit operation</h3>
+            <p>Powerful MU consisting helps multiple locomotives run together more smoothly and effectively.</p>
+          </article>
+          <article class="card">
+            <span class="label green">ECOSYSTEM</span>
+            <h3>Throttles and modules</h3>
+            <p>An expanding family of throttles and modules keeps broadening what PMT can do around the layout.</p>
+          </article>
+          <article class="card">
+            <span class="label gold">MULTILINGUAL</span>
+            <h3>Accessible worldwide</h3>
+            <p>Play in your language and make the system more approachable for hobbyists across the globe.</p>
+          </article>
+          <article class="card">
+            <span class="label purple">MARKET LEADERSHIP</span>
+            <h3>Best tech on the market</h3>
+            <p>Innovative, powerful, and proven features continue to push PMT beyond what many expect from a DIY system.</p>
+          </article>
+          <article class="card">
+            <span class="label orange">POSSIBILITY</span>
+            <h3>A smarter railroad</h3>
+            <p>The possibilities expand dramatically when your railroad is not only controlled, but truly connected and intelligent.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>A complete railroad ecosystem</h2>
+        <p>
+          S.M.A.R.T. Trains are built for the whole model railroad, not just one corner of it.
+        </p>
+      </div>
+      <div class="content">
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div>
+              <h3>Run locomotives and MU consists</h3>
+              <p>Coordinate power, sound, and operation across single locomotives or multi-unit consists.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div>
+              <h3>Control switches and lighting</h3>
+              <p>Bring turnouts, scenery lighting, structures, and accessories into the same connected system.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div>
+              <h3>Automate scenes and schedules</h3>
+              <p>Create repeatable operations and intelligent scheduling that make the railroad feel alive.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div>
+              <h3>Expand however you imagine</h3>
+              <p>Use physical controls, mobile devices, endpoints, modules, and mesh-connected devices to keep growing the system.</p>
+            </div>
+          </div>
+        </div>
+        <div class="quote">
+          <strong>Poor Man’s Throttle — The future of model railroading isn’t just coming. We’re building it.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>More capability. More imagination. Still DIY-friendly.</h2>
+        <p>
+          Poor Man’s Throttle continues to prove that advanced model railroad technology does not have to be locked behind an expensive proprietary wall.
+        </p>
+      </div>
+      <div class="content">
+        <p>
+          S.M.A.R.T. Trains show what happens when connectivity, automation, sound, control, and ecosystem thinking all come together in one place.
+          Whether you want a simple wireless throttle or a layout that behaves like an intelligent railroad system, PMT is opening that door.
+        </p>
+        <div class="callout">
+          <strong>S.M.A.R.T. Trains by Poor Man’s Throttle.</strong> The model railroad is no longer just controlled. It is synchronized, meshed, automated, and ready for the future.
+        </div>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      S.M.A.R.T. Trains by Poor Man’s Throttle — Synchronized. Meshed. Automated. Railroad. Technology.
+    </div>
+  </main>
+</body>
+</html>

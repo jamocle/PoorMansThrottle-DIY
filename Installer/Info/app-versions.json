@@ -204,17 +204,32 @@
             "show-again": "2026-04-24 16:24:04"
         },
         {
-            "version": "4.2.3",
+            "version": "4.2.2",
             "title": "PMT Meshes with your layout",
             "description": "PMT now supports Device-to-Device communication in a mesh network.",
             "info": "pmt-meshes-well.html",
             "show-again": "2026-04-24 16:24:04"
         },
         {
-            "version": "4.2.4",
+            "version": "4.2.3",
             "title": "PMT Communicates Globally",
             "description": "PMT now supports RESTful and HTTP services.",
             "info": "pmt-restful-world.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
+            "version": "4.2.1",
+            "title": "PMT is S.M.A.R.T.",
+            "description": "Synchronized Meshed Automated Railroad Technology.",
+            "info": "smart-trains.html",
+            "show-again": "2026-04-24 16:24:04",
+            "info-only": true
+        },
+        {
+            "version": "4.2.4",
+            "title": "PMT is S.M.A.R.T.",
+            "description": "Synchronized Meshed Automated Railroad Technology.",
+            "info": "smart-trains.html",
             "show-again": "2026-04-24 16:24:04"
         }
     ]
