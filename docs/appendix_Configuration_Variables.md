@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.4.1
+**Firmware Version:** 3.6.2
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -138,12 +138,12 @@ These CVs are part of the shared PMT firmware foundation.
 | CV | Availability | Purpose | Values / Default | Description |
 | ---: | --- | --- | --- | --- |
 | **CV4** | All | Device / Component Name | Up to 29 letters, digits, and spaces / blank | Sets the device name used for identity and advertising. Leading/trailing spaces are trimmed; values longer than 29 characters are truncated to 29 characters; characters other than letters, digits, and spaces are rejected. For a throttle, this is normally the train name shown by the app. |
-| **CV8** | All | Factory Reset Trigger | Must write `8` | `CV8=8` wipes saved configuration and reboots the ESP32. Not persisted as a normal setting. |
+| **CV8** | All | Factory Reset Trigger | Must write `8` | `CV8=8` wipes saved configuration and reboots the ESP32. Not persisted as a normal setting and does not advance the `NVS?` configuration revision. Clearing the namespace also resets that revision to `0`. |
 | **CV10** | All | Wi-Fi Enable | `0`, `1` / `0` | Enables or disables Wi-Fi/WebSocket service when configured. On hardware where the firmware resource guard does not allow concurrent Wi-Fi and audio, setting `CV10=1` while `CV400=1` disables audio (`CV400=0`). |
 | **CV11** | All | Wi-Fi SSID | Text / blank | Wi-Fi network name. |
 | **CV12** | All | Wi-Fi Password | Text / blank | The legacy text query `CV12?` returns `ERR`. On firmware 3.4.1+, `CV12?*` is a valid bulk query but intentionally returns a zero-byte value payload. |
 | **CV13** | All | WebSocket Port | `1 – 65535` / `81` | WebSocket server port. |
-| **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. |
+| **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. CV14 writes are explicitly excluded from the `NVS?` configuration revision. |
 | **CV15** | All | OTA Allow Downgrade | `0`, `1` / `0` | Controls downgrade protection for supported ESP32-S3 Throttle OTA. `0` rejects a catalog `latest` semantic version older than the firmware currently running; `1` permits OTA to install that older catalog `latest`. This does not select an arbitrary historical version; use the USB installer when a specific version or recovery image must be chosen. |
 | **CV16** | All | ESP-NOW Enable | `0`, `1` / `1` | Enables or disables direct PMT-to-PMT ESP-NOW relay support. ESP-NOW does not require the device to join a Wi-Fi router. On low-resource Classic ESP32 hardware using the PMTPlayer backend, PMTPlayer and the protected radio features cannot run together; see [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control). |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
@@ -1001,8 +1001,10 @@ CV8=8
 This will:
 
 1. Stop or safe the device as appropriate for the installed firmware.
-2. Clear saved configuration.
+2. Clear saved configuration, including the persisted `NVS?` configuration revision.
 3. Reboot the ESP32.
+
+`CV8` itself does not advance the revision. After the reset and reboot, `NVS?` reports `A:NVS=0`.
 
 Use this after major hardware changes, incorrect pin assignments, or when you need to return the device to factory defaults.
 

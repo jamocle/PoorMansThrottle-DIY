@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 4.2.3
+* **Made Connecting to a throttle more efficient** Now CV's will only be loaded when the app senses they need to be loaded.  Faster connect and throttle entry times.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.4
 * **Added RESTful Support** PMT can now integrate with RESTful API's or any HTTP(s) endpoint for even more integration possibilities.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

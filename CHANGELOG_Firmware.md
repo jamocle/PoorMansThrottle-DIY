@@ -2,6 +2,11 @@
 
 ## Firmware:
 
+### Version 3.6.2
+* **Added NVS version command** Added NVS? command for NVS persistence.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+
 ### Version 3.6.0
 * **Added Support for ESP-NOW Protocol** With ESP-NOW protocol, PMT modules and throttles can now talk to each other. This adds ability to a whole new family of features coming in the future.
 * **Added new "Remote Command" command**. Added RY command to relay a command to another device.

@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.3.9  
+**Firmware Version:** 3.6.2  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -120,7 +120,10 @@ T:1720000000
 F:25
 HW-FWD M40 HW60
 A:PS=1
+A:NVS=315
 ```
+
+`A:NVS=<revision>` is the response to the shared `NVS?` configuration-revision query.
 
 Throttle audio analysis also emits command-generated `AR:` progress/result lines.
 
@@ -242,6 +245,32 @@ VV
 ```
 
 Both `V` and `VV` are shared commands for Throttle, Module, and Turbine firmware and are ACK-wrapped. `VV` is useful when two firmware builds share the same semantic version but need to be distinguished by their full build identifiers.
+
+## NVS Configuration Revision
+
+Firmware 3.6.2 adds a shared persistent configuration-revision query:
+
+```text
+NVS?
+```
+
+Successful response:
+
+```text
+A:NVS=<revision>
+```
+
+Example:
+
+```text
+A:NVS=315
+```
+
+`NVS?` is shared by Throttle, Module, and Turbine firmware. The value is an unsigned 32-bit revision stored in the ESP32 NVS configuration namespace. A fresh or factory-reset namespace reports `0`.
+
+The revision advances when a tracked CV-backed value actually changes in NVS. Rewriting the same stored value does not advance it. `CV8` and `CV14` are explicitly excluded. `CV8=8` clears the saved configuration namespace, so after the reset and reboot `NVS?` reports `0`. `CV14` changes do not advance the revision.
+
+The counter is for CV configuration synchronization only. SD-card writes, script recording/playback files, audio files, debug logs, and other SD activity do not affect it.
 
 ## PX/1 Bulk-Transfer Capability
 
@@ -2172,6 +2201,7 @@ Runtime override:
 | `IB,<token>` | Shared | Authorize backup socket connection |
 | `V` | Shared | Firmware semantic version |
 | `VV` | Shared | Full firmware build identifier |
+| `NVS?` | Shared | Query the persistent 32-bit CV/NVS configuration revision; replies `A:NVS=<revision>` |
 | `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
 | `WIFI?` | Shared | Scan nearby Wi-Fi networks and return versioned JSON using PX `WifiInfo` resource `4` |
 | `MAC?` | Shared | Return the local compact 10-character Base36 ESP-NOW routing address |
@@ -2247,6 +2277,12 @@ Unsolicited runtime lines:
 | `TF:` | INA219 compact status flags |
 | `IP:` | Wi-Fi IP announcement |
 
+Command-generated configuration state line:
+
+| Line | Meaning |
+|---|---|
+| `A:NVS=<revision>` | Persistent 32-bit CV/NVS configuration revision returned by `NVS?` |
+
 Command-generated script status lines:
 
 | Line | Meaning |
@@ -2271,7 +2307,7 @@ Command-generated audio-analysis lines:
 
 # What Changed from the Older 1.12.x Reference
 
-This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1, alongside the older command families documented here.
+This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1 and the shared `NVS?` configuration-revision query added in firmware 3.6.2, alongside the older command families documented here.
 
 Major documentation changes:
 
@@ -2285,6 +2321,7 @@ Major documentation changes:
 * Clarified shared vs throttle-only vs turbine-only command availability.
 * Added `D2` SD-debug logging behavior and clarified persistent `D1` / `D0` semantics.
 * Added `PS?`, `PS1`, and `PS0` persist-only CV staging commands.
+* Added the firmware 3.6.2 shared `NVS?` query and `A:NVS=<revision>` response, including CV8/CV14 exclusions, 32-bit wrap behavior, and the fact that SD-card writes do not affect the revision.
 * Added Throttle `A?`, `A? N=<tracks>`, `AudioMark`, and `AM` audio diagnostic commands.
 * Added the `AR:` audio-analysis result family.
 * Added the firmware 3.3 shared SD-backed script recording/playback/status/delete command family, including trailing recording timing, `.pmt` validation, device-specific recordable controls, and playback command gating.
@@ -2336,6 +2373,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `IB,<token>` | Authorize a backup WebSocket connection. | [Send Connection Token](#send-connection-token) |
 | `IP?` | Query the device IP address. | [IP Address Query](#ip-address-query) |
 | `MAC?` | Query the compact 10-character Base36 ESP-NOW routing address. | [ESP-NOW Device Address](#esp-now-device-address) |
+| `NVS?` | Query the persistent 32-bit CV/NVS configuration revision. | [NVS Configuration Revision](#nvs-configuration-revision) |
 | `OTA` | Start supported ESP32-S3 Throttle firmware update. | [Start OTA](#start-ota) |
 | `OTA?` | Query supported ESP32-S3 Throttle OTA readiness. | [Query OTA capability](#query-ota-capability) |
 | `P0` | Report periodic throttle debug mismatches only. | [Periodic Debug Logging](#periodic-debug-logging) |

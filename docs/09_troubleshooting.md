@@ -907,6 +907,7 @@ A dark firmware-controlled onboard LED is therefore not by itself evidence of a 
 | Check | Action |
 |-----|-------|
 | Re-read the value | Verify the expected value really changed |
+| NVS revision | On firmware 3.6.2+, query `NVS?` before and after a tracked CV change. After the changed value is persisted, `A:NVS=<revision>` should advance. Rewriting the same value does not advance it; CV8, CV14, and SD-card writes are excluded. |
 | Match the driver mode | Confirm you changed the CVs for the active motor driver style |
 | Restart test | Reconnect and test again after configuration changes |
 | NVS assumptions | Remember settings are persisted, so stale configuration from earlier testing may still be active |
