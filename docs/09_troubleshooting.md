@@ -973,3 +973,53 @@ If a new app is connected to firmware older than 3.4.1, update the firmware. App
 
 The ordinary `CV<n>?` and `CV<n>=<value>` text forms remain the legacy protocol. Do not interpret `CV<n>=*` or `CV<n>?*` as legacy literal values on older firmware.
 
+---
+
+## D00 newest-log download troubleshooting — firmware 3.6.3+
+
+`D00` and `D00*` both stop/drain the current D2 logger first and then select the highest numbered normal log matching `/logs/<n>Log.txt`.
+
+### Plain `D00` in an existing app terminal
+
+Plain `D00` uses the ordinary text channel and is intended to work before the app has a dedicated bulk-log feature.
+
+A healthy transfer is framed like:
+
+```text
+A:D00=BEGIN,42781
+<log bytes>
+A:D00=END,42781,2DE62638
+```
+
+Checks:
+
+- The byte count in `BEGIN` and `END` should match.
+- The final CRC32 covers the exact file bytes and is written as eight uppercase hexadecimal digits.
+- BLE text notifications are intentionally paced at a minimum of 25 ms to reduce notification loss on small-MTU links.
+- Do not send `A1`, `V`, or other commands while the log is streaming. Their ordinary text replies use the same channel and can be inserted into the middle of the downloaded log.
+- Plain `D00` has no application-level receiver ACK. After firmware hands the complete stream and END marker to the transport, it deletes the source log. The byte count and CRC32 are therefore the way to detect a bad terminal capture.
+- If the connection/read/send fails before completion, firmware retains the source log and reports an `ERR:D00=<code>` condition when possible.
+
+If a capture contains shortened/spliced lines, first verify firmware 3.6.3 rev322 or newer and make sure no other terminal command was sent before `A:D00=END...`.
+
+### `D00*` PX transfer
+
+`D00*` uses PX/1 resource `LogFile` (`5`). It is not a generic text-terminal transfer.
+
+The receiver must:
+
+1. accept each `LogFile` Data frame,
+2. ACK the next expected byte offset,
+3. accept the final Complete frame, and
+4. return `CompleteAck` with the total byte length.
+
+Firmware retries an unacknowledged chunk. It deletes the log only after `CompleteAck`.
+
+An older app that does not implement `LogFile` resource `5` will not send those ACKs, so `D00*` will eventually fail with a transfer timeout/error. Use plain `D00` from that app's terminal instead.
+
+### D2 across reboot
+
+When D2 has successfully enabled SD logging, its startup override survives an intentional software restart such as `CV8=0`. The reboot creates the next numbered normal log file and continues D2 logging. Panic/watchdog reset recovery clears the persisted D2 startup override.
+
+`D0`, `D00`, and `D00*` clear the persisted debug/logging overrides.
+

@@ -217,6 +217,21 @@ The firmware does not migrate an in-progress diagnostic transfer between transpo
 
 The scan service is separate from normal Wi-Fi/WebSocket service enablement. If normal Wi-Fi is off but the resource memory guard allows Wi-Fi, a BLE-originated `WIFI?` can temporarily initialize the minimum station/radio resources needed to scan and then shut them back down. If Wi-Fi is already running, including when the command arrives over WebSocket, the existing Wi-Fi subsystem remains running.
 
+### SD Debug Log Retrieval
+
+Firmware 3.6.3 adds two shared ways to retrieve the newest numbered SD debug log after D2 logging:
+
+* `D00` is the terminal-compatible path. It first performs the internal D0 drain/flush/close sequence, selects the highest numbered `/logs/<n>Log.txt`, then streams the file over the ordinary BLE/WebSocket text channel between `A:D00=BEGIN,<bytes>` and `A:D00=END,<bytes>,<crc32>`.
+* `D00*` is the application-integrated PX path. It uses PX/1 resource `LogFile` (`5`), byte-offset Data frames, per-chunk acknowledgements, retries, and a final `CompleteAck`.
+
+Both forms stream from SD with bounded memory rather than loading a complete log into RAM.
+
+The two forms deliberately have different reliability semantics. Plain `D00` is compatible with an existing terminal that knows only the text channel. BLE text notifications are paced at a minimum of 25 ms, but they are still unacknowledged at the application level. The source log is deleted after the complete text stream and end marker are handed to the transport. A terminal should avoid sending other commands until the `A:D00=END...` marker arrives because ordinary text responses share the same channel and can interleave with the downloaded log.
+
+`D00*` is the reliable binary form for clients that understand PX `LogFile`. Each accepted chunk advances an acknowledged byte offset, and the source file is deleted only after the receiver sends `CompleteAck`.
+
+D2's persisted SD-log startup override survives intentional software restart such as `CV8=0`, so a reboot can continue logging into the next numbered log file. Panic/watchdog recovery clears the persisted D2 startup override. `D0`, `D00`, and `D00*` clear the debug/logging startup overrides as part of shutdown.
+
 ## ESP-NOW Relay Path
 
 ESP-NOW is a relay path between PMT devices rather than an app session transport. A local device receives an `RY=` command over its normal app-facing transport, transmits the embedded PMT command to the specified compact ESP-NOW address, and the remote device processes that embedded payload through its normal command path.

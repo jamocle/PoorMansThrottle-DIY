@@ -6,7 +6,7 @@
       "image": "Info/classic-esp32-wroom32.png",
       "chipFamily": "ESP32",
       "firmwareDirectory": "../firmware/{version}/",
-      "latest": "3.6.2",
+      "latest": "3.6.3",
       "dropdownDefault": "3.6.1",
       "parts": [
         {
@@ -27,6 +27,9 @@
         }
       ],
       "versions": [
+        {
+          "version": "3.6.3"
+        },
         {
           "version": "3.6.2"
         },
@@ -131,7 +134,7 @@
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/s3/{version}/",
-      "latest": "3.6.2",
+      "latest": "3.6.3",
       "dropdownDefault": "3.6.1",
       "ota": {
         "file": "PoorMansThrottle.ino.bin"
@@ -155,6 +158,9 @@
         }
       ],
       "versions": [
+        {
+          "version": "3.6.3"
+        },
         {
           "version": "3.6.2"
         },
@@ -219,7 +225,7 @@
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/s3-n8r8/{version}/",
-      "latest": "3.6.2",
+      "latest": "3.6.3",
       "dropdownDefault": "3.6.1",
       "ota": {
         "file": "PoorMansThrottle.ino.bin"
@@ -243,6 +249,9 @@
         }
       ],
       "versions": [
+        {
+          "version": "3.6.3"
+        },
         {
           "version": "3.6.2"
         },

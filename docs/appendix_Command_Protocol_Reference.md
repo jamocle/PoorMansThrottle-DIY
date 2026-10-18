@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.6.2  
+**Firmware Version:** 3.6.3  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -71,7 +71,7 @@ Command characteristics:
 | Connection status | Yes | Yes | Yes |
 | IP query | Yes | Yes | Yes |
 | Time query / set | Yes | Yes | Yes |
-| Debug control (`D0` / `D1` / `D2`) | Yes | Yes | Yes |
+| Debug control / newest-log retrieval (`D0` / `D1` / `D2` / `D00` / `D00*`) | Yes | Yes | Yes |
 | Async state notify control | Yes | Yes | Yes |
 | OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
@@ -300,6 +300,7 @@ Current PX/1 script resources are:
 | `ScriptList` | `2` | Read only | Snapshot of saved logical script names, UTF-8, one name per line, without `.pmt` |
 | `CvValue` | `3` | Read / Write | UTF-8 CV value bytes. The PX header `value` field identifies the CV number. |
 | `WifiInfo` | `4` | Diagnostic push | Versioned UTF-8 JSON returned by `WIFI?`. Data-frame `value` is the byte offset; Complete-frame `value` is the total JSON byte length. |
+| `LogFile` | `5` | Read only | Newest numbered SD debug log returned by `D00*`. Data-frame `value` is the zero-based file byte offset; Complete-frame `value` is the total file byte length. |
 
 An empty script directory returns a valid zero-byte `ScriptList`. The list is a snapshot for the lifetime of the transfer so its announced length and CRC remain stable. Directory enumeration order is not defined; clients may sort the returned names for display.
 
@@ -558,7 +559,7 @@ Behavior:
 
 * Enables debug event generation.
 * Persists the debug startup override.
-* Debug remains enabled across reboot until `D0` clears the override.
+* Debug remains enabled across reboot until `D0`, `D00`, or `D00*` clears the override.
 
 ### Debug with SD logging request
 
@@ -578,9 +579,19 @@ Behavior:
 * Requests SD-backed debug logging.
 * The ACK is sent before the firmware waits for the SD log file to become writable/open.
 * If SD logging becomes operational, the firmware persists the SD-log startup override.
+* A normal intentional software restart, including the restart requested by `CV8=0`, preserves that persisted D2 startup behavior. The next boot opens the next numbered normal log file.
+* Panic and watchdog reset recovery clear the persisted SD-log startup override so a fault-reset loop does not automatically keep restarting SD logging.
 * If SD logging cannot be activated, debug event generation remains enabled and the command can operate as serial-debug-only.
 * Runtime resource policy can prevent SD logging on hardware/configurations where the logging path is not allowed.
-* `D0` disables logging and clears the persistent debug/logging overrides.
+* `D0`, `D00`, and `D00*` disable logging and clear the persistent debug/logging overrides.
+
+Normal numbered SD debug logs are stored as:
+
+```text
+/logs/<n>Log.txt
+```
+
+The logger selects the next positive integer when it opens a new normal log.
 
 ### Disable debug/logging
 
@@ -598,9 +609,83 @@ Behavior:
 
 * Clears the persistent debug startup override.
 * Disables SD logging and clears its persisted startup behavior.
+* When SD logging is active, drains accepted queued log bytes, writes any pending overflow marker, flushes the file, and closes it before logging is disabled.
 * Disables debug event generation.
 
-`D0`, `D1`, and `D2` are available before authorization.
+### Retrieve newest SD log through the terminal text channel
+
+Firmware 3.6.3 adds the terminal-compatible newest-log command:
+
+```text
+D00
+```
+
+`D00` requires the normal identity/authorization handshake. It is intended to let a terminal use a new firmware log-retrieval feature without requiring dedicated PX `LogFile` support in the client.
+
+Behavior:
+
+1. Firmware performs the same internal D0 shutdown sequence: clear the persisted debug/logging overrides, stop new SD-log enqueues, drain accepted queued/task-local bytes and any pending overflow marker, flush, and close the current log.
+2. Firmware selects the highest numbered normal file matching `/logs/<n>Log.txt`. `/logs/SdLogEmergency.txt` is not selected.
+3. Firmware opens that file read-only and sends:
+
+```text
+A:D00=BEGIN,<bytes>
+```
+
+4. The exact file bytes are streamed directly from SD using bounded memory. The file is never loaded wholesale into RAM.
+5. Firmware calculates CRC32 incrementally while reading the file.
+6. If the file does not already end with a newline, firmware inserts a separator newline before the footer. That separator is not part of `<bytes>` or the CRC32.
+7. Firmware sends:
+
+```text
+A:D00=END,<bytes>,<crc32>
+```
+
+`<crc32>` is eight uppercase hexadecimal digits and covers the exact file bytes.
+
+For BLE terminal streaming, firmware uses the negotiated notification payload size and a **25 ms minimum spacing** between text notifications. WebSocket terminal reads are capped at 512 bytes. The transfer buffer is bounded; log size does not determine RAM use.
+
+After the complete text stream and `A:D00=END...` marker have been handed to the active transport, firmware deletes the source log. Plain `D00` does **not** have receiver acknowledgements, so successful local transport handoff does not prove that every BLE notification was received by the terminal.
+
+Because `D00` uses the ordinary text channel, other text responses can interleave with the log stream. For a clean capture, do not send additional commands until `A:D00=END...` is received. The byte count and CRC32 footer can be used to detect an incomplete/corrupted capture.
+
+Typical failures are reported as `ERR:D00=<code>`, including conditions such as `BUSY`, `TRANSPORT`, `FLUSH`, `SD`, `NOLOG`, `OPEN`, `READ`, `TIMEOUT`, `TRANSFER`, or `DELETE`.
+
+### Retrieve newest SD log through PX/1
+
+For clients that implement PX resource `LogFile` (`5`), use:
+
+```text
+D00*
+```
+
+`D00*` requires the normal identity/authorization handshake.
+
+Behavior:
+
+1. Firmware sends an initial text marker:
+
+```text
+A:D00=*
+```
+
+2. Firmware performs the same internal D0 drain/flush/close sequence and selects the newest numbered normal log.
+3. The log is streamed through PX/1 `LogFile` (`5`) `Data` frames. `Data.value` is the zero-based file byte offset.
+4. BLE PX chunks are 192 bytes; WebSocket PX chunks are capped at 512 bytes. Only one chunk buffer is retained for retry.
+5. The receiver acknowledges each accepted contiguous chunk with `Ack.value = next expected byte offset`. Missing acknowledgements cause firmware to retry the current chunk.
+6. After all bytes are acknowledged, firmware sends `Complete` with `value = total file bytes`.
+7. The receiver returns `CompleteAck` with the same total length.
+8. Only after `CompleteAck` does firmware delete the source log and send the second/final:
+
+```text
+A:D00=*
+```
+
+If a PX transfer times out, disconnects, aborts, fails to read, or never receives the required `CompleteAck`, the source log is retained.
+
+A client that does not implement PX `LogFile` resource `5` should use plain `D00`; without the required PX acknowledgements, `D00*` will time out.
+
+`D0`, `D1`, and `D2` are available before authorization. `D00` and `D00*` require authorization.
 
 ---
 
@@ -2307,7 +2392,7 @@ Command-generated audio-analysis lines:
 
 # What Changed from the Older 1.12.x Reference
 
-This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1 and the shared `NVS?` configuration-revision query added in firmware 3.6.2, alongside the older command families documented here.
+This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1, the shared `NVS?` configuration-revision query added in firmware 3.6.2, and the firmware 3.6.3 SD debug-log retrieval commands, alongside the older command families documented here.
 
 Major documentation changes:
 
@@ -2319,7 +2404,8 @@ Major documentation changes:
 * Clarified the CV14-adjusted firmware clock behavior used by time and scheduling.
 * Corrected the identity flow so `I` requests identity and `I?` checks authorization state.
 * Clarified shared vs throttle-only vs turbine-only command availability.
-* Added `D2` SD-debug logging behavior and clarified persistent `D1` / `D0` semantics.
+* Added `D2` SD-debug logging behavior, including persistence across intentional software restart and recovery clearing on panic/watchdog reset, and clarified persistent `D1` / `D0` semantics.
+* Added firmware 3.6.3 `D00` terminal-compatible newest-log streaming and `D00*` PX `LogFile` (`5`) retrieval, including bounded-memory streaming, CRC/byte-count framing, acknowledgement/delete behavior, and old-terminal compatibility.
 * Added `PS?`, `PS1`, and `PS0` persist-only CV staging commands.
 * Added the firmware 3.6.2 shared `NVS?` query and `A:NVS=<revision>` response, including CV8/CV14 exclusions, 32-bit wrap behavior, and the fact that SD-card writes do not affect the revision.
 * Added Throttle `A?`, `A? N=<tracks>`, `AudioMark`, and `AM` audio diagnostic commands.
@@ -2354,8 +2440,10 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `CV<n>?*` | Bulk-query a CV value through PX/1. | [Bulk CV value protocol — firmware 3.4.1+](#bulk-cv-value-protocol--firmware-341) |
 | `CVABORT` | Cancel a pending CV bulk-value transaction. | [Bulk CV value protocol — firmware 3.4.1+](#bulk-cv-value-protocol--firmware-341) |
 | `D0` | Disable debug and SD logging and clear saved overrides. | [Disable debug/logging](#disable-debuglogging) |
+| `D00` | Drain/close D2 logging, stream the newest numbered log over the ordinary text terminal channel, then delete it after the stream is handed to the transport. | [Retrieve newest SD log through the terminal text channel](#retrieve-newest-sd-log-through-the-terminal-text-channel) |
+| `D00*` | Drain/close D2 logging and transfer the newest numbered log over PX `LogFile` (`5`) with per-chunk ACKs and final `CompleteAck`. | [Retrieve newest SD log through PX/1](#retrieve-newest-sd-log-through-px1) |
 | `D1` | Enable debug and persist startup override. | [Persistent debug enable](#persistent-debug-enable) |
-| `D2` | Enable debug and request SD logging. | [Debug with SD logging request](#debug-with-sd-logging-request) |
+| `D2` | Enable debug and request persistent SD logging. | [Debug with SD logging request](#debug-with-sd-logging-request) |
 | `F<n>` (Throttle) | Ramp forward locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
 | `F<n>` (Turbine) | Ramp turbine output, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
 | `F<n>*` | Set turbine output immediately, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
