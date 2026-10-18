@@ -2,7 +2,7 @@
 
 ## Smartphone App:
 
-### Version 4.2.3
+### Version 4.2.5
 * **Made Connecting to a throttle more efficient** Now CV's will only be loaded when the app senses they need to be loaded.  Faster connect and throttle entry times.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 

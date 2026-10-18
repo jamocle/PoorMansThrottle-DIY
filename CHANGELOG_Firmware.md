@@ -4,6 +4,7 @@
 
 ### Version 3.6.2
 * **Added NVS version command** Added NVS? command for NVS persistence.
+** **Modified Automatic Sounds**. Now horns and bells are more prototypical in automatic mode.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 
