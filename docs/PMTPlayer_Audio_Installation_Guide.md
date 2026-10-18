@@ -345,7 +345,7 @@ The firmware defaults to **audio disabled**, so a correctly wired installation c
 
 **CV21 can suppress this physical LED indication.** `CV21=0` forces the firmware-controlled onboard LED off. `CV21=2` forces it off while either BLE or WebSocket control is connected. For visible startup error codes, use `CV21=1`.
 
-If the red LED flashes, pauses, and repeats, **count the flashes**:
+If the LED flashes, pauses, and repeats, **count the flashes**:
 
 - **4 flashes** — one or more sound files could not be loaded.
 - **5 flashes** — the audio system could not start.
