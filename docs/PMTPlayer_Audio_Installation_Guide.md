@@ -291,7 +291,7 @@ Sounds can also be uploaded there to contribute to the crowdsourced PMTPlayer so
 
 **64 GB and 128 GB cards are often sold already formatted as exFAT. PMTPlayer requires them to be reformatted as FAT32 before use.**
 
-On an S3 board, a card that cannot be mounted or used during audio startup can cause **5 red flashes**.
+On an S3 board, a card that cannot be mounted or used during audio startup can cause **5 flashes**.
 
 Use:
 
@@ -339,7 +339,7 @@ After all wiring is complete:
 
 The firmware defaults to **audio disabled**, so a correctly wired installation can still be silent until audio is enabled.
 
-## S3 boards: red LED flashes at startup
+## S3 boards: LED flashes at startup
 
 **This applies only to the ESP32-S3 Standard and ESP32-S3 CAM boards. It does not apply to the Classic ESP32.**
 
@@ -354,7 +354,7 @@ If the LED flashes, pauses, and repeats, **count the flashes**:
 **Important:** A missing individual WAV file normally causes **4 flashes**, not 5.  
 **5 flashes can happen when the SD card itself cannot be used**, including when a 64 GB or 128 GB card is still formatted as exFAT instead of FAT32.
 
-For causes and fixes, see **Section 8 — S3 startup red LED error codes**.
+For causes and fixes, see **Section 8 — S3 startup LED error codes**.
 
 The basic commands are:
 
@@ -378,15 +378,15 @@ CV400=1
 
 # 8. Troubleshooting
 
-## S3 startup red LED error codes
+## S3 startup LED error codes
 
 **This section is only for ESP32-S3 Standard and ESP32-S3 CAM boards.**
 
 **CV21 gates the final physical LED output.** With `CV21=0`, these red error flashes are not visible. With `CV21=2`, they are suppressed while either BLE or WebSocket control is connected. The firmware error state still exists even when the physical LED is gated off. Use `CV21=1` when you need the LED error code to remain visible.
 
-The red LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.
+The LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.
 
-### 4 red flashes — one or more sound files did not load
+### 4 flashes — one or more sound files did not load
 
 **What it means:**  
 The SD card is working, but one or more required sound files could not be loaded.
@@ -409,7 +409,7 @@ The SD card is working, but one or more required sound files could not be loaded
 
 **The board may still play sound with 4 flashes.** Files that could not be preloaded can use the SD card directly.
 
-### 5 red flashes — the audio system could not start
+### 5 flashes — the audio system could not start
 
 **What it means:**  
 The audio system did not finish starting.
@@ -441,7 +441,7 @@ The audio system did not finish starting.
 **Important:** A missing individual WAV file normally causes **4 flashes**, not 5.  
 **5 flashes can happen when the SD card itself cannot be used, including when a 64 GB or 128 GB card is formatted as exFAT instead of FAT32.**
 
-### 6 red flashes — audio file information could not be saved
+### 6 flashes — audio file information could not be saved
 
 **What it means:**  
 The board read and checked the WAV file, but it could not save the generated `.csh` information back to the SD card.
@@ -465,7 +465,7 @@ The board read and checked the WAV file, but it could not save the generated `.c
 
 ## No sound
 
-**On an S3 board, if the red LED is flashing a repeating code, check the S3 startup red LED error codes above first. If the LED is dark, check `CV21` before assuming no LED error code exists, because `CV21=0` can suppress it and `CV21=2` can suppress it while BLE or WebSocket control is connected.**
+**On an S3 board, if the LED is flashing a repeating code, check the S3 startup LED error codes above first. If the LED is dark, check `CV21` before assuming no LED error code exists, because `CV21=0` can suppress it and `CV21=2` can suppress it while BLE or WebSocket control is connected.**
 
 Check:
 

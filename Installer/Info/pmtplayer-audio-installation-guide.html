@@ -272,7 +272,7 @@
 </tbody>
 </table>
 <p><strong>64 GB and 128 GB cards are often sold already formatted as exFAT. PMTPlayer requires them to be reformatted as FAT32 before use.</strong></p>
-<p>On an S3 board, a card that cannot be mounted or used during audio startup can cause <strong>5 red flashes</strong>.</p>
+<p>On an S3 board, a card that cannot be mounted or used during audio startup can cause <strong>5 flashes</strong>.</p>
 
 <blockquote>
 <p><strong>Before you copy any sound files:</strong> format the card correctly first. A 64 GB or 128 GB card may arrive from the factory as exFAT and must be reformatted as FAT32.</p>
@@ -659,10 +659,10 @@
 <li>Test a sound.</li>
 </ol>
 <p>The firmware defaults to <strong>audio disabled</strong>, so a correctly wired installation can still be silent until audio is enabled.</p>
-<h2>S3 boards: red LED flashes at startup</h2>
+<h2>S3 boards: LED flashes at startup</h2>
 <p><strong>This applies only to the ESP32-S3 Standard and ESP32-S3 CAM boards. It does not apply to the Classic ESP32.</strong></p>
 <p><strong>CV21 can suppress this physical LED indication.</strong> <code>CV21=0</code> forces the firmware-controlled onboard LED off. <code>CV21=2</code> forces it off while either BLE or WebSocket control is connected. For visible startup error codes, use <code>CV21=1</code>.</p>
-<p>If the red LED flashes, pauses, and repeats, <strong>count the flashes</strong>:</p>
+<p>If the LED flashes, pauses, and repeats, <strong>count the flashes</strong>:</p>
 <ul>
 <li><strong>4 flashes</strong> — one or more sound files could not be loaded.</li>
 <li><strong>5 flashes</strong> — the audio system could not start.</li>
@@ -670,7 +670,7 @@
 </ul>
 <p><strong>Important:</strong> A missing individual WAV file normally causes <strong>4 flashes</strong>, not 5.<br />
 <strong>5 flashes can happen when the SD card itself cannot be used</strong>, including when a 64 GB or 128 GB card is still formatted as exFAT instead of FAT32.</p>
-<p>For causes and fixes, see <a href="#s3-led-errors"><strong>Section 8 — S3 startup red LED error codes</strong></a>.</p>
+<p>For causes and fixes, see <a href="#s3-led-errors"><strong>Section 8 — S3 startup LED error codes</strong></a>.</p>
 <p>The basic commands are:</p>
 <h3>Diesel</h3>
 <pre><code class="language-text">CV400=0
@@ -684,12 +684,12 @@ CV400=1
 </code></pre>
 <hr />
 <h1 id="troubleshooting">8. Troubleshooting</h1>
-<h2 id="s3-led-errors">S3 startup red LED error codes</h2>
+<h2 id="s3-led-errors">S3 startup LED error codes</h2>
 <p><strong>This section is only for ESP32-S3 Standard and ESP32-S3 CAM boards.</strong></p>
-<p><strong>CV21 gates the final physical LED output.</strong> With <code>CV21=0</code>, these red error flashes are not visible. With <code>CV21=2</code>, they are suppressed while either BLE or WebSocket control is connected. The firmware error state still exists even when the physical LED is gated off. Use <code>CV21=1</code> when you need the LED error code to remain visible.</p>
-<p>The red LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.</p>
+<p><strong>CV21 gates the final physical LED output.</strong> With <code>CV21=0</code>, these error flashes are not visible. With <code>CV21=2</code>, they are suppressed while either BLE or WebSocket control is connected. The firmware error state still exists even when the physical LED is gated off. Use <code>CV21=1</code> when you need the LED error code to remain visible.</p>
+<p>The LED flashes the error number, pauses, and repeats. The code stays active until the board is rebooted.</p>
 
-<h3>4 red flashes — one or more sound files did not load</h3>
+<h3>4 flashes — one or more sound files did not load</h3>
 <p><strong>What it means:</strong><br />
 The SD card is working, but one or more required sound files could not be loaded.</p>
 <p><strong>Common causes:</strong></p>
@@ -710,7 +710,7 @@ The SD card is working, but one or more required sound files could not be loaded
 </ol>
 <p><strong>The board may still play sound with 4 flashes.</strong> Files that could not be preloaded can use the SD card directly.</p>
 
-<h3>5 red flashes — the audio system could not start</h3>
+<h3>5 flashes — the audio system could not start</h3>
 <p><strong>What it means:</strong><br />
 The audio system did not finish starting.</p>
 <p><strong>Common causes:</strong></p>
@@ -746,7 +746,7 @@ The audio system did not finish starting.</p>
 <p><strong>Important:</strong> A missing individual WAV file normally causes <strong>4 flashes</strong>, not 5.<br />
 <strong>5 flashes can happen when the SD card itself cannot be used, including when a 64 GB or 128 GB card is formatted as exFAT instead of FAT32.</strong></p>
 
-<h3>6 red flashes — audio file information could not be saved</h3>
+<h3>6 flashes — audio file information could not be saved</h3>
 <p><strong>What it means:</strong><br />
 The board read and checked the WAV file, but it could not save the generated <code>.csh</code> information back to the SD card.</p>
 <p><strong>Common causes:</strong></p>
@@ -767,7 +767,7 @@ The board read and checked the WAV file, but it could not save the generated <co
 <p><strong>The board may still play sound with 6 flashes.</strong> The audio information already held in memory can still be used for that boot.</p>
 
 <h2>No sound</h2>
-<p><strong>On an S3 board, if the red LED is flashing a repeating code, check the <a href="#s3-led-errors">S3 startup red LED error codes</a> above first. If the LED is dark, check <code>CV21</code> before assuming no LED error code exists, because <code>CV21=0</code> can suppress it and <code>CV21=2</code> can suppress it while BLE or WebSocket control is connected.</strong></p>
+<p><strong>On an S3 board, if the LED is flashing a repeating code, check the <a href="#s3-led-errors">S3 startup LED error codes</a> above first. If the LED is dark, check <code>CV21</code> before assuming no LED error code exists, because <code>CV21=0</code> can suppress it and <code>CV21=2</code> can suppress it while BLE or WebSocket control is connected.</strong></p>
 <p>Check:</p>
 <ol>
 <li>Audio is enabled.</li>
