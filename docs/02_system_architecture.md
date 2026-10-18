@@ -589,6 +589,8 @@ Examples of configuration areas include:
 
 This persistent configuration layer is an important part of the architecture because the same hardware can behave differently depending on its stored setup.
 
+Beginning with firmware 3.6.2, the shared Throttle, Module, and Turbine firmware also maintains a persistent unsigned 32-bit configuration revision in NVS. The shared `NVS?` command returns it as `A:NVS=<revision>`. The revision advances when tracked CV-backed data actually changes in NVS; rewriting the same value does not advance it. `CV8` and `CV14` are excluded, and SD-card writes do not affect this counter. A factory reset clears the NVS namespace and returns the revision to `0`.
+
 The smartphone app provides customer-friendly screens for many of these settings, while lower-level configuration remains available through diagnostic and terminal workflows when needed.
 
 ---
