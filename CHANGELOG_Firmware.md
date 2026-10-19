@@ -2,7 +2,7 @@
 
 ## Firmware:
 
-### Version 3.6.3
+### Version 3.6.4
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.6.2
