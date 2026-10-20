@@ -1200,6 +1200,275 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-configuration-variables">
+          <summary>
+            <span class="section-title">
+              <span>What are CV's, how do I change/query them, and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <strong>CV</strong> stands for <strong>Configuration Variable</strong>. A CV is simply a numbered setting stored inside your PMT device.
+            </p>
+
+            <p class="note">
+              CVs control things such as:
+            </p>
+
+            <ul>
+              <li>device name</li>
+              <li>motor-driver settings and GPIO pins</li>
+              <li>WiFi</li>
+              <li>sound and volume</li>
+              <li>lighting and outputs</li>
+              <li>battery monitoring</li>
+              <li>automation and other device behavior</li>
+            </ul>
+
+            <p class="note">
+              Most CV settings are saved in the ESP32's non-volatile memory, so they remain set after the device is powered off.
+            </p>
+
+            <p class="note">
+              <strong>The easiest way to work with CVs</strong>
+            </p>
+
+            <p class="note">
+              Connect to the PMT device, open <strong>Configuration</strong>, and expand <strong>Configuration Variables</strong>.
+            </p>
+
+            <p class="note">
+              From there you can <strong>get/query</strong> a CV to see its current value or <strong>set</strong> it to a new value. Many normal PMT configuration screens also change CVs for you behind the scenes, so you usually do not need to work with CV numbers directly.
+            </p>
+
+            <p class="note">
+              For example, the Steam Chuff Rate Curve screen modifies its associated CV values graphically instead of requiring you to type the CVs yourself.
+            </p>
+
+            <p class="note">
+              <strong>You can also use the Terminal</strong>
+            </p>
+
+            <p class="note">
+              To read a CV:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV33?</code>
+            </p>
+
+            <p class="note">
+              A response might look like:
+            </p>
+
+            <p class="note note-strong">
+              <code>A:CV33=64</code>
+            </p>
+
+            <p class="note">
+              To change it:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV33=65</code>
+            </p>
+
+            <p class="note">
+              The device responds with the value it accepted.
+            </p>
+
+            <p class="note">
+              <strong>How do I know what a CV means?</strong>
+            </p>
+
+            <p class="note">
+              Always look up the CV in the <strong>Configuration Variables Reference</strong> before changing it. The reference tells you:
+            </p>
+
+            <ul>
+              <li>what the CV controls</li>
+              <li>which PMT device type it applies to</li>
+              <li>the allowed values</li>
+              <li>the default value</li>
+              <li>what changing it does</li>
+            </ul>
+
+            <p class="note">
+              This is important because <strong>the same CV number can mean different things on different PMT firmware types</strong>. For example, the meaning of a CV on a locomotive Throttle is not always the same as that CV on a Turbine device.
+            </p>
+
+            <p class="note">
+              For most users, use the regular Configuration screens whenever a setting is available there. Use the Configuration Variables screen or Terminal when you need an advanced setting, troubleshooting, or something that is not exposed elsewhere in the app.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-command-protocol">
+          <summary>
+            <span class="section-title">
+              <span>What commands are available, how do I use them, and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT devices understand <strong>text commands</strong>. The PMT app normally sends these commands for you when you operate the throttle or change settings, but you can also send commands yourself from the built-in <strong>Terminal</strong>.
+            </p>
+
+            <p class="note">
+              <strong>How do I send a command?</strong>
+            </p>
+
+            <ol>
+              <li>Open the <strong>PMT application</strong>.</li>
+              <li>Connect to your PMT device and let the normal connection complete.</li>
+              <li>Open the <strong>Terminal</strong>.</li>
+              <li>Type a command.</li>
+              <li>Press <strong>Send</strong>.</li>
+            </ol>
+
+            <p class="note">
+              The device will normally respond with a confirmation, a value, or an error.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>V</code>
+            </p>
+
+            <p class="note">
+              asks for the firmware version.
+            </p>
+
+            <p class="note">
+              Other common examples are:
+            </p>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Command</th>
+                  <th>What it does</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><code>V</code></td><td>Show the firmware version</td></tr>
+                <tr><td><code>VV</code></td><td>Show the exact firmware build</td></tr>
+                <tr><td><code>C?</code></td><td>Show connection status</td></tr>
+                <tr><td><code>IP?</code></td><td>Show the device's IP address</td></tr>
+                <tr><td><code>F25</code></td><td>Throttle: move forward toward 25% speed</td></tr>
+                <tr><td><code>R25</code></td><td>Throttle: move in reverse toward 25% speed</td></tr>
+                <tr><td><code>S</code></td><td>Quick stop</td></tr>
+                <tr><td><code>B</code></td><td>Brake stop</td></tr>
+                <tr><td><code>B25</code></td><td>Apply a variable brake amount</td></tr>
+                <tr><td><code>FX3=1</code></td><td>Turn Output/FX 3 on</td></tr>
+                <tr><td><code>FX3=0</code></td><td>Turn Output/FX 3 off</td></tr>
+                <tr><td><code>CV33?</code></td><td>Query CV33</td></tr>
+                <tr><td><code>CV33=65</code></td><td>Set CV33 to 65</td></tr>
+                <tr><td><code>SS?</code></td><td>Check automation/script status</td></tr>
+                <tr><td><code>SP0</code></td><td>Stop a running automation/script</td></tr>
+              </tbody>
+            </table>
+
+            <p class="note">
+              PMT also has commands for:
+            </p>
+
+            <ul>
+              <li>Automation/script recording and playback</li>
+              <li>WiFi and connection diagnostics</li>
+              <li>ESP-NOW communication between PMT devices</li>
+              <li>Audio testing and diagnostics</li>
+              <li>Debug logging</li>
+              <li>Configuration Variables</li>
+              <li>Firmware updates on supported hardware</li>
+              <li>Turbine control</li>
+            </ul>
+
+            <p class="note">
+              <strong>What do the replies mean?</strong>
+            </p>
+
+            <p class="note">
+              A successful command commonly returns something beginning with:
+            </p>
+
+            <p class="note note-strong">
+              <code>ACK:</code>
+            </p>
+
+            <p class="note">
+              A command that could not be accepted commonly returns:
+            </p>
+
+            <p class="note note-strong">
+              <code>ERR:</code>
+            </p>
+
+            <p class="note">
+              Queries may return the requested information directly. For example, <code>CV33?</code> may return:
+            </p>
+
+            <p class="note note-strong">
+              <code>A:CV33=64</code>
+            </p>
+
+            <p class="note">
+              <strong>Do all PMT devices use the same commands?</strong>
+            </p>
+
+            <p class="note">
+              No. There is a shared group of commands used by multiple PMT devices, but some commands are specific to a particular firmware type.
+            </p>
+
+            <p class="note">
+              For example, locomotive <strong>Throttle</strong> firmware understands motor commands such as <code>F25</code>, <code>R25</code>, and <code>FX3=1</code>, while <strong>Turbine</strong> firmware has its own output-control commands.
+            </p>
+
+            <p class="note">
+              Always check the <strong>Command Protocol Reference</strong> before manually sending an unfamiliar command. It shows the exact syntax, what the command does, what response to expect, and which PMT device types support it.
+            </p>
+
+            <p class="note">
+              For normal operation, you usually do <strong>not</strong> need to type commands yourself—the app's throttle and Configuration screens generate the appropriate commands behind the scenes. The Terminal is most useful for diagnostics, advanced configuration, testing, and troubleshooting.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
