@@ -426,6 +426,223 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-track-power-pmt">
+          <summary>
+            <span class="section-title">
+              <span>Can I use Track Power to power PMT? What does that look like?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Yes. PMT can be installed <strong>inside the locomotive and powered from the track</strong>.
+            </p>
+
+            <p class="note">
+              In this setup, the track is kept at a constant voltage from your transformer. The locomotive's existing track pickups bring that power into PMT.
+            </p>
+
+            <p class="note note-strong">
+              Track Power → Locomotive Pickups → PMT Electronics → Motor
+            </p>
+
+            <p class="note">
+              PMT then controls the locomotive's motor instead of varying the voltage on the track. A <strong>5V power module</strong> is used to provide the correct power for the ESP32, while the motor driver controls the locomotive motor.
+            </p>
+
+            <p class="note">
+              Because the track stays powered, it can also continue supplying power to things such as lights, buildings, and other accessories.
+            </p>
+
+            <p class="note">
+              If each locomotive has its own PMT controller, multiple PMT-equipped locomotives can be controlled independently while sharing the same powered track.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Build Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-dead-rail-battery-installation">
+          <summary>
+            <span class="section-title">
+              <span>How do I install Dead Rail/Battery powered PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              With a <strong>Dead Rail</strong> installation, the locomotive carries its own battery and does not depend on the rails for power.
+            </p>
+
+            <p class="note">
+              A basic installation looks like this:
+            </p>
+
+            <p class="note note-strong">
+              Battery → Fuse → Motor Driver → Locomotive Motor
+            </p>
+
+            <p class="note">
+              The same battery also feeds a <strong>5V power module</strong>, which supplies the correct power to the ESP32:
+            </p>
+
+            <p class="note note-strong">
+              Battery → 5V Power Module → ESP32
+            </p>
+
+            <p class="note">
+              If the battery voltage is too high for your locomotive motor, an <strong>optional buck converter</strong> can be placed before the motor driver to reduce the voltage.
+            </p>
+
+            <p class="note">
+              The battery and PMT electronics can be installed <strong>inside the locomotive</strong>, in a <strong>tender</strong>, or in a <strong>battery car</strong>, depending on how much space you have.
+            </p>
+
+            <p class="note">
+              With true Dead Rail operation, the rails do not need to be powered. Each PMT-equipped locomotive carries its own power source and can be controlled independently.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">
+                Installation Options
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Build Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-sd-card-size-format">
+          <summary>
+            <span class="section-title">
+              <span>What SD card size should I use and how should I format it for use with PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT does not require a large microSD card. A <strong>small card is fine — even 128 MB is enough</strong> for a typical PMT sound installation.
+            </p>
+
+            <p class="note">
+              The important part is formatting the card correctly:
+            </p>
+
+            <ul>
+              <li><strong>128 MB through 2 GB:</strong> format as <strong>FAT16</strong>.</li>
+              <li><strong>4 GB through 128 GB:</strong> format as <strong>FAT32</strong>.</li>
+              <li><strong>Do not use exFAT.</strong></li>
+            </ul>
+
+            <p class="note">
+              Be especially careful with <strong>64 GB and 128 GB cards</strong>. They are often sold already formatted as exFAT, so they must be reformatted to <strong>FAT32</strong> before PMT can use them.
+            </p>
+
+            <p class="note">
+              If you are buying a card specifically for PMT, there is generally no need to buy a very large one.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-control-led-lights">
+          <summary>
+            <span class="section-title">
+              <span>How do I control LED lights?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT can control LED lights directly from the ESP32 using its <strong>Output Controls</strong>.
+            </p>
+
+            <p class="note">
+              For each light, you configure:
+            </p>
+
+            <ul>
+              <li><strong>Name</strong> — such as Headlight, Reverse Light, or Ditch Light.</li>
+              <li><strong>Pattern</strong> — for example Solid, Blink, Ditch Light, Strobe, or other lighting effects.</li>
+              <li><strong>GPIO Pin</strong> — the ESP32 output pin connected to that light.</li>
+              <li><strong>Direction</strong> — Both, Forward, or Reverse.</li>
+            </ul>
+
+            <p class="note">
+              For example, a headlight can be configured as <strong>LED Solid / Forward</strong>, while a rear light can be <strong>LED Solid / Reverse</strong>. PMT will then only operate each light in the appropriate direction.
+            </p>
+
+            <p class="note">
+              PMT supports up to <strong>12 firmware FX outputs</strong>, so you can configure several independent lights and effects.
+            </p>
+
+            <p class="note">
+              LEDs connected directly to an ESP32 GPIO must use an appropriate <strong>series resistor</strong>, because the GPIO output is 3.3V. Each independently controlled LED output should also use its own GPIO pin.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/light.html"
+                target="_blank" rel="noopener noreferrer">
+                Lighting and Auxiliary Outputs
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
