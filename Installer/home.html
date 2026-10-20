@@ -1469,6 +1469,303 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-start-assist-kick">
+          <summary>
+            <span class="section-title">
+              <span>What is Start Assist / Kick, when would I need to use it and how?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <strong>Start Assist</strong>, also called <strong>Kick</strong>, gives the motor a brief extra push when the locomotive begins moving from a stop.
+            </p>
+
+            <p class="note">
+              Some motors need more power to start turning than they need once they are already moving. Without Start Assist, you may raise the throttle and see the locomotive hesitate, hum, or suddenly jump into motion.
+            </p>
+
+            <p class="note">
+              <strong>When should I use it?</strong>
+            </p>
+
+            <p class="note">
+              Start Assist may help if:
+            </p>
+
+            <ul>
+              <li>the locomotive hesitates when starting at low speed;</li>
+              <li>the motor needs extra power to break away from a stop; or</li>
+              <li>you have adjusted <strong>Minimum Start Throttle</strong>, but starting is still inconsistent.</li>
+            </ul>
+
+            <p class="note">
+              If your locomotive already starts smoothly, you generally do not need Start Assist.
+            </p>
+
+            <p class="note">
+              <strong>How do I configure it?</strong>
+            </p>
+
+            <p class="note">
+              In the PMT app, open:
+            </p>
+
+            <p class="note note-strong">
+              <strong>Configuration → Motor &amp; Drive Behavior</strong>
+            </p>
+
+            <p class="note">
+              Use the <strong>Start Assist / Kick</strong> settings there to tune how much help the motor receives when starting.
+            </p>
+
+            <p class="note">
+              This is the recommended way to adjust it because the Configuration screen handles the underlying settings for you.
+            </p>
+
+            <p class="note">
+              Behind the scenes, Start Assist is stored in <strong>CV9 — Kick Configuration</strong>:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV9=&lt;throttle&gt;,&lt;ms&gt;,&lt;rampDownMs&gt;,&lt;maxApply&gt;</code>
+            </p>
+
+            <p class="note">
+              The documented default is:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV9=0,0,80,15</code>
+            </p>
+
+            <p class="note">
+              So you normally <strong>do not need to manually edit CV9</strong>. The <strong>Motor &amp; Drive Behavior</strong> screen changes the CV9 configuration behind the scenes.
+            </p>
+
+            <p class="note">
+              <strong>Start Assist vs. Minimum Start Throttle</strong>
+            </p>
+
+            <ul>
+              <li><strong>Minimum Start Throttle</strong> sets the minimum useful motor-output level when the locomotive is moving.</li>
+              <li><strong>Start Assist / Kick</strong> provides a temporary boost to help the motor get started from a stop.</li>
+            </ul>
+
+            <p class="note">
+              A good approach is to set <strong>Minimum Start Throttle first</strong>, then add a small amount of Start Assist only if the locomotive still has difficulty beginning smoothly.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-limits.html"
+                target="_blank" rel="noopener noreferrer">
+                Minimum Start Throttle and Maximum Throttle
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-change-app-language">
+          <summary>
+            <span class="section-title">
+              <span>How do I change the language of the app? For example Italian or English?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT normally <strong>follows the language setting of your phone or tablet automatically</strong>.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <ul>
+              <li>If your device is set to <strong>Italian</strong>, PMT will use Italian when that translation is available.</li>
+              <li>If your device is set to <strong>English</strong>, PMT will use English.</li>
+            </ul>
+
+            <p class="note">
+              PMT currently documents support for <strong>English, Spanish, French, German, Finnish, Gujarati, Hindi, Italian, Dutch, Portuguese, Tamil, and others</strong>.
+            </p>
+
+            <p class="note">
+              If you do not want PMT to follow the device language, you can also <strong>override the language manually in PMT's settings</strong> and choose the language you prefer.
+            </p>
+
+            <p class="note">
+              So you have two choices:
+            </p>
+
+            <ol>
+              <li>Let PMT automatically follow your phone or tablet's language.</li>
+              <li>Select a different language manually in PMT's settings.</li>
+            </ol>
+
+            <p class="note">
+              The supplied documentation confirms the manual language override, but it does not specify the exact menu path or setting name inside the current app.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/12-1.html"
+                target="_blank" rel="noopener noreferrer">
+                Accessibility &amp; Multi-Language Support
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-getting-started">
+          <summary>
+            <span class="section-title">
+              <span>I'm new to this. Where should I start?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Start with the <strong>Getting Started with Poor Man's Throttle</strong> page. It brings the hardware, installation choices, firmware, app, sound, and reference material together in one place.
+            </p>
+
+            <p class="note">
+              For your first PMT build, take it in this order:
+            </p>
+
+            <ol>
+              <li>
+                <strong>Decide how you want to use PMT.</strong>
+                Choose the installation style that fits your railroad:
+                <ul>
+                  <li>PMT between the transformer and track — no locomotive modifications.</li>
+                  <li>PMT inside the locomotive using track power.</li>
+                  <li>Dead Rail / battery powered.</li>
+                </ul>
+              </li>
+              <li>
+                <strong>Start with the basic PMT recipe.</strong>
+                A basic locomotive controller needs:
+                <ul>
+                  <li>an <strong>ESP32 controller</strong></li>
+                  <li>a <strong>regulated 5V power supply</strong></li>
+                  <li>a <strong>motor driver</strong></li>
+                </ul>
+                Sound, battery monitoring, lighting, and other features can be added after the basic system is working.
+              </li>
+              <li>
+                <strong>Choose hardware that fits your locomotive.</strong>
+                Consider the available space, motor voltage, and motor current when choosing the ESP32 and motor driver.
+              </li>
+              <li>
+                <strong>Install the PMT firmware and app.</strong>
+                Flash the correct firmware for your ESP32 board, install the PMT app on your phone or tablet, and verify that the app can find the PMT device.
+              </li>
+              <li>
+                <strong>Follow the installation guide for your motor driver.</strong>
+                Wire and test the basic motor-control system before adding optional features.
+              </li>
+              <li>
+                <strong>Get the locomotive running first.</strong>
+                Once speed, direction, stop, and braking work correctly, add the extras you want—sound, lights, battery monitoring, automation, physical controls, WiFi, and so on.
+              </li>
+            </ol>
+
+            <p class="note">
+              You do <strong>not</strong> need to understand CVs, Terminal commands, automation, or advanced configuration before building your first basic PMT system. The project is designed so you can start simple and add features later.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/getting-started-poor-mans-throttle.html"
+                target="_blank" rel="noopener noreferrer">
+                Getting Started with Poor Man's Throttle
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
+                target="_blank" rel="noopener noreferrer">
+                Full Hardware Recipe
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-throttle-delay">
+          <summary>
+            <span class="section-title">
+              <span>Why is there a large delay when I increase or decrease the throttle?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you are using the <strong>Standard or Pro throttle</strong>, the delay may be intentional. PMT uses <strong>momentum</strong> so the locomotive does not instantly jump to every new throttle setting.
+            </p>
+
+            <p class="note">
+              Instead, the motor gradually ramps toward the speed you selected. This makes operation feel more like a heavy train accelerating and slowing down rather than an on/off toy.
+            </p>
+
+            <p class="note">
+              <strong>I want it to respond faster</strong>
+            </p>
+
+            <p class="note">
+              Use <strong>Switcher Mode</strong> on the Standard/Pro throttle. Switcher Mode removes the heavier momentum effect and gives you a much more responsive throttle, which is useful for switching and precise low-speed movements.
+            </p>
+
+            <p class="note">
+              You can also use the <strong>Novice throttle</strong> if you prefer simpler, more immediate control without the heavier momentum behavior.
+            </p>
+
+            <p class="note">
+              So if you move the throttle from, for example, 20% to 60% and the locomotive takes time to reach 60%, that does <strong>not necessarily mean Bluetooth or the app is lagging</strong>. It may simply be PMT's selected motion style doing what it was designed to do.
+            </p>
+
+            <p class="note">
+              If the locomotive still responds unusually slowly while using a more immediate throttle mode, then check the troubleshooting guide for other causes such as low-voltage limiting or motor/start settings.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-modes.html"
+                target="_blank" rel="noopener noreferrer">
+                Throttle Modes Explained
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
