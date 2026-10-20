@@ -854,6 +854,263 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-trolley-automation">
+          <summary>
+            <span class="section-title">
+              <span>How can I use automation (script recording) to automate a trolley going back and forth?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT's <strong>Automation</strong> feature can record you operating the trolley once, then repeat that same movement automatically.
+            </p>
+
+            <p class="note">
+              A simple trolley shuttle works like this:
+            </p>
+
+            <ol>
+              <li>Open the <strong>Automation controls</strong> from the throttle screen and press <strong>Record</strong>.</li>
+              <li>Drive the trolley from one end of the line to the other.</li>
+              <li>Stop and wait for however long you want the trolley to remain at that end.</li>
+              <li>Reverse direction and drive back to the starting point.</li>
+              <li>Stop and add the desired pause at that end.</li>
+              <li>Stop the recording and <strong>save it with a name</strong>.</li>
+              <li>Select the saved automation and choose <strong>Repeat</strong>.</li>
+            </ol>
+
+            <p class="note">
+              PMT will continuously replay the recorded speeds, stops, pauses, and direction changes, creating an automatic back-and-forth trolley.
+            </p>
+
+            <p class="note">
+              If the timing is a little too fast or slow, PMT also lets you adjust the timing of the saved automation without recording the entire routine again.
+            </p>
+
+            <p class="note">
+              You can also open the saved automation from the device's <strong>Configuration screen</strong>, manually edit the script text, and save the changes back to the device. This lets you fine-tune a recorded routine after you create it.
+            </p>
+
+            <p class="note">
+              The documented recording system is <strong>time-based</strong>: you teach PMT the movement and timing by operating the trolley. This workflow does not describe using end-of-track position sensors.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/automation.html"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man's Automation
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/script.html"
+                target="_blank" rel="noopener noreferrer">
+                Scripting
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-enable-wifi">
+          <summary>
+            <span class="section-title">
+              <span>How do I turn on WiFi for my PMT device?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Start by connecting to your PMT device normally using <strong>Bluetooth (BLE)</strong>.
+            </p>
+
+            <p class="note">
+              Then open the device's <strong>WiFi configuration</strong> in the PMT app:
+            </p>
+
+            <ol>
+              <li><strong>Enable WiFi</strong>.</li>
+              <li>Select or enter your WiFi network name (<strong>SSID</strong>). If your app shows the scan button next to the SSID field, you can use it to find nearby networks.</li>
+              <li>Enter your <strong>WiFi password</strong>.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              PMT will then try to join the selected WiFi network. WiFi is used as a secondary connection through PMT's WebSocket support.
+            </p>
+
+            <p class="note">
+              For advanced troubleshooting, PMT uses:
+            </p>
+
+            <ul>
+              <li><code>CV10</code> — WiFi on/off</li>
+              <li><code>CV11</code> — WiFi network name</li>
+              <li><code>CV12</code> — WiFi password</li>
+              <li><code>CV13</code> — WebSocket port, normally <strong>81</strong></li>
+            </ul>
+
+            <p class="note">
+              <strong>Important:</strong> On low-memory <strong>Classic ESP32</strong> hardware using PMTPlayer audio, WiFi and PMTPlayer cannot run at the same time. Enabling WiFi on that hardware can disable PMTPlayer audio.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/wifi.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT WiFi and Connectivity
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-control-another-pmt-device">
+          <summary>
+            <span class="section-title">
+              <span>Can I have a button on my output control slideout screen that controls another PMT device?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Yes. PMT can place a button on your Output Control panel that controls a <strong>different PMT device</strong>.
+            </p>
+
+            <p class="note">
+              The easiest method is <strong>Device FX</strong>. Use this when the other device already has the function you want configured as an Output Control.
+            </p>
+
+            <p class="note">
+              In <strong>Configuration → Output Control</strong>:
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give the button a name.</li>
+              <li>Select <strong>Device FX</strong> as the Pattern.</li>
+              <li>Select the <strong>Target Device</strong> you want to control.</li>
+              <li>Select the <strong>Target FX</strong> — the Output Control on that device you want the button to operate.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              For example, if another PMT device already has an Output Control named <strong>Building Lights</strong>, you can create a Device FX button on your locomotive's throttle that operates those lights.
+            </p>
+
+            <p class="note">
+              The button follows the target control's normal behavior, including its Momentary, Direction, and Linked FX settings.
+            </p>
+
+            <p class="note">
+              If the other PMT device is unavailable, the button is disabled rather than sending the command somewhere else.
+            </p>
+
+            <p class="note">
+              PMT also provides <strong>Device Command</strong> if you want the button to send specific ON and OFF command text directly to another device instead of operating one of its existing Output Controls.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-steam-chuff-sync">
+          <summary>
+            <span class="section-title">
+              <span>The CHUFF sound doesn't match the speed of my wheels. How can I synchronize them?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you are hearing <strong>chuffs</strong>, PMT is using its <strong>Steam sound system</strong>. Diesel sound uses prime-mover idle and notch sounds rather than wheel chuffs.
+            </p>
+
+            <p class="note">
+              For Steam, open <strong>Configuration → Steam Chuff Rate Curve</strong>.
+            </p>
+
+            <img
+              src="Info/faq-steam-chuff-rate-curve.png"
+              alt="PMT Configuration screen showing the Steam Chuff Rate Curve editor"
+              class="faq-screenshot" />
+
+            <p class="note">
+              The graph lets you visually adjust how fast the chuffs play at different throttle speeds:
+            </p>
+
+            <ul>
+              <li>The <strong>bottom of the graph</strong> is <strong>Throttle %</strong>.</li>
+              <li>The <strong>side of the graph</strong> is <strong>Chuff Rate %</strong>.</li>
+              <li>The <strong>white circles</strong> are the adjustment points along the curve.</li>
+              <li>The numbered positions across the graph represent throttle speeds from very slow through full throttle.</li>
+              <li>PMT automatically fills in the values between those adjustment points.</li>
+            </ul>
+
+            <p class="note">
+              Use the <strong>Throttle Speed</strong> control at the top of the screen to work through the speed range while watching the locomotive. Compare the sound to the actual wheel rotation and adjust the curve until the chuffs look and sound natural.
+            </p>
+
+            <p class="note">
+              If the chuffs are too fast for the wheels, lower the chuff rate at that part of the curve. If they are too slow, raise it.
+            </p>
+
+            <p class="note">
+              <strong>What is this screen actually changing?</strong>
+            </p>
+
+            <p class="note">
+              You do not have to manually edit Configuration Variables. This screen is a graphical editor for the chuff-rate CVs and <strong>modifies the CV values behind the scenes for you</strong>:
+            </p>
+
+            <ul>
+              <li><strong>CV98</strong> stores the low-speed points at <strong>1, 5, 10, 15, 20, and 25% throttle</strong>.</li>
+              <li><strong>CV99</strong> stores the high-speed points at <strong>35, 50, 65, 80, 90, and 100% throttle</strong>.</li>
+            </ul>
+
+            <p class="note">
+              The firmware interpolates between those points to create the complete chuff-rate curve. These settings change the <strong>chuff cadence only</strong>; they do not change locomotive motor speed.
+            </p>
+
+            <p class="note">
+              PMT uses four chuff phases per wheel revolution—approximately <strong>0°, 90°, 180°, and 270°</strong>—so the goal is to adjust the curve until those four exhaust beats visually match one wheel revolution as closely as possible.
+            </p>
+
+            <p class="note">
+              PMT's documented synchronization is based on <strong>throttle speed</strong>, not a physical wheel sensor or encoder. You are therefore tuning the sound to visually match the locomotive's wheels.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 

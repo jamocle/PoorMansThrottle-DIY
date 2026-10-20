@@ -260,6 +260,15 @@ h1 {
     padding: 0 16px 16px;
 }
 
+.faq-screenshot {
+    display: block;
+    width: min(100%, 200px);
+    height: auto;
+    margin: 14px auto;
+    border-radius: 18px;
+    border: 1px solid var(--line-strong);
+}
+
 .section-head {
     display: flex;
     justify-content: space-between;
