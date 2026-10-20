@@ -2320,9 +2320,9 @@ function initializeSectionUrls() {
             applyingHash = false;
         }, 0);
 
-        const firstRequestedSection = requestedSections[0];
+        const scrollTargetSection = requestedSections[requestedSections.length - 1];
         window.requestAnimationFrame(() => {
-            firstRequestedSection.scrollIntoView({ block: "start" });
+            scrollTargetSection.scrollIntoView({ block: "start" });
         });
     };
 
