@@ -280,6 +280,152 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-physical-throttle">
+          <summary>
+            <span class="section-title">
+              <span>I don't want to use a mobile device as a throttle. How can I use a physical throttle instead?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT supports <strong>physical Bluetooth throttles</strong>. You can use a compatible Bluetooth HID device—such as a game controller, button pad, macro pad, or a custom throttle with real buttons, knobs, and switches.
+            </p>
+
+            <p class="note">
+              Pair the physical controller, then use PMT's <strong>Physical Controls</strong> screen to assign its buttons and controls to the functions you want. Once configured, you can operate with the physical controls instead of using the touchscreen as your throttle.
+            </p>
+
+            <p class="note">
+              The PMT app is still part of the connection: it receives the physical controller's input and sends the appropriate commands to the locomotive. The physical controller does not connect directly to the locomotive by itself.
+            </p>
+
+            <p class="note">
+              You can start with an off-the-shelf Bluetooth HID controller or build your own custom throttle.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/lets-get-physical.html"
+                target="_blank" rel="noopener noreferrer">
+                Let's Get Physical — PMT Physical Controls
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-ibt2-good-or-bad">
+          <summary>
+            <span class="section-title">
+              <span>How do I tell if my IBT-2 Motor Driver is good or bad?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can bench-test the IBT-2 with a <strong>12V power source, a separate 5V logic source, and a small DC motor</strong>.
+            </p>
+
+            <p class="note">
+              With the board powered correctly and both enable pins turned on, test one direction at a time:
+            </p>
+
+            <ul>
+              <li><strong>RPWM HIGH / LPWM LOW</strong> — the motor should turn one direction.</li>
+              <li><strong>RPWM LOW / LPWM HIGH</strong> — the motor should turn the opposite direction.</li>
+            </ul>
+
+            <p class="note">
+              The results are simple:
+            </p>
+
+            <ul>
+              <li><strong>Motor runs both directions:</strong> the IBT-2 is good.</li>
+              <li><strong>Motor runs in only one direction:</strong> one side of the IBT-2 is bad.</li>
+              <li><strong>Motor runs in neither direction:</strong> check the wiring and power before assuming the board is bad.</li>
+            </ul>
+
+            <p class="note">
+              Before condemning the board, make sure <strong>VCC is 5V, the grounds are connected together, R_EN and L_EN are HIGH, and the motor and power supply are known to be good.</strong>
+            </p>
+
+            <p class="note">
+              <strong>Important:</strong> Do not put 12V into the IBT-2's VCC logic pin.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_troubleshooting_a_bad_IBT_board.md"
+                target="_blank" rel="noopener noreferrer">
+                IBT-2 Quick Test
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://youtu.be/VNKrYldYAV4?si=M8Zm2jQSxkiGTMzK"
+                target="_blank" rel="noopener noreferrer">
+                IBT-2 Test Video
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-trackside-no-locomotive-modifications">
+          <summary>
+            <span class="section-title">
+              <span>I just want to use PMT to power my old train set with no locomotive modifications. How can I do that?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you have a <strong>traditional DC track-powered train set</strong>, you can install PMT completely outside the locomotive.
+            </p>
+
+            <p class="note">
+              Place the PMT controller <strong>between your transformer and the track</strong>:
+            </p>
+
+            <p class="note note-strong">
+              Transformer → PMT Controller → Track → Locomotive
+            </p>
+
+            <p class="note">
+              The transformer supplies the power, while PMT controls the power going to the rails. Your locomotive remains unchanged and simply picks up its power from the track as it always has.
+            </p>
+
+            <p class="note">
+              A small project box can hold the PMT electronics, such as the ESP32, motor driver, fuse, and wiring terminals. This makes the system easy to install or remove without modifying your trains.
+            </p>
+
+            <p class="note">
+              One thing to remember: PMT controls the <strong>powered section of track</strong>, so any locomotive on that same powered section receives the same track power.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">
+                Installation Options — Trackside DC Controller Box
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
