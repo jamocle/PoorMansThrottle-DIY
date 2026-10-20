@@ -196,6 +196,47 @@
       </summary>
 
       <div class="section-content">
+        <details class="subsection" data-section-url="faq-basic-parts-installation-sound">
+          <summary>
+            <span class="section-title">
+              <span>What are the basic parts required for an installation of PMT including sound?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              A basic PMT installation with sound has three main parts for controlling the locomotive, plus the audio hardware:
+            </p>
+
+            <ul>
+              <li><strong>ESP32 controller</strong> — the brains of PMT.</li>
+              <li><strong>5V power converter</strong> — supplies the ESP32 with the power it needs.</li>
+              <li><strong>Motor driver</strong> — controls power to the locomotive motor.</li>
+              <li><strong>I2S audio amplifier</strong> — such as a MAX98357A, to produce the sound.</li>
+              <li><strong>Speaker</strong> — connected to the audio amplifier.</li>
+              <li><strong>microSD card</strong> — stores the locomotive sound files.</li>
+            </ul>
+
+            <p class="note">
+              Some ESP32 boards also require a separate <strong>microSD card reader</strong>. The ESP32-S3-CAM version has a built-in microSD slot, so it does not need the separate reader.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
+                target="_blank" rel="noopener noreferrer">
+                Full Hardware Recipe
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
