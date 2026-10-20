@@ -317,8 +317,8 @@ It supports multiple motor driver interface modes, allowing the same controller 
 |------|---------------|------------------|
 | DUAL_PWM | Separate forward and reverse PWM outputs, with optional enable pins | IBT-2, BTS7960 |
 | PWM_DIR | One PWM pin plus one direction pin | Cytron MD10C, Cytron MDD10A |
-| PWM_BIDIR | One PWM/enable pin plus separate forward and reverse logic pins | L298N, L293D |
-| DUAL_INPT | Two-input H-bridge style control, with PWM applied to the active side | DRV8833, TB6612FNG, MX1508 |
+| PWM_BIDIR | One PWM/enable pin plus separate forward and reverse logic pins | L298N, L293D, TB6612FNG |
+| DUAL_INPT | Two-input H-bridge style control, with PWM applied to the active side | DRV8833, L9110S, MX1508 |
 
 ## What This Means Physically
 

@@ -462,7 +462,11 @@
               forward low for reverse motion, and both low for coast or brake depending on the driver.
             </p>
             <p>
-              <strong>Common hardware:</strong> L298N motor driver module and L293D motor driver board.
+              <strong>Common hardware:</strong> L298N motor driver module, L293D motor driver board, and TB6612FNG motor driver board.
+            </p>
+            <p>
+              <strong>TB6612FNG note:</strong> use the channel PWM input for speed, the two channel inputs for direction, and hold
+              <code>STBY</code> HIGH so the driver is enabled.
             </p>
             <p>
               <strong>Characteristics:</strong> common and inexpensive, well suited to basic H-bridge boards, but generally less efficient
@@ -482,7 +486,7 @@
               receives the PWM signal that controls the motor.
             </p>
             <p>
-              <strong>Common hardware:</strong> DRV8833 motor driver module, TB6612FNG motor driver board, and MX1508 motor driver module.
+              <strong>Common hardware:</strong> DRV8833 motor driver module, L9110S motor driver module, and MX1508 motor driver module.
             </p>
             <p>
               <strong>Characteristics:</strong> efficient modern driver style, common on compact boards, and a good fit for low-to-medium
@@ -494,8 +498,9 @@
         <div class="callout">
           Recommended pairings generally follow load requirements: higher-current applications are a good fit for
           <strong>DUAL_PWM</strong> with boards like the IBT-2 BTS7960, or <strong>PWM_DIR</strong> with boards such as the Cytron MD10C.
-          For medium and lighter loads, <strong>DUAL_INPT</strong> is often a strong choice with boards like the TB6612FNG or DRV8833.
-          <strong>PWM_BIDIR</strong> remains useful and common, but boards such as the L298N and L293D are typically less suitable for heavy loads.
+          For medium and lighter loads, <strong>DUAL_INPT</strong> is often a strong choice with boards like the L9110S or DRV8833.
+          <strong>PWM_BIDIR</strong> is the correct PMT control style for boards such as the L298N and TB6612FNG, but these boards are
+          typically less suitable for heavy loads than high-current DUAL_PWM hardware.
         </div>
 
         <p style="margin-top:18px;">

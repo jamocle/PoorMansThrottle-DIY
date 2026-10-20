@@ -65,7 +65,7 @@ Choose **one** motor driver that matches a supported control style.
 | DUAL_PWM | Separate forward and reverse PWM paths, often with enable pins | IBT-2, BTS7960 modules, IBT-20, BTN7960/BTS7960 style boards |
 | PWM_DIR | One PWM pin plus one direction pin | Cytron MD10C, MD13S, MD30C, MDS40A |
 | PWM_BIDIR | One PWM/enable pin plus forward/reverse logic pins | L298N, L293D, TB6612FNG, DRV8871, DRV8876, MC33926, MX1508, SN754410 |
-| DUAL_INPT | Two H-bridge inputs with PWM applied on the active side | DRV8833 |
+| DUAL_INPT | Two H-bridge inputs with PWM applied on the active side | DRV8833, L9110S |
 
 ## Recommended First Throttle Build
 

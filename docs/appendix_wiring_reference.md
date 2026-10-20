@@ -13,8 +13,8 @@ Use these tables to verify wiring during assembly or troubleshooting.
 - The firmware supports **four motor driver control styles**:
   - **DUAL_PWM** — example: IBT-2 / BTS7960
   - **PWM_DIR** — example: Cytron MD10C style drivers
-  - **PWM_BIDIR** — example: L298N style drivers
-  - **DUAL_INPT** — example: DRV8833 style drivers
+  - **PWM_BIDIR** — example: L298N / TB6612FNG style drivers
+  - **DUAL_INPT** — example: DRV8833 / L9110S style drivers
 - The tables below show the **firmware default pin assignments**. These pins are **configurable in firmware/app settings**, so your actual installation may differ.
 - The onboard ESP32 status LED uses **GPIO2**. Do not plan accessory wiring around GPIO2.
 - The ESP32 logic supply and the motor power supply should remain **electrically coordinated with a shared ground**, while the ESP32 itself is powered from a dedicated **5V power module**.
@@ -28,8 +28,8 @@ Use these tables to verify wiring during assembly or troubleshooting.
 |------------|----------------|------------------------------|---------------------------------|
 | DUAL_PWM | IBT-2, BTS7960 style boards | GPIO25 FWD, GPIO26 REV, GPIO27 ENA, GPIO33 ENB | GPIO6 FWD, GPIO7 REV, GPIO4 ENA, GPIO5 ENB |
 | PWM_DIR | Cytron MD10C style boards | GPIO25 PWM, GPIO26 DIR | GPIO6 PWM, GPIO7 DIR |
-| PWM_BIDIR | L298N style boards | GPIO25 PWM/EN, **GPIO27 FWD**, **GPIO33 REV** | GPIO6 PWM/EN, GPIO4 FWD, GPIO5 REV |
-| DUAL_INPT | DRV8833 style boards | GPIO25 IN1, GPIO26 IN2 | GPIO6 IN1, GPIO7 IN2 |
+| PWM_BIDIR | L298N / TB6612FNG style boards | GPIO25 PWM/EN, **GPIO27 FWD**, **GPIO33 REV** | GPIO6 PWM/EN, GPIO4 FWD, GPIO5 REV |
+| DUAL_INPT | DRV8833 / L9110S style boards | GPIO25 IN1, GPIO26 IN2 | GPIO6 IN1, GPIO7 IN2 |
 
 ---
 
@@ -77,6 +77,8 @@ Use this pattern for drivers that expect **one PWM/enable input** and **two dire
 
 \* Board implementation varies. Confirm the exact terminal names on your motor driver board.
 
+For a **TB6612FNG** channel, connect the PMT PWM signal to the channel PWM input (for example `PWMA`), connect the two direction outputs to the channel direction inputs (`AIN1` and `AIN2`), and hold `STBY` HIGH so the driver is enabled.
+
 ---
 
 # Classic ESP32-WROOM to DUAL_INPT Driver Wiring (DRV8833-Style Default)
@@ -91,6 +93,8 @@ Use this pattern for drivers with **two motor-control inputs** and no separate d
 | 5V / VIN* | Logic VCC* | Logic reference if required by the board |
 
 \* Some compact H-bridge boards already derive logic power from the board supply rail. Verify your specific board.
+
+For an **L9110S** channel, use its two control inputs (`IA` and `IB`) as the PMT `DUAL_INPT` pair. PMT applies PWM to the active input and holds the other input inactive, then swaps the active input when direction changes.
 
 ---
 

@@ -1111,6 +1111,95 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-motor-driver-type">
+          <summary>
+            <span class="section-title">
+              <span>How do I determine what Motor Driver Type I should use for my Motor Driver?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The <strong>Motor Driver Type</strong> tells PMT how to control the inputs on your motor driver board. It does not describe how much voltage or current the board can handle.
+            </p>
+
+            <p class="note">
+              For the motor drivers shown on the PMT Getting Started page, use:
+            </p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Motor Driver</th>
+                      <th>PMT Motor Driver Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>BTS7960 / IBT-2</td>
+                      <td><strong>DUAL_PWM</strong></td>
+                    </tr>
+                    <tr>
+                      <td>L298N</td>
+                      <td><strong>PWM_BIDIR</strong></td>
+                    </tr>
+                    <tr>
+                      <td>TB6612FNG</td>
+                      <td><strong>PWM_BIDIR</strong></td>
+                    </tr>
+                    <tr>
+                      <td>L9110S</td>
+                      <td><strong>DUAL_INPT</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              If your motor driver is not listed, look at the labels on its control pins:
+            </p>
+
+            <ul>
+              <li><code>RPWM</code> + <code>LPWM</code> → <strong>DUAL_PWM</strong></li>
+              <li><code>PWM</code> + <code>DIR</code> → <strong>PWM_DIR</strong></li>
+              <li><code>PWM/EN</code> + <code>IN1</code> + <code>IN2</code> → <strong>PWM_BIDIR</strong></li>
+              <li><code>IN1</code> + <code>IN2</code> only → <strong>DUAL_INPT</strong></li>
+            </ul>
+
+            <p class="note">
+              For a <strong>TB6612FNG</strong>, use its dedicated PWM input plus its two direction inputs, and hold <code>STBY</code> HIGH so the driver is enabled.
+            </p>
+
+            <p class="note">
+              Choosing the wrong Motor Driver Type can keep the motor from running correctly even when the power wiring is correct. Choosing the type is also separate from making sure the board has enough voltage and current capacity for your locomotive.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/mode.html"
+                target="_blank" rel="noopener noreferrer">
+                Motor Driver Modes
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/installation.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 

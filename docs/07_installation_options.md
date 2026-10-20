@@ -118,6 +118,8 @@ Typical example boards:
 * TB6612FNG
 * similar H-bridge boards
 
+For a TB6612FNG channel, use its dedicated PWM input for speed and its two direction inputs for forward/reverse logic. The TB6612FNG `STBY` input must be held HIGH for the driver to operate.
+
 Firmware defaults depend on the ESP32 board profile:
 
 **Classic ESP32-WROOM**
@@ -139,6 +141,7 @@ Two motor-control inputs, with PWM applied to the active side depending on direc
 Typical example boards:
 
 * DRV8833
+* L9110S
 * similar two-input H-bridge drivers
 
 Firmware defaults depend on the ESP32 board profile:

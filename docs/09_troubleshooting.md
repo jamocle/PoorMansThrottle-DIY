@@ -21,8 +21,8 @@ If your project works in one direction but not the other, or behaves unpredictab
 Supported driver styles in current firmware include:
 - **DUAL_PWM** - example: IBT-2 / BTS7960
 - **PWM_DIR** - example: Cytron MD10C style
-- **PWM_BIDIR** - example: L298N style
-- **DUAL_INPT** - example: DRV8833 / TB6612FNG style
+- **PWM_BIDIR** - example: L298N / TB6612FNG style
+- **DUAL_INPT** - example: DRV8833 / L9110S style
 
 A wiring layout that is correct for one driver mode can fail completely in another mode.
 
