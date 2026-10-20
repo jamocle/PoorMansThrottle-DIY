@@ -643,6 +643,217 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-get-sound-working">
+          <summary>
+            <span class="section-title">
+              <span>How do I get sound to work?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              To use PMTPlayer sound, you need an <strong>I2S audio amplifier, speaker, and microSD card</strong> along with your ESP32.
+            </p>
+
+            <p class="note">
+              The basic setup is:
+            </p>
+
+            <ol>
+              <li><strong>Connect the audio amplifier and speaker</strong> using the wiring for your specific ESP32 board.</li>
+              <li><strong>Prepare the microSD card</strong> using FAT16 or FAT32 — not exFAT.</li>
+              <li><strong>Download PMTPlayer sounds</strong> and copy the WAV files into the correct folder on the card:
+                <ul>
+                  <li><code>/diesel/</code> for Diesel sounds</li>
+                  <li><code>/steam/</code> for Steam sounds</li>
+                </ul>
+              </li>
+              <li>Insert the microSD card and power up PMT.</li>
+              <li><strong>Enable audio and select Diesel or Steam.</strong></li>
+            </ol>
+
+            <p class="note">
+              PMT audio is <strong>disabled by default</strong>, so a completely correct installation can still be silent until audio is turned on.
+            </p>
+
+            <p class="note">
+              If you use an <strong>ESP32-S3-CAM</strong>, the microSD slot is built into the board. Other supported ESP32 boards require a separate microSD reader.
+            </p>
+
+            <p class="note">
+              If it still does not play sound, the PMTPlayer Audio Installation Guide includes wiring checks, SD-card checks, and startup troubleshooting.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/soundfinally.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT 3.0 Audio Overview
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-custom-sounds-button">
+          <summary>
+            <span class="section-title">
+              <span>How do I add my own sounds to PMT and attach them to a button in the app?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT lets you add your own WAV sounds and create a button for them on the throttle.
+            </p>
+
+            <p class="note">
+              First, prepare your sound file using the recommended PMT format:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              Choose an unused track number from <strong>1 through 9999</strong>. Avoid numbers already reserved for PMT's normal engine, horn, bell, brake, and cab-chatter sounds.
+            </p>
+
+            <p class="note note-strong">
+              Example: <code>9000.wav</code>
+            </p>
+
+            <p class="note">
+              Copy the file into the active sound folder on the microSD card:
+            </p>
+
+            <ul>
+              <li><code>/diesel/9000.wav</code> for a Diesel sound set.</li>
+              <li><code>/steam/9000.wav</code> for a Steam sound set.</li>
+            </ul>
+
+            <p class="note">
+              Then, in the PMT app:
+            </p>
+
+            <ol>
+              <li>Open <strong>Configuration → Output Control</strong>.</li>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give the button a name, such as <strong>Station Announcement</strong>.</li>
+              <li>Choose <strong>Audio Custom</strong> to play the sound once, or <strong>Audio Custom Replay</strong> to keep repeating it until you turn it off.</li>
+              <li>Set <strong>Audio Track</strong> to the number you used — for example, <strong>9000</strong>.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              The new Output Control will then appear as a button on supported PMT locomotive throttles.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-create-horns-prime-movers">
+          <summary>
+            <span class="section-title">
+              <span>How do I create my own sounds like new horns and new prime movers?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can create your own PMT sound set from recordings using an audio editor such as <strong>Audacity</strong>.
+            </p>
+
+            <p class="note">
+              For best results, export each finished sound as:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              For a <strong>new horn</strong>, PMT uses three files:
+            </p>
+
+            <ul>
+              <li><code>0211.wav</code> — horn start</li>
+              <li><code>0212.wav</code> — horn sustain, which loops while the horn is held</li>
+              <li><code>0213.wav</code> — horn release</li>
+            </ul>
+
+            <p class="note">
+              For a <strong>new diesel prime mover</strong>, create:
+            </p>
+
+            <ul>
+              <li><code>0090.wav</code> — engine startup</li>
+              <li><code>0091.wav</code> — engine shutdown</li>
+              <li><code>0100.wav</code> — idle</li>
+              <li><code>0101.wav</code> through <code>0108.wav</code> — engine Notches 1 through 8</li>
+            </ul>
+
+            <p class="note">
+              The idle and notch files should be clean, steady loops. If possible, use recordings of the actual locomotive holding each engine notch rather than making one recording simply louder for every notch.
+            </p>
+
+            <p class="note">
+              Audacity can be used to select the useful part of a recording, trim it, convert it to mono, adjust the volume, and make the looping files repeat smoothly.
+            </p>
+
+            <p class="note">
+              Place the finished files in the <code>/diesel</code> folder on the PMT microSD card using the exact filenames above. Replacing those files replaces the corresponding horn or prime-mover sounds for that sound set.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
