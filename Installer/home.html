@@ -2524,6 +2524,159 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-headlight-reverse-light">
+          <summary>
+            <span class="section-title">
+              <span>How would I go about adding a headlight and/or reverse headlight?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT can control a forward headlight, a reverse light, or both using <strong>Output Controls</strong>.
+            </p>
+
+            <p class="note">
+              <strong>Wiring</strong>
+            </p>
+
+            <p class="note note-strong">
+              <code>Configured ESP32 GPIO → series resistor → LED → GND</code>
+            </p>
+
+            <p class="note">
+              PMT's ESP32 GPIO outputs are <strong>3.3V</strong>, so the LED should use a series resistor. The supplied lighting guide recommends a practical <strong>100Ω–220Ω</strong> range for direct GPIO indicator use.
+            </p>
+
+            <p class="note">
+              Do not reuse the firmware's onboard status LED pin for an accessory light.
+            </p>
+
+            <p class="note">
+              <strong>Configure a forward headlight</strong>
+            </p>
+
+            <p class="note">
+              Open <strong>Configuration → Output Control</strong>, then add an output with:
+            </p>
+
+            <ul>
+              <li><strong>Name:</strong> Headlight</li>
+              <li><strong>Pattern:</strong> <code>LED Solid</code></li>
+              <li><strong>GPIO Pin:</strong> the GPIO connected to the LED</li>
+              <li><strong>Direction:</strong> <code>Forward</code></li>
+              <li><strong>Momentary:</strong> Off</li>
+            </ul>
+
+            <p class="note">
+              With the control turned on, PMT will allow the light to operate when the locomotive is selected <strong>Forward</strong> and suppress it when direction changes to Reverse.
+            </p>
+
+            <p class="note">
+              <strong>Configure a reverse headlight</strong>
+            </p>
+
+            <p class="note">
+              Add another Output Control:
+            </p>
+
+            <ul>
+              <li><strong>Name:</strong> Reverse Light</li>
+              <li><strong>Pattern:</strong> <code>LED Solid</code></li>
+              <li><strong>GPIO Pin:</strong> a different GPIO</li>
+              <li><strong>Direction:</strong> <code>Reverse</code></li>
+              <li><strong>Momentary:</strong> Off</li>
+            </ul>
+
+            <p class="note">
+              This light is allowed when the locomotive is in Reverse.
+            </p>
+
+            <p class="note">
+              <strong>Using both together</strong>
+            </p>
+
+            <p class="note">
+              PMT supports up to <strong>12 firmware FX slots</strong>, so the forward and reverse lights can be separate outputs.
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Function</th>
+                      <th>Default direction</th>
+                      <th>Classic ESP32 default pin</th>
+                      <th>ESP32-S3 default pin</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Headlight / FX1</strong></td>
+                      <td>Forward</td>
+                      <td>GPIO4</td>
+                      <td>GPIO15</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Reverse Light / FX2</strong></td>
+                      <td>Reverse</td>
+                      <td>GPIO5</td>
+                      <td>GPIO16</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              Those are firmware defaults, not mandatory pins. The actual GPIO can be changed in configuration as long as it is a valid, non-conflicting output pin.
+            </p>
+
+            <p class="note">
+              The supplied lighting guide also says <strong>Headlight and Reverse Light are linked by default</strong>, giving them ready-made paired directional behavior.
+            </p>
+
+            <p class="note">
+              A useful setup is:
+            </p>
+
+            <p class="note note-strong">
+              <code>Headlight — LED Solid — Direction = Forward</code><br />
+              <code>Reverse Light — LED Solid — Direction = Reverse</code>
+            </p>
+
+            <p class="note">
+              Turn the lighting control on, and PMT handles which physical light is permitted based on direction.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/light.html"
+                target="_blank" rel="noopener noreferrer">
+                Lighting and Auxiliary Outputs
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
