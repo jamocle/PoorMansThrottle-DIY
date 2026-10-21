@@ -1669,6 +1669,87 @@
           </div>
         </details>
 
+        <details class="subsection" data-section-url="faq-wwzmdib-sd-reader-audio-crash">
+          <summary>
+            <span class="section-title">
+              <span>I just hooked up my SD reader (WWZMDiB) and when I turn on Audio in the app my PMT crashes. What could be wrong?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you are using the <strong>WWZMDiB Micro SD TF Card Adapter Reader Module</strong>, the SD reader itself may be causing the problem.
+            </p>
+
+            <p class="note">
+              This particular module contains an <strong>AMS1117 voltage regulator</strong>. The hardware information for this reader states that the board should be powered with <strong>5V as supplied</strong>.
+            </p>
+
+            <p class="note">
+              If you want to operate the reader from <strong>3.3V</strong>, the documented modification is to bypass the AMS1117 regulator by soldering its <strong>Vin and Vout pins together</strong>, as shown below.
+            </p>
+
+            <p class="note">
+              However, simply changing between 5V and 3.3V did <strong>not</strong> solve the problem reported by the Poor Man's Throttle Forum member who discovered this issue. The original poster specifically reported:
+            </p>
+
+            <blockquote>
+              “The original board kept crashing my ESP boards (standard and s3 both) using both 5v and 3v3 pins. Doing this fixed my problems.”
+            </blockquote>
+
+            <p class="note">
+              In other words, the poster experienced crashes with <strong>both the Standard ESP32 and ESP32-S3</strong>, and reported the problem while trying <strong>both the 5V and 3.3V pins</strong>. The reported fix was to make the <strong>Vin-to-Vout solder bridge on the AMS1117 regulator</strong> and then operate the modified reader from 3.3V.
+            </p>
+
+            <img
+              src="Info/faq-wwzmdib-5v-vs-3v3-fix.png"
+              alt="WWZMDiB SD reader showing the 5V versus 3.3V AMS1117 regulator bypass modification"
+              class="faq-screenshot" />
+
+            <p class="note">
+              The lower board in the image shows the solder bridge connecting the regulator's <strong>Vin and Vout</strong>.
+            </p>
+
+            <p class="note">
+              The original poster also shared the following photo showing the modification on the actual WWZMDiB reader that resolved the crashing problem:
+            </p>
+
+            <img
+              src="Info/faq-wwzmdib-original-poster-fix.png"
+              alt="Original Poor Man's Throttle Forum poster's WWZMDiB SD reader showing the Vin-to-Vout solder bridge"
+              class="faq-screenshot" />
+
+            <p class="note">
+              After making the Vin-to-Vout modification shown above, use the reader from the <strong>3.3V supply</strong> as described in the modification instructions.
+            </p>
+
+            <p class="note">
+              Then reconnect the SD reader and try enabling Audio again.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://www.facebook.com/share/p/19VNENeghP/"
+                target="_blank" rel="noopener noreferrer">
+                Original Poor Man's Throttle Forum post
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-default-audio-controls">
           <summary>
             <span class="section-title">
@@ -2761,7 +2842,7 @@
             </p>
 
             <p class="note">
-              After the diagnostic finishes, open the <strong>Poor Man's Throttle Forum</strong> and paste the diagnostic results into your post. (The results are copied to your clipboard automatically) You do not need to manually select or copy the Terminal output. Include a short description of the problem and what you were doing when it happened.
+              After the diagnostic finishes, open the <strong>Poor Man's Throttle Forum</strong> and paste the diagnostic results into your post. You do not need to manually select or copy the Terminal output. Include a short description of the problem and what you were doing when it happened.
             </p>
 
             <p class="note">
