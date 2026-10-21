@@ -2565,6 +2565,238 @@
           </div>
         </details>
 
+        <details class="subsection" data-section-url="faq-capture-diagnostic-specific-problem">
+          <summary>
+            <span class="section-title">
+              <span>How do I capture a diagnostic for a specific problem in PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can capture a detailed firmware diagnostic log using the <strong>Terminal</strong> built into the PMT app.
+            </p>
+
+            <p class="note">
+              <strong>1. Connect to the PMT device</strong>
+            </p>
+
+            <ol>
+              <li>Open the <strong>PMT application</strong>.</li>
+              <li>Connect to the PMT device normally.</li>
+              <li>Let the app complete its normal connection and handshake.</li>
+              <li>Open the <strong>Terminal</strong>.</li>
+            </ol>
+
+            <p class="note">
+              <strong>2. Start diagnostic logging</strong>
+            </p>
+
+            <p class="note">
+              Enter:
+            </p>
+
+            <pre><code>D2</code></pre>
+
+            <p class="note">
+              and press <strong>Send</strong>.
+            </p>
+
+            <p class="note">
+              A successful response is:
+            </p>
+
+            <pre><code>ACK:D2</code></pre>
+
+            <p class="note">
+              <code>D2</code> enables debug information and requests SD-backed diagnostic logging.
+            </p>
+
+            <p class="note">
+              <strong>3. Reproduce the problem</strong>
+            </p>
+
+            <p class="note">
+              With diagnostic logging running, reproduce the problem you are trying to troubleshoot.
+            </p>
+
+            <p class="note">
+              For example, perform the action that causes the unexpected behavior so that it is captured in the log.
+            </p>
+
+            <p class="note">
+              <strong>4. Retrieve the diagnostic log</strong>
+            </p>
+
+            <p class="note">
+              When you are finished reproducing the problem, return to the Terminal and enter:
+            </p>
+
+            <pre><code>D00</code></pre>
+
+            <p class="note">
+              Then press <strong>Send</strong>.
+            </p>
+
+            <p class="note">
+              On firmware <strong>3.6.3 or newer</strong>, <code>D00</code> stops and closes the current diagnostic log and sends the newest log back through the Terminal.
+            </p>
+
+            <p class="note">
+              A successful log begins with something similar to:
+            </p>
+
+            <pre><code>A:D00=BEGIN,42781</code></pre>
+
+            <p class="note">
+              followed by the diagnostic log, and finishes with something similar to:
+            </p>
+
+            <pre><code>A:D00=END,42781,2DE62638</code></pre>
+
+            <p class="note">
+              Wait until you receive the <code>A:D00=END...</code> line before doing anything else in the Terminal.
+            </p>
+
+            <p class="note note-strong">
+              Do not send another Terminal command while the log is being transferred. Other command responses use the same text channel and could become mixed into the diagnostic output.
+            </p>
+
+            <p class="note">
+              Once the complete diagnostic output has been captured, include it with your post in the <strong>Poor Man's Throttle Forum</strong>, along with a description of the problem and what you were doing when it occurred.
+            </p>
+
+            <p class="note">
+              <strong>A couple of important notes</strong>
+            </p>
+
+            <ul>
+              <li><code>D00</code> also turns off the diagnostic/debug logging started by <code>D2</code>.</li>
+              <li>The numbers in the <code>BEGIN</code> and <code>END</code> lines should contain the same byte count.</li>
+              <li>The final value on the <code>END</code> line is a CRC32 value that can help identify an incomplete or corrupted capture.</li>
+              <li>If you receive an <code>ERR:D00=...</code> response instead of the log, include that error when asking for help.</li>
+              <li>SD-backed logging depends on the hardware/configuration allowing the logging path. If SD logging cannot be activated, <code>D2</code> can still enable debug event generation, but the normal <code>D00</code> SD-log retrieval workflow may not be available.</li>
+            </ul>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://www.facebook.com/groups/poormansthrottleforum"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man's Throttle Forum
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-app-diagnostic-forum">
+          <summary>
+            <span class="section-title">
+              <span>How do I perform a diagnostic in the app to send to the forum?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you need help troubleshooting a problem, you can use the PMT app to generate a diagnostic log and then share it in the forum.
+            </p>
+
+            <p class="note">
+              <strong>Step 1: Open the Terminal</strong>
+            </p>
+
+            <p class="note">
+              From the connected throttle screen, tap <strong>Open Terminal</strong>.
+            </p>
+
+            <img
+              src="Info/faq-diagnostic-open-terminal.png"
+              alt="Connected PMT throttle screen showing the Open Terminal button"
+              class="faq-screenshot" />
+
+            <p class="note">
+              <strong>Step 2: Open the send/script screen</strong>
+            </p>
+
+            <p class="note">
+              In the <strong>Throttle Terminal</strong> screen, tap <strong>Send</strong>.
+            </p>
+
+            <img
+              src="Info/faq-diagnostic-terminal-send.png"
+              alt="Throttle Terminal screen showing the Send button"
+              class="faq-screenshot" />
+
+            <p class="note">
+              <strong>Step 3: Run the diagnostic</strong>
+            </p>
+
+            <p class="note">
+              In the <strong>Script Entry</strong> screen, tap <strong>Diagnosis</strong>, then tap <strong>Send</strong>.
+            </p>
+
+            <img
+              src="Info/faq-diagnostic-script-entry.png"
+              alt="Script Entry screen showing the Diagnosis and Send buttons"
+              class="faq-screenshot" />
+
+            <p class="note">
+              This runs the diagnostic request and returns the diagnostic output in the Terminal. At the end of the Diagnosis script, the <code>CLIPBOARD</code> command automatically copies the Terminal output to your device clipboard.
+            </p>
+
+            <p class="note">
+              <strong>Step 4: Share the results</strong>
+            </p>
+
+            <p class="note">
+              After the diagnostic finishes, open the <strong>Poor Man's Throttle Forum</strong> and paste the diagnostic results into your post. (The results are copied to your clipboard automatically) You do not need to manually select or copy the Terminal output. Include a short description of the problem and what you were doing when it happened.
+            </p>
+
+            <p class="note">
+              <strong>Tips</strong>
+            </p>
+
+            <ul>
+              <li>Make sure you are already connected to the PMT device before starting the diagnostic.</li>
+              <li>Wait for the diagnostic output to finish before sending other Terminal commands.</li>
+              <li>Include as much of the diagnostic output as possible when asking for help.</li>
+            </ul>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://www.facebook.com/groups/poormansthrottleforum"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man's Throttle Forum
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-physical-throttle">
           <summary>
             <span class="section-title">

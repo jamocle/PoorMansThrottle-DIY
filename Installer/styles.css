@@ -262,7 +262,7 @@ h1 {
 
 .faq-screenshot {
     display: block;
-    width: min(100%, 360px);
+    width: min(100%, 180px);
     height: auto;
     margin: 14px auto;
     border-radius: 18px;
