@@ -1948,6 +1948,582 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-default-audio-controls">
+          <summary>
+            <span class="section-title">
+              <span>What are the different default sounds I can control and how do I configure them?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT provides three built-in sounds that you can add directly to your <strong>Output Control</strong> panel:
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Sound</th>
+                      <th>Pattern</th>
+                      <th>Recommended setup</th>
+                      <th>What it does</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Bell</strong></td>
+                      <td><code>Audio Bell</code></td>
+                      <td>Direction = Both, Momentary = Off</td>
+                      <td>Tap once to turn the bell on. Tap again to turn it off.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Horn</strong></td>
+                      <td><code>Audio Horn</code></td>
+                      <td>Direction = Both, Momentary = On</td>
+                      <td>Hold the button to sound the horn. Release it to stop.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Cab Chatter</strong></td>
+                      <td><code>Audio Cab Chatter</code></td>
+                      <td>Usually left ON when you want chatter active</td>
+                      <td>Plays a chatter sound, then automatically schedules additional chatter at random intervals.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              <strong>How do I add one?</strong>
+            </p>
+
+            <p class="note">
+              Open <strong>Configuration → Output Control</strong>.
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Enter a name, such as <strong>Bell</strong>, <strong>Horn</strong>, or <strong>Cab Chatter</strong>.</li>
+              <li>Choose the matching <strong>Pattern</strong>.</li>
+              <li>Set <strong>Direction</strong> to Both, Forward, or Reverse as needed.</li>
+              <li>Set <strong>Momentary</strong> appropriately.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              You do <strong>not</strong> enter an Audio Track number for the built-in Bell or Horn.
+            </p>
+
+            <p class="note">
+              The built-in tracks are:
+            </p>
+
+            <ul>
+              <li><strong>Bell</strong> — track <code>202</code>.</li>
+              <li>
+                <strong>Horn</strong> — uses three tracks:
+                <ul>
+                  <li><code>211</code> — horn start</li>
+                  <li><code>212</code> — horn sustain</li>
+                  <li><code>213</code> — horn release</li>
+                </ul>
+              </li>
+              <li><strong>Cab Chatter</strong> — starts at track <code>300</code>.</li>
+            </ul>
+
+            <p class="note">
+              Cab Chatter behaves differently from Bell and Horn. While it remains ON, PMT schedules another chatter sound after a randomly selected delay of <strong>30, 40, 50, 60, 70, 80, or 90 seconds</strong>.
+            </p>
+
+            <p class="note">
+              <strong>What about my own sounds?</strong>
+            </p>
+
+            <ul>
+              <li><strong>Audio Custom</strong> — plays your selected track once.</li>
+              <li><strong>Audio Custom Replay</strong> — continuously loops your selected track while the control is ON.</li>
+            </ul>
+
+            <p class="note">
+              Those patterns let you select an <strong>Audio Track from 1 through 9999</strong>.
+            </p>
+
+            <p class="note">
+              On the <strong>Pro and Standard locomotive throttles</strong>, supported audio controls can also display their own speaker/volume button.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-christmas-music">
+          <summary>
+            <span class="section-title">
+              <span>How can I add Christmas Music to my train?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can put a Christmas song on the PMT microSD card and create an <strong>Output Control button</strong> to start and stop it.
+            </p>
+
+            <p class="note">
+              <strong>1. Prepare the music file</strong>
+            </p>
+
+            <p class="note">
+              Convert the song to PMT's recommended audio format:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              Choose an unused Audio Track number from <strong>1 through 9999</strong>. For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>0400.wav</code>
+            </p>
+
+            <p class="note">
+              Copy the file into the sound folder you are using:
+            </p>
+
+            <p class="note note-strong">
+              <code>/diesel/0400.wav</code>
+            </p>
+
+            <p class="note">
+              or:
+            </p>
+
+            <p class="note note-strong">
+              <code>/steam/0400.wav</code>
+            </p>
+
+            <p class="note">
+              The song needs to be in the active Diesel or Steam folder so PMTPlayer can find it.
+            </p>
+
+            <p class="note">
+              <strong>2. Create the Christmas Music button</strong>
+            </p>
+
+            <p class="note">
+              In the PMT app, open <strong>Configuration → Output Control</strong>.
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give it a name such as <strong>Christmas Music</strong>.</li>
+              <li>Choose <strong>Audio Custom Replay</strong>.</li>
+              <li>Set <strong>Audio Track</strong> to <code>400</code>.</li>
+              <li>Set <strong>Direction</strong> to <strong>Both</strong>.</li>
+              <li>Leave <strong>Momentary</strong> off.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              You will now have a <strong>Christmas Music</strong> button on supported PMT throttle screens.
+            </p>
+
+            <p class="note">
+              Tap it once to start the music. Tap it again to stop it.
+            </p>
+
+            <p class="note">
+              <strong>What if I only want the song to play once?</strong>
+            </p>
+
+            <ul>
+              <li><strong>Audio Custom</strong> — plays the selected track one time.</li>
+              <li><strong>Audio Custom Replay</strong> — keeps repeating the track until you turn the button off.</li>
+            </ul>
+
+            <p class="note">
+              For background Christmas music, <strong>Audio Custom Replay</strong> is usually the better choice.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-battery-monitor-icon">
+          <summary>
+            <span class="section-title">
+              <span>I do not see a battery icon on my PMT screen. How do I get it to show up and monitor my battery?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT's battery icon appears when <strong>INA219 battery monitoring</strong> is installed and active.
+            </p>
+
+            <p class="note">
+              The INA219 is a small sensor board that lets PMT measure:
+            </p>
+
+            <ul>
+              <li>battery voltage</li>
+              <li>current draw</li>
+              <li>power usage</li>
+              <li>low-voltage conditions</li>
+            </ul>
+
+            <p class="note">
+              <strong>What do I need?</strong>
+            </p>
+
+            <p class="note">
+              Install an <strong>INA219 current/voltage monitor</strong> in the battery power path and connect its I²C <code>SDA</code> and <code>SCL</code> lines to the ESP32.
+            </p>
+
+            <p class="note">
+              The INA219 must be installed <strong>in series with Battery +</strong>:
+            </p>
+
+            <p class="note note-strong">
+              <code>Battery + → INA219 → PMT power input</code>
+            </p>
+
+            <p class="note">
+              Your existing PMT wiring otherwise stays in place.
+            </p>
+
+            <p class="note">
+              <strong>How do I enable it?</strong>
+            </p>
+
+            <p class="note">
+              After the INA219 is wired correctly, open <strong>Configuration → Battery Management</strong>.
+            </p>
+
+            <p class="note">
+              Enable the INA219 battery monitor there.
+            </p>
+
+            <p class="note">
+              Behind the scenes, this enables:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV30=1</code>
+            </p>
+
+            <p class="note">
+              Battery monitoring is <strong>disabled by default</strong>, so the battery indicator will not appear until the sensor is installed and monitoring is enabled.
+            </p>
+
+            <p class="note">
+              Once the INA219 is active and sending telemetry, the throttle screen can show a <strong>battery indicator button near the status area</strong>.
+            </p>
+
+            <p class="note">
+              Tap the battery button to open the <strong>Battery Telemetry</strong> drawer and view live battery information.
+            </p>
+
+            <p class="note">
+              <strong>Can PMT protect the battery too?</strong>
+            </p>
+
+            <p class="note">
+              Yes. Battery Management also provides optional settings for:
+            </p>
+
+            <ul>
+              <li>low-voltage warning</li>
+              <li>throttle limiting</li>
+              <li>low-voltage shutdown</li>
+              <li>recovery voltage</li>
+              <li>battery-disconnect detection</li>
+              <li>optional low-voltage indicator LED</li>
+            </ul>
+
+            <p class="note">
+              Those protection thresholds should be configured for the <strong>battery chemistry and cell count you actually use</strong>. You do not need to enable the protection thresholds just to view battery telemetry.
+            </p>
+
+            <p class="note">
+              If the INA219 is installed and enabled but the icon still does not appear, verify its <strong>SDA/SCL wiring, I²C address, power, and sensor detection</strong>.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ina219.html"
+                target="_blank" rel="noopener noreferrer">
+                INA219 Battery Management
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT INA219 Battery Monitor Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-locomotive-power-options">
+          <summary>
+            <span class="section-title">
+              <span>What options are available for locomotive power, and what are some tips and tricks?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT supports several different ways to power and control a locomotive. You do <strong>not</strong> have to convert everything to battery power.
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Power arrangement</th>
+                      <th>How it works</th>
+                      <th>Good choice when…</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>PMT between transformer and track</strong></td>
+                      <td>Transformer → PMT → Track → Locomotive</td>
+                      <td>You want wireless control of existing unmodified DC trains.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>PMT inside locomotive using track power</strong></td>
+                      <td>Track → locomotive pickups → PMT → motor</td>
+                      <td>You want individual locomotive control while keeping powered rails.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Dead rail / onboard battery</strong></td>
+                      <td>Battery → PMT → motor</td>
+                      <td>You want the locomotive completely independent of track power.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Track + battery hybrid</strong></td>
+                      <td>Track remains powered for cars/accessories, but locomotive motor uses its own battery and PMT</td>
+                      <td>You want battery-powered locomotive control while still using track power for lights and accessories.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              <strong>1. Transformer → PMT → Track</strong>
+            </p>
+
+            <p class="note">
+              This is usually the simplest way to modernize a traditional DC layout.
+            </p>
+
+            <p class="note note-strong">
+              <code>Transformer → PMT Controller → Track → Locomotive</code>
+            </p>
+
+            <p class="note">
+              The supplied PMT guide recommends leaving the transformer at a <strong>constant full output</strong> and letting PMT control the track using PWM.
+            </p>
+
+            <p class="note">
+              Advantages include:
+            </p>
+
+            <ul>
+              <li>no locomotive modifications</li>
+              <li>wireless phone control</li>
+              <li>works well when locomotive space is limited</li>
+              <li>easy way to convert an existing DC layout</li>
+            </ul>
+
+            <p class="note">
+              <strong>Tip:</strong> The PMT controls the entire powered track section, so locomotives on that section receive the same controlled track power.
+            </p>
+
+            <p class="note">
+              <strong>2. PMT inside the locomotive with track power</strong>
+            </p>
+
+            <p class="note">
+              Here the rails remain powered, but the PMT electronics are installed inside the locomotive.
+            </p>
+
+            <p class="note note-strong">
+              <code>Track → Pickups → PMT → Motor</code>
+            </p>
+
+            <p class="note">
+              This allows <strong>individual locomotive control</strong>, even when several locomotives share powered track.
+            </p>
+
+            <p class="note">
+              It is also useful when you want the rails to continue powering things such as passenger-car lighting or layout accessories.
+            </p>
+
+            <p class="note">
+              <strong>3. Dead rail — onboard battery</strong>
+            </p>
+
+            <p class="note">
+              With dead rail, the rails do not provide propulsion power.
+            </p>
+
+            <p class="note note-strong">
+              <code>Battery → Fuse → PMT → Motor</code>
+            </p>
+
+            <p class="note">
+              The locomotive carries its own battery and PMT electronics.
+            </p>
+
+            <p class="note">
+              This gives you:
+            </p>
+
+            <ul>
+              <li>no dependence on clean rail for motor power</li>
+              <li>independent control of multiple trains</li>
+              <li>operation where electrical pickup is unreliable</li>
+              <li>a completely self-contained locomotive</li>
+            </ul>
+
+            <p class="note">
+              The electronics can be placed in the locomotive, tender, or even a dedicated battery car if space is limited.
+            </p>
+
+            <p class="note">
+              <strong>4. Track power + onboard battery</strong>
+            </p>
+
+            <p class="note">
+              PMT also documents a hybrid arrangement.
+            </p>
+
+            <p class="note">
+              The locomotive motor is isolated from the rails and runs from its onboard battery, while the rails remain powered for things such as:
+            </p>
+
+            <ul>
+              <li>passenger-car lighting</li>
+              <li>buildings</li>
+              <li>accessories</li>
+              <li>other traditional track-powered equipment</li>
+            </ul>
+
+            <p class="note">
+              This can give you much of the freedom of dead rail without giving up useful powered-track infrastructure.
+            </p>
+
+            <p class="note">
+              <strong>Useful power tips</strong>
+            </p>
+
+            <ul>
+              <li><strong>Use a fuse.</strong> The supplied build guide recommends appropriate overcurrent protection in the main motor-power path.</li>
+              <li><strong>Don't power the ESP32 directly from locomotive voltage.</strong> Use a regulated <strong>5V power module</strong> for the ESP32.</li>
+              <li><strong>Use a buck converter when necessary.</strong> If your battery voltage is higher than you want the locomotive motor to receive, use a buck converter in the motor-power path.</li>
+              <li><strong>Match the power source to the motor.</strong> Do not assume that a higher-voltage battery is automatically better. Choose the voltage appropriate for your locomotive, motor, and installation.</li>
+              <li><strong>Battery monitoring is optional.</strong> Adding an <strong>INA219</strong> lets PMT report voltage, current, and power and optionally provide low-voltage warning, throttle limiting, and shutdown protection.</li>
+              <li><strong>Think about where the hardware will fit before choosing the power method.</strong> PMT electronics can be placed in the locomotive, tender, battery car, external enclosure, or trackside controller box depending on the installation.</li>
+            </ul>
+
+            <p class="note">
+              Example buck-converter arrangement:
+            </p>
+
+            <p class="note note-strong">
+              <code>20V battery → buck converter → about 15V → motor driver</code>
+            </p>
+
+            <p class="note">
+              Adjust the buck converter with a multimeter <strong>before connecting the motor driver</strong>.
+            </p>
+
+            <p class="note">
+              For a small locomotive with little internal room, <strong>PMT between the transformer and track</strong> may be much easier than putting a battery and electronics onboard.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                Think Outside the Battery
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">
+                Installation Options
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Build Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_traditional_transformer_layout_benefits.md"
+                target="_blank" rel="noopener noreferrer">
+                Why PMT is Better for Traditional DC Layouts
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
