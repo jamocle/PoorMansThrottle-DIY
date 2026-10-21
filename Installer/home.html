@@ -1766,6 +1766,87 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-turn-off-onboard-led">
+          <summary>
+            <span class="section-title">
+              <span>How do I turn off the LED on my ESP32?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT controls the ESP32's onboard status LED with <strong>CV21 — Onboard LED Output Gate</strong>.
+            </p>
+
+            <p class="note">
+              You have three choices:
+            </p>
+
+            <ul>
+              <li><strong><code>CV21=0</code></strong> — keep the onboard status LED <strong>off all the time</strong>.</li>
+              <li><strong><code>CV21=1</code></strong> — normal behavior. PMT controls the LED using its normal colors and blink patterns. This is the default.</li>
+              <li><strong><code>CV21=2</code></strong> — keep the LED <strong>off while PMT is connected</strong> by Bluetooth or WebSocket, but allow the normal LED indication when it is disconnected.</li>
+            </ul>
+
+            <p class="note">
+              For most people who simply want the ESP32 light turned off, use:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=0</code>
+            </p>
+
+            <p class="note">
+              You can change CV21 from the app's <strong>Configuration Variables</strong> screen, or from the Terminal.
+            </p>
+
+            <p class="note">
+              To check the current value:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21?</code>
+            </p>
+
+            <p class="note">
+              To turn the onboard LED off:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=0</code>
+            </p>
+
+            <p class="note">
+              To restore normal LED behavior later:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=1</code>
+            </p>
+
+            <p class="note">
+              If you want the status LED available for troubleshooting when disconnected, but dark during normal operation, use:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=2</code>
+            </p>
+
+            <p class="note">
+              This setting only gates the <strong>firmware-controlled onboard status LED</strong>. It does not disable LEDs that you have configured separately as PMT Output Controls.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
