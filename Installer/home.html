@@ -2958,6 +2958,210 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-startup-blink-codes">
+          <summary>
+            <span class="section-title">
+              <span>When my PMT boots up it blinks a number of times. What does that number mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              On an ESP32-S3 PMT, a repeating startup blink pattern can indicate an <strong>audio startup problem</strong>.
+            </p>
+
+            <p class="note">
+              Count the flashes before the pause:
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Flashes</th>
+                      <th>Meaning</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><strong>4 flashes</strong></td><td>One or more sound files could not be loaded.</td></tr>
+                    <tr><td><strong>5 flashes</strong></td><td>The audio system could not start.</td></tr>
+                    <tr><td><strong>6 flashes</strong></td><td>Audio file information could not be saved to the microSD card.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              <strong>4 flashes — one or more sound files did not load</strong>
+            </p>
+
+            <p class="note">
+              The SD card is working, but one or more required WAV files could not be loaded.
+            </p>
+
+            <p class="note">
+              First, make sure the SD card has the correct folder structure.
+            </p>
+
+            <p class="note">
+              For <strong>Diesel</strong>, the card should look roughly like:
+            </p>
+
+            <pre><code>SD CARD
+└── diesel
+    ├── 0080.wav
+    ├── 0081.wav
+    ├── 0082.wav
+    ├── 0090.wav
+    ├── 0091.wav
+    ├── 0100.wav
+    ├── 0101.wav
+    ├── 0102.wav
+    ├── 0103.wav
+    ├── 0104.wav
+    ├── 0105.wav
+    ├── 0106.wav
+    ├── 0107.wav
+    ├── 0108.wav
+    ├── 0202.wav
+    ├── 0211.wav
+    ├── 0212.wav
+    ├── 0213.wav
+    ├── 0300.wav
+    ├── 0301.wav
+    └── ...</code></pre>
+
+            <p class="note">
+              For <strong>Steam</strong>, it should look roughly like:
+            </p>
+
+            <pre><code>SD CARD
+└── steam
+    ├── 0080.wav
+    ├── 0081.wav
+    ├── 0082.wav
+    ├── 0093.wav
+    ├── 0094.wav
+    ├── 0095.wav
+    ├── 0100.wav through 0115.wav
+    ├── 0120.wav through 0135.wav
+    ├── 0140.wav through 0155.wav
+    ├── 0190.wav
+    ├── 0202.wav
+    ├── 0211.wav
+    ├── 0212.wav
+    ├── 0213.wav
+    ├── 0300.wav
+    ├── 0301.wav
+    └── ...</code></pre>
+
+            <p class="note">
+              Check these details:
+            </p>
+
+            <ul>
+              <li>The folder must be named exactly <strong><code>diesel</code></strong> or <strong><code>steam</code></strong>.</li>
+              <li>The WAV files go <strong>inside that folder</strong>, not in the root of the SD card.</li>
+              <li>Filenames use <strong>four digits</strong>, such as <code>0090.wav</code>, not <code>90.wav</code>.</li>
+              <li>PMT WAV files should be <strong>mono, signed 16-bit PCM</strong>. <strong>22,050 Hz</strong> is the recommended sample rate.</li>
+              <li>Cab chatter starts at <code>0300.wav</code> and should be numbered continuously. If there is a gap, PMT stops discovering chatter tracks at that gap.</li>
+              <li>A missing, damaged, unsupported, unreadable, or excessively large WAV file can result in <strong>4 flashes</strong>.</li>
+            </ul>
+
+            <p class="note">
+              A good first troubleshooting step is to open the SD card on your computer and compare its folder/file layout to the examples above.
+            </p>
+
+            <p class="note">
+              <strong>5 flashes — audio system did not start</strong>
+            </p>
+
+            <p class="note">
+              Common causes include:
+            </p>
+
+            <ul>
+              <li>microSD card not detected</li>
+              <li>incorrect SD-card format</li>
+              <li>64GB or 128GB card still formatted as <strong>exFAT instead of FAT32</strong></li>
+              <li>incorrect SD or audio GPIO configuration</li>
+              <li>incorrect I²S amplifier wiring</li>
+              <li>insufficient memory or another audio-startup failure</li>
+            </ul>
+
+            <p class="note">
+              A missing individual WAV file normally produces <strong>4 flashes</strong>, not 5.
+            </p>
+
+            <p class="note">
+              <strong>6 flashes — audio information could not be saved</strong>
+            </p>
+
+            <p class="note">
+              PMT was able to read the WAV file, but could not save its generated audio information back to the SD card.
+            </p>
+
+            <p class="note">
+              Check:
+            </p>
+
+            <ul>
+              <li>that the card is writable</li>
+              <li>SD-card connections</li>
+              <li>correct FAT16/FAT32 formatting</li>
+              <li>that the card did not become unavailable during startup</li>
+            </ul>
+
+            <p class="note">
+              The board may still play sound during that boot.
+            </p>
+
+            <p class="note">
+              <strong>Does this apply to every ESP32?</strong>
+            </p>
+
+            <p class="note">
+              No. These startup error codes apply to the <strong>ESP32-S3 Standard and ESP32-S3-CAM</strong> boards. They do not apply to the Classic ESP32 in the same way.
+            </p>
+
+            <p class="note">
+              The onboard LED can also be hidden by <strong>CV21</strong>:
+            </p>
+
+            <ul>
+              <li><code>CV21=0</code> — onboard LED always off</li>
+              <li><code>CV21=1</code> — normal LED behavior, including startup error codes</li>
+              <li><code>CV21=2</code> — LED hidden while BLE or WebSocket is connected</li>
+            </ul>
+
+            <p class="note">
+              If you are troubleshooting startup flashes, use:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=1</code>
+            </p>
+
+            <p class="note">
+              The error code flashes, pauses, and repeats until the board is rebooted.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
