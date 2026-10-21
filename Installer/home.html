@@ -1130,7 +1130,13 @@
 
             <div class="markdown-body">
               <div class="markdown-table-wrap">
-                <table>
+                <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
                   <thead>
                     <tr>
                       <th>Motor Driver</th>
@@ -1156,6 +1162,8 @@
                     </tr>
                   </tbody>
                 </table>
+            </div>
+            </div>
               </div>
             </div>
 
@@ -1364,7 +1372,13 @@
               Other common examples are:
             </p>
 
-            <table>
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
               <thead>
                 <tr>
                   <th>Command</th>
@@ -1389,6 +1403,8 @@
                 <tr><td><code>SP0</code></td><td>Stop a running automation/script</td></tr>
               </tbody>
             </table>
+            </div>
+            </div>
 
             <p class="note">
               PMT also has commands for:
@@ -1843,6 +1859,91 @@
                 href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
                 target="_blank" rel="noopener noreferrer">
                 Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-led-patterns">
+          <summary>
+            <span class="section-title">
+              <span>What patterns exist for LED lights and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT provides several built-in LED patterns that you can select in <strong>Output Control</strong>.
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>What it does</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>LED Solid</strong></td><td>Stays steadily ON while active.</td></tr>
+                <tr><td><strong>LED Double Blink</strong></td><td>Two short flashes, then a pause.</td></tr>
+                <tr><td><strong>LED FRED</strong></td><td>A FRED-style sequence: a single flash followed by a closely spaced double flash.</td></tr>
+                <tr><td><strong>LED Blink +</strong></td><td>User-configurable blink timing.</td></tr>
+                <tr><td><strong>LED Blink -</strong></td><td>Same blink timing as <code>+</code>, but shifted half a cycle so two lights can alternate.</td></tr>
+                <tr><td><strong>LED Ditch +</strong></td><td>Built-in ditch-light pulse.</td></tr>
+                <tr><td><strong>LED Ditch -</strong></td><td>Same ditch-light pulse, shifted half a cycle for alternating ditch lights.</td></tr>
+                <tr><td><strong>LED Strobe +</strong></td><td>Repeating double-strobe burst.</td></tr>
+                <tr><td><strong>LED Strobe -</strong></td><td>Same strobe pattern, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Rotary +</strong></td><td>Smooth rise-and-fall effect like a rotating beacon.</td></tr>
+                <tr><td><strong>LED Rotary -</strong></td><td>Same rotary effect running opposite the <code>+</code> version.</td></tr>
+                <tr><td><strong>LED Mars +</strong></td><td>Smooth brightness sweep that imitates a Mars light.</td></tr>
+                <tr><td><strong>LED Mars -</strong></td><td>Same Mars effect, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Gyralite +</strong></td><td>Smooth Gyralite-style brightness pulse.</td></tr>
+                <tr><td><strong>LED Gyralite -</strong></td><td>Same Gyralite effect, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Firebox Flicker</strong></td><td>Fast, irregular brightness changes with occasional darker dips, intended to look like fire.</td></tr>
+                <tr><td><strong>LED Lantern Flicker</strong></td><td>A softer, slower flicker than Firebox Flicker.</td></tr>
+                <tr><td><strong>LED Dynamo</strong></td><td>Takes about 3 seconds to build up, then stays near full brightness with small variations.</td></tr>
+                <tr><td><strong>LED Incandescent</strong></td><td>Smoothly fades from dark to full brightness in about 420 ms to imitate a traditional bulb.</td></tr>
+              </tbody>
+            </table>
+            </div>
+            </div>
+
+            <p class="note">
+              A useful beginner rule is that the <strong><code>+</code> and <code>-</code> versions are paired effects</strong>. Use them on two different GPIO outputs when you want two lights to alternate or run opposite one another—for example, left and right ditch lights.
+            </p>
+
+            <p class="note">
+              Only <strong>LED Blink + / LED Blink -</strong> use the configurable <strong>Blink Timing</strong> field. For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>1000,250</code>
+            </p>
+
+            <p class="note">
+              means a 1000 ms total cycle with the LED ON for 250 ms. The <code>-</code> version starts half a cycle later.
+            </p>
+
+            <p class="note">
+              The Ditch, Strobe, FRED, Rotary, Mars, and Gyralite patterns use their own built-in timing instead.
+            </p>
+
+            <p class="note">
+              Each LED pattern uses a firmware FX slot and a GPIO pin, and can be restricted by <strong>Direction</strong> to Both, Forward, or Reverse.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
               </a>
             </p>
           </div>

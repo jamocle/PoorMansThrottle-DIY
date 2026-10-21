@@ -2338,9 +2338,47 @@ function initializeSectionUrls() {
     synchronizeFromHash();
 }
 
+
+function initializeFaqTableScrollbars() {
+    for (const container of document.querySelectorAll(".faq-table-container")) {
+        const scrollbar = container.querySelector(".faq-table-scrollbar");
+        const scrollRange = container.querySelector(".faq-table-scroll-range");
+        const wrapper = container.querySelector(".faq-table-wrap");
+        const table = wrapper?.querySelector("table");
+
+        if (!scrollbar || !scrollRange || !wrapper || !table) {
+            continue;
+        }
+
+        const updateScrollRange = () => {
+            const maximumScroll = Math.max(0, table.scrollWidth - wrapper.clientWidth);
+            scrollRange.max = String(maximumScroll);
+            scrollRange.value = String(Math.min(wrapper.scrollLeft, maximumScroll));
+            scrollbar.hidden = maximumScroll === 0;
+        };
+
+        scrollRange.addEventListener("input", () => {
+            wrapper.scrollLeft = Number(scrollRange.value);
+        });
+
+        wrapper.addEventListener("scroll", () => {
+            scrollRange.value = String(wrapper.scrollLeft);
+        });
+
+        requestAnimationFrame(updateScrollRange);
+
+        if ("ResizeObserver" in window) {
+            const resizeObserver = new ResizeObserver(updateScrollRange);
+            resizeObserver.observe(table);
+            resizeObserver.observe(wrapper);
+        }
+    }
+}
+
 async function initialize() {
     initializeWelcomeOverlay();
     initializeSectionUrls();
+    initializeFaqTableScrollbars();
     await updateFirmwareInstaller();
     initializeSoundPacks();
     initializeDocumentation();
