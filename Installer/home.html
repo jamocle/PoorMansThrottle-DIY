@@ -196,1459 +196,6 @@
       </summary>
 
       <div class="section-content">
-        <details class="subsection" data-section-url="faq-basic-parts-installation-sound">
-          <summary>
-            <span class="section-title">
-              <span>What are the basic parts required for an installation of PMT including sound?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              A basic PMT installation with sound has three main parts for controlling the locomotive, plus the audio hardware:
-            </p>
-
-            <ul>
-              <li><strong>ESP32 controller</strong> — the brains of PMT.</li>
-              <li><strong>5V power converter</strong> — supplies the ESP32 with the power it needs.</li>
-              <li><strong>Motor driver</strong> — controls power to the locomotive motor.</li>
-              <li><strong>I2S audio amplifier</strong> — such as a MAX98357A, to produce the sound.</li>
-              <li><strong>Speaker</strong> — connected to the audio amplifier.</li>
-              <li><strong>microSD card</strong> — stores the locomotive sound files.</li>
-            </ul>
-
-            <p class="note">
-              Some ESP32 boards also require a separate <strong>microSD card reader</strong>. The ESP32-S3-CAM version has a built-in microSD slot, so it does not need the separate reader.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
-                target="_blank" rel="noopener noreferrer">
-                Full Hardware Recipe
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                PMTPlayer Audio Installation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-basic-parts-without-sound">
-          <summary>
-            <span class="section-title">
-              <span>I don't need sound. What are the basic parts required for an installation of PMT without sound?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              If you do not want sound, a basic PMT installation only needs three main electronic components:
-            </p>
-
-            <ul>
-              <li><strong>ESP32 controller</strong> — the brains of PMT.</li>
-              <li><strong>5V power converter</strong> — provides the correct power for the ESP32.</li>
-              <li><strong>Motor driver</strong> — controls the locomotive motor. Choose one that is suitable for the motor and current requirements of your installation.</li>
-            </ul>
-
-            <p class="note">
-              Your locomotive's <strong>motor and battery or other power source</strong> connect to these components, but they are not additional PMT electronics.
-            </p>
-
-            <p class="note">
-              You do <strong>not</strong> need the audio amplifier, speaker, or microSD card used for a sound installation. Sound can always be added later.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
-                target="_blank" rel="noopener noreferrer">
-                Full Hardware Recipe
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
-                target="_blank" rel="noopener noreferrer">
-                PMT Installation Options
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-physical-throttle">
-          <summary>
-            <span class="section-title">
-              <span>I don't want to use a mobile device as a throttle. How can I use a physical throttle instead?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT supports <strong>physical Bluetooth throttles</strong>. You can use a compatible Bluetooth HID device—such as a game controller, button pad, macro pad, or a custom throttle with real buttons, knobs, and switches.
-            </p>
-
-            <p class="note">
-              Pair the physical controller, then use PMT's <strong>Physical Controls</strong> screen to assign its buttons and controls to the functions you want. Once configured, you can operate with the physical controls instead of using the touchscreen as your throttle.
-            </p>
-
-            <p class="note">
-              The PMT app is still part of the connection: it receives the physical controller's input and sends the appropriate commands to the locomotive. The physical controller does not connect directly to the locomotive by itself.
-            </p>
-
-            <p class="note">
-              You can start with an off-the-shelf Bluetooth HID controller or build your own custom throttle.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/lets-get-physical.html"
-                target="_blank" rel="noopener noreferrer">
-                Let's Get Physical — PMT Physical Controls
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-ibt2-good-or-bad">
-          <summary>
-            <span class="section-title">
-              <span>How do I tell if my IBT-2 Motor Driver is good or bad?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              You can bench-test the IBT-2 with a <strong>12V power source, a separate 5V logic source, and a small DC motor</strong>.
-            </p>
-
-            <p class="note">
-              With the board powered correctly and both enable pins turned on, test one direction at a time:
-            </p>
-
-            <ul>
-              <li><strong>RPWM HIGH / LPWM LOW</strong> — the motor should turn one direction.</li>
-              <li><strong>RPWM LOW / LPWM HIGH</strong> — the motor should turn the opposite direction.</li>
-            </ul>
-
-            <p class="note">
-              The results are simple:
-            </p>
-
-            <ul>
-              <li><strong>Motor runs both directions:</strong> the IBT-2 is good.</li>
-              <li><strong>Motor runs in only one direction:</strong> one side of the IBT-2 is bad.</li>
-              <li><strong>Motor runs in neither direction:</strong> check the wiring and power before assuming the board is bad.</li>
-            </ul>
-
-            <p class="note">
-              Before condemning the board, make sure <strong>VCC is 5V, the grounds are connected together, R_EN and L_EN are HIGH, and the motor and power supply are known to be good.</strong>
-            </p>
-
-            <p class="note">
-              <strong>Important:</strong> Do not put 12V into the IBT-2's VCC logic pin.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_troubleshooting_a_bad_IBT_board.md"
-                target="_blank" rel="noopener noreferrer">
-                IBT-2 Quick Test
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://youtu.be/VNKrYldYAV4?si=M8Zm2jQSxkiGTMzK"
-                target="_blank" rel="noopener noreferrer">
-                IBT-2 Test Video
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-trackside-no-locomotive-modifications">
-          <summary>
-            <span class="section-title">
-              <span>I just want to use PMT to power my old train set with no locomotive modifications. How can I do that?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              If you have a <strong>traditional DC track-powered train set</strong>, you can install PMT completely outside the locomotive.
-            </p>
-
-            <p class="note">
-              Place the PMT controller <strong>between your transformer and the track</strong>:
-            </p>
-
-            <p class="note note-strong">
-              Transformer → PMT Controller → Track → Locomotive
-            </p>
-
-            <p class="note">
-              The transformer supplies the power, while PMT controls the power going to the rails. Your locomotive remains unchanged and simply picks up its power from the track as it always has.
-            </p>
-
-            <p class="note">
-              A small project box can hold the PMT electronics, such as the ESP32, motor driver, fuse, and wiring terminals. This makes the system easy to install or remove without modifying your trains.
-            </p>
-
-            <p class="note">
-              One thing to remember: PMT controls the <strong>powered section of track</strong>, so any locomotive on that same powered section receives the same track power.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT Power Configuration Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
-                target="_blank" rel="noopener noreferrer">
-                Installation Options — Trackside DC Controller Box
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-track-power-pmt">
-          <summary>
-            <span class="section-title">
-              <span>Can I use Track Power to power PMT? What does that look like?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              Yes. PMT can be installed <strong>inside the locomotive and powered from the track</strong>.
-            </p>
-
-            <p class="note">
-              In this setup, the track is kept at a constant voltage from your transformer. The locomotive's existing track pickups bring that power into PMT.
-            </p>
-
-            <p class="note note-strong">
-              Track Power → Locomotive Pickups → PMT Electronics → Motor
-            </p>
-
-            <p class="note">
-              PMT then controls the locomotive's motor instead of varying the voltage on the track. A <strong>5V power module</strong> is used to provide the correct power for the ESP32, while the motor driver controls the locomotive motor.
-            </p>
-
-            <p class="note">
-              Because the track stays powered, it can also continue supplying power to things such as lights, buildings, and other accessories.
-            </p>
-
-            <p class="note">
-              If each locomotive has its own PMT controller, multiple PMT-equipped locomotives can be controlled independently while sharing the same powered track.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT Power Configuration Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
-                target="_blank" rel="noopener noreferrer">
-                PMT Build Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
-                target="_blank" rel="noopener noreferrer">
-                Wiring Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-dead-rail-battery-installation">
-          <summary>
-            <span class="section-title">
-              <span>How do I install Dead Rail/Battery powered PMT?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              With a <strong>Dead Rail</strong> installation, the locomotive carries its own battery and does not depend on the rails for power.
-            </p>
-
-            <p class="note">
-              A basic installation looks like this:
-            </p>
-
-            <p class="note note-strong">
-              Battery → Fuse → Motor Driver → Locomotive Motor
-            </p>
-
-            <p class="note">
-              The same battery also feeds a <strong>5V power module</strong>, which supplies the correct power to the ESP32:
-            </p>
-
-            <p class="note note-strong">
-              Battery → 5V Power Module → ESP32
-            </p>
-
-            <p class="note">
-              If the battery voltage is too high for your locomotive motor, an <strong>optional buck converter</strong> can be placed before the motor driver to reduce the voltage.
-            </p>
-
-            <p class="note">
-              The battery and PMT electronics can be installed <strong>inside the locomotive</strong>, in a <strong>tender</strong>, or in a <strong>battery car</strong>, depending on how much space you have.
-            </p>
-
-            <p class="note">
-              With true Dead Rail operation, the rails do not need to be powered. Each PMT-equipped locomotive carries its own power source and can be controlled independently.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT Power Configuration Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
-                target="_blank" rel="noopener noreferrer">
-                Installation Options
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
-                target="_blank" rel="noopener noreferrer">
-                PMT Build Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-sd-card-size-format">
-          <summary>
-            <span class="section-title">
-              <span>What SD card size should I use and how should I format it for use with PMT?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT does not require a large microSD card. A <strong>small card is fine — even 128 MB is enough</strong> for a typical PMT sound installation.
-            </p>
-
-            <p class="note">
-              The important part is formatting the card correctly:
-            </p>
-
-            <ul>
-              <li><strong>128 MB through 2 GB:</strong> format as <strong>FAT16</strong>.</li>
-              <li><strong>4 GB through 128 GB:</strong> format as <strong>FAT32</strong>.</li>
-              <li><strong>Do not use exFAT.</strong></li>
-            </ul>
-
-            <p class="note">
-              Be especially careful with <strong>64 GB and 128 GB cards</strong>. They are often sold already formatted as exFAT, so they must be reformatted to <strong>FAT32</strong> before PMT can use them.
-            </p>
-
-            <p class="note">
-              If you are buying a card specifically for PMT, there is generally no need to buy a very large one.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                PMTPlayer Audio Installation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-control-led-lights">
-          <summary>
-            <span class="section-title">
-              <span>How do I control LED lights?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT can control LED lights directly from the ESP32 using its <strong>Output Controls</strong>.
-            </p>
-
-            <p class="note">
-              For each light, you configure:
-            </p>
-
-            <ul>
-              <li><strong>Name</strong> — such as Headlight, Reverse Light, or Ditch Light.</li>
-              <li><strong>Pattern</strong> — for example Solid, Blink, Ditch Light, Strobe, or other lighting effects.</li>
-              <li><strong>GPIO Pin</strong> — the ESP32 output pin connected to that light.</li>
-              <li><strong>Direction</strong> — Both, Forward, or Reverse.</li>
-            </ul>
-
-            <p class="note">
-              For example, a headlight can be configured as <strong>LED Solid / Forward</strong>, while a rear light can be <strong>LED Solid / Reverse</strong>. PMT will then only operate each light in the appropriate direction.
-            </p>
-
-            <p class="note">
-              PMT supports up to <strong>12 firmware FX outputs</strong>, so you can configure several independent lights and effects.
-            </p>
-
-            <p class="note">
-              LEDs connected directly to an ESP32 GPIO must use an appropriate <strong>series resistor</strong>, because the GPIO output is 3.3V. Each independently controlled LED output should also use its own GPIO pin.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/light.html"
-                target="_blank" rel="noopener noreferrer">
-                Lighting and Auxiliary Outputs
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
-                target="_blank" rel="noopener noreferrer">
-                Wiring Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-get-sound-working">
-          <summary>
-            <span class="section-title">
-              <span>How do I get sound to work?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              To use PMTPlayer sound, you need an <strong>I2S audio amplifier, speaker, and microSD card</strong> along with your ESP32.
-            </p>
-
-            <p class="note">
-              The basic setup is:
-            </p>
-
-            <ol>
-              <li><strong>Connect the audio amplifier and speaker</strong> using the wiring for your specific ESP32 board.</li>
-              <li><strong>Prepare the microSD card</strong> using FAT16 or FAT32 — not exFAT.</li>
-              <li><strong>Download PMTPlayer sounds</strong> and copy the WAV files into the correct folder on the card:
-                <ul>
-                  <li><code>/diesel/</code> for Diesel sounds</li>
-                  <li><code>/steam/</code> for Steam sounds</li>
-                </ul>
-              </li>
-              <li>Insert the microSD card and power up PMT.</li>
-              <li><strong>Enable audio and select Diesel or Steam.</strong></li>
-            </ol>
-
-            <p class="note">
-              PMT audio is <strong>disabled by default</strong>, so a completely correct installation can still be silent until audio is turned on.
-            </p>
-
-            <p class="note">
-              If you use an <strong>ESP32-S3-CAM</strong>, the microSD slot is built into the board. Other supported ESP32 boards require a separate microSD reader.
-            </p>
-
-            <p class="note">
-              If it still does not play sound, the PMTPlayer Audio Installation Guide includes wiring checks, SD-card checks, and startup troubleshooting.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/soundfinally.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT 3.0 Audio Overview
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
-                target="_blank" rel="noopener noreferrer">
-                PMTPlayer Audio Installation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-custom-sounds-button">
-          <summary>
-            <span class="section-title">
-              <span>How do I add my own sounds to PMT and attach them to a button in the app?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT lets you add your own WAV sounds and create a button for them on the throttle.
-            </p>
-
-            <p class="note">
-              First, prepare your sound file using the recommended PMT format:
-            </p>
-
-            <ul>
-              <li><strong>WAV</strong></li>
-              <li><strong>Mono</strong></li>
-              <li><strong>22,050 Hz</strong></li>
-              <li><strong>Signed 16-bit PCM</strong></li>
-            </ul>
-
-            <p class="note">
-              Choose an unused track number from <strong>1 through 9999</strong>. Avoid numbers already reserved for PMT's normal engine, horn, bell, brake, and cab-chatter sounds.
-            </p>
-
-            <p class="note note-strong">
-              Example: <code>9000.wav</code>
-            </p>
-
-            <p class="note">
-              Copy the file into the active sound folder on the microSD card:
-            </p>
-
-            <ul>
-              <li><code>/diesel/9000.wav</code> for a Diesel sound set.</li>
-              <li><code>/steam/9000.wav</code> for a Steam sound set.</li>
-            </ul>
-
-            <p class="note">
-              Then, in the PMT app:
-            </p>
-
-            <ol>
-              <li>Open <strong>Configuration → Output Control</strong>.</li>
-              <li>Tap <strong>Add Output</strong>.</li>
-              <li>Give the button a name, such as <strong>Station Announcement</strong>.</li>
-              <li>Choose <strong>Audio Custom</strong> to play the sound once, or <strong>Audio Custom Replay</strong> to keep repeating it until you turn it off.</li>
-              <li>Set <strong>Audio Track</strong> to the number you used — for example, <strong>9000</strong>.</li>
-              <li>Save the configuration.</li>
-            </ol>
-
-            <p class="note">
-              The new Output Control will then appear as a button on supported PMT locomotive throttles.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
-                target="_blank" rel="noopener noreferrer">
-                Quick Audio Creation Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
-                target="_blank" rel="noopener noreferrer">
-                Complete Audio Creation Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-create-horns-prime-movers">
-          <summary>
-            <span class="section-title">
-              <span>How do I create my own sounds like new horns and new prime movers?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              You can create your own PMT sound set from recordings using an audio editor such as <strong>Audacity</strong>.
-            </p>
-
-            <p class="note">
-              For best results, export each finished sound as:
-            </p>
-
-            <ul>
-              <li><strong>WAV</strong></li>
-              <li><strong>Mono</strong></li>
-              <li><strong>22,050 Hz</strong></li>
-              <li><strong>Signed 16-bit PCM</strong></li>
-            </ul>
-
-            <p class="note">
-              For a <strong>new horn</strong>, PMT uses three files:
-            </p>
-
-            <ul>
-              <li><code>0211.wav</code> — horn start</li>
-              <li><code>0212.wav</code> — horn sustain, which loops while the horn is held</li>
-              <li><code>0213.wav</code> — horn release</li>
-            </ul>
-
-            <p class="note">
-              For a <strong>new diesel prime mover</strong>, create:
-            </p>
-
-            <ul>
-              <li><code>0090.wav</code> — engine startup</li>
-              <li><code>0091.wav</code> — engine shutdown</li>
-              <li><code>0100.wav</code> — idle</li>
-              <li><code>0101.wav</code> through <code>0108.wav</code> — engine Notches 1 through 8</li>
-            </ul>
-
-            <p class="note">
-              The idle and notch files should be clean, steady loops. If possible, use recordings of the actual locomotive holding each engine notch rather than making one recording simply louder for every notch.
-            </p>
-
-            <p class="note">
-              Audacity can be used to select the useful part of a recording, trim it, convert it to mono, adjust the volume, and make the looping files repeat smoothly.
-            </p>
-
-            <p class="note">
-              Place the finished files in the <code>/diesel</code> folder on the PMT microSD card using the exact filenames above. Replacing those files replaces the corresponding horn or prime-mover sounds for that sound set.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
-                target="_blank" rel="noopener noreferrer">
-                Quick Audio Creation Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
-                target="_blank" rel="noopener noreferrer">
-                Complete Audio Creation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-trolley-automation">
-          <summary>
-            <span class="section-title">
-              <span>How can I use automation (script recording) to automate a trolley going back and forth?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT's <strong>Automation</strong> feature can record you operating the trolley once, then repeat that same movement automatically.
-            </p>
-
-            <p class="note">
-              A simple trolley shuttle works like this:
-            </p>
-
-            <ol>
-              <li>Open the <strong>Automation controls</strong> from the throttle screen and press <strong>Record</strong>.</li>
-              <li>Drive the trolley from one end of the line to the other.</li>
-              <li>Stop and wait for however long you want the trolley to remain at that end.</li>
-              <li>Reverse direction and drive back to the starting point.</li>
-              <li>Stop and add the desired pause at that end.</li>
-              <li>Stop the recording and <strong>save it with a name</strong>.</li>
-              <li>Select the saved automation and choose <strong>Repeat</strong>.</li>
-            </ol>
-
-            <p class="note">
-              PMT will continuously replay the recorded speeds, stops, pauses, and direction changes, creating an automatic back-and-forth trolley.
-            </p>
-
-            <p class="note">
-              If the timing is a little too fast or slow, PMT also lets you adjust the timing of the saved automation without recording the entire routine again.
-            </p>
-
-            <p class="note">
-              You can also open the saved automation from the device's <strong>Configuration screen</strong>, manually edit the script text, and save the changes back to the device. This lets you fine-tune a recorded routine after you create it.
-            </p>
-
-            <p class="note">
-              The documented recording system is <strong>time-based</strong>: you teach PMT the movement and timing by operating the trolley. This workflow does not describe using end-of-track position sensors.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/automation.html"
-                target="_blank" rel="noopener noreferrer">
-                Poor Man's Automation
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/script.html"
-                target="_blank" rel="noopener noreferrer">
-                Scripting
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-enable-wifi">
-          <summary>
-            <span class="section-title">
-              <span>How do I turn on WiFi for my PMT device?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              Start by connecting to your PMT device normally using <strong>Bluetooth (BLE)</strong>.
-            </p>
-
-            <p class="note">
-              Then open the device's <strong>WiFi configuration</strong> in the PMT app:
-            </p>
-
-            <ol>
-              <li><strong>Enable WiFi</strong>.</li>
-              <li>Select or enter your WiFi network name (<strong>SSID</strong>). If your app shows the scan button next to the SSID field, you can use it to find nearby networks.</li>
-              <li>Enter your <strong>WiFi password</strong>.</li>
-              <li>Save the configuration.</li>
-            </ol>
-
-            <p class="note">
-              PMT will then try to join the selected WiFi network. WiFi is used as a secondary connection through PMT's WebSocket support.
-            </p>
-
-            <p class="note">
-              For advanced troubleshooting, PMT uses:
-            </p>
-
-            <ul>
-              <li><code>CV10</code> — WiFi on/off</li>
-              <li><code>CV11</code> — WiFi network name</li>
-              <li><code>CV12</code> — WiFi password</li>
-              <li><code>CV13</code> — WebSocket port, normally <strong>81</strong></li>
-            </ul>
-
-            <p class="note">
-              <strong>Important:</strong> On low-memory <strong>Classic ESP32</strong> hardware using PMTPlayer audio, WiFi and PMTPlayer cannot run at the same time. Enabling WiFi on that hardware can disable PMTPlayer audio.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/wifi.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT WiFi and Connectivity
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-control-another-pmt-device">
-          <summary>
-            <span class="section-title">
-              <span>Can I have a button on my output control slideout screen that controls another PMT device?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              Yes. PMT can place a button on your Output Control panel that controls a <strong>different PMT device</strong>.
-            </p>
-
-            <p class="note">
-              The easiest method is <strong>Device FX</strong>. Use this when the other device already has the function you want configured as an Output Control.
-            </p>
-
-            <p class="note">
-              In <strong>Configuration → Output Control</strong>:
-            </p>
-
-            <ol>
-              <li>Tap <strong>Add Output</strong>.</li>
-              <li>Give the button a name.</li>
-              <li>Select <strong>Device FX</strong> as the Pattern.</li>
-              <li>Select the <strong>Target Device</strong> you want to control.</li>
-              <li>Select the <strong>Target FX</strong> — the Output Control on that device you want the button to operate.</li>
-              <li>Save the configuration.</li>
-            </ol>
-
-            <p class="note">
-              For example, if another PMT device already has an Output Control named <strong>Building Lights</strong>, you can create a Device FX button on your locomotive's throttle that operates those lights.
-            </p>
-
-            <p class="note">
-              The button follows the target control's normal behavior, including its Momentary, Direction, and Linked FX settings.
-            </p>
-
-            <p class="note">
-              If the other PMT device is unavailable, the button is disabled rather than sending the command somewhere else.
-            </p>
-
-            <p class="note">
-              PMT also provides <strong>Device Command</strong> if you want the button to send specific ON and OFF command text directly to another device instead of operating one of its existing Output Controls.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-steam-chuff-sync">
-          <summary>
-            <span class="section-title">
-              <span>The CHUFF sound doesn't match the speed of my wheels. How can I synchronize them?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              If you are hearing <strong>chuffs</strong>, PMT is using its <strong>Steam sound system</strong>. Diesel sound uses prime-mover idle and notch sounds rather than wheel chuffs.
-            </p>
-
-            <p class="note">
-              For Steam, open <strong>Configuration → Steam Chuff Rate Curve</strong>.
-            </p>
-
-            <img
-              src="Info/faq-steam-chuff-rate-curve.png"
-              alt="PMT Configuration screen showing the Steam Chuff Rate Curve editor"
-              class="faq-screenshot" />
-
-            <p class="note">
-              The graph lets you visually adjust how fast the chuffs play at different throttle speeds:
-            </p>
-
-            <ul>
-              <li>The <strong>bottom of the graph</strong> is <strong>Throttle %</strong>.</li>
-              <li>The <strong>side of the graph</strong> is <strong>Chuff Rate %</strong>.</li>
-              <li>The <strong>white circles</strong> are the adjustment points along the curve.</li>
-              <li>The numbered positions across the graph represent throttle speeds from very slow through full throttle.</li>
-              <li>PMT automatically fills in the values between those adjustment points.</li>
-            </ul>
-
-            <p class="note">
-              Use the <strong>Throttle Speed</strong> control at the top of the screen to work through the speed range while watching the locomotive. Compare the sound to the actual wheel rotation and adjust the curve until the chuffs look and sound natural.
-            </p>
-
-            <p class="note">
-              If the chuffs are too fast for the wheels, lower the chuff rate at that part of the curve. If they are too slow, raise it.
-            </p>
-
-            <p class="note">
-              <strong>What is this screen actually changing?</strong>
-            </p>
-
-            <p class="note">
-              You do not have to manually edit Configuration Variables. This screen is a graphical editor for the chuff-rate CVs and <strong>modifies the CV values behind the scenes for you</strong>:
-            </p>
-
-            <ul>
-              <li><strong>CV98</strong> stores the low-speed points at <strong>1, 5, 10, 15, 20, and 25% throttle</strong>.</li>
-              <li><strong>CV99</strong> stores the high-speed points at <strong>35, 50, 65, 80, 90, and 100% throttle</strong>.</li>
-            </ul>
-
-            <p class="note">
-              The firmware interpolates between those points to create the complete chuff-rate curve. These settings change the <strong>chuff cadence only</strong>; they do not change locomotive motor speed.
-            </p>
-
-            <p class="note">
-              PMT uses four chuff phases per wheel revolution—approximately <strong>0°, 90°, 180°, and 270°</strong>—so the goal is to adjust the curve until those four exhaust beats visually match one wheel revolution as closely as possible.
-            </p>
-
-            <p class="note">
-              PMT's documented synchronization is based on <strong>throttle speed</strong>, not a physical wheel sensor or encoder. You are therefore tuning the sound to visually match the locomotive's wheels.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
-                target="_blank" rel="noopener noreferrer">
-                Complete Audio Creation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-motor-driver-type">
-          <summary>
-            <span class="section-title">
-              <span>How do I determine what Motor Driver Type I should use for my Motor Driver?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              The <strong>Motor Driver Type</strong> tells PMT how to control the inputs on your motor driver board. It does not describe how much voltage or current the board can handle.
-            </p>
-
-            <p class="note">
-              For the motor drivers shown on the PMT Getting Started page, use:
-            </p>
-
-            <div class="markdown-body">
-              <div class="markdown-table-wrap">
-                <div class="faq-table-container">
-              <div class="faq-table-scrollbar">
-                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
-                  aria-label="Scroll table horizontally" />
-              </div>
-              <div class="faq-table-wrap">
-<table>
-                  <thead>
-                    <tr>
-                      <th>Motor Driver</th>
-                      <th>PMT Motor Driver Type</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>BTS7960 / IBT-2</td>
-                      <td><strong>DUAL_PWM</strong></td>
-                    </tr>
-                    <tr>
-                      <td>L298N</td>
-                      <td><strong>PWM_BIDIR</strong></td>
-                    </tr>
-                    <tr>
-                      <td>TB6612FNG</td>
-                      <td><strong>PWM_BIDIR</strong></td>
-                    </tr>
-                    <tr>
-                      <td>L9110S</td>
-                      <td><strong>DUAL_INPT</strong></td>
-                    </tr>
-                  </tbody>
-                </table>
-            </div>
-            </div>
-              </div>
-            </div>
-
-            <p class="note">
-              If your motor driver is not listed, look at the labels on its control pins:
-            </p>
-
-            <ul>
-              <li><code>RPWM</code> + <code>LPWM</code> → <strong>DUAL_PWM</strong></li>
-              <li><code>PWM</code> + <code>DIR</code> → <strong>PWM_DIR</strong></li>
-              <li><code>PWM/EN</code> + <code>IN1</code> + <code>IN2</code> → <strong>PWM_BIDIR</strong></li>
-              <li><code>IN1</code> + <code>IN2</code> only → <strong>DUAL_INPT</strong></li>
-            </ul>
-
-            <p class="note">
-              For a <strong>TB6612FNG</strong>, use its dedicated PWM input plus its two direction inputs, and hold <code>STBY</code> HIGH so the driver is enabled.
-            </p>
-
-            <p class="note">
-              Choosing the wrong Motor Driver Type can keep the motor from running correctly even when the power wiring is correct. Choosing the type is also separate from making sure the board has enough voltage and current capacity for your locomotive.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/mode.html"
-                target="_blank" rel="noopener noreferrer">
-                Motor Driver Modes
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/installation.html"
-                target="_blank" rel="noopener noreferrer">
-                PMT Installation Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
-                target="_blank" rel="noopener noreferrer">
-                Wiring Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-configuration-variables">
-          <summary>
-            <span class="section-title">
-              <span>What are CV's, how do I change/query them, and what do they mean?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              <strong>CV</strong> stands for <strong>Configuration Variable</strong>. A CV is simply a numbered setting stored inside your PMT device.
-            </p>
-
-            <p class="note">
-              CVs control things such as:
-            </p>
-
-            <ul>
-              <li>device name</li>
-              <li>motor-driver settings and GPIO pins</li>
-              <li>WiFi</li>
-              <li>sound and volume</li>
-              <li>lighting and outputs</li>
-              <li>battery monitoring</li>
-              <li>automation and other device behavior</li>
-            </ul>
-
-            <p class="note">
-              Most CV settings are saved in the ESP32's non-volatile memory, so they remain set after the device is powered off.
-            </p>
-
-            <p class="note">
-              <strong>The easiest way to work with CVs</strong>
-            </p>
-
-            <p class="note">
-              Connect to the PMT device, open <strong>Configuration</strong>, and expand <strong>Configuration Variables</strong>.
-            </p>
-
-            <p class="note">
-              From there you can <strong>get/query</strong> a CV to see its current value or <strong>set</strong> it to a new value. Many normal PMT configuration screens also change CVs for you behind the scenes, so you usually do not need to work with CV numbers directly.
-            </p>
-
-            <p class="note">
-              For example, the Steam Chuff Rate Curve screen modifies its associated CV values graphically instead of requiring you to type the CVs yourself.
-            </p>
-
-            <p class="note">
-              <strong>You can also use the Terminal</strong>
-            </p>
-
-            <p class="note">
-              To read a CV:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV33?</code>
-            </p>
-
-            <p class="note">
-              A response might look like:
-            </p>
-
-            <p class="note note-strong">
-              <code>A:CV33=64</code>
-            </p>
-
-            <p class="note">
-              To change it:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV33=65</code>
-            </p>
-
-            <p class="note">
-              The device responds with the value it accepted.
-            </p>
-
-            <p class="note">
-              <strong>How do I know what a CV means?</strong>
-            </p>
-
-            <p class="note">
-              Always look up the CV in the <strong>Configuration Variables Reference</strong> before changing it. The reference tells you:
-            </p>
-
-            <ul>
-              <li>what the CV controls</li>
-              <li>which PMT device type it applies to</li>
-              <li>the allowed values</li>
-              <li>the default value</li>
-              <li>what changing it does</li>
-            </ul>
-
-            <p class="note">
-              This is important because <strong>the same CV number can mean different things on different PMT firmware types</strong>. For example, the meaning of a CV on a locomotive Throttle is not always the same as that CV on a Turbine device.
-            </p>
-
-            <p class="note">
-              For most users, use the regular Configuration screens whenever a setting is available there. Use the Configuration Variables screen or Terminal when you need an advanced setting, troubleshooting, or something that is not exposed elsewhere in the app.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
-                target="_blank" rel="noopener noreferrer">
-                Command Protocol Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-command-protocol">
-          <summary>
-            <span class="section-title">
-              <span>What commands are available, how do I use them, and what do they mean?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT devices understand <strong>text commands</strong>. The PMT app normally sends these commands for you when you operate the throttle or change settings, but you can also send commands yourself from the built-in <strong>Terminal</strong>.
-            </p>
-
-            <p class="note">
-              <strong>How do I send a command?</strong>
-            </p>
-
-            <ol>
-              <li>Open the <strong>PMT application</strong>.</li>
-              <li>Connect to your PMT device and let the normal connection complete.</li>
-              <li>Open the <strong>Terminal</strong>.</li>
-              <li>Type a command.</li>
-              <li>Press <strong>Send</strong>.</li>
-            </ol>
-
-            <p class="note">
-              The device will normally respond with a confirmation, a value, or an error.
-            </p>
-
-            <p class="note">
-              For example:
-            </p>
-
-            <p class="note note-strong">
-              <code>V</code>
-            </p>
-
-            <p class="note">
-              asks for the firmware version.
-            </p>
-
-            <p class="note">
-              Other common examples are:
-            </p>
-
-            <div class="faq-table-container">
-              <div class="faq-table-scrollbar">
-                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
-                  aria-label="Scroll table horizontally" />
-              </div>
-              <div class="faq-table-wrap">
-<table>
-              <thead>
-                <tr>
-                  <th>Command</th>
-                  <th>What it does</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td><code>V</code></td><td>Show the firmware version</td></tr>
-                <tr><td><code>VV</code></td><td>Show the exact firmware build</td></tr>
-                <tr><td><code>C?</code></td><td>Show connection status</td></tr>
-                <tr><td><code>IP?</code></td><td>Show the device's IP address</td></tr>
-                <tr><td><code>F25</code></td><td>Throttle: move forward toward 25% speed</td></tr>
-                <tr><td><code>R25</code></td><td>Throttle: move in reverse toward 25% speed</td></tr>
-                <tr><td><code>S</code></td><td>Quick stop</td></tr>
-                <tr><td><code>B</code></td><td>Brake stop</td></tr>
-                <tr><td><code>B25</code></td><td>Apply a variable brake amount</td></tr>
-                <tr><td><code>FX3=1</code></td><td>Turn Output/FX 3 on</td></tr>
-                <tr><td><code>FX3=0</code></td><td>Turn Output/FX 3 off</td></tr>
-                <tr><td><code>CV33?</code></td><td>Query CV33</td></tr>
-                <tr><td><code>CV33=65</code></td><td>Set CV33 to 65</td></tr>
-                <tr><td><code>SS?</code></td><td>Check automation/script status</td></tr>
-                <tr><td><code>SP0</code></td><td>Stop a running automation/script</td></tr>
-              </tbody>
-            </table>
-            </div>
-            </div>
-
-            <p class="note">
-              PMT also has commands for:
-            </p>
-
-            <ul>
-              <li>Automation/script recording and playback</li>
-              <li>WiFi and connection diagnostics</li>
-              <li>ESP-NOW communication between PMT devices</li>
-              <li>Audio testing and diagnostics</li>
-              <li>Debug logging</li>
-              <li>Configuration Variables</li>
-              <li>Firmware updates on supported hardware</li>
-              <li>Turbine control</li>
-            </ul>
-
-            <p class="note">
-              <strong>What do the replies mean?</strong>
-            </p>
-
-            <p class="note">
-              A successful command commonly returns something beginning with:
-            </p>
-
-            <p class="note note-strong">
-              <code>ACK:</code>
-            </p>
-
-            <p class="note">
-              A command that could not be accepted commonly returns:
-            </p>
-
-            <p class="note note-strong">
-              <code>ERR:</code>
-            </p>
-
-            <p class="note">
-              Queries may return the requested information directly. For example, <code>CV33?</code> may return:
-            </p>
-
-            <p class="note note-strong">
-              <code>A:CV33=64</code>
-            </p>
-
-            <p class="note">
-              <strong>Do all PMT devices use the same commands?</strong>
-            </p>
-
-            <p class="note">
-              No. There is a shared group of commands used by multiple PMT devices, but some commands are specific to a particular firmware type.
-            </p>
-
-            <p class="note">
-              For example, locomotive <strong>Throttle</strong> firmware understands motor commands such as <code>F25</code>, <code>R25</code>, and <code>FX3=1</code>, while <strong>Turbine</strong> firmware has its own output-control commands.
-            </p>
-
-            <p class="note">
-              Always check the <strong>Command Protocol Reference</strong> before manually sending an unfamiliar command. It shows the exact syntax, what the command does, what response to expect, and which PMT device types support it.
-            </p>
-
-            <p class="note">
-              For normal operation, you usually do <strong>not</strong> need to type commands yourself—the app's throttle and Configuration screens generate the appropriate commands behind the scenes. The Terminal is most useful for diagnostics, advanced configuration, testing, and troubleshooting.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
-                target="_blank" rel="noopener noreferrer">
-                Command Protocol Reference
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-start-assist-kick">
-          <summary>
-            <span class="section-title">
-              <span>What is Start Assist / Kick, when would I need to use it and how?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              <strong>Start Assist</strong>, also called <strong>Kick</strong>, gives the motor a brief extra push when the locomotive begins moving from a stop.
-            </p>
-
-            <p class="note">
-              Some motors need more power to start turning than they need once they are already moving. Without Start Assist, you may raise the throttle and see the locomotive hesitate, hum, or suddenly jump into motion.
-            </p>
-
-            <p class="note">
-              <strong>When should I use it?</strong>
-            </p>
-
-            <p class="note">
-              Start Assist may help if:
-            </p>
-
-            <ul>
-              <li>the locomotive hesitates when starting at low speed;</li>
-              <li>the motor needs extra power to break away from a stop; or</li>
-              <li>you have adjusted <strong>Minimum Start Throttle</strong>, but starting is still inconsistent.</li>
-            </ul>
-
-            <p class="note">
-              If your locomotive already starts smoothly, you generally do not need Start Assist.
-            </p>
-
-            <p class="note">
-              <strong>How do I configure it?</strong>
-            </p>
-
-            <p class="note">
-              In the PMT app, open:
-            </p>
-
-            <p class="note note-strong">
-              <strong>Configuration → Motor &amp; Drive Behavior</strong>
-            </p>
-
-            <p class="note">
-              Use the <strong>Start Assist / Kick</strong> settings there to tune how much help the motor receives when starting.
-            </p>
-
-            <p class="note">
-              This is the recommended way to adjust it because the Configuration screen handles the underlying settings for you.
-            </p>
-
-            <p class="note">
-              Behind the scenes, Start Assist is stored in <strong>CV9 — Kick Configuration</strong>:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV9=&lt;throttle&gt;,&lt;ms&gt;,&lt;rampDownMs&gt;,&lt;maxApply&gt;</code>
-            </p>
-
-            <p class="note">
-              The documented default is:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV9=0,0,80,15</code>
-            </p>
-
-            <p class="note">
-              So you normally <strong>do not need to manually edit CV9</strong>. The <strong>Motor &amp; Drive Behavior</strong> screen changes the CV9 configuration behind the scenes.
-            </p>
-
-            <p class="note">
-              <strong>Start Assist vs. Minimum Start Throttle</strong>
-            </p>
-
-            <ul>
-              <li><strong>Minimum Start Throttle</strong> sets the minimum useful motor-output level when the locomotive is moving.</li>
-              <li><strong>Start Assist / Kick</strong> provides a temporary boost to help the motor get started from a stop.</li>
-            </ul>
-
-            <p class="note">
-              A good approach is to set <strong>Minimum Start Throttle first</strong>, then add a small amount of Start Assist only if the locomotive still has difficulty beginning smoothly.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-limits.html"
-                target="_blank" rel="noopener noreferrer">
-                Minimum Start Throttle and Maximum Throttle
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
-                target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
-                target="_blank" rel="noopener noreferrer">
-                Troubleshooting Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-change-app-language">
-          <summary>
-            <span class="section-title">
-              <span>How do I change the language of the app? For example Italian or English?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT normally <strong>follows the language setting of your phone or tablet automatically</strong>.
-            </p>
-
-            <p class="note">
-              For example:
-            </p>
-
-            <ul>
-              <li>If your device is set to <strong>Italian</strong>, PMT will use Italian when that translation is available.</li>
-              <li>If your device is set to <strong>English</strong>, PMT will use English.</li>
-            </ul>
-
-            <p class="note">
-              PMT currently documents support for <strong>English, Spanish, French, German, Finnish, Gujarati, Hindi, Italian, Dutch, Portuguese, Tamil, and others</strong>.
-            </p>
-
-            <p class="note">
-              If you do not want PMT to follow the device language, you can also <strong>override the language manually in PMT's settings</strong> and choose the language you prefer.
-            </p>
-
-            <p class="note">
-              So you have two choices:
-            </p>
-
-            <ol>
-              <li>Let PMT automatically follow your phone or tablet's language.</li>
-              <li>Select a different language manually in PMT's settings.</li>
-            </ol>
-
-            <p class="note">
-              The supplied documentation confirms the manual language override, but it does not specify the exact menu path or setting name inside the current app.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/12-1.html"
-                target="_blank" rel="noopener noreferrer">
-                Accessibility &amp; Multi-Language Support
-              </a>
-            </p>
-          </div>
-        </details>
-
         <details class="subsection" data-section-url="faq-getting-started">
           <summary>
             <span class="section-title">
@@ -1730,587 +277,92 @@
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-throttle-delay">
+<details class="subsection" data-section-url="faq-basic-parts-installation-sound">
           <summary>
             <span class="section-title">
-              <span>Why is there a large delay when I increase or decrease the throttle?</span>
+              <span>What are the basic parts required for an installation of PMT including sound?</span>
             </span>
           </summary>
 
           <div class="subsection-content">
             <p class="note">
-              If you are using the <strong>Standard or Pro throttle</strong>, the delay may be intentional. PMT uses <strong>momentum</strong> so the locomotive does not instantly jump to every new throttle setting.
+              A basic PMT installation with sound has three main parts for controlling the locomotive, plus the audio hardware:
             </p>
 
-            <p class="note">
-              Instead, the motor gradually ramps toward the speed you selected. This makes operation feel more like a heavy train accelerating and slowing down rather than an on/off toy.
-            </p>
+            <ul>
+              <li><strong>ESP32 controller</strong> — the brains of PMT.</li>
+              <li><strong>5V power converter</strong> — supplies the ESP32 with the power it needs.</li>
+              <li><strong>Motor driver</strong> — controls power to the locomotive motor.</li>
+              <li><strong>I2S audio amplifier</strong> — such as a MAX98357A, to produce the sound.</li>
+              <li><strong>Speaker</strong> — connected to the audio amplifier.</li>
+              <li><strong>microSD card</strong> — stores the locomotive sound files.</li>
+            </ul>
 
             <p class="note">
-              <strong>I want it to respond faster</strong>
-            </p>
-
-            <p class="note">
-              Use <strong>Switcher Mode</strong> on the Standard/Pro throttle. Switcher Mode removes the heavier momentum effect and gives you a much more responsive throttle, which is useful for switching and precise low-speed movements.
-            </p>
-
-            <p class="note">
-              You can also use the <strong>Novice throttle</strong> if you prefer simpler, more immediate control without the heavier momentum behavior.
-            </p>
-
-            <p class="note">
-              So if you move the throttle from, for example, 20% to 60% and the locomotive takes time to reach 60%, that does <strong>not necessarily mean Bluetooth or the app is lagging</strong>. It may simply be PMT's selected motion style doing what it was designed to do.
-            </p>
-
-            <p class="note">
-              If the locomotive still responds unusually slowly while using a more immediate throttle mode, then check the troubleshooting guide for other causes such as low-voltage limiting or motor/start settings.
+              Some ESP32 boards also require a separate <strong>microSD card reader</strong>. The ESP32-S3-CAM version has a built-in microSD slot, so it does not need the separate reader.
             </p>
 
             <p class="note note-strong">
               More information:
               <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-modes.html"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
                 target="_blank" rel="noopener noreferrer">
-                Throttle Modes Explained
+                Full Hardware Recipe
               </a>
               ·
               <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
                 target="_blank" rel="noopener noreferrer">
-                Troubleshooting Guide
+                PMTPlayer Audio Installation Guide
               </a>
             </p>
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-turn-off-onboard-led">
+<details class="subsection" data-section-url="faq-basic-parts-without-sound">
           <summary>
             <span class="section-title">
-              <span>How do I turn off the LED on my ESP32?</span>
+              <span>I don't need sound. What are the basic parts required for an installation of PMT without sound?</span>
             </span>
           </summary>
 
           <div class="subsection-content">
             <p class="note">
-              PMT controls the ESP32's onboard status LED with <strong>CV21 — Onboard LED Output Gate</strong>.
-            </p>
-
-            <p class="note">
-              You have three choices:
+              If you do not want sound, a basic PMT installation only needs three main electronic components:
             </p>
 
             <ul>
-              <li><strong><code>CV21=0</code></strong> — keep the onboard status LED <strong>off all the time</strong>.</li>
-              <li><strong><code>CV21=1</code></strong> — normal behavior. PMT controls the LED using its normal colors and blink patterns. This is the default.</li>
-              <li><strong><code>CV21=2</code></strong> — keep the LED <strong>off while PMT is connected</strong> by Bluetooth or WebSocket, but allow the normal LED indication when it is disconnected.</li>
+              <li><strong>ESP32 controller</strong> — the brains of PMT.</li>
+              <li><strong>5V power converter</strong> — provides the correct power for the ESP32.</li>
+              <li><strong>Motor driver</strong> — controls the locomotive motor. Choose one that is suitable for the motor and current requirements of your installation.</li>
             </ul>
 
             <p class="note">
-              For most people who simply want the ESP32 light turned off, use:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV21=0</code>
+              Your locomotive's <strong>motor and battery or other power source</strong> connect to these components, but they are not additional PMT electronics.
             </p>
 
             <p class="note">
-              You can change CV21 from the app's <strong>Configuration Variables</strong> screen, or from the Terminal.
-            </p>
-
-            <p class="note">
-              To check the current value:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV21?</code>
-            </p>
-
-            <p class="note">
-              To turn the onboard LED off:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV21=0</code>
-            </p>
-
-            <p class="note">
-              To restore normal LED behavior later:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV21=1</code>
-            </p>
-
-            <p class="note">
-              If you want the status LED available for troubleshooting when disconnected, but dark during normal operation, use:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV21=2</code>
-            </p>
-
-            <p class="note">
-              This setting only gates the <strong>firmware-controlled onboard status LED</strong>. It does not disable LEDs that you have configured separately as PMT Output Controls.
+              You do <strong>not</strong> need the audio amplifier, speaker, or microSD card used for a sound installation. Sound can always be added later.
             </p>
 
             <p class="note note-strong">
               More information:
               <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
                 target="_blank" rel="noopener noreferrer">
-                Configuration Variables Reference
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-led-patterns">
-          <summary>
-            <span class="section-title">
-              <span>What patterns exist for LED lights and what do they mean?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT provides several built-in LED patterns that you can select in <strong>Output Control</strong>.
-            </p>
-
-            <div class="faq-table-container">
-              <div class="faq-table-scrollbar">
-                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
-                  aria-label="Scroll table horizontally" />
-              </div>
-              <div class="faq-table-wrap">
-<table>
-              <thead>
-                <tr>
-                  <th>Pattern</th>
-                  <th>What it does</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td><strong>LED Solid</strong></td><td>Stays steadily ON while active.</td></tr>
-                <tr><td><strong>LED Double Blink</strong></td><td>Two short flashes, then a pause.</td></tr>
-                <tr><td><strong>LED FRED</strong></td><td>A FRED-style sequence: a single flash followed by a closely spaced double flash.</td></tr>
-                <tr><td><strong>LED Blink +</strong></td><td>User-configurable blink timing.</td></tr>
-                <tr><td><strong>LED Blink -</strong></td><td>Same blink timing as <code>+</code>, but shifted half a cycle so two lights can alternate.</td></tr>
-                <tr><td><strong>LED Ditch +</strong></td><td>Built-in ditch-light pulse.</td></tr>
-                <tr><td><strong>LED Ditch -</strong></td><td>Same ditch-light pulse, shifted half a cycle for alternating ditch lights.</td></tr>
-                <tr><td><strong>LED Strobe +</strong></td><td>Repeating double-strobe burst.</td></tr>
-                <tr><td><strong>LED Strobe -</strong></td><td>Same strobe pattern, shifted half a cycle.</td></tr>
-                <tr><td><strong>LED Rotary +</strong></td><td>Smooth rise-and-fall effect like a rotating beacon.</td></tr>
-                <tr><td><strong>LED Rotary -</strong></td><td>Same rotary effect running opposite the <code>+</code> version.</td></tr>
-                <tr><td><strong>LED Mars +</strong></td><td>Smooth brightness sweep that imitates a Mars light.</td></tr>
-                <tr><td><strong>LED Mars -</strong></td><td>Same Mars effect, shifted half a cycle.</td></tr>
-                <tr><td><strong>LED Gyralite +</strong></td><td>Smooth Gyralite-style brightness pulse.</td></tr>
-                <tr><td><strong>LED Gyralite -</strong></td><td>Same Gyralite effect, shifted half a cycle.</td></tr>
-                <tr><td><strong>LED Firebox Flicker</strong></td><td>Fast, irregular brightness changes with occasional darker dips, intended to look like fire.</td></tr>
-                <tr><td><strong>LED Lantern Flicker</strong></td><td>A softer, slower flicker than Firebox Flicker.</td></tr>
-                <tr><td><strong>LED Dynamo</strong></td><td>Takes about 3 seconds to build up, then stays near full brightness with small variations.</td></tr>
-                <tr><td><strong>LED Incandescent</strong></td><td>Smoothly fades from dark to full brightness in about 420 ms to imitate a traditional bulb.</td></tr>
-              </tbody>
-            </table>
-            </div>
-            </div>
-
-            <p class="note">
-              A useful beginner rule is that the <strong><code>+</code> and <code>-</code> versions are paired effects</strong>. Use them on two different GPIO outputs when you want two lights to alternate or run opposite one another—for example, left and right ditch lights.
-            </p>
-
-            <p class="note">
-              Only <strong>LED Blink + / LED Blink -</strong> use the configurable <strong>Blink Timing</strong> field. For example:
-            </p>
-
-            <p class="note note-strong">
-              <code>1000,250</code>
-            </p>
-
-            <p class="note">
-              means a 1000 ms total cycle with the LED ON for 250 ms. The <code>-</code> version starts half a cycle later.
-            </p>
-
-            <p class="note">
-              The Ditch, Strobe, FRED, Rotary, Mars, and Gyralite patterns use their own built-in timing instead.
-            </p>
-
-            <p class="note">
-              Each LED pattern uses a firmware FX slot and a GPIO pin, and can be restricted by <strong>Direction</strong> to Both, Forward, or Reverse.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-default-audio-controls">
-          <summary>
-            <span class="section-title">
-              <span>What are the different default sounds I can control and how do I configure them?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT provides three built-in sounds that you can add directly to your <strong>Output Control</strong> panel:
-            </p>
-
-            <div class="faq-table-container">
-              <div class="faq-table-scrollbar">
-                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
-                  aria-label="Scroll table horizontally" />
-              </div>
-              <div class="faq-table-wrap">
-                <table>
-                  <thead>
-                    <tr>
-                      <th>Sound</th>
-                      <th>Pattern</th>
-                      <th>Recommended setup</th>
-                      <th>What it does</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>Bell</strong></td>
-                      <td><code>Audio Bell</code></td>
-                      <td>Direction = Both, Momentary = Off</td>
-                      <td>Tap once to turn the bell on. Tap again to turn it off.</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Horn</strong></td>
-                      <td><code>Audio Horn</code></td>
-                      <td>Direction = Both, Momentary = On</td>
-                      <td>Hold the button to sound the horn. Release it to stop.</td>
-                    </tr>
-                    <tr>
-                      <td><strong>Cab Chatter</strong></td>
-                      <td><code>Audio Cab Chatter</code></td>
-                      <td>Usually left ON when you want chatter active</td>
-                      <td>Plays a chatter sound, then automatically schedules additional chatter at random intervals.</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <p class="note">
-              <strong>How do I add one?</strong>
-            </p>
-
-            <p class="note">
-              Open <strong>Configuration → Output Control</strong>.
-            </p>
-
-            <ol>
-              <li>Tap <strong>Add Output</strong>.</li>
-              <li>Enter a name, such as <strong>Bell</strong>, <strong>Horn</strong>, or <strong>Cab Chatter</strong>.</li>
-              <li>Choose the matching <strong>Pattern</strong>.</li>
-              <li>Set <strong>Direction</strong> to Both, Forward, or Reverse as needed.</li>
-              <li>Set <strong>Momentary</strong> appropriately.</li>
-              <li>Save the configuration.</li>
-            </ol>
-
-            <p class="note">
-              You do <strong>not</strong> enter an Audio Track number for the built-in Bell or Horn.
-            </p>
-
-            <p class="note">
-              The built-in tracks are:
-            </p>
-
-            <ul>
-              <li><strong>Bell</strong> — track <code>202</code>.</li>
-              <li>
-                <strong>Horn</strong> — uses three tracks:
-                <ul>
-                  <li><code>211</code> — horn start</li>
-                  <li><code>212</code> — horn sustain</li>
-                  <li><code>213</code> — horn release</li>
-                </ul>
-              </li>
-              <li><strong>Cab Chatter</strong> — starts at track <code>300</code>.</li>
-            </ul>
-
-            <p class="note">
-              Cab Chatter behaves differently from Bell and Horn. While it remains ON, PMT schedules another chatter sound after a randomly selected delay of <strong>30, 40, 50, 60, 70, 80, or 90 seconds</strong>.
-            </p>
-
-            <p class="note">
-              <strong>What about my own sounds?</strong>
-            </p>
-
-            <ul>
-              <li><strong>Audio Custom</strong> — plays your selected track once.</li>
-              <li><strong>Audio Custom Replay</strong> — continuously loops your selected track while the control is ON.</li>
-            </ul>
-
-            <p class="note">
-              Those patterns let you select an <strong>Audio Track from 1 through 9999</strong>.
-            </p>
-
-            <p class="note">
-              On the <strong>Pro and Standard locomotive throttles</strong>, supported audio controls can also display their own speaker/volume button.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
+                Full Hardware Recipe
               </a>
               ·
               <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
                 target="_blank" rel="noopener noreferrer">
-                Quick Audio Creation Guide
+                PMT Installation Options
               </a>
             </p>
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-christmas-music">
-          <summary>
-            <span class="section-title">
-              <span>How can I add Christmas Music to my train?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              You can put a Christmas song on the PMT microSD card and create an <strong>Output Control button</strong> to start and stop it.
-            </p>
-
-            <p class="note">
-              <strong>1. Prepare the music file</strong>
-            </p>
-
-            <p class="note">
-              Convert the song to PMT's recommended audio format:
-            </p>
-
-            <ul>
-              <li><strong>WAV</strong></li>
-              <li><strong>Mono</strong></li>
-              <li><strong>22,050 Hz</strong></li>
-              <li><strong>Signed 16-bit PCM</strong></li>
-            </ul>
-
-            <p class="note">
-              Choose an unused Audio Track number from <strong>1 through 9999</strong>. For example:
-            </p>
-
-            <p class="note note-strong">
-              <code>0400.wav</code>
-            </p>
-
-            <p class="note">
-              Copy the file into the sound folder you are using:
-            </p>
-
-            <p class="note note-strong">
-              <code>/diesel/0400.wav</code>
-            </p>
-
-            <p class="note">
-              or:
-            </p>
-
-            <p class="note note-strong">
-              <code>/steam/0400.wav</code>
-            </p>
-
-            <p class="note">
-              The song needs to be in the active Diesel or Steam folder so PMTPlayer can find it.
-            </p>
-
-            <p class="note">
-              <strong>2. Create the Christmas Music button</strong>
-            </p>
-
-            <p class="note">
-              In the PMT app, open <strong>Configuration → Output Control</strong>.
-            </p>
-
-            <ol>
-              <li>Tap <strong>Add Output</strong>.</li>
-              <li>Give it a name such as <strong>Christmas Music</strong>.</li>
-              <li>Choose <strong>Audio Custom Replay</strong>.</li>
-              <li>Set <strong>Audio Track</strong> to <code>400</code>.</li>
-              <li>Set <strong>Direction</strong> to <strong>Both</strong>.</li>
-              <li>Leave <strong>Momentary</strong> off.</li>
-              <li>Save the configuration.</li>
-            </ol>
-
-            <p class="note">
-              You will now have a <strong>Christmas Music</strong> button on supported PMT throttle screens.
-            </p>
-
-            <p class="note">
-              Tap it once to start the music. Tap it again to stop it.
-            </p>
-
-            <p class="note">
-              <strong>What if I only want the song to play once?</strong>
-            </p>
-
-            <ul>
-              <li><strong>Audio Custom</strong> — plays the selected track one time.</li>
-              <li><strong>Audio Custom Replay</strong> — keeps repeating the track until you turn the button off.</li>
-            </ul>
-
-            <p class="note">
-              For background Christmas music, <strong>Audio Custom Replay</strong> is usually the better choice.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                Output Control User Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
-                target="_blank" rel="noopener noreferrer">
-                Quick Audio Creation Guide
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
-                target="_blank" rel="noopener noreferrer">
-                Complete Audio Creation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-battery-monitor-icon">
-          <summary>
-            <span class="section-title">
-              <span>I do not see a battery icon on my PMT screen. How do I get it to show up and monitor my battery?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              PMT's battery icon appears when <strong>INA219 battery monitoring</strong> is installed and active.
-            </p>
-
-            <p class="note">
-              The INA219 is a small sensor board that lets PMT measure:
-            </p>
-
-            <ul>
-              <li>battery voltage</li>
-              <li>current draw</li>
-              <li>power usage</li>
-              <li>low-voltage conditions</li>
-            </ul>
-
-            <p class="note">
-              <strong>What do I need?</strong>
-            </p>
-
-            <p class="note">
-              Install an <strong>INA219 current/voltage monitor</strong> in the battery power path and connect its I²C <code>SDA</code> and <code>SCL</code> lines to the ESP32.
-            </p>
-
-            <p class="note">
-              The INA219 must be installed <strong>in series with Battery +</strong>:
-            </p>
-
-            <p class="note note-strong">
-              <code>Battery + → INA219 → PMT power input</code>
-            </p>
-
-            <p class="note">
-              Your existing PMT wiring otherwise stays in place.
-            </p>
-
-            <p class="note">
-              <strong>How do I enable it?</strong>
-            </p>
-
-            <p class="note">
-              After the INA219 is wired correctly, open <strong>Configuration → Battery Management</strong>.
-            </p>
-
-            <p class="note">
-              Enable the INA219 battery monitor there.
-            </p>
-
-            <p class="note">
-              Behind the scenes, this enables:
-            </p>
-
-            <p class="note note-strong">
-              <code>CV30=1</code>
-            </p>
-
-            <p class="note">
-              Battery monitoring is <strong>disabled by default</strong>, so the battery indicator will not appear until the sensor is installed and monitoring is enabled.
-            </p>
-
-            <p class="note">
-              Once the INA219 is active and sending telemetry, the throttle screen can show a <strong>battery indicator button near the status area</strong>.
-            </p>
-
-            <p class="note">
-              Tap the battery button to open the <strong>Battery Telemetry</strong> drawer and view live battery information.
-            </p>
-
-            <p class="note">
-              <strong>Can PMT protect the battery too?</strong>
-            </p>
-
-            <p class="note">
-              Yes. Battery Management also provides optional settings for:
-            </p>
-
-            <ul>
-              <li>low-voltage warning</li>
-              <li>throttle limiting</li>
-              <li>low-voltage shutdown</li>
-              <li>recovery voltage</li>
-              <li>battery-disconnect detection</li>
-              <li>optional low-voltage indicator LED</li>
-            </ul>
-
-            <p class="note">
-              Those protection thresholds should be configured for the <strong>battery chemistry and cell count you actually use</strong>. You do not need to enable the protection thresholds just to view battery telemetry.
-            </p>
-
-            <p class="note">
-              If the INA219 is installed and enabled but the icon still does not appear, verify its <strong>SDA/SCL wiring, I²C address, power, and sensor detection</strong>.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ina219.html"
-                target="_blank" rel="noopener noreferrer">
-                INA219 Battery Management
-              </a>
-              ·
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md"
-                target="_blank" rel="noopener noreferrer">
-                PMT INA219 Battery Monitor Installation Guide
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-locomotive-power-options">
+<details class="subsection" data-section-url="faq-locomotive-power-options">
           <summary>
             <span class="section-title">
               <span>What options are available for locomotive power, and what are some tips and tricks?</span>
@@ -2525,7 +577,688 @@
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-headlight-reverse-light">
+<details class="subsection" data-section-url="faq-trackside-no-locomotive-modifications">
+          <summary>
+            <span class="section-title">
+              <span>I just want to use PMT to power my old train set with no locomotive modifications. How can I do that?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you have a <strong>traditional DC track-powered train set</strong>, you can install PMT completely outside the locomotive.
+            </p>
+
+            <p class="note">
+              Place the PMT controller <strong>between your transformer and the track</strong>:
+            </p>
+
+            <p class="note note-strong">
+              Transformer → PMT Controller → Track → Locomotive
+            </p>
+
+            <p class="note">
+              The transformer supplies the power, while PMT controls the power going to the rails. Your locomotive remains unchanged and simply picks up its power from the track as it always has.
+            </p>
+
+            <p class="note">
+              A small project box can hold the PMT electronics, such as the ESP32, motor driver, fuse, and wiring terminals. This makes the system easy to install or remove without modifying your trains.
+            </p>
+
+            <p class="note">
+              One thing to remember: PMT controls the <strong>powered section of track</strong>, so any locomotive on that same powered section receives the same track power.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">
+                Installation Options — Trackside DC Controller Box
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-track-power-pmt">
+          <summary>
+            <span class="section-title">
+              <span>Can I use Track Power to power PMT? What does that look like?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Yes. PMT can be installed <strong>inside the locomotive and powered from the track</strong>.
+            </p>
+
+            <p class="note">
+              In this setup, the track is kept at a constant voltage from your transformer. The locomotive's existing track pickups bring that power into PMT.
+            </p>
+
+            <p class="note note-strong">
+              Track Power → Locomotive Pickups → PMT Electronics → Motor
+            </p>
+
+            <p class="note">
+              PMT then controls the locomotive's motor instead of varying the voltage on the track. A <strong>5V power module</strong> is used to provide the correct power for the ESP32, while the motor driver controls the locomotive motor.
+            </p>
+
+            <p class="note">
+              Because the track stays powered, it can also continue supplying power to things such as lights, buildings, and other accessories.
+            </p>
+
+            <p class="note">
+              If each locomotive has its own PMT controller, multiple PMT-equipped locomotives can be controlled independently while sharing the same powered track.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Build Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-dead-rail-battery-installation">
+          <summary>
+            <span class="section-title">
+              <span>How do I install Dead Rail/Battery powered PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              With a <strong>Dead Rail</strong> installation, the locomotive carries its own battery and does not depend on the rails for power.
+            </p>
+
+            <p class="note">
+              A basic installation looks like this:
+            </p>
+
+            <p class="note note-strong">
+              Battery → Fuse → Motor Driver → Locomotive Motor
+            </p>
+
+            <p class="note">
+              The same battery also feeds a <strong>5V power module</strong>, which supplies the correct power to the ESP32:
+            </p>
+
+            <p class="note note-strong">
+              Battery → 5V Power Module → ESP32
+            </p>
+
+            <p class="note">
+              If the battery voltage is too high for your locomotive motor, an <strong>optional buck converter</strong> can be placed before the motor driver to reduce the voltage.
+            </p>
+
+            <p class="note">
+              The battery and PMT electronics can be installed <strong>inside the locomotive</strong>, in a <strong>tender</strong>, or in a <strong>battery car</strong>, depending on how much space you have.
+            </p>
+
+            <p class="note">
+              With true Dead Rail operation, the rails do not need to be powered. Each PMT-equipped locomotive carries its own power source and can be controlled independently.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/battery.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Power Configuration Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=07_installation_options.md"
+                target="_blank" rel="noopener noreferrer">
+                Installation Options
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=06_build_guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Build Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-s3cam-dual-usbc">
+          <summary>
+            <span class="section-title">
+              <span>I have an ESP32-S3-CAM board (N16R8) with dual USB-C inputs. Does it matter which input I connect to?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The ESP32-S3-CAM N16R8 board used in the PMT hardware examples has <strong>two USB-C connectors</strong>, but PMT does not assign a specific left/right connector for every board variant.
+            </p>
+
+            <p class="note">
+              For <strong>installing or updating firmware</strong>, use the USB-C port that provides a <strong>USB data/serial connection</strong> to your computer. Use a known-good <strong>USB data cable</strong>, not a charge-only cable. When connected correctly, the ESP32 should appear as a selectable USB/serial device in the PMT firmware installer.
+            </p>
+
+            <p class="note">
+              For normal PMT operation, the ESP32 needs a clean, regulated <strong>5V supply</strong>.
+            </p>
+
+            <p class="note">
+              <strong>Important:</strong> Dual-USB ESP32-S3-CAM boards are not all wired identically. One connector may be intended for native USB and the other for a USB-to-serial interface. Check the labels printed next to the connectors or the information for your exact board before assuming the two ports are interchangeable.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
+                target="_blank" rel="noopener noreferrer">
+                Full Hardware Recipe
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-sd-card-size-format">
+          <summary>
+            <span class="section-title">
+              <span>What SD card size should I use and how should I format it for use with PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT does not require a large microSD card. A <strong>small card is fine — even 128 MB is enough</strong> for a typical PMT sound installation.
+            </p>
+
+            <p class="note">
+              The important part is formatting the card correctly:
+            </p>
+
+            <ul>
+              <li><strong>128 MB through 2 GB:</strong> format as <strong>FAT16</strong>.</li>
+              <li><strong>4 GB through 128 GB:</strong> format as <strong>FAT32</strong>.</li>
+              <li><strong>Do not use exFAT.</strong></li>
+            </ul>
+
+            <p class="note">
+              Be especially careful with <strong>64 GB and 128 GB cards</strong>. They are often sold already formatted as exFAT, so they must be reformatted to <strong>FAT32</strong> before PMT can use them.
+            </p>
+
+            <p class="note">
+              If you are buying a card specifically for PMT, there is generally no need to buy a very large one.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMTPlayer_Audio_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-ibt2-good-or-bad">
+          <summary>
+            <span class="section-title">
+              <span>How do I tell if my IBT-2 Motor Driver is good or bad?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can bench-test the IBT-2 with a <strong>12V power source, a separate 5V logic source, and a small DC motor</strong>.
+            </p>
+
+            <p class="note">
+              With the board powered correctly and both enable pins turned on, test one direction at a time:
+            </p>
+
+            <ul>
+              <li><strong>RPWM HIGH / LPWM LOW</strong> — the motor should turn one direction.</li>
+              <li><strong>RPWM LOW / LPWM HIGH</strong> — the motor should turn the opposite direction.</li>
+            </ul>
+
+            <p class="note">
+              The results are simple:
+            </p>
+
+            <ul>
+              <li><strong>Motor runs both directions:</strong> the IBT-2 is good.</li>
+              <li><strong>Motor runs in only one direction:</strong> one side of the IBT-2 is bad.</li>
+              <li><strong>Motor runs in neither direction:</strong> check the wiring and power before assuming the board is bad.</li>
+            </ul>
+
+            <p class="note">
+              Before condemning the board, make sure <strong>VCC is 5V, the grounds are connected together, R_EN and L_EN are HIGH, and the motor and power supply are known to be good.</strong>
+            </p>
+
+            <p class="note">
+              <strong>Important:</strong> Do not put 12V into the IBT-2's VCC logic pin.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_troubleshooting_a_bad_IBT_board.md"
+                target="_blank" rel="noopener noreferrer">
+                IBT-2 Quick Test
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://youtu.be/VNKrYldYAV4?si=M8Zm2jQSxkiGTMzK"
+                target="_blank" rel="noopener noreferrer">
+                IBT-2 Test Video
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-motor-driver-type">
+          <summary>
+            <span class="section-title">
+              <span>How do I determine what Motor Driver Type I should use for my Motor Driver?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The <strong>Motor Driver Type</strong> tells PMT how to control the inputs on your motor driver board. It does not describe how much voltage or current the board can handle.
+            </p>
+
+            <p class="note">
+              For the motor drivers shown on the PMT Getting Started page, use:
+            </p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
+                  <thead>
+                    <tr>
+                      <th>Motor Driver</th>
+                      <th>PMT Motor Driver Type</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>BTS7960 / IBT-2</td>
+                      <td><strong>DUAL_PWM</strong></td>
+                    </tr>
+                    <tr>
+                      <td>L298N</td>
+                      <td><strong>PWM_BIDIR</strong></td>
+                    </tr>
+                    <tr>
+                      <td>TB6612FNG</td>
+                      <td><strong>PWM_BIDIR</strong></td>
+                    </tr>
+                    <tr>
+                      <td>L9110S</td>
+                      <td><strong>DUAL_INPT</strong></td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+            </div>
+              </div>
+            </div>
+
+            <p class="note">
+              If your motor driver is not listed, look at the labels on its control pins:
+            </p>
+
+            <ul>
+              <li><code>RPWM</code> + <code>LPWM</code> → <strong>DUAL_PWM</strong></li>
+              <li><code>PWM</code> + <code>DIR</code> → <strong>PWM_DIR</strong></li>
+              <li><code>PWM/EN</code> + <code>IN1</code> + <code>IN2</code> → <strong>PWM_BIDIR</strong></li>
+              <li><code>IN1</code> + <code>IN2</code> only → <strong>DUAL_INPT</strong></li>
+            </ul>
+
+            <p class="note">
+              For a <strong>TB6612FNG</strong>, use its dedicated PWM input plus its two direction inputs, and hold <code>STBY</code> HIGH so the driver is enabled.
+            </p>
+
+            <p class="note">
+              Choosing the wrong Motor Driver Type can keep the motor from running correctly even when the power wiring is correct. Choosing the type is also separate from making sure the board has enough voltage and current capacity for your locomotive.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/mode.html"
+                target="_blank" rel="noopener noreferrer">
+                Motor Driver Modes
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/installation.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-start-assist-kick">
+          <summary>
+            <span class="section-title">
+              <span>What is Start Assist / Kick, when would I need to use it and how?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <strong>Start Assist</strong>, also called <strong>Kick</strong>, gives the motor a brief extra push when the locomotive begins moving from a stop.
+            </p>
+
+            <p class="note">
+              Some motors need more power to start turning than they need once they are already moving. Without Start Assist, you may raise the throttle and see the locomotive hesitate, hum, or suddenly jump into motion.
+            </p>
+
+            <p class="note">
+              <strong>When should I use it?</strong>
+            </p>
+
+            <p class="note">
+              Start Assist may help if:
+            </p>
+
+            <ul>
+              <li>the locomotive hesitates when starting at low speed;</li>
+              <li>the motor needs extra power to break away from a stop; or</li>
+              <li>you have adjusted <strong>Minimum Start Throttle</strong>, but starting is still inconsistent.</li>
+            </ul>
+
+            <p class="note">
+              If your locomotive already starts smoothly, you generally do not need Start Assist.
+            </p>
+
+            <p class="note">
+              <strong>How do I configure it?</strong>
+            </p>
+
+            <p class="note">
+              In the PMT app, open:
+            </p>
+
+            <p class="note note-strong">
+              <strong>Configuration → Motor &amp; Drive Behavior</strong>
+            </p>
+
+            <p class="note">
+              Use the <strong>Start Assist / Kick</strong> settings there to tune how much help the motor receives when starting.
+            </p>
+
+            <p class="note">
+              This is the recommended way to adjust it because the Configuration screen handles the underlying settings for you.
+            </p>
+
+            <p class="note">
+              Behind the scenes, Start Assist is stored in <strong>CV9 — Kick Configuration</strong>:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV9=&lt;throttle&gt;,&lt;ms&gt;,&lt;rampDownMs&gt;,&lt;maxApply&gt;</code>
+            </p>
+
+            <p class="note">
+              The documented default is:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV9=0,0,80,15</code>
+            </p>
+
+            <p class="note">
+              So you normally <strong>do not need to manually edit CV9</strong>. The <strong>Motor &amp; Drive Behavior</strong> screen changes the CV9 configuration behind the scenes.
+            </p>
+
+            <p class="note">
+              <strong>Start Assist vs. Minimum Start Throttle</strong>
+            </p>
+
+            <ul>
+              <li><strong>Minimum Start Throttle</strong> sets the minimum useful motor-output level when the locomotive is moving.</li>
+              <li><strong>Start Assist / Kick</strong> provides a temporary boost to help the motor get started from a stop.</li>
+            </ul>
+
+            <p class="note">
+              A good approach is to set <strong>Minimum Start Throttle first</strong>, then add a small amount of Start Assist only if the locomotive still has difficulty beginning smoothly.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-limits.html"
+                target="_blank" rel="noopener noreferrer">
+                Minimum Start Throttle and Maximum Throttle
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-battery-monitor-icon">
+          <summary>
+            <span class="section-title">
+              <span>I do not see a battery icon on my PMT screen. How do I get it to show up and monitor my battery?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT's battery icon appears when <strong>INA219 battery monitoring</strong> is installed and active.
+            </p>
+
+            <p class="note">
+              The INA219 is a small sensor board that lets PMT measure:
+            </p>
+
+            <ul>
+              <li>battery voltage</li>
+              <li>current draw</li>
+              <li>power usage</li>
+              <li>low-voltage conditions</li>
+            </ul>
+
+            <p class="note">
+              <strong>What do I need?</strong>
+            </p>
+
+            <p class="note">
+              Install an <strong>INA219 current/voltage monitor</strong> in the battery power path and connect its I²C <code>SDA</code> and <code>SCL</code> lines to the ESP32.
+            </p>
+
+            <p class="note">
+              The INA219 must be installed <strong>in series with Battery +</strong>:
+            </p>
+
+            <p class="note note-strong">
+              <code>Battery + → INA219 → PMT power input</code>
+            </p>
+
+            <p class="note">
+              Your existing PMT wiring otherwise stays in place.
+            </p>
+
+            <p class="note">
+              <strong>How do I enable it?</strong>
+            </p>
+
+            <p class="note">
+              After the INA219 is wired correctly, open <strong>Configuration → Battery Management</strong>.
+            </p>
+
+            <p class="note">
+              Enable the INA219 battery monitor there.
+            </p>
+
+            <p class="note">
+              Behind the scenes, this enables:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV30=1</code>
+            </p>
+
+            <p class="note">
+              Battery monitoring is <strong>disabled by default</strong>, so the battery indicator will not appear until the sensor is installed and monitoring is enabled.
+            </p>
+
+            <p class="note">
+              Once the INA219 is active and sending telemetry, the throttle screen can show a <strong>battery indicator button near the status area</strong>.
+            </p>
+
+            <p class="note">
+              Tap the battery button to open the <strong>Battery Telemetry</strong> drawer and view live battery information.
+            </p>
+
+            <p class="note">
+              <strong>Can PMT protect the battery too?</strong>
+            </p>
+
+            <p class="note">
+              Yes. Battery Management also provides optional settings for:
+            </p>
+
+            <ul>
+              <li>low-voltage warning</li>
+              <li>throttle limiting</li>
+              <li>low-voltage shutdown</li>
+              <li>recovery voltage</li>
+              <li>battery-disconnect detection</li>
+              <li>optional low-voltage indicator LED</li>
+            </ul>
+
+            <p class="note">
+              Those protection thresholds should be configured for the <strong>battery chemistry and cell count you actually use</strong>. You do not need to enable the protection thresholds just to view battery telemetry.
+            </p>
+
+            <p class="note">
+              If the INA219 is installed and enabled but the icon still does not appear, verify its <strong>SDA/SCL wiring, I²C address, power, and sensor detection</strong>.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ina219.html"
+                target="_blank" rel="noopener noreferrer">
+                INA219 Battery Management
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT INA219 Battery Monitor Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-control-led-lights">
+          <summary>
+            <span class="section-title">
+              <span>How do I control LED lights?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT can control LED lights directly from the ESP32 using its <strong>Output Controls</strong>.
+            </p>
+
+            <p class="note">
+              For each light, you configure:
+            </p>
+
+            <ul>
+              <li><strong>Name</strong> — such as Headlight, Reverse Light, or Ditch Light.</li>
+              <li><strong>Pattern</strong> — for example Solid, Blink, Ditch Light, Strobe, or other lighting effects.</li>
+              <li><strong>GPIO Pin</strong> — the ESP32 output pin connected to that light.</li>
+              <li><strong>Direction</strong> — Both, Forward, or Reverse.</li>
+            </ul>
+
+            <p class="note">
+              For example, a headlight can be configured as <strong>LED Solid / Forward</strong>, while a rear light can be <strong>LED Solid / Reverse</strong>. PMT will then only operate each light in the appropriate direction.
+            </p>
+
+            <p class="note">
+              PMT supports up to <strong>12 firmware FX outputs</strong>, so you can configure several independent lights and effects.
+            </p>
+
+            <p class="note">
+              LEDs connected directly to an ESP32 GPIO must use an appropriate <strong>series resistor</strong>, because the GPIO output is 3.3V. Each independently controlled LED output should also use its own GPIO pin.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/light.html"
+                target="_blank" rel="noopener noreferrer">
+                Lighting and Auxiliary Outputs
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Wiring Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-headlight-reverse-light">
           <summary>
             <span class="section-title">
               <span>How would I go about adding a headlight and/or reverse headlight?</span>
@@ -2712,7 +1445,711 @@
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-dfplayer-mini">
+<details class="subsection" data-section-url="faq-led-patterns">
+          <summary>
+            <span class="section-title">
+              <span>What patterns exist for LED lights and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT provides several built-in LED patterns that you can select in <strong>Output Control</strong>.
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
+              <thead>
+                <tr>
+                  <th>Pattern</th>
+                  <th>What it does</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>LED Solid</strong></td><td>Stays steadily ON while active.</td></tr>
+                <tr><td><strong>LED Double Blink</strong></td><td>Two short flashes, then a pause.</td></tr>
+                <tr><td><strong>LED FRED</strong></td><td>A FRED-style sequence: a single flash followed by a closely spaced double flash.</td></tr>
+                <tr><td><strong>LED Blink +</strong></td><td>User-configurable blink timing.</td></tr>
+                <tr><td><strong>LED Blink -</strong></td><td>Same blink timing as <code>+</code>, but shifted half a cycle so two lights can alternate.</td></tr>
+                <tr><td><strong>LED Ditch +</strong></td><td>Built-in ditch-light pulse.</td></tr>
+                <tr><td><strong>LED Ditch -</strong></td><td>Same ditch-light pulse, shifted half a cycle for alternating ditch lights.</td></tr>
+                <tr><td><strong>LED Strobe +</strong></td><td>Repeating double-strobe burst.</td></tr>
+                <tr><td><strong>LED Strobe -</strong></td><td>Same strobe pattern, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Rotary +</strong></td><td>Smooth rise-and-fall effect like a rotating beacon.</td></tr>
+                <tr><td><strong>LED Rotary -</strong></td><td>Same rotary effect running opposite the <code>+</code> version.</td></tr>
+                <tr><td><strong>LED Mars +</strong></td><td>Smooth brightness sweep that imitates a Mars light.</td></tr>
+                <tr><td><strong>LED Mars -</strong></td><td>Same Mars effect, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Gyralite +</strong></td><td>Smooth Gyralite-style brightness pulse.</td></tr>
+                <tr><td><strong>LED Gyralite -</strong></td><td>Same Gyralite effect, shifted half a cycle.</td></tr>
+                <tr><td><strong>LED Firebox Flicker</strong></td><td>Fast, irregular brightness changes with occasional darker dips, intended to look like fire.</td></tr>
+                <tr><td><strong>LED Lantern Flicker</strong></td><td>A softer, slower flicker than Firebox Flicker.</td></tr>
+                <tr><td><strong>LED Dynamo</strong></td><td>Takes about 3 seconds to build up, then stays near full brightness with small variations.</td></tr>
+                <tr><td><strong>LED Incandescent</strong></td><td>Smoothly fades from dark to full brightness in about 420 ms to imitate a traditional bulb.</td></tr>
+              </tbody>
+            </table>
+            </div>
+            </div>
+
+            <p class="note">
+              A useful beginner rule is that the <strong><code>+</code> and <code>-</code> versions are paired effects</strong>. Use them on two different GPIO outputs when you want two lights to alternate or run opposite one another—for example, left and right ditch lights.
+            </p>
+
+            <p class="note">
+              Only <strong>LED Blink + / LED Blink -</strong> use the configurable <strong>Blink Timing</strong> field. For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>1000,250</code>
+            </p>
+
+            <p class="note">
+              means a 1000 ms total cycle with the LED ON for 250 ms. The <code>-</code> version starts half a cycle later.
+            </p>
+
+            <p class="note">
+              The Ditch, Strobe, FRED, Rotary, Mars, and Gyralite patterns use their own built-in timing instead.
+            </p>
+
+            <p class="note">
+              Each LED pattern uses a firmware FX slot and a GPIO pin, and can be restricted by <strong>Direction</strong> to Both, Forward, or Reverse.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-turn-off-onboard-led">
+          <summary>
+            <span class="section-title">
+              <span>How do I turn off the LED on my ESP32?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT controls the ESP32's onboard status LED with <strong>CV21 — Onboard LED Output Gate</strong>.
+            </p>
+
+            <p class="note">
+              You have three choices:
+            </p>
+
+            <ul>
+              <li><strong><code>CV21=0</code></strong> — keep the onboard status LED <strong>off all the time</strong>.</li>
+              <li><strong><code>CV21=1</code></strong> — normal behavior. PMT controls the LED using its normal colors and blink patterns. This is the default.</li>
+              <li><strong><code>CV21=2</code></strong> — keep the LED <strong>off while PMT is connected</strong> by Bluetooth or WebSocket, but allow the normal LED indication when it is disconnected.</li>
+            </ul>
+
+            <p class="note">
+              For most people who simply want the ESP32 light turned off, use:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=0</code>
+            </p>
+
+            <p class="note">
+              You can change CV21 from the app's <strong>Configuration Variables</strong> screen, or from the Terminal.
+            </p>
+
+            <p class="note">
+              To check the current value:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21?</code>
+            </p>
+
+            <p class="note">
+              To turn the onboard LED off:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=0</code>
+            </p>
+
+            <p class="note">
+              To restore normal LED behavior later:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=1</code>
+            </p>
+
+            <p class="note">
+              If you want the status LED available for troubleshooting when disconnected, but dark during normal operation, use:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV21=2</code>
+            </p>
+
+            <p class="note">
+              This setting only gates the <strong>firmware-controlled onboard status LED</strong>. It does not disable LEDs that you have configured separately as PMT Output Controls.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-get-sound-working">
+          <summary>
+            <span class="section-title">
+              <span>How do I get sound to work?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              To use PMTPlayer sound, you need an <strong>I2S audio amplifier, speaker, and microSD card</strong> along with your ESP32.
+            </p>
+
+            <p class="note">
+              The basic setup is:
+            </p>
+
+            <ol>
+              <li><strong>Connect the audio amplifier and speaker</strong> using the wiring for your specific ESP32 board.</li>
+              <li><strong>Prepare the microSD card</strong> using FAT16 or FAT32 — not exFAT.</li>
+              <li><strong>Download PMTPlayer sounds</strong> and copy the WAV files into the correct folder on the card:
+                <ul>
+                  <li><code>/diesel/</code> for Diesel sounds</li>
+                  <li><code>/steam/</code> for Steam sounds</li>
+                </ul>
+              </li>
+              <li>Insert the microSD card and power up PMT.</li>
+              <li><strong>Enable audio and select Diesel or Steam.</strong></li>
+            </ol>
+
+            <p class="note">
+              PMT audio is <strong>disabled by default</strong>, so a completely correct installation can still be silent until audio is turned on.
+            </p>
+
+            <p class="note">
+              If you use an <strong>ESP32-S3-CAM</strong>, the microSD slot is built into the board. Other supported ESP32 boards require a separate microSD reader.
+            </p>
+
+            <p class="note">
+              If it still does not play sound, the PMTPlayer Audio Installation Guide includes wiring checks, SD-card checks, and startup troubleshooting.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/soundfinally.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT 3.0 Audio Overview
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
+                target="_blank" rel="noopener noreferrer">
+                PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-default-audio-controls">
+          <summary>
+            <span class="section-title">
+              <span>What are the different default sounds I can control and how do I configure them?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT provides three built-in sounds that you can add directly to your <strong>Output Control</strong> panel:
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Sound</th>
+                      <th>Pattern</th>
+                      <th>Recommended setup</th>
+                      <th>What it does</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Bell</strong></td>
+                      <td><code>Audio Bell</code></td>
+                      <td>Direction = Both, Momentary = Off</td>
+                      <td>Tap once to turn the bell on. Tap again to turn it off.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Horn</strong></td>
+                      <td><code>Audio Horn</code></td>
+                      <td>Direction = Both, Momentary = On</td>
+                      <td>Hold the button to sound the horn. Release it to stop.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Cab Chatter</strong></td>
+                      <td><code>Audio Cab Chatter</code></td>
+                      <td>Usually left ON when you want chatter active</td>
+                      <td>Plays a chatter sound, then automatically schedules additional chatter at random intervals.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              <strong>How do I add one?</strong>
+            </p>
+
+            <p class="note">
+              Open <strong>Configuration → Output Control</strong>.
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Enter a name, such as <strong>Bell</strong>, <strong>Horn</strong>, or <strong>Cab Chatter</strong>.</li>
+              <li>Choose the matching <strong>Pattern</strong>.</li>
+              <li>Set <strong>Direction</strong> to Both, Forward, or Reverse as needed.</li>
+              <li>Set <strong>Momentary</strong> appropriately.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              You do <strong>not</strong> enter an Audio Track number for the built-in Bell or Horn.
+            </p>
+
+            <p class="note">
+              The built-in tracks are:
+            </p>
+
+            <ul>
+              <li><strong>Bell</strong> — track <code>202</code>.</li>
+              <li>
+                <strong>Horn</strong> — uses three tracks:
+                <ul>
+                  <li><code>211</code> — horn start</li>
+                  <li><code>212</code> — horn sustain</li>
+                  <li><code>213</code> — horn release</li>
+                </ul>
+              </li>
+              <li><strong>Cab Chatter</strong> — starts at track <code>300</code>.</li>
+            </ul>
+
+            <p class="note">
+              Cab Chatter behaves differently from Bell and Horn. While it remains ON, PMT schedules another chatter sound after a randomly selected delay of <strong>30, 40, 50, 60, 70, 80, or 90 seconds</strong>.
+            </p>
+
+            <p class="note">
+              <strong>What about my own sounds?</strong>
+            </p>
+
+            <ul>
+              <li><strong>Audio Custom</strong> — plays your selected track once.</li>
+              <li><strong>Audio Custom Replay</strong> — continuously loops your selected track while the control is ON.</li>
+            </ul>
+
+            <p class="note">
+              Those patterns let you select an <strong>Audio Track from 1 through 9999</strong>.
+            </p>
+
+            <p class="note">
+              On the <strong>Pro and Standard locomotive throttles</strong>, supported audio controls can also display their own speaker/volume button.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-custom-sounds-button">
+          <summary>
+            <span class="section-title">
+              <span>How do I add my own sounds to PMT and attach them to a button in the app?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT lets you add your own WAV sounds and create a button for them on the throttle.
+            </p>
+
+            <p class="note">
+              First, prepare your sound file using the recommended PMT format:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              Choose an unused track number from <strong>1 through 9999</strong>. Avoid numbers already reserved for PMT's normal engine, horn, bell, brake, and cab-chatter sounds.
+            </p>
+
+            <p class="note note-strong">
+              Example: <code>9000.wav</code>
+            </p>
+
+            <p class="note">
+              Copy the file into the active sound folder on the microSD card:
+            </p>
+
+            <ul>
+              <li><code>/diesel/9000.wav</code> for a Diesel sound set.</li>
+              <li><code>/steam/9000.wav</code> for a Steam sound set.</li>
+            </ul>
+
+            <p class="note">
+              Then, in the PMT app:
+            </p>
+
+            <ol>
+              <li>Open <strong>Configuration → Output Control</strong>.</li>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give the button a name, such as <strong>Station Announcement</strong>.</li>
+              <li>Choose <strong>Audio Custom</strong> to play the sound once, or <strong>Audio Custom Replay</strong> to keep repeating it until you turn it off.</li>
+              <li>Set <strong>Audio Track</strong> to the number you used — for example, <strong>9000</strong>.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              The new Output Control will then appear as a button on supported PMT locomotive throttles.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-create-horns-prime-movers">
+          <summary>
+            <span class="section-title">
+              <span>How do I create my own sounds like new horns and new prime movers?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can create your own PMT sound set from recordings using an audio editor such as <strong>Audacity</strong>.
+            </p>
+
+            <p class="note">
+              For best results, export each finished sound as:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              For a <strong>new horn</strong>, PMT uses three files:
+            </p>
+
+            <ul>
+              <li><code>0211.wav</code> — horn start</li>
+              <li><code>0212.wav</code> — horn sustain, which loops while the horn is held</li>
+              <li><code>0213.wav</code> — horn release</li>
+            </ul>
+
+            <p class="note">
+              For a <strong>new diesel prime mover</strong>, create:
+            </p>
+
+            <ul>
+              <li><code>0090.wav</code> — engine startup</li>
+              <li><code>0091.wav</code> — engine shutdown</li>
+              <li><code>0100.wav</code> — idle</li>
+              <li><code>0101.wav</code> through <code>0108.wav</code> — engine Notches 1 through 8</li>
+            </ul>
+
+            <p class="note">
+              The idle and notch files should be clean, steady loops. If possible, use recordings of the actual locomotive holding each engine notch rather than making one recording simply louder for every notch.
+            </p>
+
+            <p class="note">
+              Audacity can be used to select the useful part of a recording, trim it, convert it to mono, adjust the volume, and make the looping files repeat smoothly.
+            </p>
+
+            <p class="note">
+              Place the finished files in the <code>/diesel</code> folder on the PMT microSD card using the exact filenames above. Replacing those files replaces the corresponding horn or prime-mover sounds for that sound set.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-steam-chuff-sync">
+          <summary>
+            <span class="section-title">
+              <span>The CHUFF sound doesn't match the speed of my wheels. How can I synchronize them?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you are hearing <strong>chuffs</strong>, PMT is using its <strong>Steam sound system</strong>. Diesel sound uses prime-mover idle and notch sounds rather than wheel chuffs.
+            </p>
+
+            <p class="note">
+              For Steam, open <strong>Configuration → Steam Chuff Rate Curve</strong>.
+            </p>
+
+            <img
+              src="Info/faq-steam-chuff-rate-curve.png"
+              alt="PMT Configuration screen showing the Steam Chuff Rate Curve editor"
+              class="faq-screenshot" />
+
+            <p class="note">
+              The graph lets you visually adjust how fast the chuffs play at different throttle speeds:
+            </p>
+
+            <ul>
+              <li>The <strong>bottom of the graph</strong> is <strong>Throttle %</strong>.</li>
+              <li>The <strong>side of the graph</strong> is <strong>Chuff Rate %</strong>.</li>
+              <li>The <strong>white circles</strong> are the adjustment points along the curve.</li>
+              <li>The numbered positions across the graph represent throttle speeds from very slow through full throttle.</li>
+              <li>PMT automatically fills in the values between those adjustment points.</li>
+            </ul>
+
+            <p class="note">
+              Use the <strong>Throttle Speed</strong> control at the top of the screen to work through the speed range while watching the locomotive. Compare the sound to the actual wheel rotation and adjust the curve until the chuffs look and sound natural.
+            </p>
+
+            <p class="note">
+              If the chuffs are too fast for the wheels, lower the chuff rate at that part of the curve. If they are too slow, raise it.
+            </p>
+
+            <p class="note">
+              <strong>What is this screen actually changing?</strong>
+            </p>
+
+            <p class="note">
+              You do not have to manually edit Configuration Variables. This screen is a graphical editor for the chuff-rate CVs and <strong>modifies the CV values behind the scenes for you</strong>:
+            </p>
+
+            <ul>
+              <li><strong>CV98</strong> stores the low-speed points at <strong>1, 5, 10, 15, 20, and 25% throttle</strong>.</li>
+              <li><strong>CV99</strong> stores the high-speed points at <strong>35, 50, 65, 80, 90, and 100% throttle</strong>.</li>
+            </ul>
+
+            <p class="note">
+              The firmware interpolates between those points to create the complete chuff-rate curve. These settings change the <strong>chuff cadence only</strong>; they do not change locomotive motor speed.
+            </p>
+
+            <p class="note">
+              PMT uses four chuff phases per wheel revolution—approximately <strong>0°, 90°, 180°, and 270°</strong>—so the goal is to adjust the curve until those four exhaust beats visually match one wheel revolution as closely as possible.
+            </p>
+
+            <p class="note">
+              PMT's documented synchronization is based on <strong>throttle speed</strong>, not a physical wheel sensor or encoder. You are therefore tuning the sound to visually match the locomotive's wheels.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-christmas-music">
+          <summary>
+            <span class="section-title">
+              <span>How can I add Christmas Music to my train?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              You can put a Christmas song on the PMT microSD card and create an <strong>Output Control button</strong> to start and stop it.
+            </p>
+
+            <p class="note">
+              <strong>1. Prepare the music file</strong>
+            </p>
+
+            <p class="note">
+              Convert the song to PMT's recommended audio format:
+            </p>
+
+            <ul>
+              <li><strong>WAV</strong></li>
+              <li><strong>Mono</strong></li>
+              <li><strong>22,050 Hz</strong></li>
+              <li><strong>Signed 16-bit PCM</strong></li>
+            </ul>
+
+            <p class="note">
+              Choose an unused Audio Track number from <strong>1 through 9999</strong>. For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>0400.wav</code>
+            </p>
+
+            <p class="note">
+              Copy the file into the sound folder you are using:
+            </p>
+
+            <p class="note note-strong">
+              <code>/diesel/0400.wav</code>
+            </p>
+
+            <p class="note">
+              or:
+            </p>
+
+            <p class="note note-strong">
+              <code>/steam/0400.wav</code>
+            </p>
+
+            <p class="note">
+              The song needs to be in the active Diesel or Steam folder so PMTPlayer can find it.
+            </p>
+
+            <p class="note">
+              <strong>2. Create the Christmas Music button</strong>
+            </p>
+
+            <p class="note">
+              In the PMT app, open <strong>Configuration → Output Control</strong>.
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give it a name such as <strong>Christmas Music</strong>.</li>
+              <li>Choose <strong>Audio Custom Replay</strong>.</li>
+              <li>Set <strong>Audio Track</strong> to <code>400</code>.</li>
+              <li>Set <strong>Direction</strong> to <strong>Both</strong>.</li>
+              <li>Leave <strong>Momentary</strong> off.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              You will now have a <strong>Christmas Music</strong> button on supported PMT throttle screens.
+            </p>
+
+            <p class="note">
+              Tap it once to start the music. Tap it again to stop it.
+            </p>
+
+            <p class="note">
+              <strong>What if I only want the song to play once?</strong>
+            </p>
+
+            <ul>
+              <li><strong>Audio Custom</strong> — plays the selected track one time.</li>
+              <li><strong>Audio Custom Replay</strong> — keeps repeating the track until you turn the button off.</li>
+            </ul>
+
+            <p class="note">
+              For background Christmas music, <strong>Audio Custom Replay</strong> is usually the better choice.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-quick.html"
+                target="_blank" rel="noopener noreferrer">
+                Quick Audio Creation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-dfplayer-mini">
           <summary>
             <span class="section-title">
               <span>How do I use a DFPlayer Mini with PMT?</span>
@@ -2924,42 +2361,7 @@
           </div>
         </details>
 
-        <details class="subsection" data-section-url="faq-s3cam-dual-usbc">
-          <summary>
-            <span class="section-title">
-              <span>I have an ESP32-S3-CAM board (N16R8) with dual USB-C inputs. Does it matter which input I connect to?</span>
-            </span>
-          </summary>
-
-          <div class="subsection-content">
-            <p class="note">
-              The ESP32-S3-CAM N16R8 board used in the PMT hardware examples has <strong>two USB-C connectors</strong>, but PMT does not assign a specific left/right connector for every board variant.
-            </p>
-
-            <p class="note">
-              For <strong>installing or updating firmware</strong>, use the USB-C port that provides a <strong>USB data/serial connection</strong> to your computer. Use a known-good <strong>USB data cable</strong>, not a charge-only cable. When connected correctly, the ESP32 should appear as a selectable USB/serial device in the PMT firmware installer.
-            </p>
-
-            <p class="note">
-              For normal PMT operation, the ESP32 needs a clean, regulated <strong>5V supply</strong>.
-            </p>
-
-            <p class="note">
-              <strong>Important:</strong> Dual-USB ESP32-S3-CAM boards are not all wired identically. One connector may be intended for native USB and the other for a USB-to-serial interface. Check the labels printed next to the connectors or the information for your exact board before assuming the two ports are interchangeable.
-            </p>
-
-            <p class="note note-strong">
-              More information:
-              <a class="doc-link prominent-link"
-                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
-                target="_blank" rel="noopener noreferrer">
-                Full Hardware Recipe
-              </a>
-            </p>
-          </div>
-        </details>
-
-        <details class="subsection" data-section-url="faq-startup-blink-codes">
+<details class="subsection" data-section-url="faq-startup-blink-codes">
           <summary>
             <span class="section-title">
               <span>When my PMT boots up it blinks a number of times. What does that number mean?</span>
@@ -3158,6 +2560,604 @@
                 href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/pmtplayer-audio-installation-guide.html"
                 target="_blank" rel="noopener noreferrer">
                 PMTPlayer Audio Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-physical-throttle">
+          <summary>
+            <span class="section-title">
+              <span>I don't want to use a mobile device as a throttle. How can I use a physical throttle instead?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT supports <strong>physical Bluetooth throttles</strong>. You can use a compatible Bluetooth HID device—such as a game controller, button pad, macro pad, or a custom throttle with real buttons, knobs, and switches.
+            </p>
+
+            <p class="note">
+              Pair the physical controller, then use PMT's <strong>Physical Controls</strong> screen to assign its buttons and controls to the functions you want. Once configured, you can operate with the physical controls instead of using the touchscreen as your throttle.
+            </p>
+
+            <p class="note">
+              The PMT app is still part of the connection: it receives the physical controller's input and sends the appropriate commands to the locomotive. The physical controller does not connect directly to the locomotive by itself.
+            </p>
+
+            <p class="note">
+              You can start with an off-the-shelf Bluetooth HID controller or build your own custom throttle.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/lets-get-physical.html"
+                target="_blank" rel="noopener noreferrer">
+                Let's Get Physical — PMT Physical Controls
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-throttle-delay">
+          <summary>
+            <span class="section-title">
+              <span>Why is there a large delay when I increase or decrease the throttle?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you are using the <strong>Standard or Pro throttle</strong>, the delay may be intentional. PMT uses <strong>momentum</strong> so the locomotive does not instantly jump to every new throttle setting.
+            </p>
+
+            <p class="note">
+              Instead, the motor gradually ramps toward the speed you selected. This makes operation feel more like a heavy train accelerating and slowing down rather than an on/off toy.
+            </p>
+
+            <p class="note">
+              <strong>I want it to respond faster</strong>
+            </p>
+
+            <p class="note">
+              Use <strong>Switcher Mode</strong> on the Standard/Pro throttle. Switcher Mode removes the heavier momentum effect and gives you a much more responsive throttle, which is useful for switching and precise low-speed movements.
+            </p>
+
+            <p class="note">
+              You can also use the <strong>Novice throttle</strong> if you prefer simpler, more immediate control without the heavier momentum behavior.
+            </p>
+
+            <p class="note">
+              So if you move the throttle from, for example, 20% to 60% and the locomotive takes time to reach 60%, that does <strong>not necessarily mean Bluetooth or the app is lagging</strong>. It may simply be PMT's selected motion style doing what it was designed to do.
+            </p>
+
+            <p class="note">
+              If the locomotive still responds unusually slowly while using a more immediate throttle mode, then check the troubleshooting guide for other causes such as low-voltage limiting or motor/start settings.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-modes.html"
+                target="_blank" rel="noopener noreferrer">
+                Throttle Modes Explained
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-change-app-language">
+          <summary>
+            <span class="section-title">
+              <span>How do I change the language of the app? For example Italian or English?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT normally <strong>follows the language setting of your phone or tablet automatically</strong>.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <ul>
+              <li>If your device is set to <strong>Italian</strong>, PMT will use Italian when that translation is available.</li>
+              <li>If your device is set to <strong>English</strong>, PMT will use English.</li>
+            </ul>
+
+            <p class="note">
+              PMT currently documents support for <strong>English, Spanish, French, German, Finnish, Gujarati, Hindi, Italian, Dutch, Portuguese, Tamil, and others</strong>.
+            </p>
+
+            <p class="note">
+              If you do not want PMT to follow the device language, you can also <strong>override the language manually in PMT's settings</strong> and choose the language you prefer.
+            </p>
+
+            <p class="note">
+              So you have two choices:
+            </p>
+
+            <ol>
+              <li>Let PMT automatically follow your phone or tablet's language.</li>
+              <li>Select a different language manually in PMT's settings.</li>
+            </ol>
+
+            <p class="note">
+              The supplied documentation confirms the manual language override, but it does not specify the exact menu path or setting name inside the current app.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/12-1.html"
+                target="_blank" rel="noopener noreferrer">
+                Accessibility &amp; Multi-Language Support
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-enable-wifi">
+          <summary>
+            <span class="section-title">
+              <span>How do I turn on WiFi for my PMT device?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Start by connecting to your PMT device normally using <strong>Bluetooth (BLE)</strong>.
+            </p>
+
+            <p class="note">
+              Then open the device's <strong>WiFi configuration</strong> in the PMT app:
+            </p>
+
+            <ol>
+              <li><strong>Enable WiFi</strong>.</li>
+              <li>Select or enter your WiFi network name (<strong>SSID</strong>). If your app shows the scan button next to the SSID field, you can use it to find nearby networks.</li>
+              <li>Enter your <strong>WiFi password</strong>.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              PMT will then try to join the selected WiFi network. WiFi is used as a secondary connection through PMT's WebSocket support.
+            </p>
+
+            <p class="note">
+              For advanced troubleshooting, PMT uses:
+            </p>
+
+            <ul>
+              <li><code>CV10</code> — WiFi on/off</li>
+              <li><code>CV11</code> — WiFi network name</li>
+              <li><code>CV12</code> — WiFi password</li>
+              <li><code>CV13</code> — WebSocket port, normally <strong>81</strong></li>
+            </ul>
+
+            <p class="note">
+              <strong>Important:</strong> On low-memory <strong>Classic ESP32</strong> hardware using PMTPlayer audio, WiFi and PMTPlayer cannot run at the same time. Enabling WiFi on that hardware can disable PMTPlayer audio.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/wifi.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT WiFi and Connectivity
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-control-another-pmt-device">
+          <summary>
+            <span class="section-title">
+              <span>Can I have a button on my output control slideout screen that controls another PMT device?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Yes. PMT can place a button on your Output Control panel that controls a <strong>different PMT device</strong>.
+            </p>
+
+            <p class="note">
+              The easiest method is <strong>Device FX</strong>. Use this when the other device already has the function you want configured as an Output Control.
+            </p>
+
+            <p class="note">
+              In <strong>Configuration → Output Control</strong>:
+            </p>
+
+            <ol>
+              <li>Tap <strong>Add Output</strong>.</li>
+              <li>Give the button a name.</li>
+              <li>Select <strong>Device FX</strong> as the Pattern.</li>
+              <li>Select the <strong>Target Device</strong> you want to control.</li>
+              <li>Select the <strong>Target FX</strong> — the Output Control on that device you want the button to operate.</li>
+              <li>Save the configuration.</li>
+            </ol>
+
+            <p class="note">
+              For example, if another PMT device already has an Output Control named <strong>Building Lights</strong>, you can create a Device FX button on your locomotive's throttle that operates those lights.
+            </p>
+
+            <p class="note">
+              The button follows the target control's normal behavior, including its Momentary, Direction, and Linked FX settings.
+            </p>
+
+            <p class="note">
+              If the other PMT device is unavailable, the button is disabled rather than sending the command somewhere else.
+            </p>
+
+            <p class="note">
+              PMT also provides <strong>Device Command</strong> if you want the button to send specific ON and OFF command text directly to another device instead of operating one of its existing Output Controls.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-trolley-automation">
+          <summary>
+            <span class="section-title">
+              <span>How can I use automation (script recording) to automate a trolley going back and forth?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT's <strong>Automation</strong> feature can record you operating the trolley once, then repeat that same movement automatically.
+            </p>
+
+            <p class="note">
+              A simple trolley shuttle works like this:
+            </p>
+
+            <ol>
+              <li>Open the <strong>Automation controls</strong> from the throttle screen and press <strong>Record</strong>.</li>
+              <li>Drive the trolley from one end of the line to the other.</li>
+              <li>Stop and wait for however long you want the trolley to remain at that end.</li>
+              <li>Reverse direction and drive back to the starting point.</li>
+              <li>Stop and add the desired pause at that end.</li>
+              <li>Stop the recording and <strong>save it with a name</strong>.</li>
+              <li>Select the saved automation and choose <strong>Repeat</strong>.</li>
+            </ol>
+
+            <p class="note">
+              PMT will continuously replay the recorded speeds, stops, pauses, and direction changes, creating an automatic back-and-forth trolley.
+            </p>
+
+            <p class="note">
+              If the timing is a little too fast or slow, PMT also lets you adjust the timing of the saved automation without recording the entire routine again.
+            </p>
+
+            <p class="note">
+              You can also open the saved automation from the device's <strong>Configuration screen</strong>, manually edit the script text, and save the changes back to the device. This lets you fine-tune a recorded routine after you create it.
+            </p>
+
+            <p class="note">
+              The documented recording system is <strong>time-based</strong>: you teach PMT the movement and timing by operating the trolley. This workflow does not describe using end-of-track position sensors.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/automation.html"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man's Automation
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/script.html"
+                target="_blank" rel="noopener noreferrer">
+                Scripting
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-configuration-variables">
+          <summary>
+            <span class="section-title">
+              <span>What are CV's, how do I change/query them, and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <strong>CV</strong> stands for <strong>Configuration Variable</strong>. A CV is simply a numbered setting stored inside your PMT device.
+            </p>
+
+            <p class="note">
+              CVs control things such as:
+            </p>
+
+            <ul>
+              <li>device name</li>
+              <li>motor-driver settings and GPIO pins</li>
+              <li>WiFi</li>
+              <li>sound and volume</li>
+              <li>lighting and outputs</li>
+              <li>battery monitoring</li>
+              <li>automation and other device behavior</li>
+            </ul>
+
+            <p class="note">
+              Most CV settings are saved in the ESP32's non-volatile memory, so they remain set after the device is powered off.
+            </p>
+
+            <p class="note">
+              <strong>The easiest way to work with CVs</strong>
+            </p>
+
+            <p class="note">
+              Connect to the PMT device, open <strong>Configuration</strong>, and expand <strong>Configuration Variables</strong>.
+            </p>
+
+            <p class="note">
+              From there you can <strong>get/query</strong> a CV to see its current value or <strong>set</strong> it to a new value. Many normal PMT configuration screens also change CVs for you behind the scenes, so you usually do not need to work with CV numbers directly.
+            </p>
+
+            <p class="note">
+              For example, the Steam Chuff Rate Curve screen modifies its associated CV values graphically instead of requiring you to type the CVs yourself.
+            </p>
+
+            <p class="note">
+              <strong>You can also use the Terminal</strong>
+            </p>
+
+            <p class="note">
+              To read a CV:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV33?</code>
+            </p>
+
+            <p class="note">
+              A response might look like:
+            </p>
+
+            <p class="note note-strong">
+              <code>A:CV33=64</code>
+            </p>
+
+            <p class="note">
+              To change it:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV33=65</code>
+            </p>
+
+            <p class="note">
+              The device responds with the value it accepted.
+            </p>
+
+            <p class="note">
+              <strong>How do I know what a CV means?</strong>
+            </p>
+
+            <p class="note">
+              Always look up the CV in the <strong>Configuration Variables Reference</strong> before changing it. The reference tells you:
+            </p>
+
+            <ul>
+              <li>what the CV controls</li>
+              <li>which PMT device type it applies to</li>
+              <li>the allowed values</li>
+              <li>the default value</li>
+              <li>what changing it does</li>
+            </ul>
+
+            <p class="note">
+              This is important because <strong>the same CV number can mean different things on different PMT firmware types</strong>. For example, the meaning of a CV on a locomotive Throttle is not always the same as that CV on a Turbine device.
+            </p>
+
+            <p class="note">
+              For most users, use the regular Configuration screens whenever a setting is available there. Use the Configuration Variables screen or Terminal when you need an advanced setting, troubleshooting, or something that is not exposed elsewhere in the app.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-command-protocol">
+          <summary>
+            <span class="section-title">
+              <span>What commands are available, how do I use them, and what do they mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT devices understand <strong>text commands</strong>. The PMT app normally sends these commands for you when you operate the throttle or change settings, but you can also send commands yourself from the built-in <strong>Terminal</strong>.
+            </p>
+
+            <p class="note">
+              <strong>How do I send a command?</strong>
+            </p>
+
+            <ol>
+              <li>Open the <strong>PMT application</strong>.</li>
+              <li>Connect to your PMT device and let the normal connection complete.</li>
+              <li>Open the <strong>Terminal</strong>.</li>
+              <li>Type a command.</li>
+              <li>Press <strong>Send</strong>.</li>
+            </ol>
+
+            <p class="note">
+              The device will normally respond with a confirmation, a value, or an error.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>V</code>
+            </p>
+
+            <p class="note">
+              asks for the firmware version.
+            </p>
+
+            <p class="note">
+              Other common examples are:
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+<table>
+              <thead>
+                <tr>
+                  <th>Command</th>
+                  <th>What it does</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><code>V</code></td><td>Show the firmware version</td></tr>
+                <tr><td><code>VV</code></td><td>Show the exact firmware build</td></tr>
+                <tr><td><code>C?</code></td><td>Show connection status</td></tr>
+                <tr><td><code>IP?</code></td><td>Show the device's IP address</td></tr>
+                <tr><td><code>F25</code></td><td>Throttle: move forward toward 25% speed</td></tr>
+                <tr><td><code>R25</code></td><td>Throttle: move in reverse toward 25% speed</td></tr>
+                <tr><td><code>S</code></td><td>Quick stop</td></tr>
+                <tr><td><code>B</code></td><td>Brake stop</td></tr>
+                <tr><td><code>B25</code></td><td>Apply a variable brake amount</td></tr>
+                <tr><td><code>FX3=1</code></td><td>Turn Output/FX 3 on</td></tr>
+                <tr><td><code>FX3=0</code></td><td>Turn Output/FX 3 off</td></tr>
+                <tr><td><code>CV33?</code></td><td>Query CV33</td></tr>
+                <tr><td><code>CV33=65</code></td><td>Set CV33 to 65</td></tr>
+                <tr><td><code>SS?</code></td><td>Check automation/script status</td></tr>
+                <tr><td><code>SP0</code></td><td>Stop a running automation/script</td></tr>
+              </tbody>
+            </table>
+            </div>
+            </div>
+
+            <p class="note">
+              PMT also has commands for:
+            </p>
+
+            <ul>
+              <li>Automation/script recording and playback</li>
+              <li>WiFi and connection diagnostics</li>
+              <li>ESP-NOW communication between PMT devices</li>
+              <li>Audio testing and diagnostics</li>
+              <li>Debug logging</li>
+              <li>Configuration Variables</li>
+              <li>Firmware updates on supported hardware</li>
+              <li>Turbine control</li>
+            </ul>
+
+            <p class="note">
+              <strong>What do the replies mean?</strong>
+            </p>
+
+            <p class="note">
+              A successful command commonly returns something beginning with:
+            </p>
+
+            <p class="note note-strong">
+              <code>ACK:</code>
+            </p>
+
+            <p class="note">
+              A command that could not be accepted commonly returns:
+            </p>
+
+            <p class="note note-strong">
+              <code>ERR:</code>
+            </p>
+
+            <p class="note">
+              Queries may return the requested information directly. For example, <code>CV33?</code> may return:
+            </p>
+
+            <p class="note note-strong">
+              <code>A:CV33=64</code>
+            </p>
+
+            <p class="note">
+              <strong>Do all PMT devices use the same commands?</strong>
+            </p>
+
+            <p class="note">
+              No. There is a shared group of commands used by multiple PMT devices, but some commands are specific to a particular firmware type.
+            </p>
+
+            <p class="note">
+              For example, locomotive <strong>Throttle</strong> firmware understands motor commands such as <code>F25</code>, <code>R25</code>, and <code>FX3=1</code>, while <strong>Turbine</strong> firmware has its own output-control commands.
+            </p>
+
+            <p class="note">
+              Always check the <strong>Command Protocol Reference</strong> before manually sending an unfamiliar command. It shows the exact syntax, what the command does, what response to expect, and which PMT device types support it.
+            </p>
+
+            <p class="note">
+              For normal operation, you usually do <strong>not</strong> need to type commands yourself—the app's throttle and Configuration screens generate the appropriate commands behind the scenes. The Terminal is most useful for diagnostics, advanced configuration, testing, and troubleshooting.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
               </a>
             </p>
           </div>
