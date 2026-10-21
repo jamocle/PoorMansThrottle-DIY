@@ -2711,6 +2711,218 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-dfplayer-mini">
+          <summary>
+            <span class="section-title">
+              <span>How do I use a DFPlayer Mini with PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT supports the <strong>DFPlayer Mini</strong> as a simple sound-effects player. It is intended for individually triggered sounds such as:
+            </p>
+
+            <ul>
+              <li>horn or whistle clips</li>
+              <li>bell clips</li>
+              <li>announcements</li>
+              <li>coupler sounds</li>
+              <li>air-release sounds</li>
+              <li>accessory sounds</li>
+            </ul>
+
+            <p class="note">
+              It is <strong>not</strong> the full PMTPlayer locomotive-sound system. With DFPlayer selected, PMT does not use automatic startup, shutdown, idle/notch, or other locomotive lifecycle audio. The DFPlayer can also play only <strong>one sound at a time</strong>.
+            </p>
+
+            <p class="note">
+              <strong>What do I need?</strong>
+            </p>
+
+            <ul>
+              <li>ESP32 running PMT</li>
+              <li>DFPlayer Mini</li>
+              <li>microSD card inserted in the <strong>DFPlayer Mini</strong></li>
+              <li>speaker</li>
+              <li>common ground between the ESP32 and DFPlayer</li>
+            </ul>
+
+            <p class="note">
+              The ESP32 does <strong>not</strong> read the DFPlayer's microSD card. The DFPlayer reads its own card and PMT tells it which numbered MP3 track to play.
+            </p>
+
+            <p class="note">
+              <strong>Default wiring</strong>
+            </p>
+
+            <p class="note">
+              PMT's default DFPlayer preset uses the same pins on the supported Classic ESP32 and ESP32-S3 boards:
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>DFPlayer Mini</th>
+                      <th>ESP32</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>RX</td><td>GPIO21 — ESP32 TX</td></tr>
+                    <tr><td>TX</td><td>GPIO13 — ESP32 RX</td></tr>
+                    <tr><td>BUSY</td><td>GPIO14</td></tr>
+                    <tr><td>GND</td><td>GND</td></tr>
+                    <tr><td>SPK1</td><td>Speaker terminal 1</td></tr>
+                    <tr><td>SPK2</td><td>Speaker terminal 2</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              The UART wires are crossed:
+            </p>
+
+            <p class="note note-strong">
+              <code>ESP32 GPIO21 TX → DFPlayer RX</code><br />
+              <code>ESP32 GPIO13 RX ← DFPlayer TX</code>
+            </p>
+
+            <p class="note">
+              The <strong>BUSY</strong> connection is important if you want a sound to replay continuously.
+            </p>
+
+            <p class="note">
+              <strong>Prepare the microSD card</strong>
+            </p>
+
+            <p class="note">
+              DFPlayer sounds are MP3 files stored in:
+            </p>
+
+            <p class="note note-strong">
+              <code>/mp3/</code>
+            </p>
+
+            <p class="note">
+              Use four-digit filenames:
+            </p>
+
+            <p class="note note-strong">
+              <code>/mp3/0001.mp3</code><br />
+              <code>/mp3/0002.mp3</code><br />
+              <code>/mp3/0042.mp3</code>
+            </p>
+
+            <p class="note">
+              PMT supports DFPlayer track numbers <strong>1 through 9999</strong>.
+            </p>
+
+            <p class="note">
+              <strong>Enable DFPlayer audio</strong>
+            </p>
+
+            <p class="note">
+              The documented firmware setup is:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV400=0</code><br />
+              <code>CV401=1</code><br />
+              <code>CV400=1</code>
+            </p>
+
+            <p class="note">
+              <code>CV401=1</code> selects the DFPlayer backend and applies the normal DFPlayer pin preset.
+            </p>
+
+            <p class="note">
+              The default volume is <code>CV402=15</code>, with a supported range of <code>0</code> through <code>30</code>.
+            </p>
+
+            <p class="note">
+              For most users, these settings should be changed through the app's normal configuration screens rather than manually editing CVs.
+            </p>
+
+            <p class="note">
+              <strong>Add a sound button</strong>
+            </p>
+
+            <p class="note">
+              In <strong>Configuration → Output Control</strong>, add a custom audio control.
+            </p>
+
+            <p class="note">
+              For a sound that plays once:
+            </p>
+
+            <ul>
+              <li><strong>Name:</strong> for example, Horn</li>
+              <li><strong>Pattern:</strong> Audio Custom</li>
+              <li><strong>Audio Track:</strong> <code>1</code></li>
+              <li><strong>Direction:</strong> Both, Forward, or Reverse as desired</li>
+            </ul>
+
+            <p class="note">
+              That plays:
+            </p>
+
+            <p class="note note-strong">
+              <code>/mp3/0001.mp3</code>
+            </p>
+
+            <p class="note">
+              For a sound that keeps repeating while the button is ON, use <strong>Audio Custom Replay</strong>.
+            </p>
+
+            <p class="note">
+              <strong>Audio Custom Replay</strong> uses the DFPlayer <strong>BUSY</strong> signal to detect when the MP3 finishes and restart it.
+            </p>
+
+            <p class="note">
+              If BUSY is not connected/configured, a replay request falls back to one-shot playback.
+            </p>
+
+            <p class="note">
+              <strong>Important DFPlayer limitations</strong>
+            </p>
+
+            <ul>
+              <li><strong>Audio Custom</strong> — play once</li>
+              <li><strong>Audio Custom Replay</strong> — replay while active</li>
+            </ul>
+
+            <p class="note">
+              DFPlayer is designed for simple FX-triggered MP3 playback rather than PMT's complete synchronized locomotive audio system.
+            </p>
+
+            <p class="note">
+              For full diesel or steam audio—including startup/shutdown, diesel notches, Steam chuffs, bell/horn sequencing, and richer playback behavior—use the <strong>PMTPlayer/I²S audio system</strong> instead.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=DFPlayer_Audio_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                DFPlayer Audio Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
