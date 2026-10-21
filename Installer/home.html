@@ -2771,6 +2771,109 @@
           </div>
         </details>
 
+<details class="subsection" data-section-url="faq-ota-firmware-updates">
+          <summary>
+            <span class="section-title">
+              <span>How do I do firmware updates OTA (Over-The-Air) without needing to connect the hardware to my computer?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If you have a supported <strong>ESP32-S3 N16R8 or N8R8 Poor Man's Throttle</strong>, you can update its firmware wirelessly from the PMT app instead of connecting the ESP32 to your computer with a USB cable.
+            </p>
+
+            <p class="note">
+              The device must already support OTA and must be connected to <strong>WiFi</strong>. OTA support was introduced with firmware <strong>3.2.0</strong> for supported ESP32-S3 throttle hardware.
+            </p>
+
+            <p class="note">
+              To perform an OTA update:
+            </p>
+
+            <ol>
+              <li>Connect to your PMT device normally.</li>
+              <li>Make sure the PMT device is connected to <strong>WiFi</strong>.</li>
+              <li>Open the device's <strong>Configuration</strong> screen in the PMT app.</li>
+              <li>Select <strong>Flash Firmware</strong>.</li>
+              <li>The app checks that the device supports OTA and that it is ready to update.</li>
+              <li>Confirm that you want to install the firmware update.</li>
+              <li>Leave the device powered on while the update runs.</li>
+            </ol>
+
+            <p class="note">
+              Before the firmware transfer begins, PMT safely stops the throttle and prepares the OTA connection. Once the actual firmware transfer starts, the app reports progress from <strong>0% through 100%</strong> in 10% steps.
+            </p>
+
+            <p class="note">
+              While OTA is active, the ESP32-S3's onboard RGB LED alternates <strong>GREEN and PURPLE</strong>. This is normal.
+            </p>
+
+            <p class="note">
+              <strong>Do not remove power while the firmware update is in progress.</strong>
+            </p>
+
+            <p class="note">
+              After the transfer reaches 100%, the PMT device automatically disconnects and reboots. The app then reconnects to the device, authenticates again, verifies the firmware version that is actually running, refreshes the device configuration, and restores normal controls.
+            </p>
+
+            <p class="note">
+              <strong>What firmware version does OTA install?</strong>
+            </p>
+
+            <p class="note">
+              OTA installs the current catalog <code>latest</code> firmware for your detected ESP32-S3 hardware.
+            </p>
+
+            <p class="note">
+              OTA does <strong>not</strong> provide a list of older firmware versions to choose from.
+            </p>
+
+            <p class="note">
+              If you need to:
+            </p>
+
+            <ul>
+              <li>install a specific older firmware version,</li>
+              <li>recover a device after an unsuccessful update, or</li>
+              <li>update a Classic ESP32-WROOM device,</li>
+            </ul>
+
+            <p class="note">
+              use the normal <strong>USB firmware installer</strong> instead.
+            </p>
+
+            <p class="note">
+              If your ESP32-S3 is running firmware older than the version that introduced OTA support, you will need to use the USB installer to get onto an OTA-capable firmware first. After that, future supported updates can be performed wirelessly.
+            </p>
+
+            <p class="note">
+              If the app reports that WiFi is unavailable, restore the device's WiFi connection before trying the OTA update again. If an OTA update repeatedly cannot be completed, use the USB installer as the recovery path.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ota_firmware_update.html"
+                target="_blank" rel="noopener noreferrer">
+                ESP32-S3 OTA Firmware Update Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=05_firmware_installation.md"
+                target="_blank" rel="noopener noreferrer">
+                Firmware Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/wifi.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT WiFi and Connectivity
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-control-another-pmt-device">
           <summary>
             <span class="section-title">
