@@ -2639,20 +2639,54 @@
             </p>
 
             <p class="note">
-              The supplied lighting guide also says <strong>Headlight and Reverse Light are linked by default</strong>, giving them ready-made paired directional behavior.
+              <strong>Recommended: use one Headlight button for both lights</strong>
             </p>
 
             <p class="note">
-              A useful setup is:
+              PMT's <strong>Linked FX</strong> feature lets one visible Output Control operate a second Output Control at the same time. When a control is used as a Linked FX target, it is hidden from the normal standalone Output Control button list.
+            </p>
+
+            <p class="note">
+              Configure the two outputs like this:
+            </p>
+
+            <ul>
+              <li>
+                <strong>Headlight</strong>
+                <ul>
+                  <li>Pattern = <code>LED Solid</code></li>
+                  <li>GPIO = forward headlight GPIO</li>
+                  <li>Direction = <code>Forward</code></li>
+                  <li>Momentary = Off</li>
+                  <li><strong>Linked FX = Reverse Light</strong></li>
+                </ul>
+              </li>
+              <li>
+                <strong>Reverse Light</strong>
+                <ul>
+                  <li>Pattern = <code>LED Solid</code></li>
+                  <li>GPIO = reverse headlight GPIO</li>
+                  <li>Direction = <code>Reverse</code></li>
+                  <li>Momentary = Off</li>
+                </ul>
+              </li>
+            </ul>
+
+            <p class="note">
+              Because <strong>Reverse Light</strong> is the Linked FX target, it is hidden from the normal throttle Output Control list. You see just one <strong>Headlight</strong> button.
             </p>
 
             <p class="note note-strong">
-              <code>Headlight — LED Solid — Direction = Forward</code><br />
-              <code>Reverse Light — LED Solid — Direction = Reverse</code>
+              <code>Forward selected → Headlight ON, Reverse Light OFF</code><br />
+              <code>Reverse selected → Headlight OFF, Reverse Light ON</code>
             </p>
 
             <p class="note">
-              Turn the lighting control on, and PMT handles which physical light is permitted based on direction.
+              Both FX are switched together logically, but each light's own <strong>Direction</strong> setting determines which physical LED is allowed to illuminate.
+            </p>
+
+            <p class="note">
+              The supplied lighting documentation also notes that <strong>Headlight and Reverse Light are linked by default</strong>, providing this paired directional-light behavior without requiring two separate user-facing buttons.
             </p>
 
             <p class="note note-strong">
