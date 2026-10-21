@@ -2923,6 +2923,41 @@
             </p>
           </div>
         </details>
+
+        <details class="subsection" data-section-url="faq-s3cam-dual-usbc">
+          <summary>
+            <span class="section-title">
+              <span>I have an ESP32-S3-CAM board (N16R8) with dual USB-C inputs. Does it matter which input I connect to?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The ESP32-S3-CAM N16R8 board used in the PMT hardware examples has <strong>two USB-C connectors</strong>, but PMT does not assign a specific left/right connector for every board variant.
+            </p>
+
+            <p class="note">
+              For <strong>installing or updating firmware</strong>, use the USB-C port that provides a <strong>USB data/serial connection</strong> to your computer. Use a known-good <strong>USB data cable</strong>, not a charge-only cable. When connected correctly, the ESP32 should appear as a selectable USB/serial device in the PMT firmware installer.
+            </p>
+
+            <p class="note">
+              For normal PMT operation, the ESP32 needs a clean, regulated <strong>5V supply</strong>.
+            </p>
+
+            <p class="note">
+              <strong>Important:</strong> Dual-USB ESP32-S3-CAM boards are not all wired identically. One connector may be intended for native USB and the other for a USB-to-serial interface. Check the labels printed next to the connectors or the information for your exact board before assuming the two ports are interchangeable.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/recipe.html"
+                target="_blank" rel="noopener noreferrer">
+                Full Hardware Recipe
+              </a>
+            </p>
+          </div>
+        </details>
       </div>
     </details>
 
