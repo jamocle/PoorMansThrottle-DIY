@@ -3,7 +3,7 @@
 ## Smartphone App:
 
 ### Version 4.2.9
-* **Security Enhancements** Modified the code to stoip from sessions being stolen.
+* **Security Enhancements** Modified the code to stop from sessions being stolen.
 * **Physical Screen Organization Updates** The system allows for the niuittons to be re-organized in the physical screen.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
