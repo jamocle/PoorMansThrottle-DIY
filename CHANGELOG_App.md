@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 4.2.8
+* **Physical Screen Organization Updates** The system allows for the niuittons to be re-organized in the physical screen.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.7
 * **Grade Crossing Sounds** Added support for Grade crossing sounds.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
