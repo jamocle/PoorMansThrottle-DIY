@@ -2,37 +2,32 @@
 
 ## Smartphone App:
 
-### Version 4.2.8
+### Version 4.2.9
+* **Security Enhancements** Modified the code to stoip from sessions being stolen.
 * **Physical Screen Organization Updates** The system allows for the niuittons to be re-organized in the physical screen.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.7
 * **Grade Crossing Sounds** Added support for Grade crossing sounds.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.6
 * **Diagnosis Mode Available** Added diagnostic script inside the app to help with diagnosing problems.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.5
 * **Made Connecting to a throttle more efficient** Now CV's will only be loaded when the app senses they need to be loaded.  Faster connect and throttle entry times.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.4
 * **Added RESTful Support** PMT can now integrate with RESTful API's or any HTTP(s) endpoint for even more integration possibilities.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.3
 * **Added support for Remote Commands** Now an FX command can be mapped to a remote Command Relay where the target device is instructed to tell another device to perform a command. 
 * **Enhanced Bulk Transfer Resilience** The BTP (Bulk Transfer Protocol) is more resilient.
 * **FX Reorder enhancements** Reordering sometimes caused saving issues. now the reordering uses a quiescing strategy to eliminate this issue.
 * **Added DISCONNECT** App script token to disconnect the current session and return the user back to the scan screen.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.0
 * **Enhanced Output Control Reconciliation**  Enhanced reconciliation of controls for to help older iOS devices show updated data.
 * **Wifi SSID Chooser** The app now will allow you to choose your Wifi SSID from a list.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.1.10
 * **Fixed WIFI password saving for some Android users** Some Androidn users were unable to save passwords.
@@ -47,34 +42,28 @@
 * **Added battery saving view for physical throttle** The physical throttle view can now go into battery saving mode for the smart device.
 * **Added support for Min Reverse Throttle** The app now supports min throttle for reverse and has a wizard to guide the user intop setting it properly.
 * **Fixed password Timeout issue** Some users were experiencing timeouts when saving Wifi password.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.1.0
 * **Added Device Command** Now the command slideout on throttle screens can contain buttons to control other devices like switch modules, Horns on other locos, etc.
 * **FX Output Control Name persistence** Now the full name of a command control is fully persisted on the app.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.0.0
 * **Physical Throttle Support** Now any physical HID compatible device can be used along with PMT to control Locomotives and your layout.
 * **Version History Added** The full version history is added to the global configuration page
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.7
 * **Output Control Enhancements** The output control configuration layout has been enhanced.  allowing for moving outputs around, linking by name, and only showing configured outputs (no blanks).
 * **Automation Script enhancements** Loading and saving automation scripts now show progress in bytes and saving is 90% quicker than previous.
-* **Graph Control Enhancemenbts** The graph control used for Chuff matching and speed matching now is more precise and deterministic on its movements.
+* **Graph Control Enhancements** The graph control used for Chuff matching and speed matching now is more precise and deterministic on its movements.
 * **Firmware Command and App Command is now an available FX Pattern** Allows you to tie firmware commands to FX Outputs and app commands to FX commands.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.3
 * **Floating window re-ordering** Now you can tap on script and video float-overs to bring them to the foreground.
 * **Fixed camera timeouts** Timeouts would happen on iOS builds for some users.
 * **Added new CV in firmware to backup** Added CV430 to backup.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.1
 * **Added new CV in firmware to backup** Added CV15 to backup.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.0
 * **Support for Automation scripts** No the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
@@ -85,7 +74,6 @@
 ### Version 3.2.0
 * **Wireless Firmware Updates** The app supports PMT firmware wireless updates. 
 * **Added About screen** in the global configuration screen
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.1.0
 * **Prime Mover and Volume on Control Slideout** Now the prime mover and volume controls are added to the control slideout when Audio is on.
@@ -93,7 +81,6 @@
 * **Individual Volume** You can now modify the relative volume level of a sound vs other sounds +/- in the app.
 * **Automatic Adding of Audio Controls** When the user turns on Audio, they will be asked if they wish to add common controls to the Controls screen for Audio.
 * **UI Tweaks** Graph manipulation more user friendly for chuff rate and MU Consist speed matching. Added a lock control to lock the settings for the chuff mapping.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.0
 * **PMT Audio Support** The App now supports sound for diesel and steam locomotion and custom sounds. 
@@ -105,7 +92,6 @@
 * **Startup Restore Sensing** The app now senses when a firmware update occurred and prompts the user if they wish to apply the latest backup (if stored) to the firmware.
 * **FX LED mode information expanded for firmware 3.0.0** to cover the fourteen newly added FX function-output patterns: `DITCH+`, `DITCH-`, `STROBE+`, `STROBE-`, `ROTARY+`, `ROTARY-`, `MARS+`, `MARS-`, `GYRALITE+`, `GYRALITE-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`. The paired `+` / `-` warning-light modes are half-cycle phase shifted, while the simulated lamp/beacon modes include PWM-based brightness effects such as smooth sweeps, flicker, dynamo variation, and incandescent warm-up.
 * **Updates to Multilingual localization engine and artifacts**
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.5.7
 * **Android camera bug fixed** The app would not show the preview on some Android devices..
@@ -113,7 +99,6 @@
 
 ### Version 2.5.6
 * **Record while you Run** Watch what you record while you control your locomotive with the camera overlay.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.2.0
 * **Custom in-app splash screen added** so PMT can show a persaonal splash screen after platform starts.
@@ -126,7 +111,6 @@
 * **Admin System Files support added for custom splash settings** so the custom splash JSON can be viewed, edited, deleted, and included in AI Context export. The large image Base64 field is hidden in the editor while preserving the uploaded image unless the filename is intentionally cleared.
 * **Scan startup behavior improved** so scan is no longer cancelled just because auto-connect starts or the scan page briefly disappears during startup navigation.
 * **Scan button behavior improved** so the Scan button remains enabled while scanning, changes to Cancel Scan, and only shows Scan cancelled when the user explicitly cancels the scan.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.1.1
 * **Android system bar color matching fixed** so the top Android status-bar area now follows the app's selected Brand Background color instead of showing the platform default color.
@@ -144,7 +128,6 @@
 * **Consist live curve editing improved** so changing a speed-match curve while live mode is active immediately sends the updated output command when the edit affects the locomotive's current throttle output.
 * **Consist curve live mode default changed** so live mode starts enabled on the curve screen and can be turned off by the user when needed.
 * **Localization updated** for the new version-warning, update-check, admin persistence, and graph label messages across supported languages.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.0.0
 * **App support for Poor Man's Turbine added** so PMT can discover, connect to, configure, and control Poor Man's Turbine firmware in addition to train throttle controllers.
@@ -171,65 +154,46 @@
 * Fixed a bug where throttle names could become mismatched between the scan list and saved consists.
 * **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
 
-### Version 1.11.2
-* **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
-
 ### Version 1.11.1
 * **MU Consisting for Apple** Configure and run MU Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.11.0
 * **MU Consisting Beta for Android** Configure and run MU Consists with PMT.  Multiple engine control with one throttle like the big boys do it.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.3
 * **New Telemetry** The app supports new telemetry coming from Firmware v1.12.4.
 * **UI change** Modified configuration to uncomplicate the Battery Management section and removed the INA219 I2C Address from the UI. To set this use CV33.  The default is 0x40 (64 decimal). 
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.2
 * **Schedule a Run** The app supports the ability to schedule the start and stop commands for autonomous running of a train.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.10.0
 * **Battery Management Support** The app supports the use of the INA219 board to monitor and manage battery information that ties to locomotive behavior.  The app can now protect against undervoltages without the need for a BMS.  Constantly see the Volts, Amps and Watts in this telemetry.
 
-### Version 1.9.24
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
-
 ### Version 1.9.23
 * **Informational Carousel** Add an informational carousel at app startup to provide important information to users of PMT.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.21
 * **Swipe between throttle screens** Now when you have multiple throttles connected to the PMT app, you can easily swipe between them without having to go back to the Scan screen like in previous versions of the app.
 * **Asynchronous Connect** Now you can connect to all of the throttles without having to wait. 
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.12
 * **Backup and restore capabilities** Now there is a copy button on the CV section in configuration that will copy the settings for a throttle for external storage by the user.  The import capability is handled by pasting the output of the copy into the script view on the terminal page and it will reset the hardware to defaults and apply the settings.  This can be used to restore a throttle or copy settings to another throttle.
 * **UI Changes** Minor Tweaks.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.11
 * **UI Changes** The app will now scroll certain parts of the view depending on UI real-estate.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.9.10
 * **PMT Hardware Naming Fix** The app now handles BLE throttle names by better managing the BLE notification name and BLE cache lifecycle. Basically, when you change your PMT name in the app, it sticks now :-)
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
-
 
 ### Version 1.9.7
 * **Support for firmware 1.11.0** Can configure new Driver Modes.  [More...](https://github.com/jamocle/PoorMansThrottle-DIY/blob/main/CHANGELOG_Firmware.md)
 * **Graphical Changes** Slight changes in the graphics
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
-
 
 ### Version 1.9.5
 * **Support for WiFi Failover** The app now uses both BLE and Wi-Fi for better connectivity consistency
 * **Graphical Changes** Slight changes in the graphics
-
 
 ### Version 1.9.3
 * **Added more Permission granting for Android version** The App now notifies of more permissions required to perform BLE scans to better support some Android users. **FIXED**
@@ -243,16 +207,13 @@
 ### Version 1.8.4
 * **Stronger BLE Scanning** Hardened the BLE scanning algorithms further to strengthen the app's ability to find devices even on slower devices.
 * **Scripting Halt Ability** The app supports stopping a script mid-flight.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.8.4
 * **Stronger BLE Scanning** Hardened the BLE scanning algorithms to strengthen the app's ability to find devices even on slower devices.
 * **BLE Diagnostic Mode** Ability to view BLE logs for scan failures.
 * **Scripting ability** The app supports scripting commands together.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 1.8.0
-
 * **Improved throttle look** More streamlined and aesthetic look and feel for the standard throttle screen
 * **BLE scan and device discovery interface** for locating and selecting available throttle controllers.
 * **Multiple throttle interface modes** including Novice, Standard, and Pro throttle layouts.
@@ -268,7 +229,6 @@
 * Novice throttle mode with simplified switcher-style operation for basic train control.
 
 ### Version 1.6.0
-
 * **BLE client interface** for connecting to the throttle controller.
 * **Throttle and direction control interface** designed for simple train operation.
 * **Controller state display** showing motion state and connection status.
