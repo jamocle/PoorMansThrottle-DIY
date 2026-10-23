@@ -2,6 +2,10 @@
 
 ## Firmware:
 
+### Version 3.6.5
+* **Added Grade Crossing Audio Command** Grade crossing is now a selectable audio sound.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.6.4
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 

@@ -298,14 +298,14 @@ INA219 battery-disconnect and shutdown protection remain authoritative and can f
 
 ---
 
-## CV45 — Automatic Horn/Bell Sounds
+## CV45 — Automatic Horn/Bell Sounds. (**Not supported on Classic ESP32**)
 
 CV45 applies only to **Poor Man's Throttle** locomotive firmware. It enables automatic horn/whistle and bell cues based on the locomotive's **actual applied motion state**, rather than merely on receipt of a direction or speed command.
 
 CV45 behavior:
 
 * `CV45=0` is the default and disables automatic horn/bell cues.
-* `CV45=1` enables automatic horn/bell cues.
+* `CV45=1` enables automatic horn/bell cues. (**Not supported on Classic ESP32**)
 * PMTPlayer audio must be enabled with `CV400=1`.
 * `CV43` is **not required**. The prime mover, steam background, chuffs, and other locomotive background audio can remain disabled with `CV43=0` while CV45 automatic horn/bell cues continue to operate.
 * Manual horn or bell operation takes precedence. If the operator manually requests the horn or bell while an automatic sequence is active, the automatic sequence is cancelled so it cannot later turn off the manually held sound.

@@ -2,6 +2,10 @@
 
 ## Smartphone App:
 
+### Version 4.2.7
+* **Grade Crossing Sounds** Added support for Grade crossing sounds.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.6
 * **Diagnosis Mode Available** Added diagnostic script inside the app to help with diagnosing problems.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
