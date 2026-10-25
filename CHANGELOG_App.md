@@ -2,6 +2,11 @@
 
 ## Smartphone App:
 
+### Version 4.2.10
+* **New App diagnostic mode** Now the app can be in diagnostic mode as well to capture anything that happens in PMT.
+* **Fixed issues with older iPads**. Some older iPads had issues with rendering output controls.  This is fixed.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.9
 * **Security Enhancements** Modified the code to stop from sessions being stolen.
 * **Physical Screen Organization Updates** The system allows for the buttons to be re-organized in the physical screen.
@@ -30,17 +35,17 @@
 * **Wifi SSID Chooser** The app now will allow you to choose your Wifi SSID from a list.
 
 ### Version 4.1.10
-* **Fixed WIFI password saving for some Android users** Some Androidn users were unable to save passwords.
+* **Fixed WIFI password saving for some Android users** Some Android users were unable to save passwords.
 
 ### Version 4.1.3
 * **Added support for Urdu language in Pakistan** Pakistan residents are using PMT!!
-* **Fixed some localization issues** Some vestigal words weren't being translated and now fixed.
+* **Fixed some localization issues** Some vestigial words weren't being translated and now fixed.
 
 ### Version 4.1.2
 * **Enhanced User Interface for Throttle and Feather Brake** Modified to support Realistic Mode for Feather Brake and enhanced telemetry for UI information.
-* **Added Switcher Mode as a selectable Phydical Control** Users can now assign switcher mode to an HID key.
+* **Added Switcher Mode as a selectable Physical Control** Users can now assign switcher mode to an HID key.
 * **Added battery saving view for physical throttle** The physical throttle view can now go into battery saving mode for the smart device.
-* **Added support for Min Reverse Throttle** The app now supports min throttle for reverse and has a wizard to guide the user intop setting it properly.
+* **Added support for Min Reverse Throttle** The app now supports min throttle for reverse and has a wizard to guide the user into setting it properly.
 * **Fixed password Timeout issue** Some users were experiencing timeouts when saving Wifi password.
 
 ### Version 4.1.0
@@ -66,7 +71,7 @@
 * **Added new CV in firmware to backup** Added CV15 to backup.
 
 ### Version 3.3.0
-* **Support for Automation scripts** No the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
+* **Support for Automation scripts** Now the app has the ability to record and manage the automation of throttles/modules and all functions of your layout to create realistic prototypical scenarios for your layout.
 * **Bug Fixes**
     Fixed save failures with the master volume slider on configuration page.
     The code monkey has been busy (me).
@@ -101,7 +106,7 @@
 * **Record while you Run** Watch what you record while you control your locomotive with the camera overlay.
 
 ### Version 2.2.0
-* **Custom in-app splash screen added** so PMT can show a persaonal splash screen after platform starts.
+* **Custom in-app splash screen added** so PMT can show a personal splash screen after platform starts.
 * **Splash screen appearance controls added** under Global Settings > Appearance, between Language and Colors, with settings for enabling the custom splash, choosing the splash image, picking the background color, setting the display time, selecting the animation, and testing the result in-app.
 * **Custom splash image upload added** so users can choose a square image from their device photo library. Non-square images are rejected with a localized warning so the splash image remains predictable across screen sizes.
 * **Splash screen preview added** so users can test the exact configured splash screen from Global Settings without restarting the app.

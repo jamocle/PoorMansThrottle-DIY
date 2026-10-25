@@ -2648,7 +2648,7 @@
         <details class="subsection" data-section-url="faq-capture-diagnostic-specific-problem">
           <summary>
             <span class="section-title">
-              <span>How do I capture a diagnostic for a specific problem in PMT?</span>
+              <span>How do I capture a diagnostic for a specific problem in PMT firmware?</span>
             </span>
           </summary>
 
@@ -2784,7 +2784,7 @@
         <details class="subsection" data-section-url="faq-app-diagnostic-forum">
           <summary>
             <span class="section-title">
-              <span>How do I perform a diagnostic in the app to send to the forum?</span>
+              <span>How do I perform a Firmware diagnostic in the app to send to the forum?</span>
             </span>
           </summary>
 
@@ -2877,7 +2877,342 @@
           </div>
         </details>
 
-<details class="subsection" data-section-url="faq-physical-throttle">
+
+<details class="subsection" data-section-url="faq-diagnose-ble-issues">
+          <summary>
+            <span class="section-title">
+              <span>How do I diagnose BLE (Bluetooth) issues?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The PMT app has a dedicated <strong>BLE Debug Mode</strong> that records detailed Bluetooth activity while you reproduce a problem.
+            </p>
+
+            <p class="note note-strong">
+              BLE Debug Mode does not start immediately when you turn the switch on. You must restart the app.
+            </p>
+
+            <p class="note"><strong>1. Open Settings</strong></p>
+            <ol>
+              <li>From the <strong>Scan</strong> screen, tap the <strong>gear</strong> button in the lower-left corner.</li>
+              <li>Open the <strong>Debug</strong> section in <strong>Settings</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-diagnostics-settings-gear.png"
+              alt="PMT Scan screen with the Settings gear button highlighted"
+              class="faq-screenshot" />
+
+            <p class="note"><strong>2. Arm BLE Debug Mode</strong></p>
+            <ol>
+              <li>Turn on <strong>BLE Debug Mode</strong>.</li>
+              <li>The app arms BLE debug logging for the <strong>next app launch</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-ble-debug-mode.png"
+              alt="PMT Settings Debug section with the BLE Debug Mode switch highlighted"
+              class="faq-screenshot" />
+
+            <p class="note">
+              At this point, BLE logging has <strong>not</strong> started yet.
+            </p>
+
+            <p class="note"><strong>3. Restart the app</strong></p>
+            <p class="note">
+              Fully close and relaunch the PMT app. During the new launch, BLE Debug Mode becomes active and the next-launch setting is automatically reset.
+            </p>
+            <p class="note">
+              While the BLE diagnostic session is active, the BLE Debug Mode switch is hidden and an <strong>Open Log</strong> button is shown instead.
+            </p>
+
+            <p class="note"><strong>4. Reproduce the BLE problem</strong></p>
+            <p class="note">
+              Perform the action that is giving you trouble, such as scanning for a PMT device, connecting to it, reproducing a connection failure, or repeating the action that normally causes the BLE problem.
+            </p>
+            <p class="note">The BLE diagnostic log can record:</p>
+            <ul>
+              <li>app version, operating system, device manufacturer, model, and device type</li>
+              <li>BLE readiness checks</li>
+              <li>Bluetooth adapter availability and whether Bluetooth is enabled</li>
+              <li>Android BLE permission state and permission request results</li>
+              <li>Android location-services state where applicable</li>
+              <li>BLE scan start, stop, cancellation, completion, and failures</li>
+              <li>devices discovered during a scan, including IDs, names, advertised service UUIDs, and advertisement details</li>
+              <li>devices accepted, filtered, or ignored by the scan</li>
+              <li>scan counts and UI scan results</li>
+              <li>BLE-related exceptions during scan and connection workflows</li>
+              <li>BLE bulk-transfer notification setup and received-frame information when that transport is used</li>
+            </ul>
+
+            <p class="note"><strong>5. Capture the BLE log</strong></p>
+            <ol>
+              <li>Return to the <strong>Scan</strong> screen.</li>
+              <li>Tap the <strong>gear</strong> button.</li>
+              <li>Open <strong>Debug</strong>.</li>
+              <li>Tap <strong>Open Log</strong> for BLE Debug.</li>
+              <li>Tap <strong>Refresh</strong> if you want to make sure the latest entries are displayed.</li>
+              <li>Tap <strong>Copy</strong>.</li>
+            </ol>
+            <p class="note">
+              <strong>Copy</strong> copies the complete BLE debug session currently held by the app to the device clipboard. Paste it into your forum post, email, message, or other troubleshooting report.
+            </p>
+            <p class="note note-strong">
+              The Clear button erases the current BLE session log. Copy anything you need before clearing it.
+            </p>
+
+            <p class="note"><strong>Does BLE Debug stay enabled?</strong></p>
+            <p class="note">
+              No. It is a one-launch diagnostic mode. The arm flag is consumed and reset when the diagnostic launch begins. To capture another BLE diagnostic session after a later restart, turn <strong>BLE Debug Mode</strong> on again and restart the app again.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=02_system_architecture.md"
+                target="_blank" rel="noopener noreferrer">
+                System Architecture
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-diagnose-websocket-issues">
+          <summary>
+            <span class="section-title">
+              <span>How do I diagnose WebSocket issues?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              The PMT app has a separate <strong>WebSocket diagnostic log</strong> for troubleshooting the Wi-Fi/WebSocket communication path.
+            </p>
+
+            <p class="note note-strong">
+              WebSocket logging does not start immediately when you turn the switch on. You must restart the app.
+            </p>
+
+            <p class="note"><strong>1. Open Settings</strong></p>
+            <ol>
+              <li>From the <strong>Scan</strong> screen, tap the <strong>gear</strong> button in the lower-left corner.</li>
+              <li>Open the <strong>Debug</strong> section in <strong>Settings</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-diagnostics-settings-gear.png"
+              alt="PMT Scan screen with the Settings gear button highlighted"
+              class="faq-screenshot" />
+
+            <p class="note"><strong>2. Arm WebSocket diagnostic logging</strong></p>
+            <ol>
+              <li>Turn on <strong>Enable WebSocket logging for next launch</strong>.</li>
+              <li>The app arms WebSocket diagnostic logging for the <strong>next app launch</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-websocket-debug-mode.png"
+              alt="PMT Settings Debug section with the WebSocket logging switch highlighted"
+              class="faq-screenshot" />
+
+            <p class="note">
+              At this point, WebSocket logging has <strong>not</strong> started yet.
+            </p>
+
+            <p class="note"><strong>3. Restart the app</strong></p>
+            <p class="note">
+              Fully close and relaunch the PMT app. During the new launch, WebSocket diagnostic logging becomes active and the next-launch setting is automatically reset.
+            </p>
+            <p class="note">
+              While the WebSocket diagnostic session is active, the WebSocket switch is hidden and an <strong>Open Log</strong> button is shown instead.
+            </p>
+
+            <p class="note"><strong>4. Reproduce the WebSocket problem</strong></p>
+            <p class="note">
+              Reproduce the problem you are investigating. For example, run a scan so the app can try persisted-IP discovery, or attempt the WebSocket operation that is failing.
+            </p>
+            <p class="note">The WebSocket diagnostic log can record:</p>
+            <ul>
+              <li>app version, operating system, device manufacturer, model, and device type</li>
+              <li>persisted-IP discovery start, completion, and saved entries considered by discovery</li>
+              <li>blank, invalid, unroutable, loopback, or otherwise rejected saved IP information</li>
+              <li>persisted-IP ping attempts, results, and round-trip times</li>
+              <li>devices accepted or rejected by persisted-IP discovery</li>
+              <li>WebSocket session opening and the endpoint being used</li>
+              <li>WebSocket connection-state changes and successful connections</li>
+              <li>WebSocket close and disconnect activity</li>
+              <li>text sent through an active WebSocket session</li>
+              <li>text received through an active WebSocket session</li>
+              <li>receive-loop, discovery, and related WebSocket exceptions</li>
+            </ul>
+            <p class="note">
+              The dedicated WebSocket diagnostic code does <strong>not</strong> log the contents of every binary bulk-transfer frame, so this is not a complete packet capture.
+            </p>
+
+            <p class="note"><strong>5. Capture the WebSocket log</strong></p>
+            <ol>
+              <li>Return to the <strong>Scan</strong> screen.</li>
+              <li>Tap the <strong>gear</strong> button.</li>
+              <li>Open <strong>Debug</strong>.</li>
+              <li>Tap <strong>Open Log</strong> for WebSocket diagnostics.</li>
+              <li>Tap <strong>Refresh</strong> if you want to make sure the latest entries are displayed.</li>
+              <li>Tap <strong>Copy</strong>.</li>
+            </ol>
+            <p class="note">
+              <strong>Copy</strong> copies the current WebSocket diagnostic session to the device clipboard. Paste it into your troubleshooting report or forum post.
+            </p>
+            <p class="note note-strong">
+              The Clear button erases the current WebSocket session log. Copy anything you need before clearing it.
+            </p>
+
+            <p class="note"><strong>Does WebSocket logging stay enabled?</strong></p>
+            <p class="note">
+              No. It is a one-launch diagnostic mode. The next-launch flag is consumed and reset when the diagnostic session begins. To capture another WebSocket diagnostic session after a later restart, enable <strong>WebSocket logging for next launch</strong> again and restart the app again.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=02_system_architecture.md"
+                target="_blank" rel="noopener noreferrer">
+                System Architecture
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-app-diagnostics">
+          <summary>
+            <span class="section-title">
+              <span>How do I put the app into Diagnostic mode?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Use <strong>App Diagnostics</strong> when you want to capture what the PMT application itself is doing rather than concentrating only on BLE or WebSocket activity.
+            </p>
+
+            <p class="note note-strong">
+              App Diagnostics does not start immediately when you turn the switch on. You must restart the app.
+            </p>
+
+            <p class="note"><strong>1. Open Settings</strong></p>
+            <ol>
+              <li>From the <strong>Scan</strong> screen, tap the <strong>gear</strong> button in the lower-left corner.</li>
+              <li>Open the <strong>Debug</strong> section in <strong>Settings</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-diagnostics-settings-gear.png"
+              alt="PMT Scan screen with the Settings gear button highlighted"
+              class="faq-screenshot" />
+
+            <p class="note"><strong>2. Arm App Diagnostics</strong></p>
+            <ol>
+              <li>Turn on <strong>App Diagnostics</strong>.</li>
+              <li>The app arms application diagnostics for the <strong>next app launch</strong>.</li>
+            </ol>
+
+            <img
+              src="Info/faq-app-diagnostics-mode.png"
+              alt="PMT Settings Debug section with the App Diagnostics switch highlighted"
+              class="faq-screenshot" />
+
+            <p class="note">
+              The switch only arms the diagnostic system. It does <strong>not</strong> begin capturing the current app session.
+            </p>
+
+            <p class="note"><strong>3. Restart the app</strong></p>
+            <p class="note">
+              Fully close and relaunch the PMT app. App Diagnostics is initialized during the new application launch, the next-launch flag is consumed and reset, and diagnostic capture is enabled for that session.
+            </p>
+            <p class="note">
+              While App Diagnostics is active, its switch is hidden and an <strong>Open Log</strong> button is shown instead.
+            </p>
+
+            <p class="note"><strong>4. Reproduce the app problem</strong></p>
+            <p class="note">
+              Use the app normally and reproduce the problem you want to investigate.
+            </p>
+            <p class="note">
+              App Diagnostics captures several types of application output into one log:
+            </p>
+            <ul>
+              <li>normal application console output</li>
+              <li>console error output</li>
+              <li>Debug/Trace output</li>
+              <li>application logger output and logger exceptions</li>
+              <li>logger levels including trace, debug, information, warning, error, and critical</li>
+              <li>app version, operating system, platform, device manufacturer, model, and device type</li>
+            </ul>
+            <p class="note">
+              This is the broadest of the three app diagnostic modes. It is useful when the problem is in the application itself or when you do not yet know which subsystem is causing the problem.
+            </p>
+            <p class="note note-strong">
+              App Diagnostics is different from the firmware diagnostic log produced through the PMT Terminal. App Diagnostics records the mobile application's output.
+            </p>
+
+            <p class="note"><strong>5. Capture the diagnostic data</strong></p>
+            <ol>
+              <li>Return to the <strong>Scan</strong> screen.</li>
+              <li>Tap the <strong>gear</strong> button.</li>
+              <li>Open <strong>Debug</strong>.</li>
+              <li>Tap <strong>Open Log</strong> under App Diagnostics.</li>
+              <li>Tap <strong>Refresh</strong> if you want to refresh the displayed entries.</li>
+              <li>Tap <strong>Copy</strong>.</li>
+            </ol>
+
+            <p class="note">
+              The App Diagnostics screen displays only the most recent <strong>300 lines</strong> so that a large diagnostic session does not overload the screen.
+            </p>
+            <p class="note note-strong">
+              Copy copies the full diagnostic log still retained by the app, not merely the 300 lines displayed on the screen.
+            </p>
+            <p class="note">
+              The retained diagnostic buffer is limited to <strong>2,000 lines</strong> or approximately <strong>500,000 characters</strong>. If older entries are discarded to stay within those limits, the copied log includes a <code>[BUFFER]</code> message telling you that older diagnostic lines were omitted.
+            </p>
+            <p class="note note-strong">
+              The Clear button erases the retained App Diagnostics log. Copy anything you need before clearing it.
+            </p>
+
+            <p class="note"><strong>Does App Diagnostics stay enabled?</strong></p>
+            <p class="note">
+              No. App Diagnostics is a one-launch diagnostic mode. Its next-launch flag is consumed and reset when the diagnostic launch begins. To run another diagnostic session after a later restart, enable <strong>App Diagnostics</strong> again and restart the app again.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=01_quick_overview.md"
+                target="_blank" rel="noopener noreferrer">
+                Quick Overview
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-physical-throttle">
           <summary>
             <span class="section-title">
               <span>I don't want to use a mobile device as a throttle. How can I use a physical throttle instead?</span>

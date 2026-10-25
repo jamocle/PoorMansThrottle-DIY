@@ -17,7 +17,7 @@
 ### Version 3.6.0
 * **Added Support for ESP-NOW Protocol** With ESP-NOW protocol, PMT modules and throttles can now talk to each other. This adds ability to a whole new family of features coming in the future.
 * **Added new "Remote Command" command**. Added RY command to relay a command to another device.
-* **DF Player playback modification** Changed playbackl of DF PLayer mp3 files to not automatically send volume commands before playback.  Some DF Player cards had issue with this approach.
+* **DF Player playback modification** Changed playback of DF Player mp3 files to not automatically send volume commands before playback.  Some DF Player cards had issue with this approach.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.5.0
@@ -31,7 +31,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.10
-* **Updated sounds commsurate of new Feather Brake Realism**. Now sounds follow new feather braking system more realistically.
+* **Updated sounds commensurate of new Feather Brake Realism**. Now sounds follow new feather braking system more realistically.
  
 ### Version 3.3.9
 * **New Model for Feather Braking** A more realistic model for Pro feather braking. If the previous feather braking was preferable set CV47=0.
@@ -39,7 +39,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.8
-* **Added min throttle for reverse** CV46 now controld min throttle for reverse.
+* **Added min throttle for reverse** CV46 now controls min throttle for reverse.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.7
@@ -51,11 +51,11 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.3
-* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
+* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didn't initialize unless audio was turned on. This is now corrected. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.2
-* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didnt initialize unless audio was turned on. This is now corrected. 
+* **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didn't initialize unless audio was turned on. This is now corrected. 
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.0
@@ -72,7 +72,7 @@
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.1
-* **Audio refinements** Modified so that it prototypically obey's startup and shutdown for diesel profiles and prohibits throttle input during those times.
+* **Audio refinements** Modified so that it prototypically obeys startup and shutdown for diesel profiles and prohibits throttle input during those times.
 * **Custom file searching** modified the code to make the resolution of custom audio files more robust.
 * **Logging refinements** Improved D2 SD log reliability under sustained high activity. The logger now commits buffered log data after a short idle period, while also enforcing a maximum dirty interval so logs are still flushed even when the system never becomes fully idle. Short SD writes are retained and retried instead of being dropped, reducing the chance of missing or incomplete D2 logs during busy operation.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
