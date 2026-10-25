@@ -2,15 +2,17 @@
 
 ## Smartphone App:
 
+### Version 4.2.11
+* **New FX Commands** Added Firmware Run Script and Firmware Run Script Repeat.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.10
 * **New App diagnostic mode** Now the app can be in diagnostic mode as well to capture anything that happens in PMT.
 * **Fixed issues with older iPads**. Some older iPads had issues with rendering output controls.  This is fixed.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.9
 * **Security Enhancements** Modified the code to stop from sessions being stolen.
 * **Physical Screen Organization Updates** The system allows for the buttons to be re-organized in the physical screen.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.7
 * **Grade Crossing Sounds** Added support for Grade crossing sounds.
