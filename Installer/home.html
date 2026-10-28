@@ -1025,6 +1025,83 @@
           </div>
         </details>
 
+
+<details class="subsection" data-section-url="faq-esp32-5v-pin-no-output">
+          <summary>
+            <span class="section-title">
+              <span>What do I do if I am not getting 5V from the ESP32 5V pin?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If your ESP32 is powered normally but you are <strong>not getting 5V from its 5V pin</strong>, check the small resistor/jumper location shown in the pictures below.
+            </p>
+
+            <p class="note">
+              Some versions of this ESP32 board are manufactured <strong>without the small resistor installed at this location</strong>. When that component is missing, the board will not deliver 5V to the 5V pin.
+            </p>
+
+            <p class="note note-strong">
+              <strong>First, disconnect power from the ESP32 before making any changes.</strong>
+            </p>
+
+            <img
+              src="Info/faq-esp32-5v-pin-board.png"
+              alt="Full ESP32-S3 board showing the board layout for orientation"
+              class="faq-screenshot" />
+
+            <p class="note">
+              The next image shows the component location. Look at the area outlined by the <strong>green square</strong> near the USB-C connectors.
+            </p>
+
+            <img
+              src="Info/faq-esp32-5v-pin-resistor-location.png"
+              alt="ESP32-S3 board with the 5V resistor or jumper location highlighted by a green square near the USB-C connectors"
+              class="faq-screenshot" />
+
+            <p class="note">
+              Here is a closer view of the same location:
+            </p>
+
+            <img
+              src="Info/faq-esp32-5v-pin-resistor-closeup.png"
+              alt="Close-up of the ESP32-S3 resistor or jumper pads that may need to be shunted to enable the 5V pin"
+              class="faq-screenshot" />
+
+            <p class="note">
+              If the resistor is <strong>missing</strong> from your board, the fix is to <strong>shunt the two pads together</strong>:
+            </p>
+
+            <ol>
+              <li>Disconnect all power from the ESP32.</li>
+              <li>Locate the two pads shown inside the green box.</li>
+              <li>If the resistor is not populated there, carefully solder the <strong>two pads together</strong>, creating a solder bridge.</li>
+              <li>Reconnect power.</li>
+              <li>Use a multimeter to verify that you now have approximately <strong>5V at the ESP32 5V pin</strong> before connecting the rest of your hardware.</li>
+            </ol>
+
+            <p class="note">
+              This modification applies to boards where that resistor/jumper position is <strong>not populated</strong>, as shown in the highlighted location.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_IBT2_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT IBT-2 Motor Driver Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=04_tools_and_safety.md"
+                target="_blank" rel="noopener noreferrer">
+                Tools and Safety
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-sd-card-size-format">
           <summary>
             <span class="section-title">
