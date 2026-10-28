@@ -460,9 +460,9 @@ async function updateFirmwareInstaller() {
                 updateSelectedManifest();
 
                 if (dropdownDefaultNote) {
-                    dropdownDefaultNote.textContent =
-                        "This list opens on " + getReleaseLabel(dropdownRelease) +
-                        ". You can choose any version shown before installing.";
+                    dropdownDefaultNote.textContent = 
+                        //"This list opens on " + getReleaseLabel(dropdownRelease) + ". " +
+                        "You can choose any version shown to install.";
                 }
 
                 panel.hidden = false;
