@@ -204,6 +204,21 @@ When enabled and configured, the ESP32 can join a Wi-Fi network and accept WebSo
 
 This allows the app to support better connection behavior for configured devices, especially when a known device can be reached over the network.
 
+## Shared Connection Authorization
+
+Throttle, Module, and Turbine use the same shared identity/authorization implementation in `PmtShared`, regardless of whether commands arrive over BLE or WebSocket.
+
+The normal authorization factor is the PMT identity-token transaction (`I,<token>` for a primary connection or `IB,<token>` for a backup WebSocket connection). Firmware 3.6.6 revision 331 uses an optional shared PIN prerequisite:
+
+* `CV17` stores a secret PIN and can be changed only while Require PIN is off.
+* `CV18` controls whether that PIN is required; changing either direction requires the stored PIN.
+* When Require PIN is effective, `PIN:<pin>` must succeed before `I,<token>` / `IB,<token>`.
+* Identity sent before PIN returns `ERR:PIN` and must be retried after `ACK:PIN`.
+* After authorization, `PIN:<pin>` is verification-only and does not alter the established session.
+* When Require PIN is off, `PIN:<pin>` simply ACKs and does not alter connection eligibility.
+
+The PIN configuration and verification logic is shared rather than duplicated in the Throttle, Module, or Turbine command implementations. The stored PIN and PIN-bearing commands are treated as sensitive and are not emitted in plaintext by the filtered command logger.
+
 ### Transport-Affine Bulk Diagnostics
 
 The `WIFI?` network-scan diagnostic uses the shared command parser but returns its larger result through the PX/1 binary data plane as `WifiInfo` resource `4`.
@@ -318,7 +333,7 @@ It supports multiple motor driver interface modes, allowing the same controller 
 | DUAL_PWM | Separate forward and reverse PWM outputs, with optional enable pins | IBT-2, BTS7960 |
 | PWM_DIR | One PWM pin plus one direction pin | Cytron MD10C, Cytron MDD10A |
 | PWM_BIDIR | One PWM/enable pin plus separate forward and reverse logic pins | L298N, L293D, TB6612FNG |
-| DUAL_INPT | Two-input H-bridge style control, with PWM applied to the active side | DRV8833, L9110S, MX1508 |
+| DUAL_INPT | Two-input H-bridge style control, with PWM applied to the active side | Adafruit DRV8871, DRV8833, L9110S, MX1508 |
 
 ## What This Means Physically
 
@@ -597,6 +612,7 @@ Examples of configuration areas include:
 * direction inversion
 * motion timing values
 * Wi-Fi enablement, credentials, and WebSocket port
+* optional shared security PIN and Require PIN setting
 * INA219 settings
 * function output definitions
 * schedule settings

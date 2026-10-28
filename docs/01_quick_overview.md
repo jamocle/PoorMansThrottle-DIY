@@ -159,6 +159,7 @@ Typical hardware used in a locomotive throttle build:
 Common motor driver examples include:
 
 * **IBT-2 / BTS7960** for higher-current applications
+* **Adafruit DRV8871** for compact `DUAL_INPT` installations using `IN1` / `IN2` control
 * other supported driver types that match the firmware's supported control modes
 
 Optional components may include:
@@ -183,7 +184,7 @@ Examples of supported driver interface styles include:
 * dual-PWM drivers
 * PWM plus direction drivers
 * PWM-bidirectional drivers
-* dual-input H-bridge drivers
+* dual-input H-bridge drivers such as the **Adafruit DRV8871**
 
 That means the exact motor driver hardware can vary depending on your build.
 

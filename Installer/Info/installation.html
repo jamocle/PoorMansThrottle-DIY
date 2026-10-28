@@ -525,7 +525,6 @@
               <li>L298N</li>
               <li>L293D</li>
               <li>TB6612FNG</li>
-              <li>DRV8871</li>
               <li>DRV8876</li>
               <li>MC33926</li>
               <li>MX1508</li>
@@ -546,9 +545,15 @@
             <p><strong>Typical control pins:</strong> <code>IN1</code>, <code>IN2</code></p>
             <p><strong>Example boards:</strong></p>
             <ul class="board-list">
+              <li>Adafruit DRV8871 DC Motor Driver Breakout</li>
               <li>DRV8833</li>
               <li>L9110S</li>
             </ul>
+            <p>
+              <strong>Adafruit DRV8871 note:</strong> connect the PMT input A and input B signals to <code>IN1</code> and <code>IN2</code>.
+              The breakout uses the <strong>DUAL_INPT</strong> control pattern; it does not use PMT's separate PWM/enable plus forward/reverse
+              logic pattern.
+            </p>
           </article>
         </div>
 
@@ -638,7 +643,7 @@
 
         <p style="margin-top:18px;">
           In a PMT L298N installation, the control pattern follows the <strong>PWM_BIDIR</strong> model. A typical mapping is
-          <code>GPIO25 → IN2</code>, <code>GPIO26 → IN1</code>, <code>GPIO33 → ENA</code>, with shared ground and the 5V logic connection
+          <code>GPIO25 → ENA</code>, <code>GPIO27 → IN1</code>, <code>GPIO33 → IN2</code>, with shared ground and the 5V logic connection
           tied back to the ESP32 power side as shown in the wiring example.
         </p>
         <p>

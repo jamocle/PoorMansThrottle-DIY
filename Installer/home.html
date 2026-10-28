@@ -277,6 +277,252 @@
           </div>
         </details>
 
+        <details class="subsection" data-section-url="faq-lock-pmt-device-pin">
+          <summary>
+            <span class="section-title">
+              <span>How can I set up PMT so only I can control my throttle?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT can protect a throttle with a <strong>Device PIN</strong>. When <strong>Lock PMT Device</strong> is enabled, the PMT requires its Device PIN as part of authentication before an app is allowed to control it.
+            </p>
+
+            <p class="note">
+              <strong>Recommended setup</strong>
+            </p>
+
+            <p class="note">
+              Open <strong>Settings</strong>, expand <strong>Settings</strong>, find <strong>System PIN</strong>, and tap <strong>Set</strong>.
+            </p>
+
+            <p class="note">
+              Choose a PIN that you will remember. The System PIN is stored by the PMT app on your phone or tablet and can be supplied automatically when connecting to a protected PMT device.
+            </p>
+
+            <p class="note">
+              Next, connect to your throttle and:
+            </p>
+
+            <ol>
+              <li>Open <strong>Config</strong>.</li>
+              <li>Expand <strong>Identity</strong>.</li>
+              <li>Turn on <strong>Lock PMT Device</strong>.</li>
+            </ol>
+
+            <p class="note">
+              If you already have a System PIN, PMT will ask whether you want to:
+            </p>
+
+            <ul>
+              <li><strong>Use System PIN</strong> — the throttle will use the same PIN stored in your app.</li>
+              <li><strong>Use Another PIN</strong> — you can give this particular throttle a different PIN.</li>
+            </ul>
+
+            <p class="note">
+              If you do not have a System PIN configured, PMT will ask you to enter the PIN you want to use for that throttle.
+            </p>
+
+            <p class="note">
+              <strong>What is the difference between the System PIN and the PMT Device PIN?</strong>
+            </p>
+
+            <p class="note">
+              They serve different purposes.
+            </p>
+
+            <p class="note">
+              The <strong>System PIN</strong> is saved in the PMT app on your phone or tablet. It is primarily a convenience feature so the app can automatically try that PIN when connecting to a protected PMT device.
+            </p>
+
+            <p class="note">
+              The <strong>PMT Device PIN</strong> is stored on the PMT throttle itself. This is the PIN that actually protects the throttle when <strong>Lock PMT Device</strong> is enabled.
+            </p>
+
+            <p class="note">
+              Setting a System PIN by itself does <strong>not</strong> lock your throttle. You must also enable <strong>Lock PMT Device</strong> on the throttle.
+            </p>
+
+            <p class="note">
+              <strong>What happens when I connect to a locked PMT?</strong>
+            </p>
+
+            <p class="note">
+              It depends on how your PINs are configured.
+            </p>
+
+            <p class="note">
+              <strong>If your System PIN and PMT Device PIN are the same:</strong><br />
+              PMT automatically supplies your System PIN during connection. You normally will not be asked to enter a PIN.
+            </p>
+
+            <p class="note">
+              <strong>If you do not have a System PIN:</strong><br />
+              When the locked PMT requires authentication, the app displays a <strong>System PIN</strong> prompt asking you to enter the device's PIN.
+            </p>
+
+            <p class="note">
+              <strong>If your System PIN is different from the PMT Device PIN:</strong><br />
+              The app first tries your saved System PIN. If the PMT rejects it, the app asks you to enter the PIN assigned to that PMT device.
+            </p>
+
+            <p class="note">
+              Entering the PMT Device PIN at this prompt does not change your saved System PIN. It is used to authenticate that connection.
+            </p>
+
+            <p class="note">
+              <strong>Can different PMT throttles have different PINs?</strong>
+            </p>
+
+            <p class="note">
+              Yes.
+            </p>
+
+            <p class="note">
+              For example, your System PIN could be <strong>1234</strong>, while one particular PMT throttle could use a different Device PIN.
+            </p>
+
+            <p class="note">
+              When you enable <strong>Lock PMT Device</strong>, choose <strong>Use Another PIN</strong> to assign a different PIN to that throttle.
+            </p>
+
+            <p class="note">
+              When you later connect, PMT will first try your System PIN. If that PIN does not match the throttle, PMT will prompt you for that throttle's Device PIN.
+            </p>
+
+            <p class="note">
+              If you want connections to be seamless, use the same System PIN for your PMT devices.
+            </p>
+
+            <p class="note">
+              <strong>Does somebody else's phone need my System PIN?</strong>
+            </p>
+
+            <p class="note">
+              No. The System PIN belongs to your copy of the PMT app.
+            </p>
+
+            <p class="note">
+              What another PMT app needs in order to authenticate with a locked throttle is the <strong>PMT Device PIN assigned to that throttle</strong>.
+            </p>
+
+            <p class="note">
+              This means the protection is PIN-based rather than tied to a particular person, phone, or PMT account. Anyone who knows the throttle's Device PIN can authenticate with it.
+            </p>
+
+            <p class="note">
+              Keep the PMT Device PIN private if you want to restrict who can control the throttle.
+            </p>
+
+            <p class="note">
+              <strong>How do I remove the lock?</strong>
+            </p>
+
+            <p class="note">
+              Connect to the PMT, open <strong>Config → Identity</strong>, and turn <strong>Lock PMT Device</strong> off.
+            </p>
+
+            <p class="note">
+              PMT will ask you to enter the PMT Device PIN before the lock can be disabled.
+            </p>
+
+            <p class="note">
+              Removing or changing the System PIN in the app does not automatically remove the PIN protection from a PMT throttle.
+            </p>
+          </div>
+        </details>
+
+
+        <details class="subsection" data-section-url="faq-err-pin">
+          <summary>
+            <span class="section-title">
+              <span>When I try to connect to a PMT device through the app, I get ERR:PIN. What does this mean?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <code>ERR:PIN</code> means the PMT device rejected the PIN authentication required to connect to it.
+            </p>
+
+            <p class="note">
+              This normally happens when <strong>Lock PMT Device</strong> has been enabled on the PMT device, but the app has not successfully supplied the correct <strong>PMT Device PIN</strong>.
+            </p>
+
+            <p class="note">
+              There are two common causes:
+            </p>
+
+            <p class="note">
+              <strong>1. The PIN was entered incorrectly</strong>
+            </p>
+
+            <p class="note">
+              If the PIN you enter does not match the PIN stored on the PMT device, the device will reject the authentication attempt with <code>ERR:PIN</code>.
+            </p>
+
+            <p class="note">
+              Remember that your app's <strong>System PIN</strong> and the <strong>PMT Device PIN</strong> can be different.
+            </p>
+
+            <p class="note">
+              If you have a System PIN saved, the current PMT app will first try that PIN automatically. If it does not match the PIN stored on the PMT device, the app will prompt you to enter the PIN for that device.
+            </p>
+
+            <p class="note">
+              If prompted, carefully enter the <strong>PMT Device PIN</strong>. Entering the wrong PIN will cause the connection to be rejected.
+            </p>
+
+            <p class="note">
+              Entering a different PMT Device PIN at this prompt does <strong>not</strong> change the System PIN saved in your app.
+            </p>
+
+            <p class="note">
+              <strong>2. You are using an older version of the PMT app</strong>
+            </p>
+
+            <p class="note">
+              A PIN-protected PMT device requires the app to perform the PIN authentication sequence during connection.
+            </p>
+
+            <p class="note">
+              An older version of the PMT app may not support the current PIN authentication process. If that happens, a locked PMT device can reject the connection with <code>ERR:PIN</code>.
+            </p>
+
+            <p class="note">
+              Make sure you are running the <strong>latest available version of the PMT app</strong>, then try connecting again.
+            </p>
+
+            <p class="note">
+              <strong>What should I do?</strong>
+            </p>
+
+            <ol>
+              <li>Make sure your PMT app is up to date.</li>
+              <li>Try connecting to the PMT device again.</li>
+              <li>If prompted for a PIN, carefully enter the <strong>PIN assigned to that PMT device</strong>.</li>
+              <li>If your System PIN and PMT Device PIN are different, enter the <strong>PMT Device PIN</strong> when prompted.</li>
+            </ol>
+
+            <p class="note">
+              Changing the System PIN in your app does <strong>not</strong> change the PIN already stored on a locked PMT device.
+            </p>
+
+            <p class="note">
+              <code>ERR:PIN</code> does not mean that the PMT device cannot be found or that normal Bluetooth communication has failed. It specifically means that the required PMT PIN authentication was not successfully completed.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="#faq-lock-pmt-device-pin">
+                How can I set up PMT so only I can control my throttle?
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-basic-parts-installation-sound">
           <summary>
             <span class="section-title">
@@ -922,6 +1168,10 @@
                     </tr>
                     <tr>
                       <td>L9110S</td>
+                      <td><strong>DUAL_INPT</strong></td>
+                    </tr>
+                    <tr>
+                      <td>Adafruit DRV8871</td>
                       <td><strong>DUAL_INPT</strong></td>
                     </tr>
                   </tbody>
@@ -3443,6 +3693,95 @@
                 href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
                 target="_blank" rel="noopener noreferrer">
                 Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+<details class="subsection" data-section-url="faq-disconnect-stop-time">
+          <summary>
+            <span class="section-title">
+              <span>How do I change the amount of time it takes for my PMT to stop after a disconnection?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              On locomotive <strong>Throttle</strong> firmware, two Configuration Variables control the commanded stop timing after a qualifying control connection is lost:
+            </p>
+
+            <p class="note note-strong">
+              First, open <strong>Settings</strong> in the PMT app and make sure <strong>Auto Shutdown for Disconnected Train Throttles</strong> is enabled if you want PMT to automatically stop a train throttle after it disconnects.
+            </p>
+
+            <img
+              src="Info/faq-auto-shutdown-disconnected-throttles.png"
+              alt="PMT Settings screen showing the Auto Shutdown for Disconnected Train Throttles option"
+              class="faq-screenshot" />
+
+            <p class="note">
+              <strong>Why this is important:</strong> this app setting determines whether PMT is configured to use automatic shutdown for disconnected train throttles. <code>CV49</code> and <code>CV48</code> adjust the locomotive firmware's disconnect-stop timing; changing those timing values does not replace enabling the automatic shutdown setting in the app.
+            </p>
+
+            <ul>
+              <li><strong>CV49 — Control-Loss Grace Time:</strong> how long PMT waits after the disconnect before the forced quick-stop begins. The default is <strong>15000 ms (15 seconds)</strong>.</li>
+              <li><strong>CV48 — Quick-Stop Full-Scale Time:</strong> the full-scale duration of the forced quick-stop ramp after the grace period expires. The default is <strong>3000 ms (3 seconds)</strong>.</li>
+            </ul>
+
+            <p class="note">
+              The timing is sequential: <strong>CV49 grace first, then the CV48 quick-stop ramp</strong>.
+            </p>
+
+            <p class="note">
+              To check the current values in the Terminal:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV49?</code><br />
+              <code>CV48?</code>
+            </p>
+
+            <p class="note">
+              For example, to wait 2 seconds after the disconnect and then use a 1-second full-scale quick-stop:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV49=2000</code><br />
+              <code>CV48=1000</code>
+            </p>
+
+            <p class="note">
+              That can approach about 3 seconds of commanded stop timing from full throttle: approximately 2 seconds of grace followed by the 1-second quick-stop ramp.
+            </p>
+
+            <p class="note">
+              If you want to remove the intentional grace delay, set <code>CV49=0</code>. This allows the shared grace processor to expire the countdown on its next processing pass; it is not a literal zero-processing-time event.
+            </p>
+
+            <p class="note">
+              Grace shutdown can also be controlled for the current runtime with <code>G1</code> and <code>G0</code>. <code>G1</code> enables grace shutdown. <code>G0</code> disables it and clears any active grace countdown. Rebooting restores the default grace behavior.
+            </p>
+
+            <p class="note">
+              If the control connection returns before the grace period expires, the active grace countdown is cancelled.
+            </p>
+
+            <p class="note">
+              These settings control the firmware's <strong>commanded motor stop timing</strong>. The locomotive's actual physical stopping time and distance can still vary with speed, load, gearing, momentum, and other mechanical factors.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
               </a>
             </p>
           </div>

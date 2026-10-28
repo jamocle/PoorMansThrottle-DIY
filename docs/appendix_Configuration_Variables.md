@@ -35,7 +35,7 @@ PMT firmware 3.4.1 is shared across more than one device type. Some CVs are shar
 
 1. Open the **PMT application**.
 2. Connect to the PMT device.
-3. Let the app complete the normal device handshake.
+3. Let the app complete the normal device handshake. If shared `CV18` Require PIN is active, the connection must also complete the `PIN:<pin>` factor before protected commands are authorized.
 4. Open the **Terminal**.
 5. Enter the desired command.
 6. Press **Send**.
@@ -114,6 +114,8 @@ The ordinary `CV<number>=<value>` form remains supported and is the compatibilit
 * Some CV changes reinitialize network services, telemetry services, outputs, or pins.
 * Pin CVs accept only the firmware's allowed runtime GPIO list.
 * Wi-Fi password `CV12` is not exposed by the legacy text query. `CV12?` returns `ERR`. Firmware 3.4.1+ also accepts `CV12?*` as a bulk query; it succeeds with a zero-byte `CvValue` payload so the password is still not exposed.
+* Security PIN `CV17` is also secret. `CV17?` returns `ERR`. `CV17=<pin>` sets/replaces it and `CV17=` clears it only while Require PIN is off; when CV18 is on, CV17 writes return `ERR:CV17`.
+* `CV18` Require PIN defaults to `0`. OFF -> ON requires `CV18=1:<pin>` and ON -> OFF requires `CV18=0:<pin>`, where `<pin>` must match CV17. Plain `CV18=0` is accepted only when Require PIN is already off. A query returns `0` whenever CV17 is blank.
 * Querying unset schedule values such as `CV302?`, `CV303?`, `CV304?`, or `CV305?` can return `ERR` until those values are configured.
 * `CV8=8` wipes saved configuration and reboots the device.
 * Use the app configuration screens when available. The terminal is best for advanced setup, recovery, diagnostics, and features not exposed in the UI.
@@ -146,6 +148,8 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV14** | All | UTC Offset | `-24` to `+24` hours / `0` | Stored time offset from UTC. Supports whole hours and one decimal place, such as `-5`, `+1`, or `+5.5`. CV14 writes are explicitly excluded from the `NVS?` configuration revision. |
 | **CV15** | All | OTA Allow Downgrade | `0`, `1` / `0` | Controls downgrade protection for supported ESP32-S3 Throttle OTA. `0` rejects a catalog `latest` semantic version older than the firmware currently running; `1` permits OTA to install that older catalog `latest`. This does not select an arbitrary historical version; use the USB installer when a specific version or recovery image must be chosen. |
 | **CV16** | All | ESP-NOW Enable | `0`, `1` / `1` | Enables or disables direct PMT-to-PMT ESP-NOW relay support. ESP-NOW does not require the device to join a Wi-Fi router. On low-resource Classic ESP32 hardware using the PMTPlayer backend, PMTPlayer and the protected radio features cannot run together; see [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control). |
+| **CV17** | All | Security PIN | Trimmed, case-sensitive text / blank | Shared security PIN used by the optional connection PIN factor. `CV17=<pin>` sets/replaces it and `CV17=` clears it only while CV18 is off. While Require PIN is on, all CV17 writes return `ERR:CV17`. `CV17?` returns `ERR` so the stored PIN is never disclosed. |
+| **CV18** | All | Require PIN | `0`, `0:<pin>`, or `1:<pin>` / `0` | OFF -> ON requires `CV18=1:<pin>` and ON -> OFF requires `CV18=0:<pin>`; the PIN must match CV17. Plain `CV18=0` is only a no-op success when already off. `CV18?` reports `1` only when Require PIN is enabled and CV17 is non-blank. When effective, `PIN:<pin>` must pass before the normal identity token. |
 | **CV20** | All | LED Blink Timing | `<periodMs>,<onMs>` / `1000,250` | Blink timing used by `BLINK+` and `BLINK-` style LED outputs. `periodMs` must be `1 – 60000`; `onMs` must be `1 – periodMs`. |
 | **CV21** | All | Onboard LED Output Gate | `0`, `1`, `2` / `1` | Final hardware-output gate for the firmware-controlled onboard status LED. `0` forces the onboard LED output off. `1` passes the LED state currently proposed by the firmware, including its current color and blink pattern. `2` forces the onboard LED output off while either BLE or WebSocket control is connected and passes the proposed LED state while disconnected. The LED state machine continues running while output is gated. |
 | **CV30** | All | INA219 Enable | `0`, `1` / `0` | Enables or disables optional INA219 battery telemetry. Disabled by default. |
@@ -166,6 +170,49 @@ These CVs are part of the shared PMT firmware foundation.
 | **CV303** | All | Schedule OFF Time | Strict `HH:MM` / unset | Scheduled OFF boundary on the **CV14-adjusted firmware clock**. Query returns `ERR` when unset. |
 | **CV304** | All | Schedule ON Command | Command text / blank | Command executed at the scheduled ON boundary. Query returns `ERR` when blank. |
 | **CV305** | All | Schedule OFF Command | Command text / blank | Command executed at the scheduled OFF boundary. Query returns `ERR` when blank. |
+
+## Shared Connection PIN Security
+
+Firmware 3.6.6 revision 331 provides shared PIN authorization for Throttle, Module, and Turbine firmware.
+
+The stored PIN is `CV17`. Leading and trailing whitespace is trimmed, comparisons are case-sensitive, and a blank value means no PIN is configured.
+
+```text
+CV17=MyPin123
+```
+
+The stored value is intentionally not readable:
+
+```text
+CV17?
+ERR:CV17
+```
+
+CV17 may be set, replaced, or cleared only while Require PIN is off. When CV18 is on, every CV17 write returns `ERR:CV17`. To change a locked device PIN, first unlock with the current PIN, then write CV17, then optionally lock again with the new PIN.
+
+Require PIN is `CV18` and defaults to `0`.
+
+Lock:
+
+```text
+CV18=1:MyPin123
+```
+
+Unlock:
+
+```text
+CV18=0:MyPin123
+```
+
+Both state transitions require the stored CV17 PIN to match. A missing or incorrect PIN returns `ERR:CV18` and leaves the current state unchanged. Plain `CV18=0` is accepted only as a no-op when Require PIN is already off; this keeps reset/restore scripts safe without providing an unauthenticated unlock path.
+
+When Require PIN is effective, `PIN:<pin>` must succeed before the normal `I,<token>` / `IB,<token>` identity transaction. Sending identity first returns `ERR:PIN`; after `ACK:PIN`, resend the identity transaction to obtain `I:CONNECTED`.
+
+After authorization is complete, `PIN:<pin>` is verification-only and does not alter the established session whether it succeeds or fails.
+
+`CV8=8` clears the saved NVS configuration, including CV17 and CV18.
+
+---
 
 ## Shared Audio CVs
 
@@ -1047,6 +1094,8 @@ All documented configuration variables, in numeric order. Where a CV has differe
 | CV14 | UTC Offset | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle only |
 | CV15 | OTA Allow Downgrade | [Shared CVs](#shared-cvs) | Yes — Throttle / Module / Turbine |
 | CV16 | ESP-NOW Enable | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle only |
+| CV17 | Security PIN | [Shared Connection PIN Security](#shared-connection-pin-security) | No — secret/non-readable and not included in app backup profiles |
+| CV18 | Require PIN | [Shared Connection PIN Security](#shared-connection-pin-security) | Yes — restore script deliberately emits `CV18=0` after reset; it never stores a PIN |
 | CV20 | LED Blink Timing | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Module / Turbine |
 | CV21 | Onboard LED Output Gate | [Shared CVs](#shared-cvs) | Yes — Throttle / Module / Turbine |
 | CV30 | INA219 Enable | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |

@@ -69,7 +69,7 @@ The current firmware supports these motor driver control modes:
 | DUAL_PWM | Separate forward and reverse PWM outputs, with optional enable pins | IBT-2 / BTS7960 |
 | PWM_DIR | One PWM pin plus one direction pin | Cytron MD10C style drivers |
 | PWM_BIDIR | One PWM or enable pin plus forward and reverse logic pins | L298N style drivers |
-| DUAL_INPT | Two H-bridge inputs, with PWM applied to the active side | DRV8833 style drivers |
+| DUAL_INPT | Two H-bridge inputs, with PWM applied to the active side | Adafruit DRV8871, DRV8833 style drivers |
 
 This matters because the exact wiring, current capability, and fault behavior depend on the driver board you are actually using. Do not assume every installation behaves like an IBT-2 build.
 

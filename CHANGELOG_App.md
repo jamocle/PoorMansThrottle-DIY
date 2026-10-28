@@ -2,9 +2,12 @@
 
 ## Smartphone App:
 
+### Version 4.2.12
+* **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.11
 * **New FX Commands** Added Firmware Run Script and Firmware Run Script Repeat.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.10
 * **New App diagnostic mode** Now the app can be in diagnostic mode as well to capture anything that happens in PMT.
@@ -159,7 +162,6 @@
 * **Android slider tap behavior fixed** Now Android and iOS behave the same with the tap behavior on throttle sliders.
 * **Configuration safety** The firmware and app safely retain configuration state to help protect settings from accidental overwrites during firmware flashing.
 * Fixed a bug where throttle names could become mismatched between the scan list and saved consists.
-* **Misc refinements and bug squashing for Android** The code monkey has been busy (me).
 
 ### Version 1.11.1
 * **MU Consisting for Apple** Configure and run MU Consists with PMT.  Multiple engine control with one throttle like the big boys do it.

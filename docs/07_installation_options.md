@@ -140,6 +140,7 @@ Two motor-control inputs, with PWM applied to the active side depending on direc
 
 Typical example boards:
 
+* Adafruit DRV8871 DC Motor Driver Breakout
 * DRV8833
 * L9110S
 * similar two-input H-bridge drivers
@@ -153,6 +154,8 @@ Firmware defaults depend on the ESP32 board profile:
 **ESP32-S3-WROOM-1-N16R8**
 * GPIO6 → input A
 * GPIO7 → input B
+
+For the **Adafruit DRV8871**, connect PMT input A to `IN1` and input B to `IN2`, and keep the ESP32 and motor-driver grounds common.
 
 This is a compact option for smaller driver boards.
 

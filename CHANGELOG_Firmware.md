@@ -2,9 +2,13 @@
 
 ## Firmware:
 
+### Version 3.6.6
+* **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
+* FX command refinements
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.6.5
 * **Added Grade Crossing Audio Command** Grade crossing is now a selectable audio sound.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.6.4
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
@@ -12,13 +16,11 @@
 ### Version 3.6.2
 * **Added NVS version command** Added NVS? command for NVS persistence.
 * **Modified Automatic Sounds**. Now horns and bells are more prototypical in automatic mode.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.6.0
 * **Added Support for ESP-NOW Protocol** With ESP-NOW protocol, PMT modules and throttles can now talk to each other. This adds ability to a whole new family of features coming in the future.
 * **Added new "Remote Command" command**. Added RY command to relay a command to another device.
 * **DF Player playback modification** Changed playback of DF Player mp3 files to not automatically send volume commands before playback.  Some DF Player cards had issue with this approach.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.5.0
 * **Added new Bulk transfer commands** Added Wifi? command.
@@ -28,7 +30,6 @@
 
 ### Version 3.4.1
 * **Extended PMT data protocol to handle long data** Now the firmware supports long data transfer RX/TX beyond 20 bytes.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.10
 * **Updated sounds commensurate of new Feather Brake Realism**. Now sounds follow new feather braking system more realistically.
@@ -36,46 +37,36 @@
 ### Version 3.3.9
 * **New Model for Feather Braking** A more realistic model for Pro feather braking. If the previous feather braking was preferable set CV47=0.
 * **Added overrides for Defaults for stop and BLE disconnect Grace**. Quick-Stop Full-Scale Time (CV48) and Control-Loss Grace Time(CV49).
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.8
 * **Added min throttle for reverse** CV46 now controls min throttle for reverse.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.7
 * **Added automatic sounds** CV45 now controls whether or not automatic sounds play. Default is off.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.6
 * **Newly available FX Pattern** Allows you to tie firmware commands to FX Outputs.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.3
 * **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didn't initialize unless audio was turned on. This is now corrected. 
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.2
 * **Lazy Loading of SD subsystem** There are some use cases where the SD subsystem was required without audio and didn't initialize unless audio was turned on. This is now corrected. 
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.3.0
 ** **Added script recording and playback with named scripts** single-run and repeat modes, script deletion, recorded command timing with trailing pauses, non-drifting absolute playback timing, playback status/control, graceful stop behavior, and cycle timing diagnostics for repeatability.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.2.0
 * **Over The Air Firmware Flashing** Flash all firmware AFTER this version wirelessly (Available only in the firmware for the S3 version of the ESP32 Module)
 * **New on-board LED light control** Added CV21 to control the LED light output on the ESP32 card.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.1.0
 * **Individual Volume** The firmware now has the ability to modify the relative volume level of a sound vs other sounds +/-.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.1
 * **Audio refinements** Modified so that it prototypically obeys startup and shutdown for diesel profiles and prohibits throttle input during those times.
 * **Custom file searching** modified the code to make the resolution of custom audio files more robust.
 * **Logging refinements** Improved D2 SD log reliability under sustained high activity. The logger now commits buffered log data after a short idle period, while also enforcing a maximum dirty interval so logs are still flushed even when the system never becomes fully idle. Short SD writes are retained and retried instead of being dropped, reducing the chance of missing or incomplete D2 logs during busy operation.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.0.0
 * **PMT Goes Vocal** Major locomotive audio system added — Firmware 3.0.0 introduces a full motion-aware sound engine with native ESP32-S3 PMTPlayer / SD-WAV audio playback, including support for playing custom user-provided WAV sound files. The system provides throttle-synchronized diesel prime-mover startup, shutdown, idle, and notch sounds; speed-responsive steam chuffs, moving sound beds, and stationary boiler/idle sounds; managed horn/whistle, bell, and brake-squeal effects; randomized cab chatter; and custom FX-triggered sounds. The audio engine adds priority-based multi-voice playback, smooth loop and notch transitions, crossfades, overlap handling, dynamic mix/headroom management, limiter and speaker-profile tuning, and extensive CV-based audio configuration—allowing users to combine PMT’s locomotive-responsive sound engine with their own custom WAV audio.
@@ -83,7 +74,6 @@
 * **Paired warning-light FX modes added** for ditch lights, strobes, rotary beacons, Mars lights, and Gyralites. Each `-` variant is shifted by half of the effect cycle relative to its matching `+` variant so paired outputs can run out of phase.
 * **PWM-based simulated lighting effects added** for `ROTARY+/-`, `MARS+/-`, `GYRALITE+/-`, `FIREBOX_FLICKER`, `LANTERN_FLICKER`, `DYNAMO`, and `INCANDESCENT`, providing smooth brightness changes, flicker, beacon-style motion, dynamo warm-up/variation, and incandescent warm-up behavior instead of simple binary on/off output.
 * **FX pattern values expanded** so the new LED modes use function pattern values `6` through `19`, while the existing `SOLID`, `DBL_BLNK`, `FRED`, `BLINK+`, and `BLINK-` modes remain values `1` through `5`.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 2.0.0
 * **Shared firmware versioning expanded across the Poor Man’s firmware family**, with Throttle, Module, and Turbine firmware now reporting the shared `2.0.0` firmware version.

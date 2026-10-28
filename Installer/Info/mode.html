@@ -486,7 +486,11 @@
               receives the PWM signal that controls the motor.
             </p>
             <p>
-              <strong>Common hardware:</strong> DRV8833 motor driver module, L9110S motor driver module, and MX1508 motor driver module.
+              <strong>Common hardware:</strong> Adafruit DRV8871 DC Motor Driver Breakout, DRV8833 motor driver module, L9110S motor driver module, and MX1508 motor driver module.
+            </p>
+            <p>
+              <strong>Adafruit DRV8871 note:</strong> connect the PMT input A and input B signals to the board's <code>IN1</code> and
+              <code>IN2</code> inputs. No separate PMT enable signal is used in <strong>DUAL_INPT</strong> mode.
             </p>
             <p>
               <strong>Characteristics:</strong> efficient modern driver style, common on compact boards, and a good fit for low-to-medium
@@ -498,7 +502,7 @@
         <div class="callout">
           Recommended pairings generally follow load requirements: higher-current applications are a good fit for
           <strong>DUAL_PWM</strong> with boards like the IBT-2 BTS7960, or <strong>PWM_DIR</strong> with boards such as the Cytron MD10C.
-          For medium and lighter loads, <strong>DUAL_INPT</strong> is often a strong choice with boards like the L9110S or DRV8833.
+          For medium and lighter loads, <strong>DUAL_INPT</strong> is often a strong choice with boards like the Adafruit DRV8871, L9110S, or DRV8833.
           <strong>PWM_BIDIR</strong> is the correct PMT control style for boards such as the L298N and TB6612FNG, but these boards are
           typically less suitable for heavy loads than high-current DUAL_PWM hardware.
         </div>
