@@ -2339,6 +2339,7 @@ function initializeSectionUrls() {
 }
 
 
+
 function initializeFaqTableScrollbars() {
     for (const container of document.querySelectorAll(".faq-table-container")) {
         const scrollbar = container.querySelector(".faq-table-scrollbar");

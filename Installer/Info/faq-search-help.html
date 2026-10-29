@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <!-- PMT dynamic document cache protection -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <script>
+    (() => {
+      "use strict";
+
+      const cacheParameter = "v";
+      const freshnessParameter = "pmtFresh";
+      const maximumFreshTokenAgeMs = 120000;
+
+      const createCacheToken = () => Date.now() + "-" + Math.random();
+
+      const isRecentCacheToken = (token) => {
+        if (!token) {
+          return false;
+        }
+
+        const timestamp = Number.parseInt(String(token).split("-", 1)[0], 10);
+        if (!Number.isFinite(timestamp)) {
+          return false;
+        }
+
+        const age = Date.now() - timestamp;
+        return age >= -5000 && age <= maximumFreshTokenAgeMs;
+      };
+
+      const makeFreshUrl = (input) => {
+        const url = new URL(input, window.location.href);
+        url.searchParams.set(cacheParameter, createCacheToken());
+        url.searchParams.set(freshnessParameter, "1");
+        return url;
+      };
+
+      const currentUrl = new URL(window.location.href);
+      const currentToken = currentUrl.searchParams.get(cacheParameter);
+      const isFreshNavigation =
+        currentUrl.searchParams.get(freshnessParameter) === "1" &&
+        isRecentCacheToken(currentToken);
+
+      if (!isFreshNavigation) {
+        window.location.replace(makeFreshUrl(currentUrl).href);
+        return;
+      }
+
+      currentUrl.searchParams.delete(cacheParameter);
+      currentUrl.searchParams.delete(freshnessParameter);
+
+      try {
+        window.history.replaceState(window.history.state, "", currentUrl.href);
+      } catch {
+        // The freshness query may remain visible on unusual local-file/browser combinations.
+      }
+    })();
+  </script>
+
+  <title>FAQ Search Help - Poor Man's Throttle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <link id="pmtStylesheet" rel="stylesheet" href="../styles.css" />
+
+  <script>
+    (() => {
+      const cacheBust = encodeURIComponent(Date.now() + "-" + Math.random());
+      const cssLink = document.getElementById("pmtStylesheet");
+      if (cssLink) {
+        cssLink.href = "../styles.css?v=" + cacheBust;
+      }
+
+      const navigationScript = document.createElement("script");
+      navigationScript.src = `../navigation-context.js?cb=${cacheBust}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
+
+  <style>
+    .faq-search-help-page .card {
+      margin-top: 16px;
+    }
+
+    .faq-search-help-page h2 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+    }
+
+    .faq-search-help-page h3 {
+      margin: 18px 0 8px;
+      font-size: 1.05rem;
+    }
+
+    .faq-search-help-page code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    }
+
+    .faq-search-help-page .search-example {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line-strong);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.84);
+    }
+
+    .faq-search-help-page .search-example code {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .faq-search-help-page .syntax-list {
+      margin: 10px 0 0;
+      padding-left: 22px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .faq-search-help-page .syntax-list strong {
+      color: var(--text);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="wrap faq-search-help-page">
+    <section class="hero" aria-label="FAQ search help">
+      <div class="hero-copy">
+        <div class="eyebrow">FAQ Search Help</div>
+        <h1>Search the FAQ with words, phrases, and Boolean operators.</h1>
+        <p class="subhead">
+          FAQ searches are case-insensitive. Use a simple word search for everyday questions, or combine terms with
+          AND, OR, NOT, parentheses, and quoted phrases when you need more control.
+        </p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Basic searches</h2>
+      <p class="note">
+        Separate words are treated as AND. Both words must appear somewhere in the same FAQ, but they do not need to
+        be next to each other or in the same order.
+      </p>
+
+      <div class="search-example">
+        <code>motor driver</code>
+        <span class="note">Matches FAQs that contain both <strong>motor</strong> and <strong>driver</strong>.</span>
+      </div>
+
+      <div class="search-example">
+        <code>"motor driver"</code>
+        <span class="note">Matches the exact phrase <strong>motor driver</strong>.</span>
+      </div>
+
+      <p class="note" style="margin-top:14px;">
+        Searches are case-insensitive, so <code>motor</code>, <code>Motor</code>, and <code>MOTOR</code> are equivalent.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Boolean operators</h2>
+      <ul class="syntax-list">
+        <li><strong>AND</strong> — both expressions must match.</li>
+        <li><strong>OR</strong> — either expression may match.</li>
+        <li><strong>NOT</strong> — excludes FAQs that match the following expression.</li>
+        <li><strong>( )</strong> — groups expressions and controls how they are evaluated.</li>
+        <li><strong>" "</strong> — searches for an exact phrase.</li>
+      </ul>
+
+      <p class="note" style="margin-top:14px;">
+        Operator precedence is parentheses first, then NOT, then AND, then OR. Operator names are also
+        case-insensitive.
+      </p>
+
+      <div class="search-example">
+        <code>(motor AND driver) OR IBT OR L298</code>
+        <span class="note">Matches FAQs with both motor and driver, or FAQs containing IBT, or FAQs containing L298.</span>
+      </div>
+
+      <div class="search-example">
+        <code>sound AND (DFPlayer OR PMTPlayer)</code>
+        <span class="note">Requires sound plus either DFPlayer or PMTPlayer.</span>
+      </div>
+
+      <div class="search-example">
+        <code>LED AND NOT WS2812</code>
+        <span class="note">Requires LED and excludes FAQs containing WS2812.</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Quoted text and special characters</h2>
+      <p class="note">
+        Inside a quoted phrase, AND, OR, NOT, and parentheses are ordinary text. Quoted phrases preserve punctuation
+        and still match case-insensitively.
+      </p>
+
+      <div class="search-example">
+        <code>"test(me)"</code>
+        <span class="note">Searches literally for <strong>test(me)</strong>.</span>
+      </div>
+
+      <div class="search-example">
+        <code>"test AND me"</code>
+        <span class="note">Searches literally for the words <strong>test AND me</strong>; AND is not an operator here.</span>
+      </div>
+
+      <h3>Escaping quotes and backslashes</h3>
+      <p class="note">
+        Inside quoted phrases, use <code>\"</code> for a literal quotation mark and <code>\\</code> for a literal
+        backslash.
+      </p>
+
+      <div class="search-example">
+        <code>"\"test\""</code>
+        <span class="note">Searches for the literal text <strong>"test"</strong>, including the quotation marks.</span>
+      </div>
+
+      <div class="search-example">
+        <code>"\\"</code>
+        <span class="note">Searches for one literal backslash.</span>
+      </div>
+
+      <div class="search-example">
+        <code>"\\\""</code>
+        <span class="note">Searches for the exact two-character sequence <strong>\"</strong>.</span>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Reserved search syntax</h2>
+      <ul class="syntax-list">
+        <li><strong>AND</strong>, <strong>OR</strong>, and <strong>NOT</strong> are operators when used as standalone words outside quotes.</li>
+        <li><strong>(</strong> and <strong>)</strong> group expressions outside quotes.</li>
+        <li><strong>"</strong> starts or ends a quoted phrase.</li>
+        <li><strong>\</strong> is the escape character inside quoted phrases.</li>
+      </ul>
+
+      <p class="note" style="margin-top:14px;">
+        Other punctuation such as hyphens, underscores, periods, slashes, colons, plus signs, number signs, and
+        ampersands remains normal searchable text.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Invalid expressions</h2>
+      <p class="note">
+        If the expression is incomplete or malformed, the FAQ shows a validation message and leaves the current
+        results unchanged. Examples include an unmatched quotation mark, a missing closing parenthesis, or a Boolean
+        operator with a missing term.
+      </p>
+
+      <div class="search-example">
+        <code>motor AND (driver OR</code>
+        <span class="note">Invalid because the expression is incomplete and the closing parenthesis is missing.</span>
+      </div>
+
+      <div class="search-example">
+        <code>"""</code>
+        <span class="note">Invalid because the quotation marks do not form a valid non-empty quoted phrase.</span>
+      </div>
+
+      <div class="search-example">
+        <code>""test""</code>
+        <span class="note">Invalid because empty quoted phrases are not allowed.</span>
+      </div>
+    </section>
+
+    <div class="footer-note">
+      Poor Man's Throttle (PMT) © 2026 James Theimer
+    </div>
+  </main>
+</body>
+
+</html>

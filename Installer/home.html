@@ -137,6 +137,10 @@
         document.head.appendChild(appScript);
       };
 
+      const faqSearchScript = document.createElement("script");
+      faqSearchScript.src = "faq-search.js?v=" + cacheBust;
+      document.head.appendChild(faqSearchScript);
+
       const soundConfigScript = document.createElement("script");
       soundConfigScript.src = "sound-upload-config.js?v=" + cacheBust;
       soundConfigScript.addEventListener("load", startApp, { once: true });
@@ -196,6 +200,34 @@
       </summary>
 
       <div class="section-content">
+        <div class="faq-search" id="faqSearch" role="search" aria-labelledby="faqSearchLabel" hidden>
+          <div class="faq-search-header">
+            <label class="faq-search-label" id="faqSearchLabel" for="faqSearchInput">Search FAQs</label>
+            <a class="app-link faq-search-help"
+              href="Info/faq-search-help.html"
+              target="_blank" rel="noopener noreferrer">
+              Search Help
+            </a>
+          </div>
+
+          <div class="faq-search-controls">
+            <input
+              class="faq-search-input"
+              id="faqSearchInput"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Search questions and answers..."
+              aria-describedby="faqSearchHint faqSearchStatus" />
+            <button class="app-link faq-search-clear" id="faqSearchClear" type="button" hidden>Clear</button>
+          </div>
+
+          <p class="faq-search-hint" id="faqSearchHint">
+            Use AND, OR, NOT, parentheses, or &quot;quoted phrases&quot;.
+          </p>
+          <p class="faq-search-status" id="faqSearchStatus" role="status" aria-live="polite"></p>
+        </div>
+
         <details class="subsection" data-section-url="faq-getting-started">
           <summary>
             <span class="section-title">

@@ -260,6 +260,116 @@ h1 {
     padding: 0 16px 16px;
 }
 
+
+.faq-search {
+    margin: 14px 0 4px;
+    padding: 16px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.74);
+    border: 1px solid rgba(255, 255, 255, 0.66);
+    box-shadow: var(--shadow-soft);
+}
+
+.faq-search[hidden] {
+    display: none;
+}
+
+.faq-search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.faq-search-label {
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: 720;
+}
+
+.faq-search-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.faq-search-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line-strong);
+    background: rgba(255, 255, 255, 0.94);
+    color: var(--text);
+    font: inherit;
+    outline: none;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.faq-search-input:hover {
+    border-color: #cfc7bd;
+}
+
+.faq-search-input:focus {
+    border-color: rgba(123, 75, 31, 0.4);
+    box-shadow: 0 0 0 4px rgba(123, 75, 31, 0.12);
+}
+
+.faq-search-help,
+.faq-search-clear {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+}
+
+.faq-search-clear[hidden] {
+    display: none;
+}
+
+.faq-search-hint,
+.faq-search-status {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.45;
+}
+
+.faq-search-status {
+    min-height: 1.45em;
+}
+
+.faq-search-status-error {
+    color: #9b2c2c;
+    font-weight: 600;
+}
+
+
+.faq-search-highlight {
+    padding: 0 0.08em;
+    border-radius: 0.2em;
+    background: #fff2a8;
+    color: inherit;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
+@media (max-width: 640px) {
+    .faq-search-controls {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .faq-search-clear {
+        align-self: flex-start;
+    }
+}
+
+
 .faq-screenshot {
     display: block;
     width: min(100%, 180px);
