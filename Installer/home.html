@@ -4579,6 +4579,109 @@
           </div>
         </details>
 
+
+<details class="subsection" data-section-url="faq-relay-command-cv16-zero">
+          <summary>
+            <span class="section-title">
+              <span>When I send a Relay Command I get ERR:CV16=0. Why?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              <code>CV16</code> controls <strong>ESP-NOW</strong>, which PMT uses to send Relay Commands between PMT devices.
+            </p>
+
+            <p class="note">
+              If you receive <code>ERR:CV16=0</code>, the sending PMT device currently has ESP-NOW disabled. A Relay Command cannot be sent until <code>CV16</code> is enabled.
+            </p>
+
+            <p class="note">
+              You can check the current setting from the PMT Terminal with:
+            </p>
+
+            <pre><code>CV16?</code></pre>
+
+            <p class="note">
+              For Relay Commands, it needs to be:
+            </p>
+
+            <pre><code>CV16=1</code></pre>
+
+            <p class="note">
+              If it is <code>0</code>, you can enable ESP-NOW with:
+            </p>
+
+            <pre><code>CV16=1</code></pre>
+
+            <p class="note">
+              <strong>Why would CV16 be 0?</strong>
+            </p>
+
+            <p class="note">
+              <code>CV16</code> normally defaults to <code>1</code>, but it can be turned off by configuration.
+            </p>
+
+            <p class="note">
+              There is also an important special case for a <strong>Classic ESP32 using PMTPlayer Audio</strong>. On this lower-resource hardware, PMTPlayer and the protected Wi-Fi/ESP-NOW radio features cannot safely run together.
+            </p>
+
+            <p class="note">
+              If PMTPlayer is active when the Classic ESP32 starts, the firmware disables and saves:
+            </p>
+
+            <pre><code>CV10=0
+CV16=0</code></pre>
+
+            <p class="note">
+              That means a later Relay Command can fail because ESP-NOW was disabled by the resource-protection rule.
+            </p>
+
+            <p class="note">
+              If you explicitly send <code>CV16=1</code> while PMTPlayer is active, the ESP-NOW request wins: PMT releases the PMTPlayer resources and enables ESP-NOW.
+            </p>
+
+            <p class="note">
+              The <strong>DFPlayer Mini is not affected by this particular PMTPlayer memory guard</strong>.
+            </p>
+
+            <p class="note">
+              <strong>If CV16 is already 1 but Relay Command still does not work</strong>, check these other Relay Command requirements:
+            </p>
+
+            <ul>
+              <li>the target must have a valid <strong>10-character PMT ESP-NOW address</strong>;</li>
+              <li>the Relay Command must contain the remote command after that address;</li>
+              <li>the target PMT device must be powered on, in range, and running compatible ESP-NOW firmware.</li>
+            </ul>
+
+            <p class="note">
+              A successful relay transmission returns an <code>ACK:RY=...</code> response.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-trolley-automation">
           <summary>
             <span class="section-title">
