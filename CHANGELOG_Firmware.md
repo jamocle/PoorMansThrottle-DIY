@@ -1,6 +1,9 @@
 # Changelog — PoorMansThrottle
 
 ## Firmware:
+### Version 4.0.0
+* **Poor Man's Controller** Support for Poor Man's Controller types.
+* **Support for PMT_HID** Introducing PMT_HID a new ESP32 based fimrware that enables you to create your own physical devices to work with PMT.
 
 ### Version 3.6.6
 * **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
