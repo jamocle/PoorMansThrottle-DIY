@@ -226,6 +226,13 @@
             "info-only": true
         },
         {
+            "version": "4.2.3",
+            "title": "Build your own controller",
+            "description": "New firmware that enables easy development of custom controllers.",
+            "info": "poor-mans-hid.html",
+            "show-again": "2026-04-24 16:24:04"
+        },
+        {
             "version": "4.2.4",
             "title": "PMT is S.M.A.R.T.",
             "description": "Synchronized Meshed Automated Railroad Technology.",
