@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Poor Man's HID lets you build your own Bluetooth physical throttle or controller with an ESP32, your choice of controls, live diagnostics, profiles, and generated wiring schematics.">
+  <title>Poor Man's HID — Build Your Own Physical Controller</title>
+  <style>
+    :root{
+      --bg:#f5f5f7;
+      --surface:rgba(255,255,255,.93);
+      --card:#fff;
+      --text:#1d1d1f;
+      --muted:#6e6e73;
+      --line:#d2d2d7;
+      --blue:#0071e3;
+      --blue-soft:rgba(0,113,227,.09);
+      --green:#14804a;
+      --green-soft:rgba(20,128,74,.09);
+      --gold:#a86500;
+      --gold-soft:rgba(168,101,0,.10);
+      --shadow:0 18px 50px rgba(0,0,0,.08);
+      --radius:28px;
+      --max:1160px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      color:var(--text);
+      background:radial-gradient(circle at top,#fff 0,#f5f5f7 44%,#ececf1 100%);
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      line-height:1.56;
+      -webkit-font-smoothing:antialiased;
+    }
+    img{max-width:100%;display:block}
+    a{color:var(--blue)}
+    .wrap{width:min(100%,var(--max));margin:auto;padding:24px 16px 72px}
+    .hero{text-align:center;padding-top:4px}
+    .eyebrow{
+      display:inline-block;padding:7px 13px;border:1px solid rgba(0,113,227,.18);
+      background:rgba(255,255,255,.88);border-radius:999px;color:var(--blue);
+      font-weight:750;font-size:.85rem;letter-spacing:.02em
+    }
+    h1{
+      margin:17px auto 12px;max-width:1000px;font-size:clamp(2.35rem,7vw,4.8rem);
+      line-height:1.01;letter-spacing:-.045em
+    }
+    .lead{
+      max-width:940px;margin:0 auto;color:var(--muted);
+      font-size:clamp(1.06rem,2.8vw,1.24rem)
+    }
+    .cta{
+      margin:24px auto 0;max-width:780px;padding:20px;border-radius:24px;
+      background:rgba(255,255,255,.94);border:1px solid rgba(0,113,227,.15);
+      box-shadow:0 14px 34px rgba(0,0,0,.07)
+    }
+    .cta strong{display:block;font-size:1.24rem;margin-bottom:5px}
+    .cta p{margin:0 0 14px;color:var(--muted)}
+    .button{
+      display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 22px;
+      border-radius:999px;background:var(--blue);color:#fff;text-decoration:none;font-weight:750;
+      box-shadow:0 8px 22px rgba(0,113,227,.22)
+    }
+    .hero-photo{
+      margin-top:26px;border-radius:32px;overflow:hidden;background:#111;
+      box-shadow:0 28px 70px rgba(0,0,0,.18)
+    }
+    .hero-photo img{width:100%;height:auto}
+    .section{
+      margin-top:28px;background:var(--surface);border:1px solid rgba(255,255,255,.9);
+      border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;
+      backdrop-filter:blur(18px)
+    }
+    .section-head{padding:30px 22px 0}
+    .section-body{padding:22px 22px 32px}
+    h2{margin:0 0 10px;font-size:clamp(1.55rem,4vw,2.3rem);line-height:1.08;letter-spacing:-.03em}
+    h3{margin:0 0 8px;font-size:1.15rem;letter-spacing:-.015em}
+    p{margin:0 0 16px}
+    .section-head p{color:var(--muted);margin-bottom:18px}
+    .grid,.grid3,.gallery{display:grid;gap:14px}
+    .card{
+      background:var(--card);border:1px solid #e7e7eb;border-radius:22px;padding:18px;
+      box-shadow:0 10px 24px rgba(0,0,0,.05)
+    }
+    .label{
+      display:inline-block;margin-bottom:9px;padding:5px 10px;border-radius:999px;
+      background:var(--blue-soft);color:var(--blue);font-weight:750;font-size:.8rem
+    }
+    .label.green{background:var(--green-soft);color:var(--green)}
+    .label.gold{background:var(--gold-soft);color:var(--gold)}
+    .callout{
+      margin-top:18px;padding:18px 20px;border-radius:18px;background:var(--gold-soft);
+      border-left:4px solid var(--gold);color:#65400b
+    }
+    .flow{
+      display:grid;gap:10px;margin-top:18px
+    }
+    .flow div{
+      background:#fff;border:1px solid #e7e7eb;border-radius:18px;padding:14px 16px;
+      text-align:center;font-weight:750
+    }
+    .flow .arrow{border:0;background:transparent;padding:0;color:var(--muted)}
+    .shot{
+      background:#0f1726;border-radius:22px;overflow:hidden;border:1px solid #2c3748
+    }
+    .shot img{width:100%;height:auto}
+    .caption{padding:11px 13px 13px;background:#fff;color:var(--muted);font-size:.9rem}
+    .photo-grid{display:grid;gap:14px}
+    .photo-card{border-radius:22px;overflow:hidden;background:#fff;border:1px solid #e7e7eb}
+    .photo-card img{width:100%;height:auto}
+    .photo-card p{padding:12px 14px;margin:0;color:var(--muted);font-size:.92rem}
+    .control-list{display:grid;gap:12px}
+    .control{
+      background:#fff;border:1px solid #e7e7eb;border-radius:20px;padding:16px
+    }
+    .control b{display:block;margin-bottom:4px}
+    .steps{counter-reset:step;display:grid;gap:12px}
+    .step{
+      position:relative;padding:16px 16px 16px 58px;background:#fff;border:1px solid #e7e7eb;border-radius:20px
+    }
+    .step:before{
+      counter-increment:step;content:counter(step);position:absolute;left:16px;top:16px;
+      width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+      background:var(--blue-soft);color:var(--blue);font-weight:800
+    }
+    .footer{text-align:center;color:var(--muted);margin-top:30px;font-size:.94rem}
+    @media(min-width:760px){
+      .wrap{padding:34px 24px 80px}
+      .section-head{padding:34px 30px 0}.section-body{padding:26px 30px 36px}
+      .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .gallery{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .photo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .control-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .flow{grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center}
+    }
+  </style>
+</head>
+<body>
+<main class="wrap">
+
+  <section class="hero">
+    <div class="eyebrow">NEW FIRMWARE — BUILD YOUR OWN PHYSICAL CONTROLLER</div>
+    <h1>Introducing Poor Man’s HID</h1>
+    <p class="lead">
+      Build your physical throttle the way <strong>you</strong> want it. Pick the switches, buttons, knobs, levers, and throws you like,
+      connect them to one ESP32, configure them in a browser, and turn your creation into a Bluetooth Human Interface Device.
+      Best of all, Poor Man’s HID is <strong>not tied to PMT</strong> — it can be used with any HID-compliant system.
+    </p>
+
+    <div class="cta">
+      <strong>Start with the firmware.</strong>
+      <p>Install Poor Man’s HID on an ESP32 Classic or ESP32-S3. The S3 is recommended for larger builds because it gives you more pins to work with.</p>
+      <a class="button" href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer" target="_blank" rel="noopener noreferrer">
+        Open the PMT Information Hub
+      </a>
+    </div>
+
+    <div class="hero-photo">
+      <img src="hid-throttle-front.jpeg" alt="DIY Poor Man's HID physical model railroad throttle with levers, switches, knobs, and buttons">
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>What is HID?</h2>
+      <p>HID stands for <strong>Human Interface Device</strong>. It is the standard computers, tablets, and phones use for things like keyboards, mice, game controllers, and joysticks.</p>
+    </div>
+    <div class="section-body">
+      <div class="flow">
+        <div>Physical Throttle</div><div class="arrow">→</div>
+        <div>Poor Man’s HID</div><div class="arrow">→</div>
+        <div>Phone / Tablet / Computer</div><div class="arrow">→</div>
+        <div>PMT or Other HID Software</div>
+      </div>
+      <div class="callout">
+        <strong>This is important:</strong> Poor Man’s HID is not locked to Poor Man’s Throttle.
+        If the software understands standard HID keyboard or axis input, your controller can potentially work with it.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>You dream it. You build it.</h2>
+      <p>Use ordinary off-the-shelf hardware and arrange it around the way you actually like to operate.</p>
+    </div>
+    <div class="section-body">
+      <div class="photo-grid">
+        <div class="photo-card">
+          <img src="hid-throttle-open.jpeg" alt="Inside of a DIY Poor Man's HID throttle enclosure">
+          <p>Build the enclosure and control layout that fits your operating style.</p>
+        </div>
+        <div class="photo-card">
+          <img src="hid-control-wiring.jpeg" alt="Wiring for buttons, switches, potentiometers, and other Poor Man's HID controls">
+          <p>Use real buttons, maintained switches, momentary controls, potentiometers, selectors, and other physical hardware.</p>
+        </div>
+        <div class="photo-card">
+          <img src="hid-power-enclosure.jpeg" alt="Power and regulator section for a DIY Poor Man's HID controller">
+          <p>One ESP32 is the heart of the controller. Your supporting hardware can be as simple or ambitious as your project requires.</p>
+        </div>
+        <div class="photo-card">
+          <img src="hid-status-detail-screen.png" alt="Poor Man's HID firmware status screen">
+          <p>The firmware gives the finished hardware a complete browser-based configuration and diagnostic environment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Configure it from a browser</h2>
+      <p>No custom configuration utility is required. After flashing the firmware, connect to the HID’s built-in Wi-Fi access point and open the configuration site.</p>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step"><strong>Install the firmware</strong><br>Use the PMT Information Hub to flash an ESP32 Classic or ESP32-S3.</div>
+        <div class="step"><strong>Join its Wi-Fi access point</strong><br>The access point name is <code>PMT_HID_&lt;12 characters&gt;</code>.</div>
+        <div class="step"><strong>Open the configuration page</strong><br>Browse to <code>http://192.168.1.1</code>.</div>
+        <div class="step"><strong>Build your controls</strong><br>Name them, choose their control type, map them to HID keys or axes, test them, and save the profile.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>The web interface does the heavy lifting</h2>
+      <p>The firmware exposes the tools needed to build, test, troubleshoot, and document the controller without having to guess what the hardware is doing.</p>
+    </div>
+    <div class="section-body">
+      <div class="gallery">
+        <div class="shot">
+          <img src="hid-status-screen.png" alt="Poor Man's HID overall status screen">
+          <div class="caption"><strong>Status.</strong> See firmware, active profile, Bluetooth state, network information, resources, and overall readiness.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-bluetooth-screen.png" alt="Poor Man's HID Bluetooth configuration screen">
+          <div class="caption"><strong>Bluetooth.</strong> Change the Bluetooth advertised name and see the current Bluetooth connection state.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-wifi-screen.png" alt="Poor Man's HID Wi-Fi configuration screen">
+          <div class="caption"><strong>Wi-Fi.</strong> Optionally join your local network so the configuration interface can be reached from other devices on that network.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-diagnostics-screen.png" alt="Poor Man's HID diagnostics and system resources screen">
+          <div class="caption"><strong>Diagnostics.</strong> Inspect live resources, enable logging, reboot, factory reset, and open real-time GPIO diagnostics.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-controls-screen-1.png" alt="Poor Man's HID controls configuration screen">
+          <div class="caption"><strong>Controls.</strong> Define physical controls, map each one to a HID action, test it, and control whether Bluetooth transmission is enabled.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-controls-screen-2.png" alt="Additional Poor Man's HID controls with variable axes and switches">
+          <div class="caption"><strong>Real hardware, live values.</strong> See axis position, switch state, button state, GPIO activity, and mapping information as you configure.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Use the control that makes sense</h2>
+      <p>Poor Man’s HID supports several physical control behaviors so the firmware can match the hardware you actually want to use.</p>
+    </div>
+    <div class="section-body">
+      <div class="control-list">
+        <div class="control"><b>Momentary</b>A push button that is active only while you hold it. Great for horn, bell, function keys, or any press-and-release action.</div>
+        <div class="control"><b>Toggle Button</b>Each press changes the logical state. Press once for ON, press again for OFF — useful when the physical control itself does not stay in position.</div>
+        <div class="control"><b>Maintained Switch</b>The physical switch position is authoritative. ON stays ON and OFF stays OFF until you move the switch.</div>
+        <div class="control"><b>ON-OFF-ON Switch</b>A three-position control with a center OFF position and two distinct outer actions. Ideal for direction selectors and similar three-state controls.</div>
+        <div class="control"><b>Multi-Position Switch</b>A selector with multiple discrete positions. The firmware can learn and distinguish multiple detents so a single physical selector can choose among several actions or profiles.</div>
+        <div class="control"><b>Variable Control</b>An analog control such as a potentiometer or lever. Its position becomes a HID axis value, perfect for throttle, brake, volume, or any continuous control.</div>
+      </div>
+      <div class="callout">
+        Create up to <strong>16 different profiles</strong>. One physical controller can take on different personalities for different locomotives, software, operating styles, or layouts.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Watch your controller work in real time</h2>
+      <p>The live dashboard turns the controller into something you can see and verify instead of simply hoping every wire and mapping is right.</p>
+    </div>
+    <div class="section-body">
+      <div class="shot">
+        <img src="hid-dashboard-screen.png" alt="Poor Man's HID real-time dashboard showing active control values and states">
+        <div class="caption"><strong>Real-time Dashboard.</strong> Watch throttle position, variable axes, buttons, switches, direction, and other controls update live as you operate them.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Diagnostics built for builders</h2>
+      <p>DIY is a lot more fun when you can actually see what the electronics are doing.</p>
+    </div>
+    <div class="section-body">
+      <div class="shot">
+        <img src="hid-gpio-diagnostics-screen.png" alt="Poor Man's HID GPIO diagnostics screen with live electrical activity">
+        <div class="caption"><strong>GPIO Diagnostics.</strong> See real-time electrical state, button transitions, switch state, ADC values, floating inputs, and live activity across the configured pins.</div>
+      </div>
+      <div class="callout">
+        The diagnostics tools are there for the creator: find the wrong pin, spot a floating input, verify a switch, watch an ADC value move, and understand what the firmware sees.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>It even draws the wiring for you</h2>
+      <p>As you create controls, Poor Man’s HID generates wiring documentation specific to your configuration — printable and downloadable as PDF.</p>
+    </div>
+    <div class="section-body">
+      <div class="gallery">
+        <div class="shot">
+          <img src="hid-schematic-overview.png" alt="Poor Man's HID generated system schematic overview">
+          <div class="caption"><strong>System overview.</strong> Your configured controls, types, and GPIO assignments are gathered into one wiring document.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-schematic-selector.png" alt="Generated multi-position selector wiring schematic">
+          <div class="caption"><strong>Control-specific schematics.</strong> Complex controls such as selectors get wiring diagrams and component guidance generated from your configuration.</div>
+        </div>
+        <div class="shot">
+          <img src="hid-schematic-controls.png" alt="Generated throttle, button, and switch wiring schematics">
+          <div class="caption"><strong>How to wire it.</strong> Each control receives its own connections and wiring instructions so the documentation grows with your controller.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Design it. Build it. Configure it. Use it.</h2>
+      <p>That is the whole idea behind Poor Man’s HID.</p>
+    </div>
+    <div class="section-body">
+      <div class="grid">
+        <div class="card">
+          <span class="label">DIY WITHOUT THE LOCK-IN</span>
+          <h3>Your hardware. Your layout.</h3>
+          <p>Use an ESP32 and ordinary physical controls instead of being forced into somebody else’s idea of what your throttle should look like.</p>
+        </div>
+        <div class="card">
+          <span class="label green">STANDARD HID</span>
+          <h3>Not PMT-only.</h3>
+          <p>Your finished controller presents standard HID inputs, so it can be useful beyond Poor Man’s Throttle wherever compatible HID input is accepted.</p>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>You dream it. You build it. Easy as PMT.</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer">
+    Poor Man’s HID — build the physical controller you always wished somebody would make.
+  </div>
+
+</main>
+</body>
+</html>
