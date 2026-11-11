@@ -1,6 +1,6 @@
 # Poor Man's Throttle Firmware Publishing
 
-This installer is designed so normal firmware releases do **not** require editing HTML, JavaScript, or individual manifest files.
+This installer is designed so normal firmware releases do not require editing HTML, JavaScript, or individual manifest files.
 
 ## Firmware targets
 
