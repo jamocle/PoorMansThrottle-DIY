@@ -212,7 +212,7 @@ function createManifestUrl(board, release, productName = "Poor Man's Throttle") 
     const firmwareCacheBust = getRandomCacheBust();
 
     const manifest = {
-        name: "Poor Man's Throttle - " + board.label,
+        name: productName + " - " + board.label,
         version: release.version,
         new_install_prompt_erase: true,
         builds: [
