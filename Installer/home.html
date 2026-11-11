@@ -5390,6 +5390,281 @@ CV16=0</code></pre>
       </div>
     </details>
 
+    <details class="section firmware-primary-section" id="hidFirmwareInstallation" data-section-url="hid-firmware-installation">
+      <summary>
+        <span class="section-title">
+          <img src="firmware.png" alt="" class="section-icon" />
+          <span>Poor Man's HID Firmware Installation</span>
+        </span>
+      </summary>
+
+      <div class="section-content firmware-section-content">
+        <div class="card intro-card">
+          <p class="note note-strong">
+            Poor Man's HID is a separate firmware product from Poor Man's Throttle.
+            Use this section only when you want the ESP32 to run <strong>Poor Man's HID</strong>.
+          </p>
+          <p class="note">
+            Learn what Poor Man's HID does before installing:
+            <a class="doc-link prominent-link" href="Info/poor-mans-hid.html">Open the Poor Man's HID guide</a>.
+          </p>
+        </div>
+
+        <div class="card firmware-intro-card">
+          <div class="card-header">
+            <div>
+              <div class="card-kicker">Step 1</div>
+              <h3>Which ESP32 board family do you have?</h3>
+            </div>
+          </div>
+
+          <p class="note">
+            Choose <strong>Classic ESP32-WROOM-32</strong> or <strong>ESP32-S3</strong>.
+            If you choose ESP32-S3, identify the exact <strong>N16R8</strong> or
+            <strong>N8R8</strong> module marking before the install controls are shown.
+          </p>
+
+          <div class="board-choice-grid" aria-label="Choose your Poor Man's HID ESP32 board family">
+            <button class="board-choice hid-board-choice" type="button"
+              data-hid-board-choice="classic" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/classic-esp32-wroom32.png" alt="Classic ESP32-WROOM-32 board"
+                  class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>Classic ESP32-WROOM-32</strong>
+                <span>Choose this if your board matches this picture.</span>
+              </span>
+              <span class="board-choice-action">I have this board</span>
+            </button>
+
+            <button class="board-choice hid-board-choice" type="button"
+              data-hid-board-choice="s3" aria-pressed="false">
+              <span class="board-choice-image-shell">
+                <img src="Info/esp32-s3-n16r8.png" alt="ESP32-S3 board" class="board-choice-image" />
+              </span>
+              <span class="board-choice-copy">
+                <strong>ESP32-S3</strong>
+                <span>Choose this for an S3 board. You will identify N16R8 or N8R8 next.</span>
+              </span>
+              <span class="board-choice-action">I have an S3 board</span>
+            </button>
+          </div>
+
+          <p class="note board-choice-help">
+            <strong>Not sure?</strong> Do not guess. Compare the board and module marking before continuing.
+          </p>
+
+          <div id="hidS3VariantPanel" class="s3-variant-panel" hidden>
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 1A</div>
+                <h3>Which ESP32-S3 module do you have?</h3>
+              </div>
+            </div>
+
+            <p class="note s3-variant-warning">
+              <strong>Check the writing on the metal ESP32 module itself.</strong>
+              Find <strong>N16R8</strong> or <strong>N8R8</strong> in the printed module designation.
+              These modules use different flash sizes and different firmware builds.
+            </p>
+
+            <div class="s3-variant-grid" aria-label="Choose your Poor Man's HID ESP32-S3 module">
+              <button class="s3-variant-choice hid-s3-variant-choice" type="button"
+                data-hid-board="s3-n16r8" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N16R8</strong>
+                  <span>16 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N16R8</span>
+              </button>
+
+              <button class="s3-variant-choice hid-s3-variant-choice" type="button"
+                data-hid-board="s3-n8r8" aria-pressed="false">
+                <span class="s3-variant-copy">
+                  <strong>N8R8</strong>
+                  <span>8 MB Flash · 8 MB PSRAM</span>
+                </span>
+                <span class="s3-variant-action">I have N8R8</span>
+              </button>
+            </div>
+
+            <p class="note s3-variant-help">
+              The boards can look nearly identical. The module marking determines which S3 firmware build you need.
+            </p>
+          </div>
+        </div>
+
+        <div id="hidFirmwareLoadError" class="card firmware-error-card" hidden role="alert">
+          <div class="card-kicker">Installer problem</div>
+          <h3>Poor Man's HID firmware information could not be loaded.</h3>
+          <p class="note">
+            Refresh this page and try again. If the message returns, please contact Poor Man's Throttle support before flashing.
+          </p>
+        </div>
+
+        <div id="hidBoardInstallPanel" class="firmware-board-panel" hidden>
+          <div class="card selected-board-card">
+            <div class="selected-board-layout">
+              <div>
+                <div class="card-kicker">You selected</div>
+                <h3 id="hidSelectedBoardName"></h3>
+                <p class="note">
+                  Make sure the connected board matches this selection. For ESP32-S3, verify the metal module marking
+                  says N16R8 or N8R8 exactly as selected before you install.
+                </p>
+              </div>
+              <div class="selected-board-image-shell">
+                <img id="hidSelectedBoardImage" src="" alt="" class="selected-board-image" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card backup-warning-card">
+            <div class="backup-warning-icon" aria-hidden="true">!</div>
+            <div>
+              <div class="card-kicker">Confirm the product</div>
+              <h3>This installs Poor Man's HID firmware.</h3>
+              <p class="note note-strong">
+                Do not continue here if you intended to install Poor Man's Throttle firmware.
+                The same ESP32 hardware can run either product, so verify your choice before flashing.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 2</div>
+                <h3>Get your computer ready.</h3>
+              </div>
+            </div>
+
+            <div class="os-help-grid">
+              <div class="os-help-card">
+                <strong>Windows</strong>
+                <span>Use Google Chrome or Microsoft Edge.</span>
+              </div>
+              <div class="os-help-card">
+                <strong>Mac</strong>
+                <span>Use Google Chrome. Do not use Safari for firmware flashing.</span>
+              </div>
+            </div>
+
+            <ul class="list firmware-checklist">
+              <li>Use a <strong>USB data cable</strong>. Some USB cables only charge and cannot install firmware.</li>
+              <li>Plug the ESP32 directly into the computer when possible.</li>
+              <li>Close Arduino Serial Monitor or any other program that may be using the ESP32 USB/serial connection.</li>
+            </ul>
+          </div>
+
+          <div class="card firmware-install-card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">Step 3</div>
+                <h3>Install Poor Man's HID firmware.</h3>
+              </div>
+            </div>
+
+            <div class="firmware-install-option firmware-install-option-primary">
+              <div>
+                <strong>Install the latest HID firmware</strong>
+                <p class="note">Recommended for most users.</p>
+              </div>
+              <div class="row installer-row">
+                <div class="install-button-wrap">
+                  <esp-web-install-button id="hidLatestBtn">
+                    <button slot="activate" class="firmware-install-action" type="button">
+                      Install Latest HID Firmware
+                    </button>
+                    <span slot="unsupported" class="installer-message">
+                      Use Chrome or Edge on Windows, or Chrome on Mac.
+                    </span>
+                    <span slot="not-allowed" class="installer-message">
+                      Firmware flashing requires this page to be opened securely using HTTPS.
+                    </span>
+                  </esp-web-install-button>
+                </div>
+                <span id="hidLatestVersionLabel" class="meta-label"></span>
+              </div>
+            </div>
+
+            <details class="older-firmware-details" data-section-url="hid-firmware-installation-version">
+              <summary>Choose a specific HID firmware version</summary>
+              <div class="older-firmware-content">
+                <p class="note">
+                  Use this when you intentionally want a particular Poor Man's HID release.
+                </p>
+                <div class="row installer-row">
+                  <label class="note note-label" for="hidFwSel">Version</label>
+                  <select id="hidFwSel" aria-label="Select Poor Man's HID firmware version"></select>
+                  <div class="install-button-wrap">
+                    <esp-web-install-button id="hidOlderBtn">
+                      <button slot="activate" class="firmware-install-action firmware-install-action-secondary"
+                        type="button">
+                        Install Selected HID Version
+                      </button>
+                      <span slot="unsupported" class="installer-message">
+                        Use Chrome or Edge on Windows, or Chrome on Mac.
+                      </span>
+                      <span slot="not-allowed" class="installer-message">
+                        Firmware flashing requires this page to be opened securely using HTTPS.
+                      </span>
+                    </esp-web-install-button>
+                  </div>
+                </div>
+                <p id="hidDropdownDefaultNote" class="note"></p>
+              </div>
+            </details>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-kicker">What happens next</div>
+                <h3>Finish the flash, then open the HID configuration site.</h3>
+              </div>
+            </div>
+
+            <ol class="list numbered-install-steps">
+              <li>Click the HID firmware install button above.</li>
+              <li>Choose the USB/serial device that represents your ESP32 and connect to it.</li>
+              <li>Confirm the installation and wait until ESP Web Tools says it has finished.</li>
+              <li>Do not unplug the board while firmware is being written.</li>
+              <li>After the board restarts, join its <code>PMT_HID_&lt;12 characters&gt;</code> Wi-Fi access point.</li>
+              <li>Open <code>http://192.168.1.1</code> to configure Poor Man's HID.</li>
+            </ol>
+          </div>
+
+          <details class="card firmware-help-details" data-section-url="hid-firmware-installation-troubleshooting">
+            <summary>
+              <span>
+                <span class="card-kicker">Troubleshooting</span>
+                <strong>If the HID installer cannot start flashing</strong>
+              </span>
+            </summary>
+            <div class="firmware-help-content">
+              <ul class="list">
+                <li>Confirm you are using a USB <strong>data</strong> cable, not a charge-only cable.</li>
+                <li>Close Arduino Serial Monitor and other programs that might already be using the ESP32 connection.</li>
+                <li>
+                  If the device connects but flashing does not begin, hold <strong>BOOT</strong>, start the install and
+                  select the device. Release <strong>BOOT</strong> when erasing/writing begins.
+                </li>
+                <li>
+                  On Windows, the Classic ESP32-WROOM-32 commonly uses a CP210x USB-to-serial interface. If Windows
+                  does not create a usable port, you can
+                  <a class="doc-link"
+                    href="https://www.silabs.com/software-and-tools/usb-to-uart-bridge-vcp-drivers?tab=downloads"
+                    target="_blank" rel="noopener noreferrer">open the Silicon Labs CP210x driver page</a>.
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </div>
+    </details>
+
     <details class="section" data-section-url="app-installation">
       <summary>
         <span class="section-title">

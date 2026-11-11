@@ -1182,11 +1182,13 @@ code {
     transform-origin: center;
 }
 
-.board-choice[data-board-choice="classic"] .board-choice-image {
+.board-choice[data-board-choice="classic"] .board-choice-image,
+.board-choice[data-hid-board-choice="classic"] .board-choice-image {
     transform: rotate(90deg);
 }
 
-.board-choice[data-board-choice="s3"] .board-choice-image {
+.board-choice[data-board-choice="s3"] .board-choice-image,
+.board-choice[data-hid-board-choice="s3"] .board-choice-image {
     transform: rotate(-90deg);
 }
 
@@ -1358,6 +1360,7 @@ code {
 }
 
 .selected-board-image[data-board="s3"],
+.selected-board-image[data-board="s3-n16r8"],
 .selected-board-image[data-board="s3-n8r8"] {
     transform: rotate(-90deg);
 }
