@@ -104,8 +104,8 @@ function appendCacheBusterToAnchors() {
 
 const manifestUrls = new WeakMap();
 
-async function loadFirmwareVersions() {
-    const versionsUrl = "@firmware-versions.json?v=" + encodeURIComponent(getRandomCacheBust());
+async function loadFirmwareCatalog(catalogFile) {
+    const versionsUrl = catalogFile + "?v=" + encodeURIComponent(getRandomCacheBust());
     const response = await fetch(versionsUrl, { cache: "no-store" });
 
     if (!response.ok) {
@@ -128,6 +128,14 @@ async function loadFirmwareVersions() {
     }
 
     return firmwareData;
+}
+
+async function loadFirmwareVersions() {
+    return loadFirmwareCatalog("@firmware-versions.json");
+}
+
+async function loadHidFirmwareVersions() {
+    return loadFirmwareCatalog("@hid-firmware-versions.json");
 }
 
 function validateBoardConfiguration(boardKey, board) {
@@ -199,7 +207,7 @@ function getFirmwareDirectoryUrl(board, version) {
     return new URL(relativeDirectory, window.location.href);
 }
 
-function createManifestUrl(board, release) {
+function createManifestUrl(board, release, productName = "Poor Man's Throttle") {
     const firmwareDirectoryUrl = getFirmwareDirectoryUrl(board, release.version);
     const firmwareCacheBust = getRandomCacheBust();
 
@@ -227,13 +235,13 @@ function createManifestUrl(board, release) {
     return URL.createObjectURL(blob);
 }
 
-function setInstallButtonManifest(button, board, release) {
+function setInstallButtonManifest(button, board, release, productName = "Poor Man's Throttle") {
     const previousUrl = manifestUrls.get(button);
     if (previousUrl) {
         URL.revokeObjectURL(previousUrl);
     }
 
-    const manifestUrl = createManifestUrl(board, release);
+    const manifestUrl = createManifestUrl(board, release, productName);
     manifestUrls.set(button, manifestUrl);
     button.setAttribute("manifest", manifestUrl);
 }
@@ -525,6 +533,247 @@ async function updateFirmwareInstaller() {
             console.error(error);
             androidApkLink.textContent = "Download latest Android version";
         }
+    }
+}
+
+
+function setHidBoardChoiceState(selectedBoardChoice) {
+    const section = document.getElementById("hidFirmwareInstallation");
+    if (!section) {
+        return;
+    }
+
+    const choices = section.querySelectorAll(".hid-board-choice[data-hid-board-choice]");
+
+    for (const choice of choices) {
+        const isSelected = choice.dataset.hidBoardChoice === selectedBoardChoice;
+        choice.setAttribute("aria-pressed", String(isSelected));
+        choice.classList.toggle("is-selected", isSelected);
+
+        const action = choice.querySelector(".board-choice-action");
+        if (action) {
+            if (isSelected) {
+                action.textContent = "Selected";
+            } else {
+                action.textContent =
+                    choice.dataset.hidBoardChoice === "s3"
+                        ? "I have an S3 board"
+                        : "I have this board";
+            }
+        }
+    }
+}
+
+function setHidS3VariantChoiceState(selectedBoardKey) {
+    const section = document.getElementById("hidFirmwareInstallation");
+    if (!section) {
+        return;
+    }
+
+    const choices = section.querySelectorAll(".hid-s3-variant-choice[data-hid-board]");
+
+    for (const choice of choices) {
+        const boardKey = choice.dataset.hidBoard;
+        const isSelected = boardKey === selectedBoardKey;
+        choice.setAttribute("aria-pressed", String(isSelected));
+        choice.classList.toggle("is-selected", isSelected);
+
+        const action = choice.querySelector(".s3-variant-action");
+        if (action) {
+            const variantName = boardKey === "s3-n8r8" ? "N8R8" : "N16R8";
+            action.textContent = isSelected ? "Selected" : "I have " + variantName;
+        }
+    }
+}
+
+function showHidFirmwareLoadError() {
+    const errorCard = document.getElementById("hidFirmwareLoadError");
+    const panel = document.getElementById("hidBoardInstallPanel");
+    const s3VariantPanel = document.getElementById("hidS3VariantPanel");
+
+    if (errorCard) {
+        const isPreview = isLocalPreviewEnvironment();
+        const kicker = errorCard.querySelector(".card-kicker");
+        const heading = errorCard.querySelector("h3");
+        const message = errorCard.querySelector(".note");
+
+        errorCard.classList.toggle("firmware-preview-card", isPreview);
+        errorCard.setAttribute("role", isPreview ? "status" : "alert");
+
+        if (isPreview) {
+            if (kicker) {
+                kicker.textContent = "Preview mode";
+            }
+
+            if (heading) {
+                heading.textContent = "HID firmware controls load on the hosted website.";
+            }
+
+            if (message) {
+                message.textContent =
+                    "This editor preview can still be used to check the page layout. " +
+                    "Use the hosted HTTPS website in Chrome or Edge to install Poor Man's HID firmware.";
+            }
+        } else {
+            if (kicker) {
+                kicker.textContent = "Installer problem";
+            }
+
+            if (heading) {
+                heading.textContent = "Poor Man's HID firmware information could not be loaded.";
+            }
+
+            if (message) {
+                message.textContent =
+                    "Refresh this page and try again. If the message returns, please contact " +
+                    "Poor Man's Throttle support before flashing.";
+            }
+        }
+
+        errorCard.hidden = false;
+    }
+
+    if (panel) {
+        panel.hidden = true;
+    }
+
+    if (s3VariantPanel) {
+        s3VariantPanel.hidden = true;
+    }
+}
+
+async function updateHidFirmwareInstaller() {
+    const section = document.getElementById("hidFirmwareInstallation");
+    if (!section) {
+        return;
+    }
+
+    const boardChoices = section.querySelectorAll(".hid-board-choice[data-hid-board-choice]");
+    const s3VariantChoices = section.querySelectorAll(".hid-s3-variant-choice[data-hid-board]");
+    const s3VariantPanel = document.getElementById("hidS3VariantPanel");
+    const panel = document.getElementById("hidBoardInstallPanel");
+    const selectedBoardName = document.getElementById("hidSelectedBoardName");
+    const selectedBoardImage = document.getElementById("hidSelectedBoardImage");
+    const sel = document.getElementById("hidFwSel");
+    const olderBtn = document.getElementById("hidOlderBtn");
+    const latestBtn = document.getElementById("hidLatestBtn");
+    const latestVersionLabel = document.getElementById("hidLatestVersionLabel");
+    const dropdownDefaultNote = document.getElementById("hidDropdownDefaultNote");
+
+    if (
+        boardChoices.length === 0 ||
+        s3VariantChoices.length === 0 ||
+        !s3VariantPanel ||
+        !panel ||
+        !selectedBoardName ||
+        !selectedBoardImage ||
+        !sel ||
+        !olderBtn ||
+        !latestBtn ||
+        !latestVersionLabel
+    ) {
+        return;
+    }
+
+    try {
+        const firmwareData = await loadHidFirmwareVersions();
+
+        const resetInstallSelection = () => {
+            panel.hidden = true;
+            sel.onchange = null;
+            clearInstallButtonManifest(olderBtn);
+            clearInstallButtonManifest(latestBtn);
+        };
+
+        const selectBoard = (boardKey) => {
+            const board = firmwareData.boards[boardKey];
+
+            if (!board) {
+                console.error("Unknown Poor Man's HID firmware board: " + boardKey);
+                showHidFirmwareLoadError();
+                resetInstallSelection();
+                return;
+            }
+
+            const latestRelease = getRelease(board, board.latest);
+            const dropdownRelease = getRelease(board, board.dropdownDefault);
+
+            if (!latestRelease || !dropdownRelease) {
+                console.error("Poor Man's HID firmware version configuration is incomplete for " + boardKey + ".");
+                showHidFirmwareLoadError();
+                resetInstallSelection();
+                return;
+            }
+
+            const isS3 = boardKey === "s3-n16r8" || boardKey === "s3-n8r8";
+            setHidBoardChoiceState(isS3 ? "s3" : "classic");
+            setHidS3VariantChoiceState(isS3 ? boardKey : null);
+            s3VariantPanel.hidden = !isS3;
+
+            selectedBoardName.textContent = board.label;
+            selectedBoardImage.src = board.image;
+            selectedBoardImage.alt = board.label + " board";
+            selectedBoardImage.dataset.board = boardKey;
+
+            latestVersionLabel.textContent = "Version " + board.latest;
+            populateFirmwareSelect(sel, board);
+
+            setInstallButtonManifest(latestBtn, board, latestRelease, "Poor Man's HID");
+
+            const updateSelectedManifest = () => {
+                const selectedRelease = getRelease(board, sel.value);
+                if (!selectedRelease) {
+                    clearInstallButtonManifest(olderBtn);
+                    return;
+                }
+
+                setInstallButtonManifest(olderBtn, board, selectedRelease, "Poor Man's HID");
+            };
+
+            sel.onchange = updateSelectedManifest;
+            updateSelectedManifest();
+
+            if (dropdownDefaultNote) {
+                dropdownDefaultNote.textContent = "You can choose any Poor Man's HID version shown to install.";
+            }
+
+            panel.hidden = false;
+        };
+
+        for (const choice of boardChoices) {
+            choice.addEventListener("click", () => {
+                const selectedChoice = choice.dataset.hidBoardChoice;
+
+                if (selectedChoice === "classic") {
+                    setHidBoardChoiceState("classic");
+                    setHidS3VariantChoiceState(null);
+                    s3VariantPanel.hidden = true;
+                    selectBoard("classic");
+                    return;
+                }
+
+                if (selectedChoice === "s3") {
+                    setHidBoardChoiceState("s3");
+                    setHidS3VariantChoiceState(null);
+                    s3VariantPanel.hidden = false;
+
+                    // Never keep an old S3 manifest attached while the user is
+                    // deciding between N16R8 and N8R8.
+                    resetInstallSelection();
+                }
+            });
+        }
+
+        for (const choice of s3VariantChoices) {
+            choice.addEventListener("click", () => {
+                selectBoard(choice.dataset.hidBoard);
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        showHidFirmwareLoadError();
+        clearInstallButtonManifest(olderBtn);
+        clearInstallButtonManifest(latestBtn);
     }
 }
 
@@ -2381,6 +2630,7 @@ async function initialize() {
     initializeSectionUrls();
     initializeFaqTableScrollbars();
     await updateFirmwareInstaller();
+    await updateHidFirmwareInstaller();
     initializeSoundPacks();
     initializeDocumentation();
     initializeSoundPackCrowdsourcing();
