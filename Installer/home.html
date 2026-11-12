@@ -4032,6 +4032,73 @@
           </div>
         </details>
 
+        <details class="subsection" data-section-url="faq-create-poor-mans-hid-controller">
+          <summary>
+            <span class="section-title">
+              <span>How do I create my own physical controller with Poor Man’s HID?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Poor Man’s HID lets you build your own physical throttle or control panel using an ESP32 and ordinary buttons, switches, selectors, knobs, levers, and potentiometers. The finished controller presents those controls as standard Bluetooth HID joystick/keyboard-style inputs.
+            </p>
+
+            <p class="note">
+              <strong>Poor Man’s HID is not limited to Poor Man’s Throttle.</strong> Because it presents its controls as standard HID inputs, you can also use your controller with <strong>any system or application that supports joystick- or keyboard-like controls</strong>.
+            </p>
+
+            <ol>
+              <li>
+                <strong>Choose an ESP32.</strong> Poor Man’s HID supports the Classic ESP32-WROOM-32 and ESP32-S3. The S3 is recommended for larger controllers because it provides more pins. If you use an ESP32-S3, check the marking on the module and select the correct <strong>N16R8</strong> or <strong>N8R8</strong> firmware build.
+              </li>
+              <li>
+                <strong>Install the Poor Man’s HID firmware.</strong> Use the <strong>Poor Man’s HID Firmware Installation</strong> section in the PMT Information Hub. Poor Man’s HID is separate firmware from Poor Man’s Throttle, so make sure you are installing the HID firmware.
+              </li>
+              <li>
+                <strong>Connect to the controller’s configuration site.</strong> After the ESP32 restarts, join its Wi-Fi access point named <code>PMT_HID_&lt;12 characters&gt;</code>, then open <code>http://192.168.1.1</code> in your browser.
+              </li>
+              <li>
+                <strong>Create your physical controls.</strong> In the Poor Man’s HID configuration interface, name each control, select its type, assign its GPIO connections, and map it to a HID key or axis. Supported control types include <strong>Momentary</strong>, <strong>Toggle Button</strong>, <strong>Maintained Switch</strong>, <strong>ON-OFF-ON Switch</strong>, <strong>Multi-Position Switch</strong>, and <strong>Variable Control</strong>.
+              </li>
+              <li>
+                <strong>Test before you finish the enclosure.</strong> The live dashboard and GPIO diagnostics let you see button states, switch positions, axis values, ADC readings, GPIO activity, and HID mappings in real time. This is useful for catching an incorrect pin, floating input, or wiring problem while you are building.
+              </li>
+              <li>
+                <strong>Use the generated wiring documentation.</strong> Poor Man’s HID can generate wiring information and control-specific schematics based on the controls and GPIO assignments you configured. The wiring documentation can also be printed or downloaded as a PDF, so you do not need to rely on one generic wiring diagram for every controller design.
+              </li>
+              <li>
+                <strong>Connect it to your software.</strong> For Poor Man’s Throttle, pair the completed controller as a Bluetooth HID device, then use PMT’s <strong>Physical Controls</strong> screen to assign its buttons, switches, and variable controls to the PMT functions you want to operate. For other applications or systems, use their normal joystick or keyboard control-assignment features.
+              </li>
+            </ol>
+
+            <p class="note">
+              You can also create up to <strong>16 profiles</strong>, allowing the same physical controller to have different configurations for different locomotives, layouts, software, or operating styles.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/poor-mans-hid.html"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man’s HID — Build Your Own Physical Controller
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html#hid-firmware-installation"
+                target="_blank" rel="noopener noreferrer">
+                Poor Man’s HID Firmware Installation
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/lets-get-physical.html"
+                target="_blank" rel="noopener noreferrer">
+                Let’s Get Physical — PMT Physical Controls
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-throttle-delay">
           <summary>
             <span class="section-title">
@@ -5077,7 +5144,7 @@ CV16=0</code></pre>
       <summary>
         <span class="section-title">
           <img src="firmware.png" alt="" class="section-icon" />
-          <span>Firmware Installation</span>
+          <span>Poor Man's Throttle Firmware Installation</span>
         </span>
       </summary>
 
@@ -5394,7 +5461,7 @@ CV16=0</code></pre>
       <summary>
         <span class="section-title">
           <img src="firmware.png" alt="" class="section-icon" />
-          <span>Poor Man's HID Firmware Installation</span>
+          <span>PMT HID Firmware Installation</span>
         </span>
       </summary>
 
