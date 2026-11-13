@@ -1332,6 +1332,446 @@
           </div>
         </details>
 
+<details class="subsection" data-section-url="faq-tb6612fng-wiring-configuration">
+          <summary>
+            <span class="section-title">
+              <span>How do I wire up and configure the TB6612FNG motor driver to PMT?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Yes. The <strong>TB6612FNG</strong> works with PMT using the <strong>PWM_BIDIR</strong> Motor Driver Type.
+            </p>
+
+            <p class="note">
+              The TB6612FNG is a dual H-bridge motor driver. Each motor channel has one PWM input for speed, two logic inputs for direction, and two motor output terminals. It also has a separate <code>STBY</code> input that must be HIGH before either motor channel will operate.
+            </p>
+
+            <p class="note">
+              For a normal PMT installation, you only need one of the TB6612FNG's two channels. The example below uses <strong>Channel A</strong>.
+            </p>
+
+            <p class="note"><strong>First: make sure the TB6612FNG is large enough for your locomotive</strong></p>
+
+            <p class="note">
+              The TB6612FNG is intended for relatively small DC motor loads. Its motor supply, <code>VM</code>, has an operating range of approximately <strong>2.5V to 13.5V</strong>. Do not confuse the chip's 15V absolute-maximum rating with its normal operating range.
+            </p>
+
+            <ul>
+              <li>6V motor supply → suitable</li>
+              <li>9V motor supply → suitable</li>
+              <li>12V motor supply → suitable</li>
+              <li>14.4V / 14.8V battery → <strong>requires a buck converter</strong></li>
+              <li>18V or 24V motor supply → <strong>requires a buck converter</strong></li>
+            </ul>
+
+            <p class="note">
+              If your locomotive uses a <strong>14.4V supply or anything higher than 13.5V</strong>, do <strong>not</strong> connect that voltage directly to the TB6612FNG's <code>VM</code> input.
+            </p>
+
+            <p class="note">
+              Use a <strong>DC-DC buck converter</strong> between the locomotive's battery/power supply and the TB6612FNG. Adjust the buck converter so its output is <strong>13.5V or less</strong>.
+            </p>
+
+            <p class="note">
+              For PMT installations, a <strong>regulated 12V output is recommended</strong>. This gives the TB6612FNG some operating-voltage margin while remaining well within its specified <code>VM</code> range.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <p class="note">
+              <strong>14.4V battery → buck converter set to 12V → TB6612FNG VM</strong>
+            </p>
+
+            <p class="note">
+              or:
+            </p>
+
+            <p class="note">
+              <strong>18V supply → buck converter set to 12V → TB6612FNG VM</strong>
+            </p>
+
+            <p class="note">
+              The buck converter must also have enough current capacity for the locomotive motor. It should be selected based on the motor's actual running and stall-current requirements, not just its voltage rating.
+            </p>
+
+            <p class="note">
+              Remember that reducing <code>VM</code> also means the motor is being powered from the buck converter's output voltage. If the converter is adjusted to 12V, the motor driver will be operating from a 12V motor supply.
+            </p>
+
+            <p class="note">
+              Current capability is also important. For a PMT locomotive installation, plan conservatively around approximately <strong>1A continuous per motor channel</strong>. The much higher peak-current numbers published for the TB6612FNG are short-duration ratings and should not be treated as continuous locomotive current.
+            </p>
+
+            <p class="note">
+              The most important motor-current number is the motor's <strong>stall current</strong>. If the locomotive can exceed what the TB6612FNG can safely handle when starting, heavily loaded, or stalled, use a higher-current PMT-compatible motor driver such as the IBT-2/BTS7960 instead.
+            </p>
+
+            <p class="note"><strong>TB6612FNG power wiring</strong></p>
+
+            <p class="note">
+              The TB6612FNG has two separate power inputs: <code>VM</code> is the motor power supply and <code>VCC</code> is the logic power supply.
+            </p>
+
+            <p class="note">
+              For an ESP32-based PMT, power the TB6612FNG logic from <strong>3.3V</strong>, not 5V.
+            </p>
+
+            <p class="note">
+              This is important because the TB6612FNG considers a logic HIGH to be at least approximately 70% of VCC. With VCC at 5V, the guaranteed HIGH threshold is approximately 3.5V, which is higher than the ESP32's 3.3V GPIO output. With VCC at 3.3V, the ESP32 GPIO levels are correctly matched to the TB6612FNG logic supply.
+            </p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+                  <div class="faq-table-scrollbar">
+                    <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                      aria-label="Scroll table horizontally" />
+                  </div>
+                  <div class="faq-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>TB6612FNG</th>
+                          <th>Connect to</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td><strong>VM</strong></td>
+                          <td>Motor power positive, <strong>2.5V–13.5V</strong>. For a 14.4V or higher source, use a buck converter; <strong>12V regulated is recommended</strong>.</td>
+                        </tr>
+                        <tr>
+                          <td><strong>GND</strong></td>
+                          <td>Motor power negative AND ESP32 GND</td>
+                        </tr>
+                        <tr>
+                          <td><strong>VCC</strong></td>
+                          <td>ESP32 <strong>3.3V / 3V3</strong></td>
+                        </tr>
+                        <tr>
+                          <td><strong>STBY</strong></td>
+                          <td>ESP32 <strong>3.3V / 3V3</strong></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="note">
+              The ESP32 itself should still be powered normally through the PMT 5V USB-C power arrangement. The ESP32's <strong>3V3 output</strong> is being used here only as the TB6612FNG logic supply and to hold STBY HIGH.
+            </p>
+
+            <p class="note">
+              A <strong>common ground is mandatory</strong>:
+            </p>
+
+            <p class="note">
+              Motor supply/buck converter negative → TB6612FNG GND → ESP32 GND
+            </p>
+
+            <p class="note">
+              Do not leave <code>STBY</code> floating. The TB6612FNG contains a pull-down on STBY, so an unconnected STBY pin places the driver in standby and the motor will not run.
+            </p>
+
+            <p class="note">
+              If your particular TB6612FNG breakout board already connects STBY HIGH or contains additional level-shifting/regulation circuitry, check that board's schematic before changing the wiring above.
+            </p>
+
+            <p class="note"><strong>Motor and control wiring — Channel A</strong></p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+                  <div class="faq-table-scrollbar">
+                    <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                      aria-label="Scroll table horizontally" />
+                  </div>
+                  <div class="faq-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>TB6612FNG</th>
+                          <th>Function</th>
+                          <th>Classic ESP32-WROOM</th>
+                          <th>ESP32-S3</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>PWMA</strong></td><td>PWM / speed</td><td><strong>GPIO25</strong></td><td><strong>GPIO6</strong></td></tr>
+                        <tr><td><strong>AIN1</strong></td><td>Forward logic</td><td><strong>GPIO27</strong></td><td><strong>GPIO4</strong></td></tr>
+                        <tr><td><strong>AIN2</strong></td><td>Reverse logic</td><td><strong>GPIO33</strong></td><td><strong>GPIO5</strong></td></tr>
+                        <tr><td><strong>AO1</strong></td><td>Motor output 1</td><td>Motor lead 1</td><td>Motor lead 1</td></tr>
+                        <tr><td><strong>AO2</strong></td><td>Motor output 2</td><td>Motor lead 2</td><td>Motor lead 2</td></tr>
+                        <tr><td><strong>STBY</strong></td><td>Driver enable</td><td>3.3V</td><td>3.3V</td></tr>
+                        <tr><td><strong>VCC</strong></td><td>Logic power</td><td>3.3V</td><td>3.3V</td></tr>
+                        <tr><td><strong>GND</strong></td><td>Common ground</td><td>ESP32 GND</td><td>ESP32 GND</td></tr>
+                        <tr><td><strong>VM</strong></td><td>Motor supply</td><td>2.5V–13.5V</td><td>2.5V–13.5V</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="note">
+              Some breakout boards print the motor outputs as <code>A01/A02</code> instead of <code>AO1/AO2</code>. They refer to the same Channel A motor outputs.
+            </p>
+
+            <p class="note">
+              Channel B (<code>PWMB</code>, <code>BIN1</code>, <code>BIN2</code>, <code>BO1</code>, <code>BO2</code>) is not required for this installation and can remain unused.
+            </p>
+
+            <p class="note">
+              If you prefer to use Channel B instead, connect the same three PMT control GPIOs to <code>PWMB</code>, <code>BIN1</code>, and <code>BIN2</code>, and connect the motor to <code>BO1</code> and <code>BO2</code>.
+            </p>
+
+            <p class="note"><strong>Configure PMT</strong></p>
+
+            <p class="note">
+              Open the PMT <strong>Configuration</strong> screen and set <strong>Motor Driver Type → PWM_BIDIR</strong>.
+            </p>
+
+            <p class="note">
+              Then configure the PWM_BIDIR pin mapping so it matches the physical wiring.
+            </p>
+
+            <p class="note"><strong>Classic ESP32-WROOM:</strong></p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+                  <div class="faq-table-scrollbar">
+                    <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                      aria-label="Scroll table horizontally" />
+                  </div>
+                  <div class="faq-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>PMT setting</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>PWM_BIDIR PWM / Enable Pin</strong></td><td><strong>25</strong></td></tr>
+                        <tr><td><strong>PWM_BIDIR Forward Pin</strong></td><td><strong>27</strong></td></tr>
+                        <tr><td><strong>PWM_BIDIR Reverse Pin</strong></td><td><strong>33</strong></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="note"><strong>ESP32-S3:</strong></p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+                  <div class="faq-table-scrollbar">
+                    <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                      aria-label="Scroll table horizontally" />
+                  </div>
+                  <div class="faq-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>PMT setting</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>PWM_BIDIR PWM / Enable Pin</strong></td><td><strong>6</strong></td></tr>
+                        <tr><td><strong>PWM_BIDIR Forward Pin</strong></td><td><strong>4</strong></td></tr>
+                        <tr><td><strong>PWM_BIDIR Reverse Pin</strong></td><td><strong>5</strong></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="note">
+              The physical wiring and Config Screen must agree exactly.
+            </p>
+
+            <p class="note">
+              For example, on a Classic ESP32:
+            </p>
+
+            <ul>
+              <li><strong>GPIO25 → PWMA</strong></li>
+              <li><strong>GPIO27 → AIN1</strong></li>
+              <li><strong>GPIO33 → AIN2</strong></li>
+            </ul>
+
+            <p class="note">
+              Do not connect GPIO26 to AIN1 just because an older PWM_BIDIR screenshot happens to show GPIO26. The current PMT PWM_BIDIR pin definitions use GPIO27 for Forward and GPIO33 for Reverse on the Classic ESP32.
+            </p>
+
+            <p class="note"><strong>Equivalent PMT Configuration Variables</strong></p>
+
+            <div class="markdown-body">
+              <div class="markdown-table-wrap">
+                <div class="faq-table-container">
+                  <div class="faq-table-scrollbar">
+                    <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                      aria-label="Scroll table horizontally" />
+                  </div>
+                  <div class="faq-table-wrap">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>CV</th>
+                          <th>Purpose</th>
+                          <th>Classic</th>
+                          <th>ESP32-S3</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td><strong>CV1</strong></td><td>Motor Driver Mode</td><td><code>PWM_BIDIR</code></td><td><code>PWM_BIDIR</code></td></tr>
+                        <tr><td><strong>CV106</strong></td><td>PWM_BIDIR PWM / Enable Pin</td><td><code>25</code></td><td><code>6</code></td></tr>
+                        <tr><td><strong>CV107</strong></td><td>PWM_BIDIR Forward Pin</td><td><code>27</code></td><td><code>4</code></td></tr>
+                        <tr><td><strong>CV108</strong></td><td>PWM_BIDIR Reverse Pin</td><td><code>33</code></td><td><code>5</code></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p class="note">
+              Normally you can configure these through the PMT Config Screen rather than entering the CVs manually.
+            </p>
+
+            <p class="note"><strong>What about Minimum Start, Maximum Throttle, and Start Assist / Kick?</strong></p>
+
+            <p class="note">
+              There is no special TB6612FNG requirement for those settings. Get the motor driver working correctly first with the normal PMT settings. After that, tune:
+            </p>
+
+            <ul>
+              <li><strong>Minimum Start Throttle</strong> if the locomotive needs more initial power to begin moving.</li>
+              <li><strong>Maximum Throttle</strong> if you want to limit the maximum motor output.</li>
+              <li><strong>Start Assist / Kick</strong> if the locomotive needs a short additional starting impulse.</li>
+            </ul>
+
+            <p class="note">
+              These are locomotive/motor tuning controls, not TB6612FNG wiring requirements.
+            </p>
+
+            <p class="note"><strong>Do I need to change PMT's PWM frequency?</strong></p>
+
+            <p class="note">
+              Normally, <strong>no</strong>. The TB6612FNG supports PWM frequencies up to <strong>100 kHz</strong>. PMT's current default motor PWM-frequency curve is <strong>20 kHz</strong>, so the standard PMT setting is comfortably inside the TB6612FNG's supported range.
+            </p>
+
+            <p class="note">
+              Get the installation working with the default PWM settings before experimenting with PWM-frequency tuning.
+            </p>
+
+            <p class="note"><strong>First power-up</strong></p>
+
+            <ol>
+              <li>If your battery or power supply is above <strong>13.5V</strong>, verify that a <strong>buck converter</strong> is installed between it and <code>VM</code>.</li>
+              <li>Verify the buck converter output is <strong>13.5V or less</strong>; <strong>12V regulated is recommended</strong>.</li>
+              <li>Verify <strong>VCC is connected to 3.3V</strong>.</li>
+              <li>Verify <strong>STBY is HIGH</strong>, normally by connecting it to 3.3V.</li>
+              <li>Verify the ESP32 and TB6612FNG have a <strong>common ground</strong>.</li>
+              <li>Verify <code>PWMA</code>, <code>AIN1</code>, and <code>AIN2</code> match the GPIO values shown in the PMT Config Screen.</li>
+              <li>Start PMT with the throttle at zero.</li>
+              <li>Apply a small amount of throttle and verify the motor runs.</li>
+              <li>Check both Forward and Reverse.</li>
+              <li>Monitor the TB6612FNG and buck converter for excessive heating during the first loaded test.</li>
+            </ol>
+
+            <p class="note">
+              If Forward and Reverse are backwards, use PMT's <strong>Reverse Direction</strong> setting or reverse the two motor leads. You do not need to change the three GPIO assignments.
+            </p>
+
+            <p class="note">
+              If the locomotive runs unloaded but the driver gets very hot, shuts down, or fails when the locomotive is heavily loaded, check the locomotive's stall current. The TB6612FNG may simply be too small for that motor.
+            </p>
+
+            <p class="note"><strong>The important points</strong></p>
+
+            <p class="note">
+              <strong>Motor Driver Type = PWM_BIDIR</strong>
+            </p>
+
+            <p class="note">
+              <strong>Classic ESP32:</strong><br />
+              GPIO25 → PWM<br />
+              GPIO27 → Forward<br />
+              GPIO33 → Reverse
+            </p>
+
+            <p class="note">
+              <strong>ESP32-S3:</strong><br />
+              GPIO6 → PWM<br />
+              GPIO4 → Forward<br />
+              GPIO5 → Reverse
+            </p>
+
+            <p class="note">
+              <strong>VCC = 3.3V</strong><br />
+              <strong>STBY = 3.3V / HIGH</strong><br />
+              <strong>All grounds connected together</strong>
+            </p>
+
+            <p class="note">
+              <strong>TB6612FNG VM operating range = 2.5V–13.5V</strong>
+            </p>
+
+            <p class="note">
+              If the locomotive uses a <strong>14.4V or higher battery/power supply</strong>, use a <strong>buck converter</strong> and reduce the voltage to <strong>13.5V or less</strong> before feeding <code>VM</code>. A <strong>regulated 12V output is recommended</strong> for a typical PMT installation.
+            </p>
+
+            <p class="note">
+              The TB6612FNG is a good choice for smaller, lower-current locomotives, but its voltage and current limits make it unsuitable for many larger or higher-current PMT installations.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/installation.html"
+                target="_blank" rel="noopener noreferrer">
+                PMT Installation Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_wiring_reference.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Wiring Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://toshiba.semicon-storage.com/info/TB6612FNG_datasheet_en_20141001.pdf?did=10660&amp;prodName=TB6612FNG"
+                target="_blank" rel="noopener noreferrer">
+                Toshiba TB6612FNG Datasheet
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://learn.sparkfun.com/tutorials/tb6612fng-hookup-guide/board-overview"
+                target="_blank" rel="noopener noreferrer">
+                SparkFun TB6612FNG Hookup Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-start-assist-kick">
           <summary>
             <span class="section-title">
