@@ -6,8 +6,8 @@
       "image": "Info/classic-esp32-wroom32.png",
       "chipFamily": "ESP32",
       "firmwareDirectory": "../firmware/hid/classic/{version}/",
-      "latest": "1.0.8",
-      "dropdownDefault": "1.0.8",
+      "latest": "1.0.9",
+      "dropdownDefault": "1.0.9",
       "parts": [
         {
           "file": "PoorMansHID.ino.bootloader.bin",
@@ -28,7 +28,7 @@
       ],
       "versions": [
         {
-          "version": "1.0.8"
+          "version": "1.0.9"
         }
       ]
     },
@@ -37,8 +37,8 @@
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/hid/s3-n16r8/{version}/",
-      "latest": "1.0.8",
-      "dropdownDefault": "1.0.8",
+      "latest": "1.0.9",
+      "dropdownDefault": "1.0.9",
       "parts": [
         {
           "file": "PoorMansHID.ino.bootloader.bin",
@@ -59,7 +59,7 @@
       ],
       "versions": [
         {
-          "version": "1.0.8"
+          "version": "1.0.9"
         }
       ]
     },
@@ -68,8 +68,8 @@
       "image": "Info/esp32-s3-n16r8.png",
       "chipFamily": "ESP32-S3",
       "firmwareDirectory": "../firmware/hid/s3-n8r8/{version}/",
-      "latest": "1.0.8",
-      "dropdownDefault": "1.0.8",
+      "latest": "1.0.9",
+      "dropdownDefault": "1.0.9",
       "parts": [
         {
           "file": "PoorMansHID.ino.bootloader.bin",
@@ -90,7 +90,7 @@
       ],
       "versions": [
         {
-          "version": "1.0.8"
+          "version": "1.0.9"
         }
       ]
     }
