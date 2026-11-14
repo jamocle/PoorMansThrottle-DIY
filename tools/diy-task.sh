@@ -189,39 +189,67 @@ print_menu() {
   echo
 }
 
+run_menu_choice() {
+  local choice="$1"
+
+  case "${choice}" in
+    4) create_docs_installer_zip ;;
+    6) repo_reset_main_delete_local_non_main ;;
+    7) repo_delete_remote_non_main ;;
+    99) update_diy_from_downloads ;;
+    *)
+      echo "Invalid choice: ${choice}"
+      return 2
+      ;;
+  esac
+}
+
 run_menu() {
   while true; do
     print_menu
 
-    local choice
-    read -r -p "Choose: " choice
+    local input
+    read -r -p "Choose: " input
 
-    if [[ "${choice}" == "0" ]]; then
-      exit 0
-    fi
+    input="${input//[[:space:]]/}"
 
     local action_status=0
+
     # Capture failure outside a conditional so errexit works inside each action.
     set +e
-    (
-      set -e
-      case "${choice}" in
-        4) create_docs_installer_zip ;;
-        6) repo_reset_main_delete_local_non_main ;;
-        7) repo_delete_remote_non_main ;;
-        99) update_diy_from_downloads ;;
-        *)
-          echo "Invalid choice: ${choice}"
+
+    if [[ -z "${input}" || "${input}" == ,* || "${input}" == *, || "${input}" == *,,* ]]; then
+      echo "Invalid choice sequence: ${input}"
+      action_status=2
+    else
+      local choices=()
+      IFS=',' read -r -a choices <<< "${input}"
+
+      local choice
+      for choice in "${choices[@]}"; do
+        if [[ "${choice}" == "0" ]]; then
+          set -e
           exit 0
-          ;;
-      esac
-    )
-    action_status=$?
+        fi
+
+        (
+          set -e
+          run_menu_choice "${choice}"
+        )
+        action_status=$?
+
+        if (( action_status != 0 )); then
+          break
+        fi
+      done
+    fi
+
     set -e
 
     if (( action_status != 0 )); then
       echo
       echo "ERROR: Menu action failed (exit code ${action_status})."
+      echo "Remaining comma-separated commands were not run."
       echo "The task will remain open and return to the DIY Repository Menu."
     fi
 
