@@ -261,6 +261,40 @@ h1 {
 }
 
 
+details.subsection[data-section-url^="faq-"] > summary {
+    -webkit-touch-callout: none;
+    touch-action: pan-y;
+}
+
+.faq-copy-notice {
+    position: fixed;
+    left: 50%;
+    bottom: calc(24px + env(safe-area-inset-bottom));
+    z-index: 1000;
+    max-width: min(90vw, 420px);
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: rgba(29, 29, 31, 0.94);
+    color: #ffffff;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 8px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.faq-copy-notice-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
+.faq-copy-notice-error {
+    background: rgba(155, 44, 44, 0.96);
+}
+
 .faq-search {
     margin: 14px 0 4px;
     padding: 16px;

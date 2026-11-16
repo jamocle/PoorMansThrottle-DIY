@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>Poor Man's Throttle FAQ</title>
+  <meta name="description" content="Frequently Asked Questions for Poor Man's Throttle." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Poor Man's Throttle FAQ" />
+  <meta property="og:description" content="Frequently Asked Questions for Poor Man's Throttle." />
+  <meta property="og:image" content="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/faq.png" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="1024" />
+  <meta property="og:image:alt" content="Poor Man's Throttle FAQ" />
+
+  <script>
+    (() => {
+      "use strict";
+
+      const faqKeyPattern = /^faq-[a-z0-9][a-z0-9-]*$/;
+      const currentUrl = new URL(window.location.href);
+      const faqKey = (currentUrl.searchParams.get("faq") || "").trim();
+
+      const destination = new URL("home.html", currentUrl);
+      destination.search = "";
+      destination.hash = faqKeyPattern.test(faqKey)
+        ? "faq," + encodeURIComponent(faqKey)
+        : "faq";
+
+      window.location.replace(destination.href);
+    })();
+  </script>
+</head>
+
+<body>
+  <p>
+    Opening the
+    <a href="home.html#faq">Poor Man's Throttle FAQ</a>.
+  </p>
+</body>
+
+</html>

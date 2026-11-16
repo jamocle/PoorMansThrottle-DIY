@@ -2523,6 +2523,200 @@ function updateSectionUrlFromOpenState() {
     window.history.replaceState(null, "", url.pathname + url.search + url.hash);
 }
 
+const FAQ_SHARE_LONG_PRESS_MS = 650;
+const FAQ_SHARE_MOVE_TOLERANCE_PX = 12;
+
+function buildFaqShareUrl(sectionKey) {
+    const url = new URL("faq.html", window.location.href);
+    url.search = "";
+    url.hash = "";
+    url.searchParams.set("faq", sectionKey);
+    return url.toString();
+}
+
+function getFaqCopyNotice() {
+    let notice = document.getElementById("faqCopyNotice");
+    if (notice) {
+        return notice;
+    }
+
+    notice = document.createElement("div");
+    notice.id = "faqCopyNotice";
+    notice.className = "faq-copy-notice";
+    notice.setAttribute("role", "status");
+    notice.setAttribute("aria-live", "polite");
+    notice.setAttribute("aria-atomic", "true");
+    document.body.appendChild(notice);
+    return notice;
+}
+
+function showFaqCopyNotice(message, isError = false) {
+    const notice = getFaqCopyNotice();
+    notice.textContent = message;
+    notice.classList.toggle("faq-copy-notice-error", isError);
+
+    if (notice.hideTimeoutId) {
+        window.clearTimeout(notice.hideTimeoutId);
+    }
+
+    notice.classList.add("faq-copy-notice-visible");
+    notice.hideTimeoutId = window.setTimeout(() => {
+        notice.classList.remove("faq-copy-notice-visible");
+        notice.hideTimeoutId = 0;
+    }, 2200);
+}
+
+function copyTextToClipboard(text) {
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        textarea.style.pointerEvents = "none";
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+
+        let copied = false;
+        try {
+            copied = document.execCommand("copy");
+        } catch {
+            copied = false;
+        }
+
+        textarea.remove();
+
+        if (copied) {
+            resolve();
+        } else {
+            reject(new Error("Clipboard copy is not available."));
+        }
+    });
+}
+
+function initializeFaqLongPressLinks() {
+    const summaries = document.querySelectorAll(
+        `details.subsection[${SECTION_URL_ATTRIBUTE}^="faq-"] > summary`
+    );
+
+    for (const summary of summaries) {
+        const section = summary.parentElement;
+        if (!(section instanceof HTMLDetailsElement)) {
+            continue;
+        }
+
+        let activePointerId = null;
+        let activePointerType = "";
+        let pointerStartX = 0;
+        let pointerStartY = 0;
+        let pointerStartTime = 0;
+        let pointerMoved = false;
+        let suppressNextClick = false;
+
+        const resetPointer = () => {
+            activePointerId = null;
+            activePointerType = "";
+            pointerMoved = false;
+        };
+
+        summary.addEventListener("pointerdown", (event) => {
+            if (
+                !event.isPrimary ||
+                (event.pointerType === "mouse" && event.button !== 0)
+            ) {
+                return;
+            }
+
+            activePointerId = event.pointerId;
+            activePointerType = event.pointerType;
+            pointerStartX = event.clientX;
+            pointerStartY = event.clientY;
+            pointerStartTime = performance.now();
+            pointerMoved = false;
+        });
+
+        summary.addEventListener("pointermove", (event) => {
+            if (event.pointerId !== activePointerId || pointerMoved) {
+                return;
+            }
+
+            const deltaX = event.clientX - pointerStartX;
+            const deltaY = event.clientY - pointerStartY;
+            const distance = Math.hypot(deltaX, deltaY);
+
+            if (distance > FAQ_SHARE_MOVE_TOLERANCE_PX) {
+                pointerMoved = true;
+            }
+        });
+
+        summary.addEventListener("pointerup", (event) => {
+            if (event.pointerId !== activePointerId) {
+                return;
+            }
+
+            const pressDuration = performance.now() - pointerStartTime;
+            const isLongPress =
+                !pointerMoved &&
+                pressDuration >= FAQ_SHARE_LONG_PRESS_MS;
+
+            resetPointer();
+
+            if (!isLongPress) {
+                return;
+            }
+
+            const sectionKey = getSectionUrlKey(section);
+            if (!sectionKey.startsWith("faq-")) {
+                return;
+            }
+
+            suppressNextClick = true;
+            window.setTimeout(() => {
+                suppressNextClick = false;
+            }, 0);
+
+            const shareUrl = buildFaqShareUrl(sectionKey);
+            copyTextToClipboard(shareUrl)
+                .then(() => {
+                    showFaqCopyNotice("FAQ link copied.");
+                })
+                .catch(() => {
+                    showFaqCopyNotice("Could not copy FAQ link.", true);
+                });
+        });
+
+        summary.addEventListener("pointercancel", resetPointer);
+
+        summary.addEventListener("contextmenu", (event) => {
+            if (
+                activePointerId !== null &&
+                activePointerType === "touch"
+            ) {
+                event.preventDefault();
+            }
+        });
+
+        summary.addEventListener(
+            "click",
+            (event) => {
+                if (!suppressNextClick) {
+                    return;
+                }
+
+                suppressNextClick = false;
+                event.preventDefault();
+                event.stopPropagation();
+            },
+            true
+        );
+    }
+}
+
 function initializeSectionUrls() {
     const sections = getSectionUrlElements();
     if (sections.length === 0) {
@@ -2628,6 +2822,7 @@ function initializeFaqTableScrollbars() {
 async function initialize() {
     initializeWelcomeOverlay();
     initializeSectionUrls();
+    initializeFaqLongPressLinks();
     initializeFaqTableScrollbars();
     await updateFirmwareInstaller();
     await updateHidFirmwareInstaller();
