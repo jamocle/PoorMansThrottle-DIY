@@ -1772,7 +1772,116 @@
           </div>
         </details>
 
-<details class="subsection" data-section-url="faq-start-assist-kick">
+<details class="subsection" data-section-url="faq-minimum-start-throttle">
+          <summary>
+            <span class="section-title">
+              <span>My engine starts too abruptly. How do I set the Minimum Start Throttle?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If your locomotive <strong>jumps or starts too abruptly when you first raise the throttle</strong>, adjust the <strong>Minimum Start Throttle</strong> in the PMT app.
+            </p>
+
+            <p class="note">
+              In the PMT app, open:
+            </p>
+
+            <p class="note note-strong">
+              <strong>Configuration → Motor &amp; Drive Behavior</strong>
+            </p>
+
+            <p class="note">
+              Use the <strong>Minimum Start Throttle</strong> setting shown here:
+            </p>
+
+            <img
+              src="Info/faq-minimum-start-throttle.png"
+              alt="PMT Configuration screen showing Minimum Start Throttle, Reverse Minimum Start Throttle, and the Help button"
+              class="faq-screenshot" />
+
+            <p class="note"><strong>How to adjust it</strong></p>
+
+            <ol>
+              <li>Start with the locomotive <strong>completely stopped</strong>.</li>
+              <li>In <strong>Motor &amp; Drive Behavior</strong>, adjust <strong>Minimum Start Throttle</strong>.</li>
+              <li>Test the locomotive by starting again from a complete stop.</li>
+              <li>If the locomotive <strong>jumps into motion too quickly</strong>, lower the Minimum Start Throttle value.</li>
+              <li>If the locomotive does not move when the throttle is first raised, increase the value a little.</li>
+              <li>Repeat the test from a complete stop until you find the <strong>lowest value that makes the locomotive just begin to move reliably</strong>.</li>
+            </ol>
+
+            <p class="note">
+              The goal is not to make the locomotive start fast. The goal is to remove the low-throttle range where the motor receives power but does not yet move.
+            </p>
+
+            <p class="note">
+              Think of <strong>Minimum Start Throttle</strong> as the point where useful movement begins.
+            </p>
+
+            <p class="note"><strong>Set Minimum Start Throttle before Start Assist / Kick</strong></p>
+
+            <p class="note note-strong">
+              Always adjust <strong>Minimum Start Throttle first</strong>, before tuning <strong>Start Assist / Kick</strong>.
+            </p>
+
+            <p class="note">
+              Minimum Start Throttle establishes the normal starting point for the motor. Once that value is adjusted so the locomotive just begins moving reliably from a stop, you can then determine whether <strong>Start Assist / Kick</strong> is needed.
+            </p>
+
+            <p class="note">
+              Start Assist / Kick is a separate setting that provides a short additional starting impulse. It should not be used as a substitute for correctly setting Minimum Start Throttle.
+            </p>
+
+            <p class="note">
+              If the locomotive already starts <strong>too abruptly</strong>, correct Minimum Start Throttle first rather than increasing Start Assist / Kick.
+            </p>
+
+            <p class="note"><strong>What about Reverse Minimum Start Throttle?</strong></p>
+
+            <p class="note">
+              The app also provides <strong>Reverse Minimum Start Throttle</strong>.
+            </p>
+
+            <p class="note">
+              If <strong>Reverse Minimum Start Throttle is 0</strong>, reverse uses the same minimum-start setting as forward.
+            </p>
+
+            <p class="note">
+              If the locomotive behaves differently in reverse, you can give reverse its own value and tune it the same way: start fully stopped and adjust until the locomotive just begins moving smoothly in reverse.
+            </p>
+
+            <p class="note"><strong>Use the Help button</strong></p>
+
+            <p class="note">
+              Tap the <strong>Help</strong> button next to Minimum Start Throttle. The Help wizard walks you through the adjustment process so you can tune the locomotive more easily.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/throttle-limits.html"
+                target="_blank" rel="noopener noreferrer">
+                Minimum Start Throttle and Maximum Throttle
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=09_troubleshooting.md"
+                target="_blank" rel="noopener noreferrer">
+                Troubleshooting Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
+        <details class="subsection" data-section-url="faq-start-assist-kick">
           <summary>
             <span class="section-title">
               <span>What is Start Assist / Kick, when would I need to use it and how?</span>
