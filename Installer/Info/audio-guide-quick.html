@@ -710,8 +710,8 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 0212.wav    horn/whistle sustain
 </code></pre>
 <p>Any custom audio configured as a repeating sound must also loop well.</p>
-<h2>Custom FX Audio — Example: Fiddle Music on FX3</h2>
-<p>Custom audio is not limited to the standard bell, horn/whistle, brake, or engine files. Any FX slot can use a PMTPlayer custom track.</p>
+<h2>Custom Audio — Firmware FX or App Output Control</h2>
+<p>Custom audio is not limited to the standard bell, horn/whistle, brake, or engine files. A firmware FX slot can use a PMTPlayer custom track, and app 4.3.2 + firmware 4.0.1 also provide <strong>App Audio Custom</strong> / <strong>App Audio Custom Replay</strong> controls that play the same custom tracks without consuming an FX slot.</p>
 <p>For example, suppose you want <strong>fiddle music</strong> on <strong>FX3</strong>.</p>
 <p>Custom tracks can use numbers from <code>1</code> through <code>9999</code>, but <strong>do not assume every number in that range is free</strong>.</p>
 <blockquote>
@@ -759,6 +759,7 @@ CV167=BOTH
 <li>pattern <code>104</code> = custom <strong>replay / loop</strong>.</li>
 </ul>
 <p>With patterns <code>103</code> and <code>104</code>, the FX pin/track CV stores the <strong>PMTPlayer track number</strong>, not a GPIO number.</p>
+<p>For the app-owned alternatives, choose <strong>App Audio Custom</strong> (one-shot) or <strong>App Audio Custom Replay</strong> (repeating), enter the same <code>1..9999</code> Audio Track, and let the app send the direct <code>AC</code> / <code>ACR</code> command. OFF explicitly stops that app-audio track. Leading zeroes in the configured track value are normalized (<code>0007</code> → <code>7</code>).</p>
 <p>Use the normal FX runtime commands to activate or deactivate FX3:</p>
 <pre><code class="language-text">FX3=1
 FX3=0

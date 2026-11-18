@@ -558,6 +558,8 @@ Current pattern values are:
 
 Values `1..99` are reserved for physical/LED patterns, `100..199` for audio patterns, and `200..299` for firmware-command patterns. Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted, but CV queries report numeric values.
 
+Starting with app 4.3.2 / firmware 4.0.1, the app also supports app-owned **App Audio Custom** and **App Audio Custom Replay** Output Controls. They are persisted with the app-owned Output Control definitions rather than in FX1-FX12. The app sends direct `AC<track>=0/1` or `ACR<track>=0/1` commands to the throttle firmware, allowing a custom one-shot or replay/loop to be started and explicitly stopped without consuming a firmware FX slot. Track values are `1..9999`, and the app canonicalizes leading zeroes before persistence/transfer.
+
 The app also supports an app-owned **Relay Command** function type. It is persisted alongside App Command definitions rather than as a new firmware FX pattern. The editor selects a known target device by its persisted ESP-NOW MAC and stores the complete relay command pair (`RY=<mac><command on>,RY=<mac><command off>`). When an existing relay definition is edited, the app maps the stored MAC back to the known device name; if the MAC is no longer known, the raw MAC remains visible so the saved command is not lost.
 
 ## Direction Awareness

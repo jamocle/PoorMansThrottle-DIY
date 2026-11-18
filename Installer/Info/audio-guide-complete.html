@@ -1373,8 +1373,11 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <li>auxiliary pump: <strong>&quot;mmmmmmmm&quot;</strong></li>
 <li>warning tone: <strong>&quot;beeeeeep&quot;</strong></li>
 </ul>
-<h3>How to Attach Custom Audio to an FX</h3>
-<p>Custom function audio uses an FX slot just like the other function outputs, but for PMTPlayer custom-audio patterns the function's Pin/Track CV stores a <strong>track number from <code>1..9999</code></strong> instead of a GPIO number. The selected number must not be one of the reserved PMT filenames listed above.</p>
+<h3>How to Attach Custom Audio to an FX or App Output Control</h3>
+<p>Custom function audio can be attached in two ways.</p>
+<p><strong>Firmware-side Audio Custom / Audio Custom Replay</strong> use an FX slot just like the other function outputs. For PMTPlayer custom-audio patterns, the function's Pin/Track CV stores a <strong>track number from <code>1..9999</code></strong> instead of a GPIO number.</p>
+<p><strong>App Audio Custom / App Audio Custom Replay</strong> (app 4.3.2 with firmware 4.0.1+) are app-owned Output Controls. They use the same <code>1..9999</code> custom track numbers but do <strong>not</strong> consume FX1-FX12. The app starts/stops them with the firmware's direct <code>AC</code> / <code>ACR</code> commands. OFF explicitly stops the selected app-audio track.</p>
+<p>In either case, the selected number must not be one of the reserved PMT filenames listed above. The app normalizes leading zeroes in the configured track number (<code>0007</code> becomes <code>7</code>); the WAV filename itself remains four digits when that is the sound-set naming convention (<code>0007.wav</code>).</p>
 <p>The two custom-audio pattern values are:</p>
 <table>
 <thead>

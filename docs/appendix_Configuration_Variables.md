@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 3.6.2
+**Firmware Version:** 4.0.1
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -888,6 +888,7 @@ Rules:
 * physical patterns (`1..99`) require a valid non-conflicting GPIO; bell/horn/cab-chatter audio patterns do not require an FX GPIO; custom audio patterns `103/104` require a valid PMTPlayer track number `1..9999` in the pin/track/data CV
 * firmware-command pattern `200` requires a valid `<command on>,<command off>` pair in the pin/track/data CV; `FXn=1` executes the ON command and `FXn=0` executes the OFF command through the normal firmware command parser
 * direction rules still apply to pattern `200`: an enabled FX executes its ON command when direction gating allows it and its OFF command when gating transitions it to an effective OFF state
+* app-owned **App Audio Custom** / **App Audio Custom Replay** controls are not CV-backed FX patterns; firmware 4.0.1 handles them through the direct `AC<track>=0/1` and `ACR<track>=0/1` runtime commands, so they do not consume FX1-FX12
 
 **Electrical note:** ESP32 GPIO pins are low-current logic outputs. Use appropriate resistors, drivers, transistors, MOSFETs, or LED modules for your load. Do not assume a GPIO pin can safely power an LED, lamp, relay, smoke unit, or accessory directly.
 

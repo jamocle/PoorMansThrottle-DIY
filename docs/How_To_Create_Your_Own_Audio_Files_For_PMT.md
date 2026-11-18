@@ -1293,9 +1293,15 @@ A custom function can be configured as either:
 - auxiliary pump: **"mmmmmmmm"**
 - warning tone: **"beeeeeep"**
 
-### How to Attach Custom Audio to an FX
+### How to Attach Custom Audio to an FX or App Output Control
 
-Custom function audio uses an FX slot just like the other function outputs, but for PMTPlayer custom-audio patterns the function's Pin/Track CV stores a **track number from `1..9999`** instead of a GPIO number. The selected number must not be one of the reserved PMT filenames listed above.
+Custom function audio can be attached in two ways.
+
+**Firmware-side Audio Custom / Audio Custom Replay** use an FX slot just like the other function outputs. For PMTPlayer custom-audio patterns, the function's Pin/Track CV stores a **track number from `1..9999`** instead of a GPIO number.
+
+**App Audio Custom / App Audio Custom Replay** (app 4.3.2 with firmware 4.0.1+) are app-owned Output Controls. They use the same `1..9999` custom track numbers but do **not** consume FX1-FX12. The app starts/stops them with the firmware's direct `AC` / `ACR` commands. OFF explicitly stops the selected app-audio track.
+
+In either case, the selected number must not be one of the reserved PMT filenames listed above. The app normalizes leading zeroes in the configured track number (`0007` becomes `7`); the WAV filename itself remains four digits when that is the sound-set naming convention (`0007.wav`).
 
 The two custom-audio pattern values are:
 

@@ -3175,12 +3175,18 @@
             </p>
 
             <ul>
-              <li><strong>Audio Custom</strong> — plays your selected track once.</li>
-              <li><strong>Audio Custom Replay</strong> — continuously loops your selected track while the control is ON.</li>
+              <li><strong>Audio Custom</strong> — firmware-side one-shot custom audio; uses one FX slot.</li>
+              <li><strong>Audio Custom Replay</strong> — firmware-side replay/loop custom audio; uses one FX slot.</li>
+              <li><strong>App Audio Custom</strong> — app-owned one-shot custom audio; does not consume FX1-FX12.</li>
+              <li><strong>App Audio Custom Replay</strong> — app-owned replay/loop custom audio; does not consume FX1-FX12.</li>
             </ul>
 
             <p class="note">
-              Those patterns let you select an <strong>Audio Track from 1 through 9999</strong>.
+              All four custom-audio choices use an <strong>Audio Track from 1 through 9999</strong>. App 4.3.2 removes leading zeroes from the configured value, so <code>0007</code> is stored/sent as track <code>7</code>.
+            </p>
+
+            <p class="note">
+              <strong>App Audio Custom</strong> and <strong>App Audio Custom Replay</strong> require firmware <strong>4.0.1 or newer</strong>. Their OFF action explicitly tells the firmware to stop the selected app-audio track.
             </p>
 
             <p class="note">
@@ -3252,8 +3258,8 @@
               <li>Open <strong>Configuration → Output Control</strong>.</li>
               <li>Tap <strong>Add Output</strong>.</li>
               <li>Give the button a name, such as <strong>Station Announcement</strong>.</li>
-              <li>Choose <strong>Audio Custom</strong> to play the sound once, or <strong>Audio Custom Replay</strong> to keep repeating it until you turn it off.</li>
-              <li>Set <strong>Audio Track</strong> to the number you used — for example, <strong>9000</strong>.</li>
+              <li>Choose <strong>Audio Custom</strong> / <strong>Audio Custom Replay</strong> if you want the sound stored as a firmware FX function, or choose <strong>App Audio Custom</strong> / <strong>App Audio Custom Replay</strong> if you want the same one-shot/replay behavior without consuming an FX slot.</li>
+              <li>Set <strong>Audio Track</strong> to the number you used — for example, <strong>9000</strong>. Leading zeroes are normalized automatically.</li>
               <li>Save the configuration.</li>
             </ol>
 
@@ -3506,9 +3512,9 @@
             <ol>
               <li>Tap <strong>Add Output</strong>.</li>
               <li>Give it a name such as <strong>Christmas Music</strong>.</li>
-              <li>Choose <strong>Audio Custom Replay</strong>.</li>
+              <li>Choose <strong>Audio Custom Replay</strong> for a firmware FX-slot control, or <strong>App Audio Custom Replay</strong> to avoid consuming an FX slot.</li>
               <li>Set <strong>Audio Track</strong> to <code>400</code>.</li>
-              <li>Set <strong>Direction</strong> to <strong>Both</strong>.</li>
+              <li>If using firmware-side Audio Custom Replay, set <strong>Direction</strong> to <strong>Both</strong>. App Audio Custom Replay has no Direction setting.</li>
               <li>Leave <strong>Momentary</strong> off.</li>
               <li>Save the configuration.</li>
             </ol>
@@ -3526,8 +3532,8 @@
             </p>
 
             <ul>
-              <li><strong>Audio Custom</strong> — plays the selected track one time.</li>
-              <li><strong>Audio Custom Replay</strong> — keeps repeating the track until you turn the button off.</li>
+              <li><strong>Audio Custom</strong> / <strong>App Audio Custom</strong> — plays the selected track one time.</li>
+              <li><strong>Audio Custom Replay</strong> / <strong>App Audio Custom Replay</strong> — keeps repeating the track until you turn the button off.</li>
             </ul>
 
             <p class="note">
@@ -3710,9 +3716,9 @@
 
             <ul>
               <li><strong>Name:</strong> for example, Horn</li>
-              <li><strong>Pattern:</strong> Audio Custom</li>
-              <li><strong>Audio Track:</strong> <code>1</code></li>
-              <li><strong>Direction:</strong> Both, Forward, or Reverse as desired</li>
+              <li><strong>Pattern:</strong> Audio Custom for a firmware FX slot, or App Audio Custom for an app-owned control</li>
+              <li><strong>Audio Track:</strong> <code>1</code> (entries such as <code>0001</code> normalize to <code>1</code>)</li>
+              <li><strong>Direction:</strong> Both, Forward, or Reverse as desired for firmware-side Audio Custom; App Audio Custom has no Direction setting</li>
             </ul>
 
             <p class="note">
@@ -3724,11 +3730,11 @@
             </p>
 
             <p class="note">
-              For a sound that keeps repeating while the button is ON, use <strong>Audio Custom Replay</strong>.
+              For a sound that keeps repeating while the button is ON, use <strong>Audio Custom Replay</strong> or the no-FX-slot <strong>App Audio Custom Replay</strong>.
             </p>
 
             <p class="note">
-              <strong>Audio Custom Replay</strong> uses the DFPlayer <strong>BUSY</strong> signal to detect when the MP3 finishes and restart it.
+              <strong>Audio Custom Replay</strong> and <strong>App Audio Custom Replay</strong> use the DFPlayer <strong>BUSY</strong> signal to detect when the MP3 finishes and restart it.
             </p>
 
             <p class="note">
@@ -3740,8 +3746,8 @@
             </p>
 
             <ul>
-              <li><strong>Audio Custom</strong> — play once</li>
-              <li><strong>Audio Custom Replay</strong> — replay while active</li>
+              <li><strong>Audio Custom</strong> / <strong>App Audio Custom</strong> — play once</li>
+              <li><strong>Audio Custom Replay</strong> / <strong>App Audio Custom Replay</strong> — replay while active</li>
             </ul>
 
             <p class="note">

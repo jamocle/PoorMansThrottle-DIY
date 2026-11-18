@@ -2,9 +2,12 @@
 
 ## Smartphone App:
 
+### Version 4.2.14
+* **Added support for App Side Audio Output Control** Now yu may setup app-side Audio COntrol that wont take up precious FX slots
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.12
 * **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.11
 * **New FX Commands** Added Firmware Run Script and Firmware Run Script Repeat.

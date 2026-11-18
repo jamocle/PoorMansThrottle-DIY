@@ -272,8 +272,8 @@ After all wiring is complete:
 3. Power on the ESP32.
 4. Select the DFPlayer backend.
 5. Enable audio.
-6. Configure at least one FX function as a custom audio sound.
-7. Trigger that FX function.
+6. Configure either a firmware FX custom-audio function or an app-owned App Audio Custom / App Audio Custom Replay control.
+7. Trigger that control.
 
 Use:
 
@@ -297,9 +297,9 @@ The supported volume range is `0` through `30`.
 
 ---
 
-## Assign Sounds to FX Commands
+## Assign Sounds to Firmware FX or App Audio Controls
 
-This is the normal way to use DFPlayer in PMT.
+Firmware FX custom audio remains supported, and app 4.3.2 adds app-owned custom-audio controls that use the same DFPlayer track numbering.
 
 With `CV401=1`, DFPlayer is intentionally restricted to the custom FX audio patterns:
 
@@ -314,6 +314,8 @@ Legacy text values are also accepted by the firmware:
 - `AUDIO_CUSTOM_REPLAY`, `CUSTOM_REPLAY`, `AUDIO_CUSTOM_LOOP`, or `CUSTOM_LOOP`
 
 The numeric values are preferred for clear installer configuration.
+
+App 4.3.2 with firmware 4.0.1+ also supports **App Audio Custom** and **App Audio Custom Replay**. These app-owned Output Controls use the same `1..9999` track numbers but do not consume FX1-FX12. Their ON/OFF actions use the direct `AC` / `ACR` firmware commands; OFF explicitly stops the matching track/mode. The app normalizes configured leading zeroes (`0001` becomes track `1`), while the DFPlayer filename remains `/mp3/0001.mp3`.
 
 ## Function CV layout
 

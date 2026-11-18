@@ -843,6 +843,14 @@ Implemented values are:
 - `102` = audio cab chatter
 - `103` = custom audio one-shot
 - `104` = custom audio replay / loop
+
+For app-owned **App Audio Custom** / **App Audio Custom Replay** controls (app 4.3.2 + firmware 4.0.1 or newer), remember that they do not use an FX slot. The app sends `AC<track>=1/0` or `ACR<track>=1/0` directly. If one of these controls does not work:
+
+- confirm the locomotive is running firmware 4.0.1 or newer;
+- confirm the track is in the valid `1..9999` range;
+- use the app's normalized track number (for example, `0007` is treated as `7`);
+- verify that ON receives an `ACK` and that OFF sends the matching explicit stop command;
+- if the equivalent firmware-side Audio Custom pattern works but App Audio does not, test the direct command in Terminal to separate app routing from audio-file/backend problems.
 - `200` = firmware command
 
 Legacy text aliases such as `SOLID`, `DBL_BLNK`, `AUDIO_BELL`, `AUDIO_HORN`, `FW_COMMAND`, and `COMMAND` are still accepted. Queries return numeric pattern values.

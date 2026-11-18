@@ -178,7 +178,7 @@
 | **Assign personal recording to an FX function** | ❌ No | ✅ **Yes** |
 | **User-created FX library** | ❌ No arbitrary files | ✅ **Yes** |
 | **Locomotive-specific custom FX audio** | ❌ No arbitrary files | ✅ **Yes** |
-| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Track IDs `1`–`9999` are addressable for custom PMTPlayer FX within the active sound root; 12 FX slots can be configured at once** |
+| **Potential number of custom FX sounds** | ❌ **0 arbitrary user-provided files** | ✅ **Track IDs `1`–`9999` are addressable; firmware custom-audio FX can use the 12 FX slots, and App Audio Custom/Replay can add custom-audio controls without consuming those slots** |
 | **Replace FX sound with another user WAV** | ❌ No | ✅ **Yes** |
 | **Add FX audio without recompiling firmware** | ❌ No arbitrary WAV support | ✅ **Yes** |
 | **Crowdsource FX sounds** | ❌ No | ✅ **Yes** |
@@ -469,7 +469,7 @@
 | **Real-time Steam ↔ Diesel CV switching** | ❌ | ✅ **YES** |
 | **User-supplied locomotive WAV files** | ❌ | ✅ **YES** |
 | **Custom audio files attached to FX** | ❌ **NONE** | ✅ **FULLY CAPABLE** |
-| **Potential custom FX sounds** | ❌ **NONE** | ✅ **Track IDs 1–9999; 12 FX slots configurable at one time** |
+| **Potential custom FX sounds** | ❌ **NONE** | ✅ **Track IDs 1–9999; firmware custom-audio FX use the 12 FX slots, while App Audio Custom/Replay controls do not consume those slots** |
 | **Crowdsourced locomotive audio** | ⚠️ **Professionally recorded sounds** | ✅ **YES** |
 | **Share/download community sound sets** | ❌ | ✅ **YES** |
 | **Firmware/app development** | Vendor release cycle | ✅ **Active development** |

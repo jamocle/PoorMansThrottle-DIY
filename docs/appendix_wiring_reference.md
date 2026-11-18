@@ -225,7 +225,8 @@ Firmware provides **12 configurable FX slots**. A slot can drive a physical outp
 Notes:
 - FX1/FX2 have board-profile pin defaults, but all FX pattern defaults are `0`, so those pins are not activated as functions until a pattern is configured.
 - Physical patterns (`1..99`) require a valid, non-conflicting output GPIO.
-- Audio patterns (`100..199`) do not use the same GPIO rule. Bell/horn/cab-chatter need no function GPIO; custom audio patterns `103`/`104` reuse the function pin CV as a PMTPlayer track number `1..9999`.
+- Audio patterns (`100..199`) do not use the same GPIO rule. Bell/horn/cab-chatter need no function GPIO; custom audio patterns `103`/`104` reuse the function pin CV as a PMTPlayer track number `1..9999`. App 4.3.2 normalizes leading zeroes in those configured track values.
+- App Audio Custom / App Audio Custom Replay are app-owned controls introduced with firmware 4.0.1 support. They use direct audio commands instead of a function GPIO or firmware FX slot.
 - Firmware-command pattern `200` requires no physical FX wiring. The same function data CV stores `<command on>,<command off>` instead of a GPIO or track number.
 - The onboard status LED is reserved by the firmware and must not be reused as a physical function output.
 

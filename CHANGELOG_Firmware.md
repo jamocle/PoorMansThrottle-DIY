@@ -1,10 +1,14 @@
 # Changelog — PoorMansThrottle
 
 ## Firmware:
+
+### Version 4.0.1
+* **Audio Command** Now there 2 new Audio Command.  AC and ACR.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 3.6.6
 * **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
 * FX command refinements
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 3.6.5
 * **Added Grade Crossing Audio Command** Grade crossing is now a selectable audio sound.

@@ -479,9 +479,9 @@ If `0303.wav` is missing, PMT stops discovering cab-chatter tracks at that gap.
 
 Any custom audio configured as a repeating sound must also loop well.
 
-## Custom FX Audio — Example: Fiddle Music on FX3
+## Custom Audio — Firmware FX or App Output Control
 
-Custom audio is not limited to the standard bell, horn/whistle, brake, or engine files. Any FX slot can use a PMTPlayer custom track.
+Custom audio is not limited to the standard bell, horn/whistle, brake, or engine files. A firmware FX slot can use a PMTPlayer custom track, and app 4.3.2 + firmware 4.0.1 also provide **App Audio Custom** / **App Audio Custom Replay** controls that play the same custom tracks without consuming an FX slot.
 
 For example, suppose you want **fiddle music** on **FX3**.
 
@@ -534,6 +534,8 @@ For custom PMTPlayer audio:
 - pattern `104` = custom **replay / loop**.
 
 With patterns `103` and `104`, the FX pin/track CV stores the **PMTPlayer track number**, not a GPIO number.
+
+For the app-owned alternatives, choose **App Audio Custom** (one-shot) or **App Audio Custom Replay** (repeating), enter the same `1..9999` Audio Track, and let the app send the direct `AC` / `ACR` command. OFF explicitly stops that app-audio track. Leading zeroes in the configured track value are normalized (`0007` → `7`).
 
 Use the normal FX runtime commands to activate or deactivate FX3:
 

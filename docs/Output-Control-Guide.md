@@ -1,7 +1,7 @@
 # Poor Man's Throttle — Output Control User Guide
 
-**Applies to:** App version **4.2.4** with firmware **3.6.1**  
-**Minimum firmware supported by this app:** **3.6.1**
+**Applies to:** App version **4.3.2** with firmware **4.0.1**  
+**Minimum firmware supported by this app:** **4.0.1**
 
 > **Important:** `Control 1`, `Control 2`, and so on describe the order you see on the Configuration screen. They are **not automatically the same as firmware FX1, FX2, and so on**. App-based controls do not use a firmware FX slot, and reordering two firmware-based controls can move their complete settings from one FX slot to another.
 
@@ -121,6 +121,8 @@ This means the locomotive itself handles things such as:
 These Patterns are App Output Controls:
 
 - APP Command
+- App Audio Custom
+- App Audio Custom Replay
 - Device Command
 - Device FX
 - Relay Command
@@ -135,7 +137,8 @@ Instead, the app stores the control and decides where the action should go when 
 - You can add App Output Controls even when all 12 firmware FX slots are already used.
 - They are available through the app rather than being standalone firmware FX functions.
 - App Output Controls can also be assigned to a supported physical device through the app's **Physical Controls** mapping. The physical device still operates them through the app; it does not bypass the app and talk directly to the locomotive.
-- APP Command, Device Command, and Relay Command can use Linked FX and Momentary.
+- APP Command, App Audio Custom, App Audio Custom Replay, Device Command, and Relay Command can use Linked FX and Momentary.
+- App Audio Custom and App Audio Custom Replay require firmware **4.0.1 or newer**. The app sends direct custom-audio commands to the locomotive without consuming a firmware FX slot.
 - Device FX follows the behavior of the control it points to rather than having its own Direction, Linked FX, or Momentary settings.
 - HTTP Request has no Direction setting. **Dual Request** can use Linked FX and Momentary; **Single Request** is intentionally stateless and has neither.
 
@@ -145,9 +148,9 @@ Instead, the app stores the control and decides where the action should go when 
 |---|---|---|
 | Uses FX1-FX12 | Yes | No |
 | Runs on the locomotive | Yes | No, the app routes the action |
-| Direction | Configure it directly on the control | APP Command, Device Command, Relay Command, and HTTP Request do not have Direction. **Device FX follows the target control's Direction behavior.** |
-| Linked FX | Configure it directly on the control | APP Command, Device Command, and Relay Command can configure Linked FX directly. **HTTP Request can configure Linked FX only in Dual Request mode.** Device FX has no separate Linked FX setting; it follows the target control's behavior. |
-| Momentary | Configure it directly on the control | APP Command, Device Command, and Relay Command can configure Momentary directly. **HTTP Request can configure Momentary only in Dual Request mode.** Device FX has no separate Momentary setting; it follows the target control's behavior. |
+| Direction | Configure it directly on the control | APP Command, App Audio Custom, App Audio Custom Replay, Device Command, Relay Command, and HTTP Request do not have Direction. **Device FX follows the target control's Direction behavior.** |
+| Linked FX | Configure it directly on the control | APP Command, App Audio Custom, App Audio Custom Replay, Device Command, and Relay Command can configure Linked FX directly. **HTTP Request can configure Linked FX only in Dual Request mode.** Device FX has no separate Linked FX setting; it follows the target control's behavior. |
+| Momentary | Configure it directly on the control | APP Command, App Audio Custom, App Audio Custom Replay, Device Command, and Relay Command can configure Momentary directly. **HTTP Request can configure Momentary only in Dual Request mode.** Device FX has no separate Momentary setting; it follows the target control's behavior. |
 | Can still be added after all 12 FX slots are used | No | Yes |
 
 ## Where the settings are stored
@@ -171,6 +174,7 @@ These controls belong to the locomotive's firmware configuration.
 The app stores:
 
 - APP Command controls
+- App Audio Custom and App Audio Custom Replay controls, including their Audio Track values
 - Device Command controls
 - Device FX controls
 - Relay Command controls
@@ -179,6 +183,12 @@ The app stores:
 - the app-side information needed to keep Power Relay and LED Solid labeled the way you selected them
 
 This is why App Output Controls can exist without using a firmware FX slot.
+
+### Exporting and importing Output Controls
+
+Output Control export/import includes both firmware-backed controls and app-owned controls. App Audio Custom and App Audio Custom Replay preserve their app-audio mode, Audio Track, Linked FX, Momentary setting, and display order in the transfer file.
+
+When imported, custom-audio track values are validated as `1..9999` and normalized to their canonical decimal form, so `0007` becomes `7`. Invalid app-audio track values are rejected rather than imported as broken controls.
 
 ## Using a physical device mapped in the app
 
@@ -192,6 +202,8 @@ That includes:
 
 - Firmware Output Controls, such as LED, audio, Power Relay, and FW Command
 - APP Command
+- App Audio Custom
+- App Audio Custom Replay
 - Device Command
 - Device FX
 - Relay Command
@@ -294,6 +306,8 @@ You can choose from the Firmware and App Patterns.
 You can still add:
 
 - APP Command
+- App Audio Custom
+- App Audio Custom Replay
 - Device Command
 - Device FX
 - Relay Command
@@ -330,7 +344,7 @@ It also determines which additional fields are shown.
 For example:
 
 - an LED Pattern needs a GPIO Pin;
-- Audio Custom needs an Audio Track;
+- Audio Custom, Audio Custom Replay, App Audio Custom, and App Audio Custom Replay need an Audio Track;
 - Device Command needs a Target Device and command pair;
 - Device FX needs a Target Device and Target FX;
 - HTTP Request needs a valid Behavior and one or two valid HTTP request definitions, depending on the Behavior.
@@ -384,10 +398,12 @@ Audio Track is shown for:
 
 - Audio Custom
 - Audio Custom Replay
+- App Audio Custom
+- App Audio Custom Replay
 
 Valid values are **1 through 9999**.
 
-Enter the track number you want that Output Control to play.
+Enter the track number you want that Output Control to play. Leading zeroes are removed automatically when the value is normalized, so entries such as `0007`, `007`, and `07` are stored/sent as track `7`.
 
 ### Command On/Off
 
@@ -516,7 +532,7 @@ Examples:
 
 If you change back to an allowed Direction while the control is still logically ON, the firmware can resume the effect automatically.
 
-APP Command, Device Command, Relay Command, and HTTP Request do not have a Direction setting.
+APP Command, App Audio Custom, App Audio Custom Replay, Device Command, Relay Command, and HTTP Request do not have a Direction setting.
 
 A Device FX can still be direction-sensitive when the Output Control it targets is a Firmware Output Control with a Direction restriction.
 
@@ -534,7 +550,7 @@ The locomotive stores the link information with the firmware function, but the *
 
 #### Linking an App Output Control
 
-APP Command, Device Command, Relay Command, and **HTTP Request in Dual Request mode** can link to:
+APP Command, App Audio Custom, App Audio Custom Replay, Device Command, Relay Command, and **HTTP Request in Dual Request mode** can link to:
 
 - a firmware FX; or
 - an eligible App Output Control
@@ -564,6 +580,7 @@ A linked firmware FX is sent to every consist member using that FX number.
 A linked App Output Control follows its own normal consist rule:
 
 - APP Command = sent to the consist
+- App Audio Custom / App Audio Custom Replay = the direct audio ON/OFF command is sent to the consist members
 - Device Command = sent only to its Target Device
 - Relay Command = sent through the lead locomotive
 - HTTP Request (Dual Request) = the HTTP request is sent once by the app; after success, its linked action follows the linked control's normal routing
@@ -749,6 +766,8 @@ After reordering:
 | Audio Custom Replay | Firmware | Track 1-9999, Direction, Linked FX, Momentary | Repeats the selected track until OFF |
 | FW Command | Firmware | ON Command, OFF Command, Direction, Linked FX, Momentary | Locomotive executes a command for ON and another for OFF |
 | APP Command | App | Command On/Off, Linked FX, Momentary | Sends commands to the current locomotive |
+| App Audio Custom | App | Track 1-9999, Linked FX, Momentary | Plays the selected track once without using an FX slot; OFF explicitly stops that track |
+| App Audio Custom Replay | App | Track 1-9999, Linked FX, Momentary | Replays the selected track without using an FX slot; OFF explicitly stops that track |
 | Device Command | App | Target Device, Command On/Off, Linked FX, Momentary | Sends commands to one selected device |
 | Device FX | App | Target Device, Target FX | Operates another device's Output Control |
 | Relay Command | App | Relay Target, ON Command, OFF Command, Linked FX, Momentary | Sends commands through an ESP-NOW relay |
@@ -911,7 +930,7 @@ Use it when you want a bulb-like turn-on instead of an instant LED turn-on.
 
 # 7. Audio Patterns
 
-All audio Patterns in this section use a firmware FX slot.
+The firmware audio Patterns in this section use a firmware FX slot. App version 4.3.2 also adds **App Audio Custom** and **App Audio Custom Replay**, described below, which provide the same custom-track one-shot/replay choices without consuming FX1-FX12.
 
 The audio only plays when:
 
@@ -1001,6 +1020,22 @@ Audio Custom Replay loops the selected track continuously while the Output Contr
 
 Turning the control OFF stops the loop.
 
+## App Audio Custom
+
+Choose an Audio Track from **1 through 9999**.
+
+App Audio Custom is app-owned and does **not** consume one of FX1-FX12. Turning it ON sends the firmware 4.0.1+ direct custom-audio command for that track. Turning it OFF sends the matching direct stop command for that track. Turning it ON again retriggers the one-shot.
+
+It has no Direction setting because it is not a firmware FX slot. Linked FX and Momentary remain available.
+
+## App Audio Custom Replay
+
+Choose an Audio Track from **1 through 9999**.
+
+App Audio Custom Replay is also app-owned and does **not** consume an FX slot. ON starts/retriggers replay of the selected track; OFF explicitly sends the matching stop command. Linked FX and Momentary remain available, and there is no Direction setting.
+
+For both App Audio patterns, the app normalizes leading zeroes (`0007` → `7`) before saving/sending the track number. These controls require firmware **4.0.1 or newer**.
+
 In these examples:
 
 - Fiddle Player uses track **1**
@@ -1014,7 +1049,7 @@ In these examples:
 
 The command-related Patterns and HTTP Request can all create useful Output Control actions, but they send those actions to very different destinations.
 
-> **The firmware command Pattern is named `FW Command` in the app.** It uses a firmware FX slot. APP Command, Device Command, Device FX, Relay Command, and HTTP Request are App Output Controls and do not use one of the locomotive's FX1-FX12 slots.
+> **The firmware command Pattern is named `FW Command` in the app.** It uses a firmware FX slot. APP Command, App Audio Custom, App Audio Custom Replay, Device Command, Device FX, Relay Command, and HTTP Request are App Output Controls and do not use one of the locomotive's FX1-FX12 slots.
 
 | Pattern | Main purpose | Where the action goes | Uses one of this locomotive's FX slots? | Why you might choose it |
 |---|---|---|---|---|
@@ -1531,6 +1566,13 @@ For a Momentary control:
 - OFF sends the configured OFF command to the current locomotive.
 - Linked FX is then operated as configured.
 
+## App Audio Custom / App Audio Custom Replay
+
+- ON sends the direct custom-audio command for the selected track to the current locomotive.
+- OFF sends the matching direct stop command for that track.
+- Custom plays once; Custom Replay loops/replays while ON.
+- These controls do not use FX1-FX12.
+
 ## Device Command
 
 The command is sent only to the selected Target Device.
@@ -1633,6 +1675,10 @@ If you want a particular function to line up across all consist members, configu
 
 An APP Command is sent to the consist members.
 
+## App Audio Custom / App Audio Custom Replay on a consist
+
+The direct custom-audio ON/OFF command is sent to the consist members. OFF explicitly stops the matching app-audio track/mode on those members.
+
 ## Device Command on a consist
 
 A Device Command stays targeted.
@@ -1666,6 +1712,7 @@ Single Request remains a one-shot action. Dual Request keeps its normal ON/OFF, 
 | Firmware FX | Same FX number goes to every consist member |
 | Linked firmware FX | Same linked FX number goes to every consist member |
 | APP Command | Command goes to the consist members |
+| App Audio Custom / Replay | Direct audio ON/OFF command goes to the consist members |
 | Device Command | Only the selected Target Device |
 | Device FX | Only the selected target device/control |
 | Relay Command | Sent through the lead locomotive |
@@ -1897,6 +1944,16 @@ Turning it ON again retriggers the track.
 
 If you do not want the button to remain latched ON, use Momentary so it returns to OFF when you release it.
 
+## Play custom audio without using a firmware FX slot
+
+Use **App Audio Custom** for a one-shot or **App Audio Custom Replay** for a repeating track:
+
+- Audio Track = 1 through 9999
+- Momentary = as needed
+- Linked FX = as needed
+
+These app-owned controls require firmware 4.0.1+ but do not consume FX1-FX12. Turning the control OFF explicitly stops the selected app-audio track. Leading zeroes are normalized automatically.
+
 ## Create a firmware command button
 
 Use:
@@ -2024,7 +2081,7 @@ A control may not appear as a usable throttle button if required information is 
 
 Examples:
 
-- Audio Custom needs a valid track number.
+- Audio Custom, Audio Custom Replay, App Audio Custom, and App Audio Custom Replay need a valid track number from 1 through 9999.
 - LED Patterns need a positive GPIO number.
 - FW Command needs both ON and OFF commands.
 - Device Command needs a Target Device.

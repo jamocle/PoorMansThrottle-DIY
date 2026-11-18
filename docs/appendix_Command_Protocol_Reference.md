@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 3.6.3  
+**Firmware Version:** 4.0.1  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -78,6 +78,7 @@ Command characteristics:
 | Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
 | Shared script record/playback/delete/timing adjustment (`SR` / `SR0` / `SRX` / `SP...` / `SS?` / `SD=` / `SA=`) | Yes* | Yes* | Yes* |
 | Throttle motion commands | Yes | No | No |
+| Direct app-owned custom audio (`AC` / `ACR`) | Yes | No | No |
 | Hardware/stored throttle state query | Yes | No | No |
 | Periodic throttle debug commands | Yes | No | No |
 | Function output commands | Yes | No | No |
@@ -1665,6 +1666,65 @@ Notes:
 
 ---
 
+## Direct App-Owned Custom Audio Commands
+
+Firmware 4.0.1 adds throttle-only direct custom-audio commands used by the app-owned **App Audio Custom** and **App Audio Custom Replay** Output Controls. These commands do not consume or modify FX1-FX12.
+
+### One-shot custom audio
+
+```text
+AC<track>=1
+AC<track>=0
+```
+
+Where `<track>` is `1..9999`.
+
+`=1` starts or retriggers the selected custom track as a one-shot. `=0` immediately stops the matching one-shot app-audio request if it is still active.
+
+Example:
+
+```text
+AC7=1
+AC7=0
+```
+
+### Replay / loop custom audio
+
+```text
+ACR<track>=1
+ACR<track>=0
+```
+
+`=1` starts or retriggers replay/loop behavior for the selected track. `=0` immediately stops the matching replay app-audio request.
+
+Example:
+
+```text
+ACR9000=1
+ACR9000=0
+```
+
+Responses use the normal command form:
+
+```text
+ACK:AC7=1
+ACK:AC7=0
+ACK:ACR9000=1
+ACK:ACR9000=0
+```
+
+Malformed commands, out-of-range tracks, invalid values other than `0` or `1`, or a start request that cannot obtain an app-audio slot return `ERR:<original-command>`.
+
+Notes:
+
+* The firmware accepts numeric track text and validates the resulting value as `1..9999`.
+* App 4.3.2 canonicalizes leading zeroes before persistence and transmission (`0007` becomes `7`).
+* `AC` and `ACR` are mode-specific. `AC7=0` stops the matching one-shot request for track 7; `ACR7=0` stops the matching replay request.
+* These direct commands use the active throttle audio service and the custom-audio track lookup behavior; they are separate from firmware FX patterns `103` and `104`.
+* These commands are not part of the firmware script-recording control-command rule set.
+
+---
+
 ## Audio Track-Length Analysis
 
 These commands require authorization and are available only on Throttle firmware.
@@ -2374,6 +2434,8 @@ Runtime override:
 | `P0` | Throttle | Periodic mismatch debug only |
 | `P1` | Throttle | Periodic debug always |
 | `FX<n>=0/1` | Throttle | Function output off/on |
+| `AC<track>=0/1` | Throttle | Start/retrigger or explicitly stop app-owned custom one-shot audio without using an FX slot |
+| `ACR<track>=0/1` | Throttle | Start/retrigger or explicitly stop app-owned custom replay/loop audio without using an FX slot |
 | `A?` | Throttle | Analyze default audio track manifest |
 | `A? N=<tracks>` | Throttle | Analyze explicit audio track list |
 | `AudioMark` / `AM` | Throttle | Emit manual audio diagnostic marker |
@@ -2433,33 +2495,6 @@ Command-generated audio-analysis lines:
 
 ---
 
-# What Changed from the Older 1.12.x Reference
-
-This reference includes the shared ESP-NOW relay behavior added through PMT firmware 3.6.1, the shared `NVS?` configuration-revision query added in firmware 3.6.2, and the firmware 3.6.3 SD debug-log retrieval commands, alongside the older command families documented here.
-
-Major documentation changes:
-
-* Updated the document from throttle-only to the PMT device family.
-* Added Poor Man's Module protocol scope.
-* Added Poor Man's Turbine commands.
-* Added backup socket authorization with `IB,<token>`.
-* Added current time query/set documentation with `T?` and `T=<unix-time>`.
-* Clarified the CV14-adjusted firmware clock behavior used by time and scheduling.
-* Corrected the identity flow so `I` requests identity and `I?` checks authorization state.
-* Clarified shared vs throttle-only vs turbine-only command availability.
-* Added `D2` SD-debug logging behavior, including persistence across intentional software restart and recovery clearing on panic/watchdog reset, and clarified persistent `D1` / `D0` semantics.
-* Added firmware 3.6.3 `D00` terminal-compatible newest-log streaming and `D00*` PX `LogFile` (`5`) retrieval, including bounded-memory streaming, CRC/byte-count framing, acknowledgement/delete behavior, and old-terminal compatibility.
-* Added `PS?`, `PS1`, and `PS0` persist-only CV staging commands.
-* Added the firmware 3.6.2 shared `NVS?` query and `A:NVS=<revision>` response, including CV8/CV14 exclusions, 32-bit wrap behavior, and the fact that SD-card writes do not affect the revision.
-* Added Throttle `A?`, `A? N=<tracks>`, `AudioMark`, and `AM` audio diagnostic commands.
-* Added the `AR:` audio-analysis result family.
-* Added the firmware 3.3 shared SD-backed script recording/playback/status/delete command family, including trailing recording timing, `.pmt` validation, device-specific recordable controls, and playback command gating.
-* Added the approved, implementation-pending `ST<set-id>.<field-id>` sound `.set` protocol design, including hexadecimal target IDs, future-proof field IDs, immediate in-memory application, SD persistence, Classic/S3 initialization semantics, custom-WAV handling, grouped-vs-custom precedence, and BLE MTU constraints.
-* Reduced duplicated CV catalogs and retained only CV references that directly clarify command behavior.
-
-
----
-
 # Appendix — Complete Command Index
 
 Commands are listed alphabetically. When a command has different meanings on different device firmware, those meanings appear separately. This index covers commands documented in this reference; response and telemetry lines are not commands.
@@ -2472,6 +2507,8 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `A1` | Enable asynchronous state notifications. | [Async State Notify Control](#async-state-notify-control) |
 | `A?` | Analyze the default audio track manifest. | [Analyze the default audio manifest](#analyze-the-default-audio-manifest) |
 | `A? N=<tracks>` | Analyze specified audio tracks. | [Analyze an explicit track list](#analyze-an-explicit-track-list) |
+| `AC<track>=0` / `AC<track>=1` | Stop / start or retrigger app-owned custom one-shot audio. | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
+| `ACR<track>=0` / `ACR<track>=1` | Stop / start or retrigger app-owned custom replay audio. | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
 | `AM` / `AudioMark` | Insert a manual audio diagnostic marker. | [Audio Diagnostic Marker](#audio-diagnostic-marker) |
 | `B` | Apply normal brake stop (Throttle). | [Stop and Brake](#stop-and-brake) |
 | `B0` | Release variable braking (Throttle). | [Stop and Brake](#stop-and-brake) |
