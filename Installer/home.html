@@ -2166,7 +2166,335 @@
           </div>
         </details>
 
-<details class="subsection" data-section-url="faq-headlight-reverse-light">
+<details class="subsection" data-section-url="faq-pwm-powered-locomotive-lights">
+          <summary>
+            <span class="section-title">
+              <span>When my locomotive moves the lights turn on too. When the locomotive is stopped the lights turn off. Is there a way to keep the lights lit even when the locomotive is stopped?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If the locomotive's lights are powered from the <strong>same motor-driver output as the motor</strong>, PMT can use its <strong>Force Lights</strong> feature. This lets PMT continue sending a small amount of PWM to the locomotive after the logical throttle has reached STOP, providing enough voltage for the lights without intentionally moving the locomotive.
+            </p>
+
+            <p class="note">
+              The two commands are:
+            </p>
+
+            <p class="note note-strong">
+              <code>FL1</code> — Enable Force Lights<br />
+              <code>FL0</code> — Disable Force Lights
+            </p>
+
+            <p class="note">
+              When <code>FL1</code> is active and the locomotive reaches STOP, PMT keeps the motor-driver PWM at the Force Lights level instead of reducing the physical output to zero.
+            </p>
+
+            <p class="note">
+              When <code>FL0</code> is sent while the locomotive is stopped, the physical motor output returns to zero immediately.
+            </p>
+
+            <p class="note">
+              <strong>The important CVs</strong>
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>CV</th>
+                      <th>Purpose</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>CV2</strong></td>
+                      <td>Forward Minimum Start / Floor. This should represent the minimum PWM level where the locomotive reliably begins moving forward.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CV46</strong></td>
+                      <td>Reverse Minimum Start Override. A value of <code>0</code> means reverse inherits CV2. A non-zero value provides a separate reverse minimum-start setting.</td>
+                    </tr>
+                    <tr>
+                      <td><strong>CV44</strong></td>
+                      <td>Force Lights PWM. This determines the PWM that remains on while the locomotive is stopped and <code>FL1</code> is active.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              For most installations, start with:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV44=0</code>
+            </p>
+
+            <p class="note">
+              <code>CV44=0</code> selects <strong>AUTO mode</strong>.
+            </p>
+
+            <p class="note">
+              In AUTO mode, PMT calculates the stopped lighting PWM from the locomotive's minimum-start setting:
+            </p>
+
+            <ul>
+              <li>After forward travel: <strong>CV2 minus 3</strong></li>
+              <li>After reverse travel: <strong>CV46 minus 3</strong>, if CV46 has its own non-zero value</li>
+              <li>If <code>CV46=0</code>, reverse inherits CV2</li>
+            </ul>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV2=25</code><br />
+              <code>CV46=0</code><br />
+              <code>CV44=0</code>
+            </p>
+
+            <p class="note">
+              With those settings, both directions use a minimum-start value of 25. When <code>FL1</code> is active and the locomotive stops, PMT uses a stopped hardware PWM of:
+            </p>
+
+            <p class="note note-strong">
+              <code>25 - 3 = 22</code>
+            </p>
+
+            <p class="note">
+              So the motor driver continues sending PWM 22 to the locomotive for the lights, while the logical throttle remains at STOP.
+            </p>
+
+            <p class="note">
+              <strong>Why setting CV2 and CV46 correctly matters</strong>
+            </p>
+
+            <p class="note">
+              Before using Force Lights, adjust the locomotive's Minimum Start Throttle so you know where the motor actually begins to move.
+            </p>
+
+            <p class="note">
+              CV2 controls that threshold in Forward.
+            </p>
+
+            <p class="note">
+              If reverse behaves differently, CV46 can provide a separate Reverse Minimum Start value. If reverse behaves about the same as forward, leave:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV46=0</code>
+            </p>
+
+            <p class="note">
+              and reverse will use CV2.
+            </p>
+
+            <p class="note">
+              <code>FL1</code> is accepted only when the effective minimum-start value for the locomotive's last travel direction is greater than <code>9</code>.
+            </p>
+
+            <p class="note">
+              <strong>Can I choose the lighting PWM myself?</strong>
+            </p>
+
+            <p class="note">
+              Yes. Instead of AUTO, CV44 can contain an explicit raw PWM percentage.
+            </p>
+
+            <p class="note">
+              For example:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV44=18</code>
+            </p>
+
+            <p class="note">
+              would request a stopped Force Lights PWM of 18.
+            </p>
+
+            <p class="note">
+              PMT limits an explicit CV44 value so it remains below the locomotive's effective forward and reverse minimum-start thresholds. This is intended to keep the Force Lights output below the level where the locomotive should begin moving.
+            </p>
+
+            <p class="note">
+              For a first setup, <strong>CV44=0 AUTO is the recommended starting point</strong>, because it automatically follows the minimum-start settings.
+            </p>
+
+            <p class="note">
+              <strong>Add a Headlight button to the PMT Output Controls</strong>
+            </p>
+
+            <p class="note">
+              You can make this work from a normal button on the throttle screen.
+            </p>
+
+            <p class="note">
+              In <strong>Configuration → Output Control</strong>, configure an Output Control as:
+            </p>
+
+            <ul>
+              <li><strong>Name:</strong> Headlight</li>
+              <li><strong>Pattern:</strong> <code>FW Command</code></li>
+              <li><strong>ON Command:</strong> <code>FL1</code></li>
+              <li><strong>OFF Command:</strong> <code>FL0</code></li>
+              <li><strong>Direction:</strong> Both</li>
+              <li><strong>Linked FX:</strong> None</li>
+              <li><strong>Momentary:</strong> Off</li>
+            </ul>
+
+            <p class="note">
+              Turning the Headlight control ON sends <code>FL1</code>. Turning it OFF sends <code>FL0</code>.
+            </p>
+
+            <p class="note">
+              <strong>Example: create an Output Control FX called Lights</strong>
+            </p>
+
+            <p class="note">
+              You can also simply call the Output Control <strong>Lights</strong>.
+            </p>
+
+            <p class="note">
+              Open <strong>Configuration</strong>, expand <strong>Output Control</strong>, and select <strong>Add Output</strong>. Configure the new control as:
+            </p>
+
+            <ul>
+              <li><strong>Name:</strong> <code>Lights</code></li>
+              <li><strong>Pattern:</strong> <code>FW Command</code></li>
+              <li><strong>ON Command:</strong> <code>FL1</code></li>
+              <li><strong>OFF Command:</strong> <code>FL0</code></li>
+              <li><strong>Direction:</strong> Both</li>
+              <li><strong>Linked FX:</strong> None</li>
+              <li><strong>Momentary:</strong> Off</li>
+            </ul>
+
+            <p class="note">
+              <code>FW Command</code> is a <strong>Firmware Output Control</strong>, so the <strong>Lights</strong> control uses one of the locomotive's available <strong>FX1 through FX12</strong> firmware function slots.
+            </p>
+
+            <p class="note">
+              Once configured, the throttle will have an Output Control named <strong>Lights</strong>.
+            </p>
+
+            <p class="note">
+              Turn <strong>Lights ON</strong> and PMT runs:
+            </p>
+
+            <p class="note note-strong">
+              <code>FL1</code>
+            </p>
+
+            <p class="note">
+              This enables Force Lights. The locomotive continues receiving its normal motor PWM while moving, and when it comes to a stop PMT maintains the Force Lights PWM determined by CV44.
+            </p>
+
+            <p class="note">
+              Turn <strong>Lights OFF</strong> and PMT runs:
+            </p>
+
+            <p class="note note-strong">
+              <code>FL0</code>
+            </p>
+
+            <p class="note">
+              If the locomotive is already stopped, the motor-driver PWM immediately returns to zero and the lights powered from that same motor circuit turn off.
+            </p>
+
+            <p class="note">
+              For example, with:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV2=25</code><br />
+              <code>CV46=0</code><br />
+              <code>CV44=0</code>
+            </p>
+
+            <p class="note">
+              turning the <strong>Lights</strong> FX ON enables <code>FL1</code>. When the locomotive stops after traveling in either direction, AUTO mode uses:
+            </p>
+
+            <p class="note note-strong">
+              <code>25 - 3 = 22</code>
+            </p>
+
+            <p class="note">
+              so PWM 22 remains on the motor-driver output to keep the locomotive's lights illuminated.
+            </p>
+
+            <p class="note">
+              Turning <strong>Lights</strong> OFF sends <code>FL0</code>, returning the stopped output to zero.
+            </p>
+
+            <p class="note">
+              <strong>What happens while the locomotive is moving?</strong>
+            </p>
+
+            <p class="note">
+              <code>FL1</code> does not change PMT's normal acceleration, braking, reversing, or throttle mapping while the locomotive is moving.
+            </p>
+
+            <p class="note">
+              Force Lights specifically changes what happens when the locomotive reaches STOP.
+            </p>
+
+            <ul>
+              <li><strong>Moving:</strong> the locomotive receives the normal throttle PWM.</li>
+              <li><strong>Stopped with FL1 active:</strong> PMT maintains the CV44 Force Lights PWM.</li>
+              <li><strong>Stopped with FL0 active:</strong> motor-driver output goes to zero.</li>
+            </ul>
+
+            <p class="note">
+              Because the lights and motor are using the same motor-driver output, <code>FL1</code>/<code>FL0</code> are not separate GPIO light outputs. If you need completely independent headlights, reverse lights, ditch lights, or other lighting effects regardless of motor PWM, use PMT's normal ESP32 GPIO Output Controls instead.
+            </p>
+
+            <p class="note">
+              <strong>One important detail</strong>
+            </p>
+
+            <p class="note">
+              Force Lights is <strong>runtime-only</strong>.
+            </p>
+
+            <p class="note">
+              After PMT reboots, Force Lights is disabled until <code>FL1</code> is sent again. Turning your configured Headlight or <strong>Lights</strong> Output Control ON sends <code>FL1</code> again.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=Output-Control-Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                Output Control User Guide
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Command_Protocol_Reference.md"
+                target="_blank" rel="noopener noreferrer">
+                Command Protocol Reference
+              </a>
+            </p>
+          </div>
+        </details>
+
+
+        <details class="subsection" data-section-url="faq-headlight-reverse-light">
           <summary>
             <span class="section-title">
               <span>How would I go about adding a headlight and/or reverse headlight?</span>
