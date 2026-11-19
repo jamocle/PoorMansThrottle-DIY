@@ -1,10 +1,13 @@
 # Changelog — PoorMansThrottle
 
 ## Smartphone App:
+### Version 4.3.0
+* **Poor Man's Controller** Poor Man's controllers are now available.  They are designed to control other parts of your layout.  Not a locomotive.  All integrated into the PMT app.
+* **Support for PMT_HID** Introducing PMT_HID a new ESP32 based fimrware that enables you to create your own physical devices to work with PMT.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.14
 * **Added support for App Side Audio Output Control** Now yu may setup app-side Audio COntrol that wont take up precious FX slots
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.2.12
 * **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.

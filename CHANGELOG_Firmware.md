@@ -6,6 +6,12 @@
 * **Audio Command** Now there 2 new Audio Command.  AC and ACR.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
 
+### Version 4.0.0
+* **Export and Import** HID Physical Device mapping configuration and Device Output Control Export and Import capability for backup or migration to another device.
+* **Poor Man's Controller** Support for Poor Man's Controller types.
+* User interface Enhancements
+* **Support for PMT_HID** Introducing PMT_HID a new ESP32 based fimrware that enables you to create your own physical devices to work with PMT.
+
 ### Version 3.6.6
 * **Lockout Mode** PMT now supports lockout mode so only the device that has it locked may connect to it.
 * FX command refinements
