@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="robots" content="noindex,nofollow,noarchive" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <title>Bespoke Releases - Poor Man's Throttle</title>
+
+  <link rel="stylesheet" href="styles.css?v=experimental-20260909-2" />
+
+  <style>
+    .bespoke-hero .brand-art {
+      width: min(100%, 240px);
+    }
+
+    .bespoke-hero .header-image {
+      max-height: 170px;
+    }
+
+    .bespoke-main-installer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border: 1px solid rgba(123, 75, 31, 0.22);
+      border-radius: 999px;
+      color: var(--text);
+      background: #ffffff;
+      font-weight: 700;
+      text-decoration: none;
+      transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        transform 0.15s ease;
+    }
+
+    .bespoke-main-installer-link:hover {
+      border-color: rgba(123, 75, 31, 0.42);
+      background: rgba(123, 75, 31, 0.045);
+      transform: translateY(-1px);
+    }
+
+    .bespoke-main-installer-link:focus-visible {
+      outline: 3px solid rgba(123, 75, 31, 0.22);
+      outline-offset: 3px;
+    }
+
+    .bespoke-warning-card {
+      border-width: 2px;
+      border-color: rgba(160, 61, 45, 0.28);
+      background: linear-gradient(180deg, rgba(160, 61, 45, 0.055), #ffffff);
+    }
+
+    .bespoke-release-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .bespoke-release-card {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100%;
+      padding: 20px;
+      border: 2px solid #e2ddd6;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
+      box-shadow: var(--shadow-soft);
+      text-decoration: none;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .bespoke-release-card:hover,
+    .bespoke-release-card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(123, 75, 31, 0.42);
+      background: rgba(123, 75, 31, 0.025);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.09);
+      outline: none;
+    }
+
+    .bespoke-release-image-shell {
+      display: grid;
+      place-items: center;
+      min-height: 190px;
+      padding: 20px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 20px;
+      background: linear-gradient(180deg, #ffffff, #f5f3ef);
+    }
+
+    .bespoke-release-image {
+      display: block;
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+    }
+
+    .bespoke-release-copy {
+      display: grid;
+      gap: 8px;
+      flex: 1 1 auto;
+      margin-top: 16px;
+    }
+
+    .bespoke-release-copy strong {
+      font-size: 1.2rem;
+      line-height: 1.25;
+    }
+
+    .bespoke-release-copy span {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .bespoke-release-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: flex-start;
+      min-height: 44px;
+      margin-top: 18px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 10px 18px rgba(123, 75, 31, 0.22);
+    }
+
+    @media (max-width: 760px) {
+      .bespoke-release-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bespoke-release-image-shell {
+        min-height: 160px;
+      }
+    }
+  </style>
+
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
+</head>
+
+<body>
+  <main class="wrap">
+    <section class="hero bespoke-hero" aria-label="Bespoke Poor Man's Throttle releases">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow">Poor Man's Throttle</div>
+          <h1>Bespoke Releases</h1>
+
+          <p class="subhead">
+            Choose the bespoke release you were directed to use.
+            Firmware releases are for Poor Man's Throttle ESP32 hardware, while Android releases are supplied as APK files.
+          </p>
+
+          <a
+            class="bespoke-main-installer-link"
+            href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html"
+          >
+            <span aria-hidden="true">&larr;</span>
+            <span>Return to Main Installer</span>
+          </a>
+
+          <div class="hero-meta">
+            <div class="pill">Bespoke releases only</div>
+            <div class="pill">Firmware and Android</div>
+            <div class="pill">Use only when specifically directed</div>
+          </div>
+        </div>
+
+        <div class="brand-art">
+          <img src="Info/dfrr.png" alt="Poor Man's Throttle header artwork" class="header-image" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card bespoke-warning-card" aria-labelledby="bespokeWarningTitle">
+      <div class="card-header">
+        <div>
+          <div class="card-kicker">Bespoke releases</div>
+          <h3 id="bespokeWarningTitle">Only use the release type you were asked to test.</h3>
+        </div>
+      </div>
+
+      <p class="note note-strong">
+        These releases may contain changes that are not part of the normal public release.
+        Choose firmware or Android below to continue to the appropriate bespoke deployment page.
+      </p>
+    </section>
+
+    <section class="card" aria-labelledby="chooseBespokeReleaseTitle">
+      <div class="card-header">
+        <div>
+          <div class="card-kicker">Choose a release</div>
+          <h3 id="chooseBespokeReleaseTitle">What do you need to install?</h3>
+        </div>
+      </div>
+
+      <div class="bespoke-release-grid">
+        <a class="bespoke-release-card" href="experimental.html">
+          <span class="bespoke-release-image-shell">
+            <img src="firmware.png" alt="Firmware" class="bespoke-release-image" />
+          </span>
+
+          <span class="bespoke-release-copy">
+            <strong>Bespoke Firmware Release</strong>
+            <span>
+              Continue to the bespoke ESP32 firmware installer and choose the exact board you were asked to test.
+            </span>
+          </span>
+
+          <span class="bespoke-release-action">
+            Open Bespoke Firmware
+            <span aria-hidden="true">&nbsp;&rarr;</span>
+          </span>
+        </a>
+
+        <a class="bespoke-release-card" href="experimentalapk.html">
+          <span class="bespoke-release-image-shell">
+            <img src="android.png" alt="Android" class="bespoke-release-image" />
+          </span>
+
+          <span class="bespoke-release-copy">
+            <strong>Bespoke Android Release</strong>
+            <span>
+              Continue to the bespoke Android page to download the APK supplied for your test or bespoke change.
+            </span>
+          </span>
+
+          <span class="bespoke-release-action">
+            Open Bespoke Android
+            <span aria-hidden="true">&nbsp;&rarr;</span>
+          </span>
+        </a>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>
