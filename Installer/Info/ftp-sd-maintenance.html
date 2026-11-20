@@ -138,6 +138,44 @@
     </section>
 
     <section class="section">
+      <h2>Manual BLE command control</h2>
+      <p>
+        The app switch is the normal user interface, but the firmware also provides direct BLE commands for diagnostics,
+        automation, and Terminal use. These are BLE commands; they are not FTP commands entered into File Explorer or an FTP client.
+      </p>
+
+      <h3>Check FTP state</h3>
+      <pre><code>FTP?</code></pre>
+      <p>Typical responses include:</p>
+      <pre><code>FTP:OFF
+FTP:ENTERING
+FTP:ON IP=192.168.71.200 PORT=21 ACCESS=ANONYMOUS
+FTP:ON WIFI=DISCONNECTED
+FTP:REBOOT</code></pre>
+
+      <h3>Enter FTP Maintenance</h3>
+      <pre><code>FTP1</code></pre>
+      <p>Common preflight errors include:</p>
+      <pre><code>ERR:FTP:NO_WIFI
+ERR:FTP:NO_IP
+ERR:FTP:NO_SD
+ERR:FTP:BUSY</code></pre>
+      <p>
+        If startup fails after maintenance has already been latched, the response includes <code>REBOOT_REQUIRED</code>,
+        such as <code>ERR:FTP:MEMORY REBOOT_REQUIRED</code> or <code>ERR:FTP:START REBOOT_REQUIRED</code>.
+      </p>
+
+      <h3>Exit FTP Maintenance</h3>
+      <pre><code>FTP0</code></pre>
+      <p>When FTP is active, PMT replies <code>ACK:FTP0 REBOOT</code> and then reboots.</p>
+
+      <h3>Maintenance command lockout</h3>
+      <p><code>SS?</code> remains available as a read-only maintenance indicator and returns <code>A:SS=FTP</code>.</p>
+      <p>Other normal PMT commands are blocked with <code>ERR:CMD:FTP_MAINT_ACTIVE</code>.</p>
+      <p>FTP maintenance commands are BLE-only. Other transports receive <code>ERR:FTP:BLE_REQUIRED</code>.</p>
+    </section>
+
+    <section class="section">
       <h2>What FTP Maintenance changes</h2>
       <p>
         FTP Maintenance is a dedicated safe-maintenance state. The firmware shuts down normal services so FTP can have exclusive access

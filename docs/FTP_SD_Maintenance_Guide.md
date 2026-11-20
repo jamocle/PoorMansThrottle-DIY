@@ -36,6 +36,90 @@ ftp://192.168.71.200/
 
 The address is based on the IP address assigned to your PMT device.
 
+## Manual BLE command control
+
+The PMT app switch is the normal user interface for FTP Maintenance, but the firmware also exposes direct BLE commands for diagnostics, automation, and terminal use.
+
+These commands are **BLE commands**. They are not FTP commands typed into Windows Explorer or an FTP client.
+
+### Check FTP state
+
+```text
+FTP?
+```
+
+Typical responses include:
+
+```text
+FTP:OFF
+FTP:ENTERING
+FTP:ON IP=192.168.71.200 PORT=21 ACCESS=ANONYMOUS
+FTP:ON WIFI=DISCONNECTED
+FTP:REBOOT
+```
+
+### Enter FTP Maintenance
+
+```text
+FTP1
+```
+
+If the prerequisites are satisfied, PMT enters maintenance mode and starts the FTP server.
+
+Common preflight errors include:
+
+```text
+ERR:FTP:NO_WIFI
+ERR:FTP:NO_IP
+ERR:FTP:NO_SD
+ERR:FTP:BUSY
+```
+
+If startup fails after PMT has already latched maintenance mode, the error includes `REBOOT_REQUIRED`, for example:
+
+```text
+ERR:FTP:MEMORY REBOOT_REQUIRED
+ERR:FTP:START REBOOT_REQUIRED
+```
+
+### Exit FTP Maintenance
+
+```text
+FTP0
+```
+
+When FTP is active, PMT replies:
+
+```text
+ACK:FTP0 REBOOT
+```
+
+and then reboots.
+
+While FTP Maintenance is active, the read-only script-status query:
+
+```text
+SS?
+```
+
+returns:
+
+```text
+A:SS=FTP
+```
+
+Other normal PMT commands are blocked with:
+
+```text
+ERR:CMD:FTP_MAINT_ACTIVE
+```
+
+The FTP control commands are accepted only over BLE. If they are sent through another command transport, PMT returns:
+
+```text
+ERR:FTP:BLE_REQUIRED
+```
+
 ## What happens when FTP is enabled
 
 FTP Maintenance is a dedicated maintenance mode.

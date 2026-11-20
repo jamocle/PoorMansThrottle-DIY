@@ -74,6 +74,7 @@ Command characteristics:
 | Debug control / newest-log retrieval (`D0` / `D1` / `D2` / `D00` / `D00*`) | Yes | Yes | Yes |
 | Async state notify control | Yes | Yes | Yes |
 | OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
+| FTP SD maintenance (`FTP?` / `FTP1` / `FTP0`) | Yes** | No | No |
 | Grace shutdown runtime override | Yes | Yes | Yes |
 | Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
 | Shared script record/playback/delete/timing adjustment (`SR` / `SR0` / `SRX` / `SP...` / `SS?` / `SD=` / `SA=`) | Yes* | Yes* | Yes* |
@@ -90,6 +91,8 @@ Command characteristics:
 | Turbine CV commands | No | No | Yes |
 
 `*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of device-specific recordable controls varies by firmware image. `RY=<10-character-mac><command>` is a shared recordable relay control; the generic Module image still has no module-specific physical recordable controls.
+
+`**` FTP maintenance is implemented by the **PoorMansThrottle firmware** and therefore applies to both Throttle and Controller operating modes of that firmware. It is not implemented in the Module or Turbine firmware images. FTP control commands are accepted only over the basic BLE command transport.
 
 ---
 
@@ -515,6 +518,173 @@ ws://192.168.1.50:81
 ```
 
 `CV10` controls Wi-Fi enablement and `CV13` configures the WebSocket port. See `appendix_Configuration_Variables.md` for configuration details.
+
+---
+
+## FTP SD Maintenance
+
+Firmware **4.0.13** adds a temporary FTP maintenance runtime to the **PoorMansThrottle firmware**. It is available in both Throttle and Controller operating modes of that firmware.
+
+The FTP maintenance commands are accepted only over the **basic BLE command transport**. They are deliberately not accepted over WebSocket or other command transports.
+
+### Query FTP maintenance state
+
+```text
+FTP?
+```
+
+Normal response:
+
+```text
+FTP:OFF
+```
+
+While the maintenance transition is in progress:
+
+```text
+FTP:ENTERING
+```
+
+When FTP maintenance is active and Wi-Fi is available:
+
+```text
+FTP:ON IP=<ip-address> PORT=21 ACCESS=ANONYMOUS
+```
+
+Example:
+
+```text
+FTP:ON IP=192.168.71.200 PORT=21 ACCESS=ANONYMOUS
+```
+
+If maintenance remains latched but Wi-Fi is unavailable:
+
+```text
+FTP:ON WIFI=DISCONNECTED
+```
+
+During the reboot-exit state:
+
+```text
+FTP:REBOOT
+```
+
+### Enter FTP maintenance
+
+```text
+FTP1
+```
+
+`FTP1` first performs preflight checks. Before the maintenance latch is set, failures leave normal operation intact.
+
+Preflight failures include:
+
+```text
+ERR:FTP:NO_WIFI
+ERR:FTP:NO_IP
+ERR:FTP:NO_SD
+ERR:FTP:BUSY
+```
+
+After preflight succeeds, the firmware enters a one-way maintenance transition for the current boot. On a throttle, the locomotive is stopped and active functions are forced off. The firmware then shuts down normal SD-card users and non-required services, including PMTPlayer audio, scripts, SD logging/log transfer, bulk BLE transfer, ESP-NOW, and the WebSocket command service. Basic BLE, Wi-Fi, the PMT-managed SD filesystem, and FTP remain available.
+
+If a failure occurs **after** the maintenance latch has been set, the firmware stays in the safe maintenance state and reports that a reboot is required. Examples include:
+
+```text
+ERR:FTP:NO_SD REBOOT_REQUIRED
+ERR:FTP:NO_WIFI REBOOT_REQUIRED
+ERR:FTP:MEMORY REBOOT_REQUIRED
+ERR:FTP:START REBOOT_REQUIRED
+```
+
+On successful startup, the firmware returns an FTP status line containing the assigned IP address and control port. FTP authentication is standard **anonymous FTP**.
+
+> **Firmware 4.0.13 response-label note:** the initial successful `FTP1` reply currently ends with `USER=PMT`, while `FTP?` correctly reports `ACCESS=ANONYMOUS` and the FTP server accepts anonymous login. The `USER=PMT` text is a status-label inconsistency in the current firmware; it is not an authentication requirement.
+
+Current initial success example:
+
+```text
+FTP:ON IP=192.168.71.200 PORT=21 USER=PMT
+```
+
+Authoritative session status from `FTP?`:
+
+```text
+FTP:ON IP=192.168.71.200 PORT=21 ACCESS=ANONYMOUS
+```
+
+### Exit FTP maintenance and reboot
+
+```text
+FTP0
+```
+
+When FTP maintenance is active, the response is:
+
+```text
+ACK:FTP0 REBOOT
+```
+
+The firmware stops FTP, closes its FTP-owned file activity, waits briefly for the BLE reply to be transmitted, and then calls `ESP.restart()`.
+
+If FTP maintenance is already off:
+
+```text
+FTP:OFF
+```
+
+Normal operation is not rebuilt in-place. Reboot is the supported transition back to the normal runtime.
+
+### Command lockout while FTP is active
+
+Once FTP maintenance is latched, normal commands are blocked for the rest of the boot.
+
+The normal script-status query is intentionally allowed as a read-only maintenance indicator:
+
+```text
+SS?
+```
+
+Response while FTP maintenance is active:
+
+```text
+A:SS=FTP
+```
+
+Other blocked commands return:
+
+```text
+ERR:CMD:FTP_MAINT_ACTIVE
+```
+
+The FTP maintenance commands themselves remain available over BLE:
+
+```text
+FTP?
+FTP0
+FTP1
+```
+
+If one of these commands arrives over a non-BLE command transport:
+
+```text
+ERR:FTP:BLE_REQUIRED
+```
+
+### FTP network behavior
+
+The FTP control connection uses TCP port **21** and passive-mode data connections. The server exposes the PMT-managed SD filesystem and uses anonymous login.
+
+FTP maintenance requires:
+
+* Wi-Fi already connected;
+* a valid local IP address;
+* an active PMT SD filesystem/card;
+* sufficient free runtime memory.
+
+If Wi-Fi is lost after FTP maintenance has started, the firmware remains latched in maintenance mode. It does **not** resume normal throttle/controller operation.
+
+The DFPlayer Mini's separate microSD card is **not** part of the PMT filesystem and is not exposed by FTP.
 
 ---
 
@@ -2524,6 +2694,9 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `D00*` | Drain/close D2 logging and transfer the newest numbered log over PX `LogFile` (`5`) with per-chunk ACKs and final `CompleteAck`. | [Retrieve newest SD log through PX/1](#retrieve-newest-sd-log-through-px1) |
 | `D1` | Enable debug and persist startup override. | [Persistent debug enable](#persistent-debug-enable) |
 | `D2` | Enable debug and request persistent SD logging. | [Debug with SD logging request](#debug-with-sd-logging-request) |
+| `FTP0` | Exit FTP maintenance, stop FTP, and reboot the PoorMansThrottle firmware. | [FTP SD Maintenance](#ftp-sd-maintenance) |
+| `FTP1` | Enter FTP SD maintenance mode after Wi-Fi/SD/resource preflight. | [FTP SD Maintenance](#ftp-sd-maintenance) |
+| `FTP?` | Query FTP maintenance state and endpoint information. | [FTP SD Maintenance](#ftp-sd-maintenance) |
 | `F<n>` (Throttle) | Ramp forward locomotive throttle, 0–100. | [Motion Commands](#motion-commands) |
 | `F<n>` (Turbine) | Ramp turbine output, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
 | `F<n>*` | Set turbine output immediately, 0–100. | [Turbine Normal Output](#turbine-normal-output) |
