@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>PMT FTP SD Card Maintenance Guide</title>
+  <style>
+    :root {
+      --bg: #f5f5f7;
+      --panel: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --line: #d2d2d7;
+      --accent: #7b001f;
+      --warning: #fff6df;
+      --warning-line: #e3b341;
+      --radius: 24px;
+      --max: 940px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      line-height: 1.55;
+    }
+    .wrap { width: min(100%, var(--max)); margin: 0 auto; padding: 24px 16px 64px; }
+    .hero, .section {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 34px rgba(0,0,0,.07);
+    }
+    .hero { padding: 28px 24px; margin-bottom: 20px; }
+    .section { padding: 24px; margin: 18px 0; }
+    .eyebrow { color: var(--accent); font-weight: 700; font-size: .9rem; text-transform: uppercase; letter-spacing: .04em; }
+    h1 { margin: 8px 0 12px; font-size: clamp(2rem, 6vw, 3.3rem); line-height: 1.06; }
+    h2 { margin: 0 0 12px; font-size: 1.45rem; }
+    h3 { margin: 22px 0 8px; }
+    p { margin: 10px 0; }
+    ul, ol { padding-left: 1.4rem; }
+    li { margin: 6px 0; }
+    code {
+      background: #f0f0f2;
+      border-radius: 6px;
+      padding: .1em .35em;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    pre {
+      overflow-x: auto;
+      background: #111;
+      color: #f8f8f2;
+      padding: 14px 16px;
+      border-radius: 14px;
+    }
+    pre code { background: none; padding: 0; color: inherit; }
+    .warning {
+      background: var(--warning);
+      border: 1px solid var(--warning-line);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+    .image-frame {
+      margin: 18px auto 4px;
+      max-width: 440px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      overflow: hidden;
+      background: #eee;
+    }
+    .image-frame img { display: block; width: 100%; height: auto; }
+    .caption { color: var(--muted); font-size: .9rem; text-align: center; margin-top: 8px; }
+    .grid { display: grid; gap: 14px; }
+    .card { border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; background: #fafafa; }
+    .card strong { display: block; margin-bottom: 4px; }
+    .footer { color: var(--muted); text-align: center; font-size: .9rem; margin-top: 28px; }
+    @media (min-width: 760px) {
+      .wrap { padding: 36px 22px 74px; }
+      .grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+  <script>
+    (() => {
+      const navigationScript = document.createElement("script");
+      const cacheBust = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      navigationScript.src = `../navigation-context.js?cb=${encodeURIComponent(cacheBust)}`;
+      document.head.appendChild(navigationScript);
+    })();
+  </script>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">PMT SD Card Maintenance</div>
+      <h1>Manage the PMT SD card over FTP.</h1>
+      <p>
+        FTP Maintenance temporarily exposes the SD card managed by the PMT firmware as a standard FTP server, allowing files
+        to be maintained from a computer without removing the card.
+      </p>
+      <p>
+        FTP is deliberately temporary. Enable it only when needed, then turn it off so the PMT device can reboot into normal operation.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Enable FTP Maintenance</h2>
+      <div class="image-frame">
+        <img src="ftp-maintenance-switch.png" alt="PMT Configuration Identity screen showing the FTP Maintenance switch" />
+      </div>
+      <p class="caption">Configuration → Identity → FTP Maintenance</p>
+
+      <ol>
+        <li>Connect the PMT app to the PMT device over BLE.</li>
+        <li>Open <strong>Config</strong>.</li>
+        <li>Expand <strong>Identity</strong>.</li>
+        <li>Turn on <strong>FTP Maintenance</strong>.</li>
+        <li>Read the warning and confirm.</li>
+        <li>Wait for the app to show the FTP endpoint.</li>
+      </ol>
+
+      <p>The endpoint will look similar to:</p>
+      <pre><code>ftp://192.168.71.200/</code></pre>
+
+      <div class="warning">
+        <strong>Requirements:</strong> an SD card must be available, Wi-Fi must be enabled, and the PMT device must actually be connected
+        to Wi-Fi with a valid IP address. If Wi-Fi is disabled, the FTP Maintenance switch is disabled.
+      </div>
+
+      <div class="warning">
+        <strong>Local-network use only:</strong> PMT uses plain, anonymous FTP. Do not expose the FTP server to the public Internet or
+        forward FTP ports through your router.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>What FTP Maintenance changes</h2>
+      <p>
+        FTP Maintenance is a dedicated safe-maintenance state. The firmware shuts down normal services so FTP can have exclusive access
+        to the PMT-managed SD filesystem.
+      </p>
+      <div class="grid two">
+        <div class="card"><strong>Remains available</strong>BLE, Wi-Fi, the SD card, FTP, and basic platform/watchdog operation.</div>
+        <div class="card"><strong>Stopped for maintenance</strong>PMTPlayer audio, scripts, SD logging, log transfer, WebSocket command service, ESP-NOW, and other normal operating services.</div>
+      </div>
+      <p>
+        Normal throttle, FX, function, audio, script, configuration, and other operating commands are blocked while FTP is active.
+        On a throttle, the locomotive is stopped before FTP becomes active and cannot be commanded again until reboot.
+      </p>
+      <p>
+        Because normal commands are intentionally blocked, the PMT app may show command or communication errors during the maintenance session.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Connect from Windows 11</h2>
+      <ol>
+        <li>Open <strong>File Explorer</strong>.</li>
+        <li>Enter the FTP endpoint shown by the PMT app into the address bar.</li>
+        <li>Press <strong>Enter</strong>.</li>
+        <li>Browse and maintain files on the PMT SD card.</li>
+      </ol>
+      <pre><code>ftp://&lt;device-ip&gt;/</code></pre>
+      <p>PMT uses standard <strong>anonymous FTP</strong>, so no PMT username or password is required.</p>
+    </section>
+
+    <section class="section">
+      <h2>Connect from macOS</h2>
+      <p>Use a standard FTP client on macOS for full read/write file management.</p>
+      <ul>
+        <li><strong>Protocol:</strong> FTP</li>
+        <li><strong>Host:</strong> the IP address shown by the PMT app</li>
+        <li><strong>Port:</strong> 21</li>
+        <li><strong>Login:</strong> Anonymous</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Files you can maintain</h2>
+      <h3>PMTPlayer audio</h3>
+      <p>PMTPlayer WAV files can be copied or replaced through FTP. Typical active folders are:</p>
+      <pre><code>/diesel
+/steam</code></pre>
+      <p>Turn FTP Maintenance off and allow the PMT device to reboot before testing changed audio.</p>
+
+      <h3>Scripts</h3>
+      <p>Firmware script files can be maintained under:</p>
+      <pre><code>/scripts</code></pre>
+      <p>Script playback and recording are stopped while FTP Maintenance is active.</p>
+
+      <h3>Logs</h3>
+      <p>Log files can be downloaded from folders such as:</p>
+      <pre><code>/logs</code></pre>
+      <p>SD logging is stopped before FTP gets exclusive access to the card.</p>
+
+      <div class="warning">
+        <strong>DFPlayer Mini exception:</strong> FTP does not expose the microSD card inserted in a DFPlayer Mini. The DFPlayer owns
+        and reads that card directly. Its microSD card must still be prepared using the normal DFPlayer workflow.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Finish the FTP session</h2>
+      <ol>
+        <li>Close or disconnect the FTP client on the computer.</li>
+        <li>Return to <strong>Config → Identity</strong>.</li>
+        <li>Turn <strong>FTP Maintenance</strong> off.</li>
+        <li>Allow the PMT device to reboot.</li>
+      </ol>
+      <p>
+        The reboot is intentional and is the only supported way to restore normal PMT operation after FTP Maintenance.
+        FTP is not persisted and will be off after reboot.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Troubleshooting</h2>
+      <div class="grid">
+        <div class="card"><strong>FTP switch is disabled</strong>Wi-Fi is disabled in PMT configuration. Enable and configure Wi-Fi first.</div>
+        <div class="card"><strong>FTP will not start</strong>Check that the SD card is present and that the PMT device is connected to Wi-Fi with a valid IP address. FTP can also refuse to start if runtime memory is insufficient.</div>
+        <div class="card"><strong>Normal PMT commands stop working</strong>This is expected. Normal commands are intentionally locked out until the device reboots.</div>
+        <div class="card"><strong>Audio does not play</strong>This is expected. Audio is shut down before FTP receives exclusive SD access.</div>
+        <div class="card"><strong>Wi-Fi drops while FTP is active</strong>PMT stays latched in maintenance mode. It does not resume throttle/controller operation because Wi-Fi was lost. BLE remains available.</div>
+        <div class="card"><strong>A folder cannot be opened</strong>Verify that the folder exists and use the endpoint shown by the PMT app. Normal PMT paths include <code>/scripts/</code>, <code>/logs/</code>, <code>/diesel/</code>, and <code>/steam/</code> when those folders exist on the card.</div>
+      </div>
+    </section>
+
+    <p class="footer">Poor Man's Throttle (PMT) © 2026 James Theimer</p>
+  </main>
+</body>
+</html>

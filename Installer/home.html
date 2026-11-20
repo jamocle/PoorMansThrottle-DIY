@@ -1175,6 +1175,43 @@
           </div>
         </details>
 
+        <details class="subsection" data-section-url="faq-ftp-sd-maintenance">
+          <summary>
+            <span class="section-title">
+              <span>How can I update files on the PMT SD card without removing it?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              PMT supports a temporary <strong>FTP Maintenance</strong> mode that lets you manage the PMT-controlled SD card from a computer over Wi-Fi.
+            </p>
+
+            <p class="note">
+              Open <strong>Config → Identity</strong> and turn on <strong>FTP Maintenance</strong>. The app displays the FTP endpoint for the current PMT device.
+              Windows 11 can open that address in File Explorer, and macOS can use a standard FTP client for full read/write file management.
+            </p>
+
+            <p class="note">
+              FTP Maintenance is a dedicated maintenance state. PMT stops normal command processing and SD-card users such as PMTPlayer audio, scripts, and logging so FTP can have exclusive access to the card.
+              When you turn FTP Maintenance off, the PMT device reboots back into normal operation.
+            </p>
+
+            <p class="note">
+              <strong>Important:</strong> this FTP feature manages the SD card mounted by the PMT firmware. It does <strong>not</strong> provide access to the separate microSD card inserted in a DFPlayer Mini.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ftp-sd-maintenance.html"
+                target="_blank" rel="noopener noreferrer">
+                FTP SD Card Maintenance Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-ibt2-good-or-bad">
           <summary>
             <span class="section-title">
