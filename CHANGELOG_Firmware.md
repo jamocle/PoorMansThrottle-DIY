@@ -2,6 +2,13 @@
 
 ## Firmware:
 
+### Version 4.0.13
+* **Added FTP Support** PMT now supports FTP to transfer files to and from the PMT device.  This makes it easier to transfer files to and from PMT.
+* **Added Poor Mans Controllers** New non Throttle firmware to handling tasks like turnout switches, sound, lights for other areas of your layout.
+* **Added Non-Throttle Scripts** Non throttle scripts are scripts that do not invoke any throttle commands and can run in parallel.
+* Added resilience and parallel processing for scripts
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.0.1
 * **Audio Command** Now there 2 new Audio Command.  AC and ACR.
 * **Misc refinements and bug squashing** The code monkey has been busy (me).

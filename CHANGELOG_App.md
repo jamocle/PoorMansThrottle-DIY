@@ -2,6 +2,13 @@
 
 ## Smartphone App:
 
+### Version 4.3.10
+* **Added FTP Support** PMT now supports FTP to transfer files to and from the PMT device.  This makes it easier to transfer files to and from PMT.
+* **Added more support for Poor Man's HID** Even more support for HID Physical devices wityh Enhances Panbel like Physical Screen Layout in the App.
+* **Added Poor Mans Controllers** New non Throttle firmware to handling tasks like turnout switches, sound, lights for other areas of your layout.
+* UI/UX Enhancements
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.2.14
 * **Added support for App Side Audio Output Control** Now yu may setup app-side Audio COntrol that wont take up precious FX slots
 * **Misc refinements and bug squashing** The code monkey has been busy (me).
