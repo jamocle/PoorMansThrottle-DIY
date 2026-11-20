@@ -584,9 +584,11 @@
         <h2 style="font-size:1.3rem; margin-top:26px;">Grace shutdown: <code>G0</code> and <code>G1</code></h2>
         <ul class="rule-list">
           <li>
-            <code>G1</code> enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is
-            running, the script continues normally during the countdown. On current throttle firmware, <code>CV49</code>
-            sets the control-loss grace duration in milliseconds; the default is <code>15000</code>.
+            <code>G1</code> enables grace shutdown only when the configured grace duration is non-zero. On current
+            throttle firmware, <code>CV49=0</code> is authoritative: <code>G1</code> is acknowledged but grace remains disabled.
+            If a disconnect starts the grace countdown while a firmware script is running, the script continues normally during
+            the countdown. <code>CV49</code> sets the control-loss grace duration in milliseconds; the default is
+            <code>15000</code>.
           </li>
           <li>
             If the connection returns before grace expires, the countdown is cancelled and the running script continues; it is
@@ -595,7 +597,8 @@
           <li>
             If grace actually expires, firmware stops active script playback before continuing with the device's existing
             grace-expiry shutdown behavior. On throttle firmware, that forced stop uses the CV48 quick-stop timing.
-            Control-loss stopping is sequential: CV49 grace first, then the applicable CV48 quick-stop ramp.
+            When CV49 is non-zero and grace shutdown is enabled, control-loss stopping is sequential: CV49 grace first,
+            then the applicable CV48 quick-stop ramp. CV49=0 disables the control-loss grace shutdown path.
           </li>
           <li>
             <code>G0</code> disables grace shutdown and clears any active grace countdown. It does <strong>not</strong> stop a

@@ -286,7 +286,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV46** | Reverse Minimum Start Override | `0 – 100` / `0` | Reverse minimum-start floor. `0` means inherit the current CV2 value dynamically; `CV46?` still reports the stored raw value `0`. Values `1 – 100` set an explicit reverse minimum-start floor. |
 | **CV47** | Feather Brake Mode | `0`, `1` / `1` | Selects the `B1..B100` feather-brake model. `0` = Simple; `1` = Realistic. |
 | **CV48** | Quick-Stop Full-Scale Time | `1 – 60000 ms` / `3000` | Full-scale duration used by the existing `QUICKSTOP` ramp, including normal `S` stops and the forced quick-stop that begins after control-loss grace expires. |
-| **CV49** | Control-Loss Grace Time | `0 – 60000 ms` / `15000` | Grace duration after qualifying control loss before the existing forced quick-stop path begins. `0` allows the shared grace processor to expire the countdown on its next processing pass. |
+| **CV49** | Control-Loss Grace Time | `0 – 60000 ms` / `15000` | Grace duration after qualifying control loss before the existing forced quick-stop path begins. `0` disables control-loss grace shutdown; while CV49 is `0`, `G1` cannot enable it. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -429,9 +429,9 @@ CV49 applies only to **Poor Man's Throttle** locomotive firmware. It sets the co
 * Valid range: `0 – 60000 ms`.
 * Default: `15000 ms`, preserving the previous fixed grace duration.
 * If control returns before grace expires, the active countdown is cancelled by the existing recovery behavior.
-* `CV49=0` allows the shared grace processor to expire the countdown on its next processing pass.
+* `CV49=0` disables control-loss grace shutdown. This setting is authoritative: while CV49 is `0`, runtime command `G1` is acknowledged but does not enable grace shutdown.
 
-Control-loss stopping is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` plus `CV48=1000` can approach two seconds of commanded stop timing from full throttle. A configuration such as `CV49=0` and `CV48=1000` removes the intentional grace delay and uses a one-second full-scale commanded quick-stop ramp.
+When CV49 is non-zero and grace shutdown is enabled, control-loss stopping is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` plus `CV48=1000` can approach two seconds of commanded stop timing from full throttle. When `CV49=0`, the control-loss grace shutdown path is disabled rather than shortened to zero delay.
 
 These CVs control firmware timing to motor STOP output. They do not measure or guarantee the physical stopping distance or stopping time of the locomotive.
 

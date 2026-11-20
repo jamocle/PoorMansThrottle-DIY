@@ -5057,16 +5057,16 @@
               class="faq-screenshot" />
 
             <p class="note">
-              <strong>Why this is important:</strong> this app setting determines whether PMT is configured to use automatic shutdown for disconnected train throttles. <code>CV49</code> and <code>CV48</code> adjust the locomotive firmware's disconnect-stop timing; changing those timing values does not replace enabling the automatic shutdown setting in the app.
+              <strong>Why this is important:</strong> this app setting determines whether PMT is configured to use automatic shutdown for disconnected train throttles. <code>CV49</code> and <code>CV48</code> adjust the locomotive firmware's disconnect-stop behavior and timing. <code>CV49=0</code> disables control-loss grace shutdown in firmware and cannot be overridden by <code>G1</code>.
             </p>
 
             <ul>
-              <li><strong>CV49 — Control-Loss Grace Time:</strong> how long PMT waits after the disconnect before the forced quick-stop begins. The default is <strong>15000 ms (15 seconds)</strong>.</li>
+              <li><strong>CV49 — Control-Loss Grace Time:</strong> how long PMT waits after the disconnect before the forced quick-stop begins. The default is <strong>15000 ms (15 seconds)</strong>. Setting <code>CV49=0</code> disables control-loss grace shutdown.</li>
               <li><strong>CV48 — Quick-Stop Full-Scale Time:</strong> the full-scale duration of the forced quick-stop ramp after the grace period expires. The default is <strong>3000 ms (3 seconds)</strong>.</li>
             </ul>
 
             <p class="note">
-              The timing is sequential: <strong>CV49 grace first, then the CV48 quick-stop ramp</strong>.
+              When CV49 is non-zero and grace shutdown is enabled, the timing is sequential: <strong>CV49 grace first, then the CV48 quick-stop ramp</strong>.
             </p>
 
             <p class="note">
@@ -5092,11 +5092,11 @@
             </p>
 
             <p class="note">
-              If you want to remove the intentional grace delay, set <code>CV49=0</code>. This allows the shared grace processor to expire the countdown on its next processing pass; it is not a literal zero-processing-time event.
+              To disable control-loss grace shutdown, set <code>CV49=0</code>. This is authoritative: while CV49 is 0, <code>G1</code> is acknowledged but cannot enable grace shutdown.
             </p>
 
             <p class="note">
-              Grace shutdown can also be controlled for the current runtime with <code>G1</code> and <code>G0</code>. <code>G1</code> enables grace shutdown. <code>G0</code> disables it and clears any active grace countdown. Rebooting restores the default grace behavior.
+              Grace shutdown can also be controlled for the current runtime with <code>G1</code> and <code>G0</code>. <code>G1</code> enables grace shutdown only when the configured grace duration is non-zero; on throttle firmware, <code>CV49=0</code> wins and grace remains disabled. <code>G0</code> disables grace shutdown and clears any active grace countdown. On throttle firmware, reboot restores grace state from CV49: <code>0</code> is disabled; a non-zero value is enabled.
             </p>
 
             <p class="note">

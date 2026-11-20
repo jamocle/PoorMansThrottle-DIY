@@ -762,7 +762,7 @@ Notes:
 
 ## Grace Shutdown Runtime Override
 
-Enable grace shutdown:
+Enable grace shutdown when the configured grace duration is non-zero:
 
 ```text
 G1
@@ -784,9 +784,9 @@ ACK:G0
 Notes:
 
 * This is runtime-only.
-* Reboot restores the default grace behavior.
-* `G1` enables grace shutdown. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
-* On Throttle firmware, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` permits the countdown to expire on the next shared grace-processing pass.
+* On Throttle firmware, reboot derives grace-shutdown availability from CV49: `0` leaves it disabled; a non-zero value allows it to be enabled.
+* `G1` enables grace shutdown only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` wins: `G1` is acknowledged but grace remains disabled. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
+* On Throttle firmware, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
 * If a connection returns before grace expires, the active grace countdown is cancelled and the running script continues without being restarted.
 * If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior. On Throttle firmware, that forced stop uses the `CV48` quick-stop timing.
 * `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
@@ -1265,9 +1265,9 @@ The throttle `S` command has origin-sensitive behavior:
 
 ### Grace Shutdown During Playback
 
-`G0` and `G1` change grace-shutdown state; they do not pause the script timeline:
+`G0` and `G1` control runtime grace-shutdown state; they do not pause the script timeline:
 
-* `G1` enables grace shutdown. If a disconnect starts a grace countdown, script playback continues during that countdown.
+* `G1` enables grace shutdown only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` remains authoritative and `G1` leaves grace disabled. If a disconnect starts a grace countdown, script playback continues during that countdown.
 * Reconnection before expiry cancels the countdown and the script continues normally.
 * Actual grace expiry stops active script playback, then the firmware continues with its existing grace-expiry shutdown behavior.
 * `G0` disables grace shutdown and clears an active grace countdown. `G0` does not stop the script.
@@ -2287,7 +2287,7 @@ The following CVs remain here only because they directly change command behavior
 | `CV44` | Throttle | Configures the stopped raw hardware PWM used by `FL1`. `0` selects directional AUTO (last logical direction effective MinStart minus `3`); explicit non-zero values are constrained below the smaller effective forward/reverse MinStart floor. |
 | `CV47` | Throttle | Selects the `B1..B100` feather-brake model: `0` = Simple, `1` = Realistic. |
 | `CV48` | Throttle | Sets the full-scale `QUICKSTOP` duration used by `S` and by the forced quick-stop after control-loss grace expires. |
-| `CV49` | Throttle | Sets the control-loss grace duration before the forced quick-stop path begins. |
+| `CV49` | Throttle | Sets the control-loss grace duration before the forced quick-stop path begins; `0` disables control-loss grace shutdown and cannot be overridden by `G1`. |
 | `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
@@ -2363,18 +2363,18 @@ For throttle firmware, this is especially important because the controller may b
 Typical behavior:
 
 1. A qualifying disconnect can start a grace period.
-2. On Throttle firmware, `CV49` sets that control-loss grace duration. The default is `15000 ms`.
+2. On Throttle firmware, `CV49` sets that control-loss grace duration. The default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
 3. If no control connection returns before grace expires, the Throttle begins its forced `QUICKSTOP`; `CV48` sets the full-scale quick-stop duration and defaults to `3000 ms`.
 4. BLE advertising recovery is attempted automatically.
 5. When needed, hard recovery is deferred until safe conditions are reached.
 6. Active WebSocket control can suppress BLE-only hard recovery paths.
 7. Autonomous schedule mode can suppress disconnect grace behavior while scheduled operation is active.
 
-For Throttle firmware, the configured stop timing is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. Setting both CVs to `1000` can therefore approach two seconds of commanded stop timing from full throttle.
+For Throttle firmware, when CV49 is non-zero and grace shutdown is enabled, the configured stop timing is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. Setting both CVs to `1000` can therefore approach two seconds of commanded stop timing from full throttle. `CV49=0` disables this control-loss grace shutdown path.
 
 Runtime override:
 
-* `G1` enables grace shutdown for the current runtime.
+* `G1` enables grace shutdown for the current runtime only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` wins and `G1` leaves grace disabled.
 * `G0` disables grace shutdown for the current runtime.
 
 ---
@@ -2405,7 +2405,7 @@ Runtime override:
 | `A0` | Shared | Disable async `A:` state updates |
 | `OTA?` | S3 Throttle | Query OTA capability/readiness |
 | `OTA` | S3 Throttle | Stop safely and install the board target's catalog `latest` firmware |
-| `G1` | Shared | Enable grace shutdown for this boot |
+| `G1` | Shared | Enable grace shutdown for this boot when the configured grace duration is non-zero; Throttle `CV49=0` wins |
 | `G0` | Shared | Disable grace shutdown for this boot |
 | `PS?` | Shared | Query persist-only CV staging mode |
 | `PS1` | Shared | Enable persist-only CV staging |
@@ -2534,7 +2534,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `FQ<n>` | Quick-ramp forward throttle, 0–100. | [Motion Commands](#motion-commands) |
 | `FX<n>=0` / `FX<n>=1` | Turn throttle function output 1–12 off/on. | [Function Output Commands](#function-output-commands) |
 | `G0` | Disable runtime grace shutdown. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
-| `G1` | Enable runtime grace shutdown. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
+| `G1` | Enable runtime grace shutdown when the configured grace duration is non-zero; Throttle `CV49=0` wins. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
 | `I` | Request device identity. | [Request Device Identity](#request-device-identity) |
 | `I,<token>` | Authorize a primary control connection. | [Send Connection Token](#send-connection-token) |
 | `I?` | Verify authorization state. | [Verify Authorization State](#verify-authorization-state) |
