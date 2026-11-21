@@ -5103,12 +5103,13 @@
             </p>
 
             <ul>
-              <li><strong>CV49 — Control-Loss Grace Time:</strong> how long PMT waits after the disconnect before the forced quick-stop begins. The default is <strong>15000 ms (15 seconds)</strong>. Setting <code>CV49=0</code> disables control-loss grace shutdown.</li>
+              <li><strong>CV50 — Disable Grace While Automation Runs:</strong> global automation protection. The default is <strong>1 (enabled)</strong>. While any firmware automation/script is actively running, grace shutdown is suppressed and the other grace deciders are overridden for the duration of playback. When no automation is running, CV50 is ignored. Set <code>CV50=0</code> only if you want normal grace behavior to remain active during automation.</li>
+              <li><strong>CV49 — Control-Loss Grace Time:</strong> how long PMT waits after the disconnect before the forced quick-stop begins when grace is not suppressed. The default is <strong>15000 ms (15 seconds)</strong>. Setting <code>CV49=0</code> disables control-loss grace shutdown.</li>
               <li><strong>CV48 — Quick-Stop Full-Scale Time:</strong> the full-scale duration of the forced quick-stop ramp after the grace period expires. The default is <strong>3000 ms (3 seconds)</strong>.</li>
             </ul>
 
             <p class="note">
-              When CV49 is non-zero and grace shutdown is enabled, the timing is sequential: <strong>CV49 grace first, then the CV48 quick-stop ramp</strong>.
+              When <code>CV50=1</code> and automation is running, grace is held off; if a grace countdown was already active, it is cancelled/suppressed. As soon as automation stops, CV50 no longer affects grace. Otherwise, when CV49 is non-zero and grace shutdown is enabled, the timing is sequential: <strong>CV49 grace first, then the CV48 quick-stop ramp</strong>.
             </p>
 
             <p class="note">
@@ -5116,6 +5117,7 @@
             </p>
 
             <p class="note note-strong">
+              <code>CV50?</code><br />
               <code>CV49?</code><br />
               <code>CV48?</code>
             </p>
@@ -5916,6 +5918,7 @@ CV16=0</code></pre>
                 <tr><td><code>IP?</code></td><td>Show the device's IP address</td></tr>
                 <tr><td><code>F25</code></td><td>Throttle: move forward toward 25% speed</td></tr>
                 <tr><td><code>R25</code></td><td>Throttle: move in reverse toward 25% speed</td></tr>
+                <tr><td><code>N</code></td><td>Throttle: toggle Neutral. The locomotive coasts to zero without braking; throttle commands can still change the deferred demand until <code>N</code> is sent again.</td></tr>
                 <tr><td><code>S</code></td><td>Quick stop</td></tr>
                 <tr><td><code>B</code></td><td>Brake stop</td></tr>
                 <tr><td><code>B25</code></td><td>Apply a variable brake amount</td></tr>

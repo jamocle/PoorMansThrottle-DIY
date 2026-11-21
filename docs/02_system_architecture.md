@@ -262,7 +262,8 @@ The firmware and app both contribute to connection resilience.
 Firmware-side behavior can include:
 
 * BLE disconnect grace handling
-* forced stop behavior when control is not restored
+* global automation-aware grace suppression through `CV50` (`1` by default): while any firmware automation/script is actively running, the grace path is suppressed and any active grace countdown is cancelled; when automation stops, normal grace decisions resume
+* forced stop behavior when control is not restored and grace is not otherwise suppressed
 * BLE advertising recovery
 * safe recovery behavior before rebooting when recovery is needed
 * continued WebSocket control when a valid socket session is active

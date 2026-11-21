@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 4.0.1  
+**Firmware Version:** 4.0.15  
 **Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
 
 ---
@@ -25,7 +25,7 @@ Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and func
 
 # Device Types Covered
 
-PMT firmware 3.3.0 uses a shared protocol foundation across more than one device type.
+PMT firmware 4.0.15 uses a shared protocol foundation across more than one device type.
 
 | Device type | Purpose | Protocol scope |
 |---|---|---|
@@ -955,10 +955,14 @@ Notes:
 
 * This is runtime-only.
 * On Throttle firmware, reboot derives grace-shutdown availability from CV49: `0` leaves it disabled; a non-zero value allows it to be enabled.
-* `G1` enables grace shutdown only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` wins: `G1` is acknowledged but grace remains disabled. If a disconnect starts the grace countdown while a firmware script is running, script playback continues normally during the countdown.
+* `G1` enables grace shutdown only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` wins: `G1` is acknowledged but grace remains disabled.
+* `CV50` is the global **Disable Grace While Automation Runs** setting. `CV50=1` is the default.
+* While `CV50=1` and any firmware automation/script is actively running, grace shutdown is suppressed. This condition overrides the other grace deciders for the duration of automation playback.
+* If automation starts while a grace countdown is already active, the active grace countdown is cancelled/suppressed by the existing grace-suppression path.
+* While automation remains active, grace expiry cannot proceed. The automation is not stopped by grace because grace is being held off.
+* As soon as automation is no longer running, CV50 becomes irrelevant and normal grace decisions resume.
+* `CV50=0` disables this automation-specific protection and allows the normal grace rules to apply while a script is running.
 * On Throttle firmware, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
-* If a connection returns before grace expires, the active grace countdown is cancelled and the running script continues without being restarted.
-* If grace actually expires, firmware stops active script playback before continuing with the device's existing grace-expiry shutdown behavior. On Throttle firmware, that forced stop uses the `CV48` quick-stop timing.
 * `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
 * These commands are shared across supported firmware images, but the visible shutdown effect depends on the device's disconnect behavior.
 
@@ -1391,11 +1395,14 @@ F0..100
 R0..100
 FQ0..100
 RQ0..100
+N
 FX1..12=0/1
 RY=<10-character-mac><command>
 ```
 
 `RY=` is a shared recordable relay control. The complete original relay line is stored in the `.pmt` script. On playback, the saved `RY=` line is re-entered through the normal command path and performs the ESP-NOW relay again.
+
+`N` is recordable as a throttle control command. During playback, Neutral uses the same latched semantics as a live command: the first `N` enters Neutral, subsequent F/R/FQ/RQ commands can update the deferred propulsion request while traction remains disconnected, and the next `N` releases Neutral.
 
 ### Turbine
 
@@ -1608,11 +1615,18 @@ Reverse quick ramp:
 RQ<n>
 ```
 
+Toggle Neutral:
+
+```text
+N
+```
+
 Examples:
 
 ```text
 F40
 RQ60
+N
 ```
 
 Responses:
@@ -1620,7 +1634,30 @@ Responses:
 ```text
 ACK:F40
 ACK:RQ60
+ACK:N
 ```
+
+### Neutral behavior
+
+`N` is a Throttle-only latched Neutral toggle introduced in firmware 4.0.15.
+
+When Neutral is entered:
+
+* The locomotive's applied traction target is disconnected from the commanded throttle and coasts toward zero using the same normal momentum/deceleration behavior as `F0` / `R0`.
+* Neutral does **not** invoke brake physics and does **not** request brake-squeal audio.
+* The logical/deferred propulsion command is retained separately from applied traction.
+
+While Neutral remains active:
+
+* `F<n>`, `R<n>`, `FQ<n>`, and `RQ<n>` remain valid and update the latest deferred direction/throttle request.
+* Those commands do not reconnect traction. The motor continues toward or remains at zero until Neutral is released.
+* Diesel prime-mover demand follows the live/deferred throttle request, so engine pitch can change while the locomotive remains in Neutral.
+* Steam wheel-motion audio, including chuff cadence and moving-bed behavior, follows actual applied locomotive motion and therefore slows/stops with the wheels. It does not fake wheel motion from the deferred throttle request.
+* Future steam sounds that represent regulator/power demand independently of wheel motion may follow the deferred command, but wheel-synchronized audio must remain tied to actual motion.
+
+Sending `N` again releases Neutral. Traction then reconnects to the latest deferred F/R/FQ/RQ request through that command's ordinary ramp and direction-change logic.
+
+Higher-priority traction/safety paths remain authoritative. `S`, explicit brake commands, diesel shutdown, forced-stop/OTA safeguards, and other existing interlocks are not bypassed by Neutral.
 
 Notes:
 
@@ -2595,6 +2632,7 @@ Runtime override:
 | `R<n>` | Throttle | Reverse momentum ramp |
 | `FQ<n>` | Throttle | Forward quick ramp |
 | `RQ<n>` | Throttle | Reverse quick ramp |
+| `N` | Throttle | Toggle latched Neutral; coast traction to zero while retaining deferred throttle/direction demand |
 | `S` | Throttle | Quick stop |
 | `B` | Throttle | Brake stop |
 | `B<n>` | Throttle | Variable brake |
@@ -2714,6 +2752,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `IB,<token>` | Authorize a backup WebSocket connection. | [Send Connection Token](#send-connection-token) |
 | `IP?` | Query the device IP address. | [IP Address Query](#ip-address-query) |
 | `MAC?` | Query the compact 10-character Base36 ESP-NOW routing address. | [ESP-NOW Device Address](#esp-now-device-address) |
+| `N` | Toggle Throttle Neutral. While active, traction coasts/remains at zero while F/R/FQ/RQ update the deferred propulsion request; send `N` again to release. | [Motion Commands](#motion-commands) |
 | `NVS?` | Query the persistent 32-bit CV/NVS configuration revision. | [NVS Configuration Revision](#nvs-configuration-revision) |
 | `OTA` | Start supported ESP32-S3 Throttle firmware update. | [Start OTA](#start-ota) |
 | `OTA?` | Query supported ESP32-S3 Throttle OTA readiness. | [Query OTA capability](#query-ota-capability) |

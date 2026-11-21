@@ -686,7 +686,9 @@ If a consist behaves incorrectly, troubleshoot each locomotive by itself first.
 
 The throttle firmware maintains a configurable grace period after qualifying control loss. `CV49` sets that grace time in milliseconds and defaults to `15000`. `CV49=0` disables control-loss grace shutdown. If CV49 is non-zero, grace shutdown is enabled, and control does not return before grace expires, the locomotive enters the existing forced quick-stop path. `CV48` sets the full-scale quick-stop ramp time and defaults to `3000 ms`.
 
-When CV49 is non-zero and grace shutdown is enabled, the two times are sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` and `CV48=1000` can approach two seconds of commanded stop timing from full throttle. Setting `CV49=0` disables the control-loss grace shutdown path. While CV49 is `0`, `G1` is acknowledged but cannot enable grace shutdown.
+When CV49 is non-zero and grace shutdown is enabled, the two times are normally sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` and `CV48=1000` can approach two seconds of commanded stop timing from full throttle. Setting `CV49=0` disables the control-loss grace shutdown path. While CV49 is `0`, `G1` is acknowledged but cannot enable grace shutdown.
+
+`CV50` adds a global automation exception. Its default is `1`. While `CV50=1` and any firmware automation/script is actively running, grace shutdown is suppressed even if other grace conditions would normally allow a countdown or expiry. If automation begins during an active grace countdown, that countdown is cancelled/suppressed. When automation stops, CV50 no longer affects grace and the ordinary grace rules resume. Set `CV50=0` only if you intentionally want grace behavior to remain active while automation is running.
 
 These settings control firmware timing to motor STOP output. They do not measure or guarantee the physical stopping time of the locomotive. In some recovery cases, the ESP32 may reboot after the train reaches a safe stop.
 
@@ -696,6 +698,7 @@ These settings control firmware timing to motor STOP output. They do not measure
 |-----|-------|
 | Reconnect promptly | Reconnect before the CV49 grace period expires |
 | Check grace timing | Query `CV49?`; default is `15000 ms`; `0` disables control-loss grace shutdown and wins over `G1` |
+| Check automation grace protection | Query `CV50?`; default is `1`. While `1`, any active automation/script suppresses grace. Use `CV50=0` only when you want normal grace behavior during automation. |
 | Check quick-stop timing | Query `CV48?`; default full-scale quick-stop time is `3000 ms` |
 | Expect stop after loss | Treat this as safety behavior, not automatically as a fault |
 | Reconnect after stop | Reconnect cleanly before testing motion again |

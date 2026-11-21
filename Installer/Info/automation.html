@@ -417,6 +417,47 @@
 
     <section class="section">
       <div class="section-header">
+        <h2>Automation can protect itself from grace shutdown.</h2>
+        <p>
+          Firmware 4.0.14 adds a global CV that keeps an active automation routine from being interrupted by the grace-shutdown path.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label">CV50 DEFAULT: ON</span>
+            <h3>Disable grace while automation is running</h3>
+            <p>
+              <code>CV50=1</code> is the default. While any firmware automation/script is actively running, grace shutdown is suppressed and the other grace deciders are overridden for the duration of playback.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">NO AUTOMATION, NO EFFECT</span>
+            <h3>Normal grace behavior resumes automatically</h3>
+            <p>
+              If automation is not running, CV50 is ignored. If automation starts during an active grace countdown, that countdown is cancelled/suppressed. When automation stops, the normal grace rules apply again.
+            </p>
+          </article>
+
+          <article class="card">
+            <span class="label">OPT OUT</span>
+            <h3>Use CV50=0 only when intentional</h3>
+            <p>
+              Set <code>CV50=0</code> when you specifically want the ordinary grace-shutdown rules to remain active during automation playback.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout">
+          CV50 affects only grace shutdown. It does not disable unrelated safety shutdowns, change script playback commands, or change the configured grace duration itself.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
         <h2>Record first. Perfect it later.</h2>
         <p>
           Automation does not have to be perfect on the first attempt. PMT is designed so you can capture the idea quickly and refine it afterward.
@@ -462,7 +503,7 @@
         </div>
 
         <div class="version">
-          App 3.3.0 • Firmware 3.3.0
+          App 3.3.0 • Firmware 4.0.14
         </div>
       </div>
     </section>

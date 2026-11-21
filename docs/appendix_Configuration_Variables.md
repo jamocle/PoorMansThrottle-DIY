@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 4.0.1
+**Firmware Version:** 4.0.14
 **Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
 
 ---
@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 3.4.1 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 4.0.14 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
 
 | Device Type | Meaning |
 | --- | --- |
@@ -287,6 +287,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV47** | Feather Brake Mode | `0`, `1` / `1` | Selects the `B1..B100` feather-brake model. `0` = Simple; `1` = Realistic. |
 | **CV48** | Quick-Stop Full-Scale Time | `1 – 60000 ms` / `3000` | Full-scale duration used by the existing `QUICKSTOP` ramp, including normal `S` stops and the forced quick-stop that begins after control-loss grace expires. |
 | **CV49** | Control-Loss Grace Time | `0 – 60000 ms` / `15000` | Grace duration after qualifying control loss before the existing forced quick-stop path begins. `0` disables control-loss grace shutdown; while CV49 is `0`, `G1` cannot enable it. |
+| **CV50** | Disable Grace While Automation Runs | `0`, `1` / `1` | Global automation protection. `1` (default) suppresses grace shutdown while any firmware automation/script is actively running; this overrides other grace deciders for the duration of playback. `0` allows normal grace behavior during automation. When no automation is running, CV50 is ignored. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |

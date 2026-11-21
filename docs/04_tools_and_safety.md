@@ -250,9 +250,12 @@ The firmware supports **BLE control** and can optionally enable **Wi-Fi/WebSocke
 The firmware also includes connection-loss safety behavior such as:
 
 * grace-period handling after loss of control connection  
-* forced stop latching after disconnect timeout  
+* automation-aware grace suppression through `CV50`  
+* forced stop latching after disconnect timeout when grace is not suppressed  
 * safe-stop behavior before some restart or recovery actions  
 * reverse sequencing that stops first before changing direction when already moving
+
+`CV50` defaults to `1`. While any firmware automation/script is actively running, this setting suppresses grace shutdown and overrides the other grace deciders for the duration of playback. If automation starts during a grace countdown, the countdown is cancelled/suppressed. Once automation ends, CV50 is ignored and normal grace behavior resumes. Set `CV50=0` only when you deliberately want grace shutdown to remain active during automation.
 
 This improves safety, but it is not a substitute for careful testing.
 
