@@ -2,10 +2,14 @@
 
 ## Smartphone App:
 
+### Version 4.4.0
+* **Added Custom Output Control Buttons** The main throttle screen now has the ability to contain 3 custom control buttons that may be set in the output control section of the device configuration.
+* Added transport communication hardening.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
 ### Version 4.3.12
 * Added support for new Neutral command
 * Fixed inefficiencies in Physical axis controls.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.3.10
 * **Added FTP Support** PMT now supports FTP to transfer files to and from the PMT device.  This makes it easier to transfer files to and from PMT.
