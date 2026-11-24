@@ -2383,6 +2383,147 @@
           </div>
         </details>
 
+
+        <details class="subsection" data-section-url="faq-ina219-zero-volts">
+          <summary>
+            <span class="section-title">
+              <span>My INA219 installation looks good, but the battery is showing 0 V. Why?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              If the app shows <strong>Battery connected</strong>, but battery voltage, current, and power all remain at <strong>0.00</strong>, the INA219 may not actually be returning valid measurements.
+            </p>
+
+            <p class="note">
+              One possible cause is the INA219 breakout board being powered from <strong>5 V</strong> while connected to the ESP32-S3's <strong>3.3 V I²C bus</strong>.
+            </p>
+
+            <p class="note">
+              <strong>What does this problem look like?</strong>
+            </p>
+
+            <p class="note">
+              The Battery Telemetry drawer may show:
+            </p>
+
+            <ul>
+              <li><strong>Battery connected</strong></li>
+              <li><strong>Connection: Connected</strong></li>
+              <li><strong>Protection: Normal</strong></li>
+              <li>battery voltage of <strong>0.00 V</strong></li>
+              <li>current of <strong>0.00 A</strong></li>
+              <li>power of <strong>0.00 W</strong></li>
+            </ul>
+
+            <p class="note">
+              The throttle status may also show:
+            </p>
+
+            <p class="note note-strong">
+              <code>TF:01000</code>
+            </p>
+
+            <p class="note">
+              <img
+                src="Info/faq-ina219-zero-volts.png"
+                alt="Battery Telemetry showing Battery connected while voltage, current, and power remain at 0.00"
+                class="faq-screenshot" />
+            </p>
+
+            <p class="note">
+              <strong>Why can this happen?</strong>
+            </p>
+
+            <p class="note">
+              In the reported ESP32-S3 installation, the INA219 was connected using:
+            </p>
+
+            <ul>
+              <li><strong>SDA — GPIO 17</strong></li>
+              <li><strong>SCL — GPIO 18</strong></li>
+            </ul>
+
+            <p class="note">
+              The INA219 itself can operate from a <strong>3–5 V supply</strong>, but INA219 breakout boards are not necessarily identical.
+            </p>
+
+            <p class="note">
+              Some breakout boards have their I²C pull-up resistors connected directly to <strong>VCC</strong>. If one of these boards is powered from 5 V, the SDA and SCL lines can be pulled above the ESP32's normal 3.3 V I²C logic level.
+            </p>
+
+            <p class="note">
+              In the reported installation:
+            </p>
+
+            <ul>
+              <li>with the INA219 connected and powered from <strong>5 V</strong>, the I²C lines measured approximately <strong>3.83 V</strong></li>
+              <li>with the INA219 disconnected, the ESP32-side I²C lines measured approximately <strong>3.22 V</strong></li>
+            </ul>
+
+            <p class="note">
+              After changing the INA219 <strong>VCC from 5 V to 3.3 V</strong>, the INA219 began working normally and reported the correct battery voltage.
+            </p>
+
+            <p class="note">
+              <strong>Why might another INA219 work when powered from 5 V?</strong>
+            </p>
+
+            <p class="note">
+              The breakout board design matters.
+            </p>
+
+            <p class="note">
+              One INA219 breakout may have its I²C pull-ups connected differently from another. A board may therefore appear to work when powered from 5 V in one installation, while another board pulls the ESP32's SDA and SCL lines too high.
+            </p>
+
+            <p class="note">
+              For an ESP32-based installation, powering the INA219 breakout from <strong>3.3 V</strong> avoids this particular problem when the breakout board's I²C pull-ups are tied to VCC.
+            </p>
+
+            <p class="note">
+              <strong>If your INA219 shows 0 V</strong>
+            </p>
+
+            <p class="note">
+              Check:
+            </p>
+
+            <ul>
+              <li>INA219 <strong>VCC</strong>, <strong>GND</strong>, <strong>SDA</strong>, and <strong>SCL</strong> wiring</li>
+              <li>that INA219 monitoring is enabled</li>
+              <li>that the configured I²C address matches the INA219</li>
+              <li>whether the INA219 breakout is powered from <strong>5 V</strong></li>
+              <li>whether the breakout board's SDA and SCL pull-up resistors are tied to VCC</li>
+              <li>for the ESP32-S3 installation described here, <strong>SDA is GPIO 17</strong> and <strong>SCL is GPIO 18</strong></li>
+            </ul>
+
+            <p class="note">
+              If the breakout is powered from 5 V and is pulling the I²C lines too high, change INA219 <strong>VCC to 3.3 V</strong> and test again.
+            </p>
+
+            <p class="note">
+              In the reported installation, changing the INA219 supply from <strong>5 V to 3.3 V completely resolved the 0 V reading</strong>.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/ina219.html"
+                target="_blank" rel="noopener noreferrer">
+                INA219 Battery Management
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=PMT_INA219_Battery_Monitor_Installation_Guide.md"
+                target="_blank" rel="noopener noreferrer">
+                PMT INA219 Battery Monitor Installation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-control-led-lights">
           <summary>
             <span class="section-title">
