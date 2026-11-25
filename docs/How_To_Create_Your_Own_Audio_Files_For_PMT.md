@@ -78,12 +78,12 @@ The PMTPlayer WAV reader verifies all of the following:
 - PCM audio format;
 - exactly **1 channel**;
 - exactly **16 bits per sample**;
-- sample rate from **8,000 Hz through 48,000 Hz**;
+- sample rate of **22,050 Hz**, or **44,100 Hz when CV431=1**;
 - a non-empty audio data section.
 
-The PMTPlayer source uses **22,050 Hz** as its default WAV/audio rate, so this guide uses 22,050 Hz as the standard authoring rate.
+PMTPlayer uses **22,050 Hz** by default, so this guide uses 22,050 Hz as the standard authoring rate.
 
-Other sample rates inside the accepted 8,000–48,000 Hz range can work, but there is normally no advantage to making locomotive sound files more complicated than necessary.
+To use **44,100 Hz**, set **CV431=1** and reboot the PMT device. PMTPlayer then supports both 22,050 Hz and 44,100 Hz audio. **22,050 Hz remains the recommended authoring standard.**
 
 ### Use this unless you have a specific technical reason not to
 
@@ -2171,8 +2171,7 @@ Important implementation details used in this guide include:
 - RIFF/WAVE PCM parser requirements;
 - mono-only requirement;
 - 16-bit-only requirement;
-- accepted 8,000–48,000 Hz sample-rate range;
-- default 22,050 Hz audio rate;
+- default 22,050 Hz audio rate and optional 44,100 Hz support with `CV431=1`;
 - diesel startup, shutdown, idle, and notch map;
 - 48-file steam chuff map;
 - four chuff phases and four sound sets per speed band;

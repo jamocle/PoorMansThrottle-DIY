@@ -280,11 +280,11 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <li>PCM audio format;</li>
 <li>exactly <strong>1 channel</strong>;</li>
 <li>exactly <strong>16 bits per sample</strong>;</li>
-<li>sample rate from <strong>8,000 Hz through 48,000 Hz</strong>;</li>
+<li>sample rate of <strong>22,050 Hz</strong>, or <strong>44,100 Hz when CV431=1</strong>;</li>
 <li>a non-empty audio data section.</li>
 </ul>
-<p>The PMTPlayer source uses <strong>22,050 Hz</strong> as its default WAV/audio rate, so this guide uses 22,050 Hz as the standard authoring rate.</p>
-<p>Other sample rates inside the accepted 8,000–48,000 Hz range can work, but there is normally no advantage to making locomotive sound files more complicated than necessary.</p>
+<p>PMTPlayer uses <strong>22,050 Hz</strong> by default, so this guide uses 22,050 Hz as the standard authoring rate.</p>
+<p>To use <strong>44,100 Hz</strong>, set <strong>CV431=1</strong> and reboot the PMT device. PMTPlayer then supports both 22,050 Hz and 44,100 Hz audio. <strong>22,050 Hz remains the recommended authoring standard.</strong></p>
 <h3>Use this unless you have a specific technical reason not to</h3>
 <blockquote>
 <p><strong>22,050 Hz / mono / signed 16-bit PCM WAV</strong></p>

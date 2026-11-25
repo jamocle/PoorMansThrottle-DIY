@@ -19,7 +19,7 @@ For best results, make **every PMT sound**:
 | Compression | None |
 | Filename | Four digits, such as `0090.wav` |
 
-PMTPlayer accepts sample rates from **8,000 through 48,000 Hz**, but **22,050 Hz mono, 16-bit PCM WAV** is the recommended authoring standard.
+PMTPlayer uses **22,050 Hz** by default. To enable **44,100 Hz**, set **CV431=1** and reboot the PMT device. **22,050 Hz mono, signed 16-bit PCM WAV** remains the recommended authoring standard.
 
 Do not use stereo, 24-bit, 32-bit float, MP3, AAC, OGG, FLAC, ADPCM, or another compressed WAV format.
 

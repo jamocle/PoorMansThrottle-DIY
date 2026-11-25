@@ -321,7 +321,9 @@ If you create your own WAV files, use:
 
 - mono
 - 16-bit PCM
-- 8 kHz to 48 kHz sample rate
+- 22.05 kHz sample rate by default, or 44.1 kHz with `CV431=1`
+
+If you set `CV431=1` to use 44.1 kHz files, reboot the PMT device before playback. **22.05 kHz remains the recommended authoring standard.**
 
 ---
 

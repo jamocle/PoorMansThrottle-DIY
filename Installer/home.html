@@ -4107,6 +4107,76 @@
           </div>
         </details>
 
+<details class="subsection" data-section-url="faq-44-1-khz-audio-files">
+          <summary>
+            <span class="section-title">
+              <span>How do I enable support for 44.1 kHz audio files?</span>
+            </span>
+          </summary>
+
+          <div class="subsection-content">
+            <p class="note">
+              Set <strong>CV431 — Audio Sampling Rate</strong> to <code>1</code>.
+            </p>
+
+            <p class="note">
+              You can change CV431 from the PMT app's <strong>Configuration Variables</strong> screen, or send this command from the Terminal:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV431=1</code>
+            </p>
+
+            <p class="note">
+              After changing CV431, <strong>reboot the PMT device</strong> so PMTPlayer can load the new setting.
+            </p>
+
+            <p class="note">
+              With <code>CV431=1</code>, PMTPlayer supports both:
+            </p>
+
+            <ul>
+              <li><strong>22.05 kHz mono, 16-bit PCM WAV</strong></li>
+              <li><strong>44.1 kHz mono, 16-bit PCM WAV</strong></li>
+            </ul>
+
+            <p class="note">
+              The default is <code>CV431=0</code> - 22.05 kHz mono, 16-bit PCM WAV.
+            </p>
+
+            <p class="note">
+              You can check the current value from the Terminal with:
+            </p>
+
+            <p class="note note-strong">
+              <code>CV431?</code>
+            </p>
+
+            <p class="note">
+              Even with 44.1 kHz support enabled, the audio file still needs to be <strong>WAV, mono, and signed 16-bit PCM</strong>. <strong>22,050 Hz remains the recommended authoring standard because it uses less storage space and transfers faster than 44.1 kHz files of the same duration.</strong>
+            </p>
+
+            <p class="note">
+              On a train layout—often a loud environment, sometimes outdoors, with small speakers mounted in less-than-ideal locations—the human ear generally cannot hear a practical difference between 22.05 kHz and 44.1 kHz audio, so 22.05 kHz is normally the better choice.
+            </p>
+
+            <p class="note note-strong">
+              More information:
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/home.html?doc=appendix_Configuration_Variables.md"
+                target="_blank" rel="noopener noreferrer">
+                Configuration Variables Reference
+              </a>
+              ·
+              <a class="doc-link prominent-link"
+                href="https://jamocle.github.io/PoorMansThrottle-DIY/Installer/Info/audio-guide-complete.html"
+                target="_blank" rel="noopener noreferrer">
+                Complete Audio Creation Guide
+              </a>
+            </p>
+          </div>
+        </details>
+
 <details class="subsection" data-section-url="faq-steam-chuff-sync">
           <summary>
             <span class="section-title">
