@@ -236,10 +236,14 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <p>Do not use stereo, 24-bit, 32-bit float, MP3, AAC, OGG, FLAC, ADPCM, or another compressed WAV format.</p>
 <hr />
 <h1>2. Folder and Filename Rules</h1>
-<p>PMT sounds go in:</p>
+<p>Known PMT sound-pack sounds go in:</p>
 <pre><code class="language-text">/diesel
 /steam
 </code></pre>
+<p>Custom audio can also use the shared:</p>
+<pre><code class="language-text">/audio
+</code></pre>
+<p>Custom lookup order is: configured sound-pack folder → opposite sound-pack folder → <code>/audio</code>. The <code>/audio</code> folder is only a shared custom-audio fallback; it is not a third sound pack.</p>
 <p>Track numbers always use four digits:</p>
 <pre><code class="language-text">0080.wav
 0090.wav
@@ -718,7 +722,7 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <p><strong>WARNING — Do not overwrite standard PMT audio files.</strong></p>
 <p><strong>Diesel reserved filenames:</strong> <code>0080.wav</code>–<code>0082.wav</code>, <code>0090.wav</code>–<code>0091.wav</code>, <code>0100.wav</code>–<code>0108.wav</code>, <code>0202.wav</code>, <code>0211.wav</code>–<code>0213.wav</code>, and <code>0300.wav</code>–<code>0399.wav</code>.</p>
 <p><strong>Steam reserved filenames:</strong> <code>0080.wav</code>–<code>0082.wav</code>, <code>0093.wav</code>–<code>0095.wav</code>, <code>0100.wav</code>–<code>0115.wav</code>, <code>0120.wav</code>–<code>0135.wav</code>, <code>0140.wav</code>–<code>0155.wav</code>, <code>0190.wav</code>, <code>0202.wav</code>, <code>0211.wav</code>–<code>0213.wav</code>, and <code>0300.wav</code>–<code>0399.wav</code>.</p>
-<p>Choose a number that is not reserved above and is not already present for another purpose in the active sound folder. The <code>9000.wav</code> example below is outside the standard PMT ranges.</p>
+<p>Choose a number that is not reserved above and is not already present for another purpose in either sound-pack folder or <code>/audio</code>. Custom lookup checks the configured sound-pack folder first, then the opposite sound-pack folder, then <code>/audio</code>. The <code>9000.wav</code> example below is outside the standard PMT ranges.</p>
 </blockquote>
 <ol>
 <li>Prepare the fiddle clip using the same PMT WAV format described at the start of this guide: mono, signed 16-bit PCM WAV, with <strong>22,050 Hz</strong> recommended.</li>
@@ -728,7 +732,7 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <pre><code class="language-text">9000.wav
 </code></pre>
 <ol start="4">
-<li>Put <code>9000.wav</code> in the active <code>/diesel</code> or <code>/steam</code> sound folder.</li>
+<li>Put <code>9000.wav</code> in <code>/audio</code> if both Steam and Diesel should share it. For a pack-specific override, place it in <code>/diesel</code> or <code>/steam</code>. Custom lookup is configured pack → opposite pack → <code>/audio</code>.</li>
 <li>Configure FX3. FX3 uses:
 <ul>
 <li><code>CV164</code> — function name;</li>
@@ -1000,7 +1004,7 @@ Effect &gt; Fading &gt; Fade Out
 <h1>16. Final Checklist</h1>
 <p>Before copying a file to the SD card:</p>
 <ul>
-<li>[ ] correct <code>/diesel</code> or <code>/steam</code> folder;</li>
+<li>[ ] correct location: known sound in <code>/diesel</code> or <code>/steam</code>; custom sound follows configured pack → opposite pack → <code>/audio</code>;</li>
 <li>[ ] four-digit filename;</li>
 <li>[ ] <code>.wav</code>;</li>
 <li>[ ] mono;</li>

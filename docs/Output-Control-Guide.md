@@ -1923,6 +1923,8 @@ Hold the button for horn ON and release for horn OFF.
 
 ## Loop a custom sound
 
+Custom WAV lookup is the same for firmware-side and app-owned custom audio: configured sound-pack folder first, opposite sound-pack folder second, then `/audio`. Put a shared custom WAV in `/audio` when both Steam and Diesel should use it; a pack-specific copy in `/diesel` or `/steam` takes precedence according to that order.
+
 Use:
 
 - Pattern = Audio Custom Replay

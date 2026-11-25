@@ -123,12 +123,22 @@ Examples:
 
 Use the exact four-digit form.
 
-The two PMT sound folders are:
+The two PMT **sound-pack** folders are:
 
 ```text
 /diesel
 /steam
 ```
+
+Known PMT sounds (engine, brake, bell, horn/whistle, cab chatter, and other sound-pack tracks) use only the currently configured sound-pack folder.
+
+Custom audio has one additional shared location:
+
+```text
+/audio
+```
+
+For a custom track, PMT checks the configured sound-pack folder first, then the opposite sound-pack folder, then `/audio`. The `/audio` folder is **not** a third sound pack; it is the final shared fallback for custom audio only.
 
 Examples:
 
@@ -1250,7 +1260,7 @@ The current code accepts custom track numbers from:
 
 > **WARNING — Do not overwrite standard PMT audio files.**
 >
-> The `0001.wav` through `9999.wav` range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is **not reserved below** and is not already present for another purpose in the active sound folder. Overwriting a standard PMT filename will replace or interfere with that normal locomotive sound.
+> The `0001.wav` through `9999.wav` range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is **not reserved below** and is not already present for another purpose in either sound-pack folder or the shared `/audio` folder. A custom request checks the configured sound-pack folder before the opposite sound-pack folder and `/audio`, so reusing a standard PMT track number can cause the sound-pack file to win instead of your custom file.
 >
 > **Treat these diesel filenames as reserved for PMT:**
 >
@@ -1316,7 +1326,15 @@ The WAV filename is the four-digit version of the selected track number. For exa
 9000.wav
 ```
 
-Put the file under the active PMTPlayer sound root, which for the normal PMT sound layout is the active `/diesel` or `/steam` folder.
+Custom audio is resolved in this order:
+
+1. configured sound-pack folder (`/diesel` or `/steam`);
+2. opposite sound-pack folder;
+3. shared `/audio` folder.
+
+For example, with Steam configured, track `9000` is checked as `/steam/9000.wav`, then `/diesel/9000.wav`, then `/audio/9000.wav`.
+
+Use `/audio/9000.wav` when the same custom sound should be shared by both Steam and Diesel. Put a custom file in `/diesel` or `/steam` only when you intentionally want that pack-specific copy to take precedence.
 
 #### Worked example — Fiddle Music on FX3
 
@@ -1757,7 +1775,7 @@ For every exported file, check:
 - [ ] no clipping;
 - [ ] one-shot ends naturally;
 - [ ] loop sounds seamless if the file is supposed to loop;
-- [ ] file is in the correct `/diesel` or `/steam` folder.
+- [ ] known sound-pack file is in the configured `/diesel` or `/steam` folder, or custom audio is placed according to configured pack → opposite pack → `/audio` fallback rules.
 
 ---
 
@@ -2154,7 +2172,7 @@ Signed 16-bit PCM
 ```
 
 7. Use the correct four-digit name.
-8. Put it in `/diesel` or `/steam`.
+8. For a known sound-pack file, put it in `/diesel` or `/steam` as appropriate. For shared custom audio, prefer `/audio`; custom lookup is configured pack → opposite pack → `/audio`.
 9. Listen to it in PMT.
 10. Go back to Audacity and adjust by ear if needed.
 
@@ -2166,8 +2184,10 @@ Signed 16-bit PCM
 Important implementation details used in this guide include:
 
 - firmware version `3.0.0`;
-- sound roots `/diesel` and `/steam`;
-- filename pattern `/diesel/####.wav` or `/steam/####.wav`;
+- sound-pack roots `/diesel` and `/steam`;
+- shared custom-audio fallback root `/audio`;
+- known-sound filename pattern `/diesel/####.wav` or `/steam/####.wav`;
+- custom-audio lookup order: configured sound-pack root → opposite sound-pack root → `/audio`;
 - RIFF/WAVE PCM parser requirements;
 - mono-only requirement;
 - 16-bit-only requirement;

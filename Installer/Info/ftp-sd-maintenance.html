@@ -220,9 +220,11 @@ ERR:FTP:BUSY</code></pre>
     <section class="section">
       <h2>Files you can maintain</h2>
       <h3>PMTPlayer audio</h3>
-      <p>PMTPlayer WAV files can be copied or replaced through FTP. Typical active folders are:</p>
+      <p>PMTPlayer WAV files can be copied or replaced through FTP. Typical PMTPlayer audio folders are:</p>
       <pre><code>/diesel
-/steam</code></pre>
+/steam
+/audio</code></pre>
+      <p><code>/diesel</code> and <code>/steam</code> are the sound-pack roots. <code>/audio</code> is the shared final fallback for custom audio. Custom tracks are resolved as configured sound-pack folder → opposite sound-pack folder → <code>/audio</code>.</p>
       <p>Turn FTP Maintenance off and allow the PMT device to reboot before testing changed audio.</p>
 
       <h3>Scripts</h3>
@@ -263,7 +265,7 @@ ERR:FTP:BUSY</code></pre>
         <div class="card"><strong>Normal PMT commands stop working</strong>This is expected. Normal commands are intentionally locked out until the device reboots.</div>
         <div class="card"><strong>Audio does not play</strong>This is expected. Audio is shut down before FTP receives exclusive SD access.</div>
         <div class="card"><strong>Wi-Fi drops while FTP is active</strong>PMT stays latched in maintenance mode. It does not resume throttle/controller operation because Wi-Fi was lost. BLE remains available.</div>
-        <div class="card"><strong>A folder cannot be opened</strong>Verify that the folder exists and use the endpoint shown by the PMT app. Normal PMT paths include <code>/scripts/</code>, <code>/logs/</code>, <code>/diesel/</code>, and <code>/steam/</code> when those folders exist on the card.</div>
+        <div class="card"><strong>A folder cannot be opened</strong>Verify that the folder exists and use the endpoint shown by the PMT app. Normal PMT paths include <code>/scripts/</code>, <code>/logs/</code>, <code>/diesel/</code>, <code>/steam/</code>, and <code>/audio/</code> when those folders exist on the card.</div>
       </div>
     </section>
 

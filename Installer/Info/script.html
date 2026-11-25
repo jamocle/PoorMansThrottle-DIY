@@ -472,6 +472,44 @@
           </div>
         </div>
 
+        <h2 style="font-size:1.3rem; margin-top:26px;">Event-based automation scripts</h2>
+        <p>
+          On supported ESP32-S3 throttle firmware, PMT can run four fixed firmware scripts automatically when specific locomotive
+          or prime-mover events occur. These are separate from the existing Automatic Sounds feature.
+        </p>
+        <div class="command-grid">
+          <div class="command-card">
+            <strong><code>pmstart.pmt</code></strong>
+            Runs when the prime mover start sequence begins.
+          </div>
+          <div class="command-card">
+            <strong><code>pmstop.pmt</code></strong>
+            Runs when the prime mover stop sequence begins.
+          </div>
+          <div class="command-card">
+            <strong><code>locstart.pmt</code></strong>
+            Runs when the locomotive actually starts moving.
+          </div>
+          <div class="command-card">
+            <strong><code>locstop.pmt</code></strong>
+            Runs when the locomotive actually comes to a stop.
+          </div>
+        </div>
+        <ul class="rule-list">
+          <li>Each event script can be enabled or disabled independently from the app's configuration screen.</li>
+          <li>
+            Each entry has an <strong>Edit</strong> button. The file does not need to exist beforehand; opening a missing event script
+            starts with an empty editor, and saving creates it.
+          </li>
+          <li>
+            If the opposite event occurs while the paired script is still running, the earlier script is stopped first. For example,
+            a locomotive stop stops a still-running <code>locstart.pmt</code> before <code>locstop.pmt</code> is started when enabled.
+          </li>
+          <li>
+            These four event scripts are configured separately from Automatic Sounds, so either feature can be used by itself or both can be enabled.
+          </li>
+        </ul>
+
         <h2 style="font-size:1.3rem; margin-top:26px;">Throttle app firmware-script floater</h2>
         <ul class="rule-list">
           <li>
@@ -578,6 +616,16 @@
           <li>
             An <code>S</code> inside the script stops the train normally but does <strong>not</strong> terminate the script.
             It uses the same CV48 quick-stop timing, and playback continues with the following pause or command.
+          </li>
+          <li>
+            On supported ESP32-S3 throttle firmware, a non-throttle script that ends normally performs the same owned-resource cleanup
+            as a stopped non-throttle script. Audio/effect resources started and owned by that script are stopped when it ends.
+          </li>
+          <li>
+            When a non-throttle script is saved through the supported editor/PX path and would otherwise end with a locally started
+            <code>AC</code>, <code>ACR</code>, or audio-backed <code>FX</code> resource still active, firmware adds
+            <code>PAUSE 1000</code> if there is no positive trailing pause already present. This prevents a short script from starting
+            a resource and immediately reaching its cleanup point.
           </li>
         </ul>
 

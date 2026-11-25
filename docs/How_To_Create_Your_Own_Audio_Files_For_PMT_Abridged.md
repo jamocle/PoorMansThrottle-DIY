@@ -27,12 +27,20 @@ Do not use stereo, 24-bit, 32-bit float, MP3, AAC, OGG, FLAC, ADPCM, or another 
 
 # 2. Folder and Filename Rules
 
-PMT sounds go in:
+Known PMT sound-pack sounds go in:
 
 ```text
 /diesel
 /steam
 ```
+
+Custom audio can also use the shared:
+
+```text
+/audio
+```
+
+Custom lookup order is: configured sound-pack folder → opposite sound-pack folder → `/audio`. The `/audio` folder is only a shared custom-audio fallback; it is not a third sound pack.
 
 Track numbers always use four digits:
 
@@ -494,7 +502,7 @@ Custom tracks can use numbers from `1` through `9999`, but **do not assume every
 >
 > **Steam reserved filenames:** `0080.wav`–`0082.wav`, `0093.wav`–`0095.wav`, `0100.wav`–`0115.wav`, `0120.wav`–`0135.wav`, `0140.wav`–`0155.wav`, `0190.wav`, `0202.wav`, `0211.wav`–`0213.wav`, and `0300.wav`–`0399.wav`.
 >
-> Choose a number that is not reserved above and is not already present for another purpose in the active sound folder. The `9000.wav` example below is outside the standard PMT ranges.
+> Choose a number that is not reserved above and is not already present for another purpose in either sound-pack folder or `/audio`. Custom lookup checks the configured sound-pack folder first, then the opposite sound-pack folder, then `/audio`. The `9000.wav` example below is outside the standard PMT ranges.
 
 1. Prepare the fiddle clip using the same PMT WAV format described at the start of this guide: mono, signed 16-bit PCM WAV, with **22,050 Hz** recommended.
 2. Choose an unused custom track number from `1` through `9999` that is not in the reserved PMT filename list above. This example uses track `9000`.
@@ -504,7 +512,7 @@ Custom tracks can use numbers from `1` through `9999`, but **do not assume every
 9000.wav
 ```
 
-4. Put `9000.wav` in the active `/diesel` or `/steam` sound folder.
+4. Put `9000.wav` in `/audio` if both Steam and Diesel should share it. For a pack-specific override, place it in `/diesel` or `/steam`. Custom lookup is configured pack → opposite pack → `/audio`.
 5. Configure FX3. FX3 uses:
    - `CV164` — function name;
    - `CV165` — pin/track value;
@@ -806,7 +814,7 @@ These are **recommended authoring ranges**, not exact PMT hardware durations.
 
 Before copying a file to the SD card:
 
-- [ ] correct `/diesel` or `/steam` folder;
+- [ ] correct location: known sound in `/diesel` or `/steam`; custom sound follows configured pack → opposite pack → `/audio`;
 - [ ] four-digit filename;
 - [ ] `.wav`;
 - [ ] mono;

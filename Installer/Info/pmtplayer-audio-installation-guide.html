@@ -630,7 +630,7 @@
 <li>Diesel sounds for PMTPlayer Diesel</li>
 <li>Steam sounds for PMTPlayer Steam</li>
 </ul>
-<p>Copy the wav files you downloaded or created to your SD card. The firmware looks for files in the diesel or steam folders on the SD card. e.g.:</p>
+<p>Copy the known sound-pack WAV files you downloaded or created to your SD card. Known PMT sounds are looked up only in the configured Diesel or Steam sound-pack folder. e.g.:</p>
 <pre><code class="language-text">/diesel/####.wav
 </code></pre>
 <p>or:</p>
@@ -640,6 +640,12 @@
 <pre><code class="language-text">/diesel/0001.wav
 /steam/0001.wav
 </code></pre>
+<p>Custom audio uses a three-step lookup:</p>
+<pre><code class="language-text">configured /diesel or /steam folder
+opposite sound-pack folder
+/audio
+</code></pre>
+<p>For example, with Steam configured, custom track <code>9000</code> is checked as <code>/steam/9000.wav</code>, then <code>/diesel/9000.wav</code>, then <code>/audio/9000.wav</code>. Put shared custom sounds in <code>/audio</code> when both Steam and Diesel should use the same file. <code>/audio</code> does not replace the configured sound-pack folder for known PMT sounds.</p>
 <p>If you create your own WAV files, use:</p>
 <ul>
 <li>mono</li>

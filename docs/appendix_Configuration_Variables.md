@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 4.0.16
+**Firmware Version:** 4.0.17
 **Platform:** ESP32 PMT device firmware: Throttle / Controller, Module, and Turbine
 
 ---
@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 4.0.16 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image or operating mode.
+PMT firmware 4.0.17 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image or operating mode.
 
 `PoorMansThrottle` supports two persisted operating modes selected by `CV19`: **Throttle** (`CV19=1`) and **Controller** (`CV19=2`). Controller mode uses the same PoorMansThrottle CV command namespace and the same normal app CV Backup profile. It does not provide locomotive motor-control runtime behavior: locomotive motor commands are rejected and unsolicited locomotive hardware-state notifications are suppressed.
 
@@ -295,6 +295,7 @@ These CVs are implemented by **PoorMansThrottle firmware**. They can be queried,
 | **CV48** | Quick-Stop Full-Scale Time | `1 – 60000 ms` / `3000` | Full-scale duration used by the existing `QUICKSTOP` ramp, including normal `S` stops and the forced quick-stop that begins after control-loss grace expires. |
 | **CV49** | Control-Loss Grace Time | `0 – 60000 ms` / `15000` | Grace duration after qualifying control loss before the existing forced quick-stop path begins. `0` disables control-loss grace shutdown; while CV49 is `0`, `G1` cannot enable it. |
 | **CV50** | Disable Grace While Automation Runs | `0`, `1` / `1` | Global automation protection. `1` (default) suppresses grace shutdown while any firmware automation/script is actively running; this overrides other grace deciders for the duration of playback. `0` allows normal grace behavior during automation. When no automation is running, CV50 is ignored. |
+| **CV51** | Event Automation Script Enable Mask | `0 – 15` / `0` | Enables the four optional S3 Throttle event scripts independently: bit 0 (`1`) `pmstart.pmt`, bit 1 (`2`) `pmstop.pmt`, bit 2 (`4`) `locstart.pmt`, bit 3 (`8`) `locstop.pmt`. Values are additive. |
 | **CV90** | Motor PWM Frequency Curve | `2`, `4`, `6`, or `12` digits / `202020202020` | Controls motor PWM frequency from `1–40 kHz` across six throttle anchors. Short forms expand to the canonical six-point curve. |
 | **CV98** | Steam Chuff-Rate Curve, Low-Speed Anchors | 12 digits / `010510152025` | Six two-digit cadence values for speeds `1,5,10,15,20,25%`. `01..99` means 1..99%; `00` means 100%. |
 | **CV99** | Steam Chuff-Rate Curve, High-Speed Anchors | 12 digits / `355065809000` | Six two-digit cadence values for speeds `35,50,65,80,90,100%`. Firmware interpolates between anchors. These values change chuff cadence, not locomotive speed. |
@@ -442,6 +443,34 @@ CV49 is implemented by **PoorMansThrottle firmware** and can be queried, stored,
 When CV49 is non-zero and grace shutdown is enabled, control-loss stopping is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. For example, `CV49=1000` plus `CV48=1000` can approach two seconds of commanded stop timing from full throttle. When `CV49=0`, the control-loss grace shutdown path is disabled rather than shortened to zero delay.
 
 These CVs control firmware timing to motor STOP output. They do not measure or guarantee the physical stopping distance or stopping time of the locomotive.
+
+---
+
+## CV51 — Event Automation Script Enable Mask. (**Not supported on Classic ESP32**)
+
+CV51 is implemented by **PoorMansThrottle firmware** and stores the enable state for four optional event-based automation scripts. The app exposes these scripts on supported ESP32-S3 Throttle firmware. Controller mode can store/read the CV through the PoorMansThrottle CV namespace, but it does not generate the locomotive/prime-mover event behavior and the app does not expose these event controls in Controller mode.
+
+* Valid range: `0 – 15`.
+* Default: `0` (all four event scripts disabled).
+* Each script is enabled independently by one bit.
+* CV51 is separate from `CV45` Automatic Horn/Bell Sounds. Either feature can be used by itself, or both can be enabled together.
+
+| Bit | Value | Script | Runs when |
+|---:|---:|---|---|
+| 0 | `1` | `pmstart.pmt` | The prime mover start sequence begins. |
+| 1 | `2` | `pmstop.pmt` | The prime mover stop sequence begins. |
+| 2 | `4` | `locstart.pmt` | The locomotive actually starts moving. |
+| 3 | `8` | `locstop.pmt` | The locomotive actually comes to a stop. |
+
+The values are additive. For example, `CV51=5` enables `pmstart.pmt` (`1`) and `locstart.pmt` (`4`) while leaving the two stop scripts disabled.
+
+The locomotive start/stop events follow actual applied-motion behavior. A temporary stop used as part of a stop-first direction reversal does not run `locstop.pmt`; the subsequent departure in the new direction can run `locstart.pmt`.
+
+The prime-mover stop event follows the actual prime-mover lifecycle. If shutdown is delayed until the locomotive stops, `pmstop.pmt` runs when the real shutdown sequence begins rather than when the setting was first changed.
+
+If the opposite event occurs while its paired event script is still running, the earlier script is stopped first. For example, a locomotive stop stops a still-running `locstart.pmt` before `locstop.pmt` is started (when enabled).
+
+The app provides an independent enable switch and **Edit** button for each fixed script name. The file does not need to exist before editing; saving creates or updates the script.
 
 ---
 
@@ -1130,6 +1159,7 @@ All documented configuration variables, in numeric order. Where a CV has differe
 | CV47 | Feather Brake Mode | [CV47 — Feather Brake Mode](#cv47--feather-brake-mode) | Yes — Throttle / Controller |
 | CV48 | Quick-Stop Full-Scale Time | [CV48 — Quick-Stop Full-Scale Time](#cv48--quick-stop-full-scale-time) | Yes — Throttle / Controller |
 | CV49 | Control-Loss Grace Time | [CV49 — Control-Loss Grace Time](#cv49--control-loss-grace-time) | Yes — Throttle / Controller |
+| CV51 | Event Automation Script Enable Mask | [CV51 — Event Automation Script Enable Mask](#cv51--event-automation-script-enable-mask-not-supported-on-classic-esp32) | Yes — Throttle / Controller |
 | CV90 | Motor PWM Frequency Curve | [CV90 — Motor PWM Frequency Curve](#cv90--motor-pwm-frequency-curve) | Yes — Throttle / Controller |
 | CV98 | Steam Chuff-Rate Curve, Low-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
 | CV99 | Steam Chuff-Rate Curve, High-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |

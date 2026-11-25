@@ -417,6 +417,53 @@
 
     <section class="section">
       <div class="section-header">
+        <h2>Four event scripts can run automatically.</h2>
+        <p>
+          Supported ESP32-S3 throttle firmware can launch fixed automation scripts when the prime mover or locomotive starts and stops.
+        </p>
+      </div>
+
+      <div class="content">
+        <div class="card-grid">
+          <article class="card">
+            <span class="label">PRIME MOVER START</span>
+            <h3><code>pmstart.pmt</code></h3>
+            <p>Runs when the prime mover start sequence begins.</p>
+          </article>
+
+          <article class="card">
+            <span class="label">PRIME MOVER STOP</span>
+            <h3><code>pmstop.pmt</code></h3>
+            <p>Runs when the prime mover stop sequence begins.</p>
+          </article>
+
+          <article class="card">
+            <span class="label">LOCOMOTIVE START</span>
+            <h3><code>locstart.pmt</code></h3>
+            <p>Runs when the locomotive actually starts moving.</p>
+          </article>
+
+          <article class="card">
+            <span class="label">LOCOMOTIVE STOP</span>
+            <h3><code>locstop.pmt</code></h3>
+            <p>Runs when the locomotive actually comes to a stop.</p>
+          </article>
+        </div>
+
+        <p>
+          Each event has its own enable switch and <strong>Edit</strong> button in the app. The file does not have to exist before you edit it;
+          saving creates the fixed script file when needed.
+        </p>
+
+        <div class="callout">
+          If the opposite event occurs while its paired script is still running, PMT stops the earlier script first. These event scripts are
+          configured separately from the existing Automatic Sounds feature, so you can use either feature independently or use both together.
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
         <h2>Automation can protect itself from grace shutdown.</h2>
         <p>
           Firmware 4.0.14 adds a global CV that keeps an active automation routine from being interrupted by the grace-shutdown path.
@@ -503,7 +550,7 @@
         </div>
 
         <div class="version">
-          App 3.3.0 • Firmware 4.0.14
+          App 4.4.2 • Firmware 4.0.17
         </div>
       </div>
     </section>

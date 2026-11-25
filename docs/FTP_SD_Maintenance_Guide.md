@@ -178,12 +178,15 @@ FTP exposes the SD card managed by the PMT firmware. Typical content can include
 
 PMTPlayer audio files can be copied or replaced through FTP.
 
-Typical active folders are:
+Typical PMTPlayer audio folders are:
 
 ```text
 /diesel
 /steam
+/audio
 ```
+
+`/diesel` and `/steam` are the sound-pack roots. `/audio` is the shared final fallback for custom audio. Custom tracks are resolved as configured sound-pack folder → opposite sound-pack folder → `/audio`.
 
 After changing PMTPlayer audio files, turn FTP Maintenance off and allow the PMT device to reboot before testing audio.
 
@@ -261,6 +264,7 @@ The FTP server accepts normal absolute directory paths such as:
 /logs/
 /diesel/
 /steam/
+/audio/
 ```
 
 ### Normal PMT commands stop working

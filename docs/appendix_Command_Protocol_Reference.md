@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 4.0.15  
+**Firmware Version:** 4.0.17  
 **Platform:** ESP32 PMT device family: Throttle / Controller, Module, and Turbine
 
 ---
@@ -25,7 +25,7 @@ Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and func
 
 # Device Types Covered
 
-PMT firmware 4.0.15 uses a shared protocol foundation across more than one device type.
+PMT firmware 4.0.17 uses a shared protocol foundation across more than one device type.
 
 | Device type / mode | Purpose | Protocol scope |
 |---|---|---|
@@ -346,11 +346,13 @@ Current PX/1 script resources are:
 
 | Resource | Value | Access | Contents |
 |---|---:|---|---|
-| `Script` | `1` | Read / Write | Exact bytes of `/scripts/<name>.pmt` |
+| `Script` | `1` | Read / Write | Reads return the saved bytes of `/scripts/<name>.pmt`. Writes are validated and may be normalized before the file is committed; see the note below. |
 | `ScriptList` | `2` | Read only | Snapshot of saved logical script names, UTF-8, one name per line, without `.pmt` |
 | `CvValue` | `3` | Read / Write | UTF-8 CV value bytes. The PX header `value` field identifies the CV number. |
 | `WifiInfo` | `4` | Diagnostic push | Versioned UTF-8 JSON returned by `WIFI?`. Data-frame `value` is the byte offset; Complete-frame `value` is the total JSON byte length. |
 | `LogFile` | `5` | Read only | Newest numbered SD debug log returned by `D00*`. Data-frame `value` is the zero-based file byte offset; Complete-frame `value` is the total file byte length. |
+
+For PX/1 `Script` writes on supported ESP32-S3 PoorMansThrottle firmware, the incoming transfer is validated first. If the saved script is a non-throttle script that would reach end-of-file with a locally started `AC`, `ACR`, or audio-backed `FX` resource still active, and the script does not already end with a positive `PAUSE`, firmware appends `PAUSE 1000` before committing the file. `PAUSE 0` does not count as a positive trailing pause. A later PX read returns the normalized saved bytes, which can therefore differ from the bytes originally uploaded even though the upload CRC was valid.
 
 An empty script directory returns a valid zero-byte `ScriptList`. The list is a snapshot for the lifetime of the transfer so its announced length and CRC remain stable. Directory enumeration order is not defined; clients may sort the returned names for display.
 
@@ -1190,6 +1192,7 @@ Behavior:
 * Runs the script once.
 * The file is loaded into memory and closed before playback begins.
 * Playback is non-blocking; `PAUSE` delays are serviced from the normal firmware loop.
+* On supported ESP32-S3 PoorMansThrottle firmware, when a non-throttle script reaches normal end-of-file, firmware stops the active audio/effect resources owned by that script before releasing the playback instance. This matches the owned-resource cleanup used when that non-throttle script is explicitly stopped.
 
 ## Repeat Playback
 
@@ -1322,6 +1325,8 @@ If no script is running:
 ```text
 ERR:STATE
 ```
+
+On supported ESP32-S3 PoorMansThrottle firmware, explicitly stopping a non-throttle script also stops the active audio/effect resources owned by that script. Resources still owned by another concurrently running non-throttle script are not stopped out from under that other script.
 
 ## Script Status
 
@@ -2103,7 +2108,7 @@ The hexadecimal target namespace is:
 
 | Set ID | Target |
 |---|---|
-| `0001`–`270F` | Custom WAV `1`–`9999` in the firmware's active sound root |
+| `0001`–`270F` | Custom WAV `1`–`9999`, resolved as configured sound-pack root → opposite sound-pack root → `/audio` |
 | `2A01` | `prime.set` |
 | `2A02` | `horn.set` |
 | `2A03` | `bell.set` |
@@ -2128,7 +2133,7 @@ Leading zeroes are not required on the wire, so custom WAV `1234.wav` may be add
 ST4D2.1=25
 ```
 
-The firmware already knows whether the active sound root is steam or diesel. Therefore the custom-WAV `set-id` does **not** encode steam/diesel.
+The firmware already knows the configured Steam/Diesel sound-pack root and applies the custom-audio fallback order. Therefore the custom-WAV `set-id` does **not** encode a folder.
 
 For example, with custom WAV `9999.wav`:
 
@@ -2140,7 +2145,7 @@ ST270F.1?
 ACK:ST270F.1=25
 ```
 
-The same command targets either `/steam/9999.set` or `/diesel/9999.set` according to the firmware's active sound root.
+The same command targets the custom sidecar beside the WAV location selected by the custom lookup order: configured sound-pack root first, opposite sound-pack root second, then `/audio`. For example, if `/audio/9999.wav` is the first existing match, the sidecar is `/audio/9999.set`. If no matching WAV exists in any of the three locations, the sidecar path defaults to the configured sound-pack root.
 
 For `steamfx.set`:
 
@@ -2210,6 +2215,7 @@ Custom WAV sidecars are different from known category files:
 * If a custom `.set` file is missing, its effective adjustment is neutral (`0`).
 * Querying a missing custom `.set` returns the neutral value without creating the file.
 * Explicitly setting a custom field may create the custom `.set` file, then updates RAM and persists the requested value.
+* The custom `.set` follows the WAV root selected by custom lookup: configured sound-pack root → opposite sound-pack root → `/audio`. If no matching WAV exists anywhere, creation defaults to the configured sound-pack root.
 
 ### Grouped Playback Versus Custom Playback
 

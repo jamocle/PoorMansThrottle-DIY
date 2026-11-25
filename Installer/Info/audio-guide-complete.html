@@ -316,10 +316,15 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <li>track 300 becomes <code>0300.wav</code></li>
 </ul>
 <p>Use the exact four-digit form.</p>
-<p>The two PMT sound folders are:</p>
+<p>The two PMT <strong>sound-pack</strong> folders are:</p>
 <pre><code class="language-text">/diesel
 /steam
 </code></pre>
+<p>Known PMT sounds (engine, brake, bell, horn/whistle, cab chatter, and other sound-pack tracks) use only the currently configured sound-pack folder.</p>
+<p>Custom audio has one additional shared location:</p>
+<pre><code class="language-text">/audio
+</code></pre>
+<p>For a custom track, PMT checks the configured sound-pack folder first, then the opposite sound-pack folder, then <code>/audio</code>. The <code>/audio</code> folder is <strong>not</strong> a third sound pack; it is the final shared fallback for custom audio only.</p>
 <p>Examples:</p>
 <pre><code class="language-text">/diesel/0090.wav
 /diesel/0105.wav
@@ -1331,7 +1336,7 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 </code></pre>
 <blockquote>
 <p><strong>WARNING — Do not overwrite standard PMT audio files.</strong></p>
-<p>The <code>0001.wav</code> through <code>9999.wav</code> range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is <strong>not reserved below</strong> and is not already present for another purpose in the active sound folder. Overwriting a standard PMT filename will replace or interfere with that normal locomotive sound.</p>
+<p>The <code>0001.wav</code> through <code>9999.wav</code> range is the numeric range accepted for custom tracks, but many filenames inside that range are already used by PMT. Choose a custom track number that is <strong>not reserved below</strong> and is not already present for another purpose in either sound-pack folder or the shared <code>/audio</code> folder. A custom request checks the configured sound-pack folder before the opposite sound-pack folder and <code>/audio</code>, so reusing a standard PMT track number can cause the sound-pack file to win instead of your custom file.</p>
 <p><strong>Treat these diesel filenames as reserved for PMT:</strong></p>
 <ul>
 <li><code>0080.wav</code>–<code>0082.wav</code> — brake start / sustain / release</li>
@@ -1400,7 +1405,14 @@ h1{margin:16px auto 10px;max-width:920px;font-size:clamp(2.15rem,7vw,4.1rem);lin
 <p>The WAV filename is the four-digit version of the selected track number. For example, track <code>9000</code> uses:</p>
 <pre><code class="language-text">9000.wav
 </code></pre>
-<p>Put the file under the active PMTPlayer sound root, which for the normal PMT sound layout is the active <code>/diesel</code> or <code>/steam</code> folder.</p>
+<p>Custom audio is resolved in this order:</p>
+<ol>
+<li>configured sound-pack folder (<code>/diesel</code> or <code>/steam</code>);</li>
+<li>opposite sound-pack folder;</li>
+<li>shared <code>/audio</code> folder.</li>
+</ol>
+<p>For example, with Steam configured, track <code>9000</code> is checked as <code>/steam/9000.wav</code>, then <code>/diesel/9000.wav</code>, then <code>/audio/9000.wav</code>.</p>
+<p>Use <code>/audio/9000.wav</code> when the same custom sound should be shared by both Steam and Diesel. Put a custom file in <code>/diesel</code> or <code>/steam</code> only when you intentionally want that pack-specific copy to take precedence.</p>
 <h4>Worked example — Fiddle Music on FX3</h4>
 <p>Suppose you want a fiddle tune assigned to FX3.</p>
 <p>First, prepare the fiddle recording as a PMT WAV file using the same format rules in this guide. Export it as:</p>
@@ -1717,7 +1729,7 @@ Effect &gt; Fading &gt; Fade Out
 <li>[ ] no clipping;</li>
 <li>[ ] one-shot ends naturally;</li>
 <li>[ ] loop sounds seamless if the file is supposed to loop;</li>
-<li>[ ] file is in the correct <code>/diesel</code> or <code>/steam</code> folder.</li>
+<li>[ ] known sound-pack file is in the configured <code>/diesel</code> or <code>/steam</code> folder, or custom audio is placed according to configured pack → opposite pack → <code>/audio</code> fallback rules.</li>
 </ul>
 <hr />
 <h1>26. How to Sample Specific PMT Sounds from a Longer Recording</h1>
@@ -2048,7 +2060,7 @@ Signed 16-bit PCM
 </code></pre>
 <ol start="7">
 <li>Use the correct four-digit name.</li>
-<li>Put it in <code>/diesel</code> or <code>/steam</code>.</li>
+<li>For a known sound-pack file, put it in <code>/diesel</code> or <code>/steam</code> as appropriate. For shared custom audio, prefer <code>/audio</code>; custom lookup is configured pack → opposite pack → <code>/audio</code>.</li>
 <li>Listen to it in PMT.</li>
 <li>Go back to Audacity and adjust by ear if needed.</li>
 </ol>
