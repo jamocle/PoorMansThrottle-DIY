@@ -1,7 +1,7 @@
 # Poor Man's Throttle (PMT) – CV Configuration Reference
 
-**Firmware Version:** 4.0.14
-**Platform:** ESP32 PMT device firmware: Throttle, Module, and Turbine
+**Firmware Version:** 4.0.16
+**Platform:** ESP32 PMT device firmware: Throttle / Controller, Module, and Turbine
 
 ---
 
@@ -19,15 +19,18 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 4.0.14 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image.
+PMT firmware 4.0.16 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image or operating mode.
 
-| Device Type | Meaning |
+`PoorMansThrottle` supports two persisted operating modes selected by `CV19`: **Throttle** (`CV19=1`) and **Controller** (`CV19=2`). Controller mode uses the same PoorMansThrottle CV command namespace and the same normal app CV Backup profile. It does not provide locomotive motor-control runtime behavior: locomotive motor commands are rejected and unsolicited locomotive hardware-state notifications are suppressed.
+
+| Device Type / Mode | Meaning |
 | --- | --- |
-| **Throttle** | Locomotive throttle controller firmware. Controls a motor driver and optional function outputs. |
+| **Throttle** | `PoorMansThrottle` firmware in locomotive throttle mode (`CV19=1`). Controls a motor driver and optional function outputs. |
+| **Controller** | `PoorMansThrottle` firmware in Controller mode (`CV19=2`). Retains CV configuration, audio, function-output, communication, schedule, telemetry, and Backup support, while locomotive motor-control commands and locomotive hardware-state streaming are disabled. |
 | **Module** | Shared PMT module firmware foundation. Uses the shared communication, identity, Wi-Fi, schedule, and telemetry configuration foundation. |
 | **Turbine** | ESC-style output firmware for turbine, fan, smoke, blower, or similar accessory output. |
 
-**Important:** The same CV number can have a different meaning in different firmware images. For example, `CV5` is direction inversion on a Throttle, but quick-output percentage on a Turbine. Always use the table for the firmware installed on that ESP32.
+**Important:** The same CV number can have a different meaning in different firmware images. For example, `CV5` is direction inversion in the PoorMansThrottle CV namespace, but quick-output percentage on a Turbine. Controller mode shares the PoorMansThrottle CV namespace; where a CV controls locomotive motor behavior, the value can still be queried, stored, backed up, and restored in Controller mode even though the locomotive runtime effect is inactive.
 
 ---
 
@@ -126,8 +129,10 @@ The ordinary `CV<number>=<value>` form remains supported and is the compatibilit
 
 | Availability | Meaning |
 | --- | --- |
-| **All** | Shared CV available on Throttle, Module, and Turbine firmware. |
-| **Throttle** | Available only on locomotive throttle firmware. |
+| **All** | Shared CV available on Throttle, Controller, Module, and Turbine firmware/modes. |
+| **Throttle / Controller** | CV is implemented by `PoorMansThrottle` firmware and is available in both operating modes. A locomotive motor-specific runtime effect may still apply only in Throttle mode. |
+| **Throttle** | Runtime feature is meaningful only in locomotive Throttle mode. Where specifically documented, the underlying CV can still be queried, stored, backed up, and restored in Controller mode. |
+| **Controller** | Runtime feature is specific to Controller mode. |
 | **Turbine** | Available only on PoorMansTurbine firmware. |
 | **Module** | Available only on module firmware. In firmware 3.3.0, Module uses the shared CV set and has no module-specific CVs in this appendix. |
 
@@ -216,7 +221,7 @@ After authorization is complete, `PIN:<pin>` is verification-only and does not a
 
 ## Shared Audio CVs
 
-The `CV400–CV430` bank is stored by the shared CV layer. On a locomotive Throttle, these CVs configure PMTPlayer audio. Module and Turbine firmware can store the shared values, but that does not create locomotive sound playback.
+The `CV400–CV431` bank is stored by the shared CV layer. In `PoorMansThrottle`, these CVs configure audio in both Throttle and Controller modes. Controller mode keeps the audio and CV command paths active even though locomotive motor-control commands are disabled. Module and Turbine firmware can store the shared values, but that does not create PoorMansThrottle locomotive/controller sound playback.
 
 | CV | Purpose | Values / Default | What it means |
 | ---: | --- | --- | --- |
@@ -251,6 +256,7 @@ The `CV400–CV430` bank is stored by the shared CV layer. On a locomotive Throt
 | **CV428** | Mixer Attenuation | `25..100%` / `100` | Mixer attenuation percentage. |
 | **CV429** | Clip Telemetry | `0`, `1` / default constant `1`; normal non-verbose builds normalize to `0` | Diagnostic request. In verbose-audio-diagnostic builds, `0`/`1` controls clip telemetry. In normal non-verbose builds, firmware normalizes this CV to `0`, so clip telemetry remains disabled. |
 | **CV430** | PMTPlayer Learned Attenuation Enable | `0`, `1` / `0` | `0` bypasses persisted learned attenuation and disables self-heal learning/persistence without deleting existing `.csh` history. `1` enables applying persisted learned attenuation and self-heal learning/persistence for eligible non-transparent PMTPlayer playback. `CV430` is independent of `CV418` profiles. |
+| **CV431** | Audio Sampling Rate | `0`, `1` / `0` | `0` uses the normal/legacy PMTPlayer audio path. `1` enables source compatibility for both 22.05 kHz and 44.1 kHz mono 16-bit PCM WAV files; 44.1 kHz sources are downsampled 2:1 into the existing 22.05 kHz mixer/I2S playback domain. `CV431` is independent of `CV418` profiles and is latched when PMTPlayer audio first loads; later writes are persisted for the next boot/audio initialization and do not alter the current audio session. |
 
 ### Classic `-1` SPI sentinel behavior
 
@@ -268,7 +274,7 @@ The `-1` values mean **use the Arduino/core default SPI mapping**, not “no SD 
 
 # Throttle-Specific CVs
 
-These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
+These CVs are implemented by **PoorMansThrottle firmware**. They can be queried, written, backed up, and restored in both **Throttle** and **Controller** operating modes. CVs whose purpose is specifically locomotive motion, motor-driver output, Force Lights, braking, quick-stop, or motion-derived sound still have their runtime effect only in Throttle mode because Controller mode rejects locomotive motor-control commands and does not stream locomotive motor hardware state.
 
 | CV | Purpose | Values / Default | Description |
 | ---: | --- | --- | --- |
@@ -279,6 +285,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 | **CV6** | Async Notify, Steady | `50 – 10000 ms` / `10000` | State update interval when throttle is steady. |
 | **CV7** | Async Notify, Changing | `50 – 10000 ms` / `500` | State update interval while throttle is changing or ramping. |
 | **CV9** | Kick Configuration | `<throttle>,<ms>,<rampDownMs>,<maxApply>` / `0,0,80,15` | Start-assist kick used when starting from stop at low throttle. |
+| **CV19** | Operating Mode | `1`, `2` / `1` (`0` can be reported on a fresh, not-yet-configured device) | `1=Throttle`, `2=Controller`. The value is persisted and selected at boot. Writing `CV19=2` acknowledges the change and restarts into the Controller BLE profile. Writing `CV19=1` persists Throttle mode for the next boot. |
 | **CV41** | Low-Voltage Throttle Cap | `0 – 100` / `25` | Maximum allowed mapped throttle while low-voltage limiting is active. |
 | **CV43** | Locomotive Background Audio | `0`, `1` / `0` | Enables automatic locomotive background sound such as prime-mover or steam background behavior when PMTPlayer audio is enabled. |
 | **CV44** | Force Lights PWM | `0` (AUTO) or safe explicit raw PWM / `0` | Raw stopped hardware PWM used when runtime command `FL1` is enabled. AUTO uses the effective minimum-start value for the last logical travel direction minus 3. An explicit value is constrained below the smaller effective forward/reverse start floor. |
@@ -303,7 +310,7 @@ These CVs apply to **Poor Man's Throttle locomotive controller firmware**.
 
 ## CV44 — Force Lights PWM
 
-CV44 applies only to **Poor Man's Throttle** locomotive firmware. It configures the physical motor-driver PWM that can remain active after the logical throttle has reached STOP so locomotive lights powered in parallel with the motor can remain on.
+CV44 is implemented by **PoorMansThrottle firmware** and can be queried, stored, backed up, and restored in both Throttle and Controller modes. Its Force Lights runtime behavior is available only in Throttle mode because Controller mode rejects `FL...` commands. In Throttle mode, CV44 configures the physical motor-driver PWM that can remain active after the logical throttle has reached STOP so locomotive lights powered in parallel with the motor can remain on.
 
 This is used in conjunctiopn with FL1/FL0 commands. The purpose of these commands is to send voltage through the motor driver to light LED's in the engine but not move the motor block motors.  This is used to mimmic Light on/off behavior when all of PMT is installed in a training car and all that is senty to the engine is motor power.
 The runtime commands are:
@@ -348,7 +355,7 @@ INA219 battery-disconnect and shutdown protection remain authoritative and can f
 
 ## CV45 — Automatic Horn/Bell Sounds. (**Not supported on Classic ESP32**)
 
-CV45 applies only to **Poor Man's Throttle** locomotive firmware. It enables automatic horn/whistle and bell cues based on the locomotive's **actual applied motion state**, rather than merely on receipt of a direction or speed command.
+CV45 is implemented by **PoorMansThrottle firmware** and can be queried, stored, backed up, and restored in both Throttle and Controller modes. Its automatic motion-cue behavior is meaningful only in Throttle mode because Controller mode has no locomotive motor motion state. In Throttle mode, CV45 enables automatic horn/whistle and bell cues based on the locomotive's **actual applied motion state**, rather than merely on receipt of a direction or speed command.
 
 CV45 behavior:
 
@@ -400,7 +407,7 @@ A normal safety or forced stop is not treated as an operator-requested automatic
 
 ## CV47 — Feather Brake Mode
 
-CV47 applies only to **Poor Man's Throttle** locomotive firmware and selects how variable feather-brake commands `B1` through `B100` are modeled.
+CV47 is implemented by **PoorMansThrottle firmware** and can be queried, stored, backed up, and restored in both Throttle and Controller modes. Its feather-brake runtime behavior is available only in Throttle mode because Controller mode rejects locomotive `B...` braking commands. In Throttle mode, CV47 selects how variable feather-brake commands `B1` through `B100` are modeled.
 
 * `CV47=0` selects **Simple** feather braking.
 * `CV47=1` selects **Realistic** feather braking and is the default.
@@ -411,7 +418,7 @@ CV47 applies only to **Poor Man's Throttle** locomotive firmware and selects how
 
 ## CV48 — Quick-Stop Full-Scale Time
 
-CV48 applies only to **Poor Man's Throttle** locomotive firmware. It sets the full-scale duration, in milliseconds, used by the existing `QUICKSTOP` ramp.
+CV48 is implemented by **PoorMansThrottle firmware** and can be queried, stored, backed up, and restored in both Throttle and Controller modes. Its locomotive quick-stop runtime effect is available only in Throttle mode. In Throttle mode, CV48 sets the full-scale duration, in milliseconds, used by the existing `QUICKSTOP` ramp.
 
 * Valid range: `1 – 60000 ms`.
 * Default: `3000 ms`, preserving the previous fixed quick-stop timing.
@@ -425,7 +432,7 @@ Changing CV48 changes the timing used by subsequent quick stops; it does not its
 
 ## CV49 — Control-Loss Grace Time
 
-CV49 applies only to **Poor Man's Throttle** locomotive firmware. It sets the control-loss grace duration, in milliseconds, before the existing forced quick-stop path begins.
+CV49 is implemented by **PoorMansThrottle firmware** and can be queried, stored, backed up, and restored in both Throttle and Controller modes. Its locomotive control-loss stop behavior is available only in Throttle mode. In Throttle mode, CV49 sets the control-loss grace duration, in milliseconds, before the existing forced quick-stop path begins.
 
 * Valid range: `0 – 60000 ms`.
 * Default: `15000 ms`, preserving the previous fixed grace duration.
@@ -724,9 +731,9 @@ In this example:
 
 ---
 
-# Function Output CVs (Throttle Only)
+# Function Output CVs (Throttle / Controller)
 
-Throttle firmware supports **12 function outputs** with per-function configuration.
+`PoorMansThrottle` firmware supports **12 function outputs** with per-function configuration in both Throttle and Controller modes. Controller mode does not reject `FX` commands, so function configuration and runtime function control remain available even though locomotive motor-control commands are disabled.
 
 Each function uses a 7-CV block. In firmware 3.3.3, the first five CVs in each block are implemented; the last two positions remain reserved.
 
@@ -1078,154 +1085,158 @@ Use this after major hardware changes, incorrect pin assignments, or when you ne
 
 All documented configuration variables, in numeric order. Where a CV has different meanings for different firmware types, both meanings are shown. Reserved, unimplemented CV slots are not included.
 
+**Controller Backup note:** Controller mode is a `PoorMansThrottle` operating mode, not a separate module profile. The app therefore uses the same normal PoorMansThrottle Backup CV list for Throttle and Controller. Entries in the App Backup column that include Throttle also include Controller unless the row explicitly states otherwise.
+
 | CV | Description | Section where to get more information | App Backup |
 | --- | --- | --- | --- |
-| CV1 | Motor Driver Mode | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV2 | Throttle: Forward Minimum Start / Floor; Turbine: Minimum Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Turbine |
-| CV3 | Throttle: Maximum Output / Ceiling; Turbine: Full Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Turbine |
+| CV1 | Motor Driver Mode | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV2 | Throttle: Forward Minimum Start / Floor; Turbine: Minimum Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller / Turbine |
+| CV3 | Throttle: Maximum Output / Ceiling; Turbine: Full Turbine Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller / Turbine |
 | CV4 | Device / Component Name | [Shared CVs](#shared-cvs) | No — intentionally omitted |
-| CV5 | Throttle: Direction Inversion; Turbine: Quick Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle only |
-| CV6 | Async Notify, Steady | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV7 | Async Notify, Changing | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
+| CV5 | Throttle: Direction Inversion; Turbine: Quick Output | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller |
+| CV6 | Async Notify, Steady | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV7 | Async Notify, Changing | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
 | CV8 | Factory Reset Trigger | [Resetting Configuration](#resetting-configuration) | No — restore control only (`CV8=8`) |
-| CV9 | Throttle: Kick Configuration; Turbine: Ramp to Full Output Time | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Turbine |
-| CV10 | Wi-Fi Enable | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle / Module / Turbine |
+| CV9 | Throttle: Kick Configuration; Turbine: Ramp to Full Output Time | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller / Turbine |
+| CV10 | Wi-Fi Enable | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle / Controller / Module / Turbine |
 | CV11 | Wi-Fi SSID | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | No — SSID value not stored; prompted on restore |
 | CV12 | Wi-Fi Password | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | No — password value not read/stored; prompted on restore |
-| CV13 | WebSocket Port | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle / Module / Turbine |
-| CV14 | UTC Offset | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle only |
-| CV15 | OTA Allow Downgrade | [Shared CVs](#shared-cvs) | Yes — Throttle / Module / Turbine |
-| CV16 | ESP-NOW Enable | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle only |
+| CV13 | WebSocket Port | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle / Controller / Module / Turbine |
+| CV14 | UTC Offset | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller |
+| CV15 | OTA Allow Downgrade | [Shared CVs](#shared-cvs) | Yes — Throttle / Controller / Module / Turbine |
+| CV16 | ESP-NOW Enable | [Wi-Fi and ESP-NOW Control](#wi-fi-and-esp-now-control) | Yes — Throttle / Controller |
 | CV17 | Security PIN | [Shared Connection PIN Security](#shared-connection-pin-security) | No — secret/non-readable and not included in app backup profiles |
 | CV18 | Require PIN | [Shared Connection PIN Security](#shared-connection-pin-security) | Yes — restore script deliberately emits `CV18=0` after reset; it never stores a PIN |
-| CV20 | LED Blink Timing | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Module / Turbine |
-| CV21 | Onboard LED Output Gate | [Shared CVs](#shared-cvs) | Yes — Throttle / Module / Turbine |
-| CV30 | INA219 Enable | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV31 | INA219 SDA Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV32 | INA219 SCL Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV33 | INA219 I²C Address | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV34 | INA219 Sample Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV35 | INA219 Publish Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV36 | Low-Voltage Warn Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV37 | Low-Voltage Limit Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV38 | Low-Voltage Shutdown Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV39 | Recovery Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV40 | Disconnect Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV41 | Throttle: Low-Voltage Throttle Cap; Turbine: Low-Voltage Output Cap | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Module / Turbine |
-| CV42 | Low-Voltage LED Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Module / Turbine |
-| CV43 | Locomotive Background Audio | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV44 | Force Lights PWM | [CV44 — Force Lights PWM](#cv44--force-lights-pwm) | Yes — Throttle only |
-| CV45 | Automatic Horn/Bell Sounds | [CV45 — Automatic Horn/Bell Sounds](#cv45--automatic-hornbell-sounds) | Yes — Throttle only |
-| CV46 | Reverse Minimum Start Override | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV47 | Feather Brake Mode | [CV47 — Feather Brake Mode](#cv47--feather-brake-mode) | Yes — Throttle only |
-| CV48 | Quick-Stop Full-Scale Time | [CV48 — Quick-Stop Full-Scale Time](#cv48--quick-stop-full-scale-time) | Yes — Throttle only |
-| CV49 | Control-Loss Grace Time | [CV49 — Control-Loss Grace Time](#cv49--control-loss-grace-time) | Yes — Throttle only |
-| CV90 | Motor PWM Frequency Curve | [CV90 — Motor PWM Frequency Curve](#cv90--motor-pwm-frequency-curve) | Yes — Throttle only |
-| CV98 | Steam Chuff-Rate Curve, Low-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV99 | Steam Chuff-Rate Curve, High-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV100 | Throttle: Dual PWM Forward Pin; Turbine: ESC PWM Pin | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Turbine |
-| CV101 | Dual PWM Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV102 | Dual PWM Enable A | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV103 | Dual PWM Enable B | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV104 | Two-Pin A | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV105 | Two-Pin B | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV106 | PWM_BIDIR PWM / Enable Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV107 | PWM_BIDIR Forward Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV108 | PWM_BIDIR Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle only |
-| CV150 | FX1 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV151 | FX1 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV152 | FX1 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV153 | FX1 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV154 | FX1 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV157 | FX2 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV158 | FX2 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV159 | FX2 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV160 | FX2 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV161 | FX2 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV164 | FX3 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV165 | FX3 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV166 | FX3 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV167 | FX3 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV168 | FX3 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV171 | FX4 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV172 | FX4 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV173 | FX4 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV174 | FX4 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV175 | FX4 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV178 | FX5 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV179 | FX5 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV180 | FX5 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV181 | FX5 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV182 | FX5 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV185 | FX6 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV186 | FX6 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV187 | FX6 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV188 | FX6 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV189 | FX6 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV192 | FX7 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV193 | FX7 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV194 | FX7 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV195 | FX7 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV196 | FX7 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV199 | FX8 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV200 | FX8 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV201 | FX8 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV202 | FX8 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV203 | FX8 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV206 | FX9 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV207 | FX9 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV208 | FX9 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV209 | FX9 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV210 | FX9 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV213 | FX10 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV214 | FX10 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV215 | FX10 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV216 | FX10 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV217 | FX10 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV220 | FX11 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV221 | FX11 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV222 | FX11 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV223 | FX11 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV224 | FX11 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV227 | FX12 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle only |
-| CV228 | FX12 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle only |
-| CV229 | FX12 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle only |
-| CV230 | FX12 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle only |
-| CV231 | FX12 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle only |
-| CV300 | Schedule Enable | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV301 | Schedule Weekday Bitmask | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV302 | Schedule ON Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV303 | Schedule OFF Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV304 | Schedule ON Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV305 | Schedule OFF Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Module / Turbine |
-| CV400 | Audio Enable | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV401 | PMTPlayer Sound Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV402 | Master Volume | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV403 | SD Chip Select (CS) | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV404 | SD SCK | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV405 | SD MISO | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV406 | SD MOSI | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV407 | I2S BCLK | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV408 | I2S LRCLK / WS | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV409 | I2S DIN | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV410 | Default Audio Priority | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV411 | Conflict Policy | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV412 | Startup Delay | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV413 | Shutdown Delay | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV414 | Amplifier Enable Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV415 | Amplifier Mute Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV416 | Amplifier Standby Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV417 | Fault Input Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV418 | PMTPlayer Profile | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV419 | WAV Gain | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV420 | Output Headroom | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV421 | Limiter / Loudness Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV422 | Speaker Size Profile | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV423 | Maximum Active Voices | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV424 | Overlap Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV425 | Async Overlap Start | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV426 | Start Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV427 | Overlap Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV428 | Mixer Attenuation | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV429 | Clip Telemetry | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
-| CV430 | PMTPlayer Learned Attenuation Enable | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle only |
+| CV19 | Operating Mode (`1=Throttle`, `2=Controller`) | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV20 | LED Blink Timing | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller / Module / Turbine |
+| CV21 | Onboard LED Output Gate | [Shared CVs](#shared-cvs) | Yes — Throttle / Controller / Module / Turbine |
+| CV30 | INA219 Enable | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV31 | INA219 SDA Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV32 | INA219 SCL Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV33 | INA219 I²C Address | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV34 | INA219 Sample Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV35 | INA219 Publish Interval | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV36 | Low-Voltage Warn Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV37 | Low-Voltage Limit Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV38 | Low-Voltage Shutdown Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV39 | Recovery Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV40 | Disconnect Threshold | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV41 | Throttle: Low-Voltage Throttle Cap; Turbine: Low-Voltage Output Cap | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller / Module / Turbine |
+| CV42 | Low-Voltage LED Pin | [INA219 Telemetry and Protection](#ina219-telemetry-and-protection) | Yes — Throttle / Controller / Module / Turbine |
+| CV43 | Locomotive Background Audio | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV44 | Force Lights PWM | [CV44 — Force Lights PWM](#cv44--force-lights-pwm) | Yes — Throttle / Controller |
+| CV45 | Automatic Horn/Bell Sounds | [CV45 — Automatic Horn/Bell Sounds](#cv45--automatic-hornbell-sounds) | Yes — Throttle / Controller |
+| CV46 | Reverse Minimum Start Override | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV47 | Feather Brake Mode | [CV47 — Feather Brake Mode](#cv47--feather-brake-mode) | Yes — Throttle / Controller |
+| CV48 | Quick-Stop Full-Scale Time | [CV48 — Quick-Stop Full-Scale Time](#cv48--quick-stop-full-scale-time) | Yes — Throttle / Controller |
+| CV49 | Control-Loss Grace Time | [CV49 — Control-Loss Grace Time](#cv49--control-loss-grace-time) | Yes — Throttle / Controller |
+| CV90 | Motor PWM Frequency Curve | [CV90 — Motor PWM Frequency Curve](#cv90--motor-pwm-frequency-curve) | Yes — Throttle / Controller |
+| CV98 | Steam Chuff-Rate Curve, Low-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV99 | Steam Chuff-Rate Curve, High-Speed Anchors | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV100 | Throttle: Dual PWM Forward Pin; Turbine: ESC PWM Pin | [Throttle-Specific CVs](#throttle-specific-cvs); [Turbine-Specific CVs](#turbine-specific-cvs) | Yes — Throttle / Controller / Turbine |
+| CV101 | Dual PWM Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV102 | Dual PWM Enable A | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV103 | Dual PWM Enable B | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV104 | Two-Pin A | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV105 | Two-Pin B | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV106 | PWM_BIDIR PWM / Enable Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV107 | PWM_BIDIR Forward Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV108 | PWM_BIDIR Reverse Pin | [Throttle-Specific CVs](#throttle-specific-cvs) | Yes — Throttle / Controller |
+| CV150 | FX1 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV151 | FX1 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV152 | FX1 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV153 | FX1 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV154 | FX1 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV157 | FX2 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV158 | FX2 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV159 | FX2 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV160 | FX2 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV161 | FX2 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV164 | FX3 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV165 | FX3 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV166 | FX3 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV167 | FX3 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV168 | FX3 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV171 | FX4 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV172 | FX4 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV173 | FX4 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV174 | FX4 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV175 | FX4 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV178 | FX5 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV179 | FX5 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV180 | FX5 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV181 | FX5 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV182 | FX5 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV185 | FX6 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV186 | FX6 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV187 | FX6 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV188 | FX6 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV189 | FX6 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV192 | FX7 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV193 | FX7 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV194 | FX7 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV195 | FX7 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV196 | FX7 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV199 | FX8 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV200 | FX8 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV201 | FX8 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV202 | FX8 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV203 | FX8 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV206 | FX9 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV207 | FX9 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV208 | FX9 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV209 | FX9 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV210 | FX9 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV213 | FX10 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV214 | FX10 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV215 | FX10 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV216 | FX10 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV217 | FX10 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV220 | FX11 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV221 | FX11 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV222 | FX11 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV223 | FX11 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV224 | FX11 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV227 | FX12 Name | [Function Name CVs](#function-name-cvs) | Yes — Throttle / Controller |
+| CV228 | FX12 Pin / Track / Data | [Function Pin / Track / Data CVs](#function-pin--track--data-cvs) | Yes — Throttle / Controller |
+| CV229 | FX12 Pattern | [Function Pattern CVs](#function-pattern-cvs) | Yes — Throttle / Controller |
+| CV230 | FX12 Direction | [Function Direction CVs](#function-direction-cvs) | Yes — Throttle / Controller |
+| CV231 | FX12 AppFlags | [AppFlags CVs](#appflags-cvs) | Yes — Throttle / Controller |
+| CV300 | Schedule Enable | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV301 | Schedule Weekday Bitmask | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV302 | Schedule ON Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV303 | Schedule OFF Time | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV304 | Schedule ON Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV305 | Schedule OFF Command | [Scheduling / Autonomous Operation](#scheduling--autonomous-operation) | Yes — Throttle / Controller / Module / Turbine |
+| CV400 | Audio Enable | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV401 | PMTPlayer Sound Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV402 | Master Volume | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV403 | SD Chip Select (CS) | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV404 | SD SCK | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV405 | SD MISO | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV406 | SD MOSI | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV407 | I2S BCLK | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV408 | I2S LRCLK / WS | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV409 | I2S DIN | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV410 | Default Audio Priority | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV411 | Conflict Policy | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV412 | Startup Delay | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV413 | Shutdown Delay | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV414 | Amplifier Enable Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV415 | Amplifier Mute Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV416 | Amplifier Standby Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV417 | Fault Input Pin | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV418 | PMTPlayer Profile | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV419 | WAV Gain | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV420 | Output Headroom | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV421 | Limiter / Loudness Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV422 | Speaker Size Profile | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV423 | Maximum Active Voices | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV424 | Overlap Mode | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV425 | Async Overlap Start | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV426 | Start Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV427 | Overlap Prime Bytes | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV428 | Mixer Attenuation | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV429 | Clip Telemetry | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV430 | PMTPlayer Learned Attenuation Enable | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |
+| CV431 | Audio Sampling Rate | [Shared Audio CVs](#shared-audio-cvs) | Yes — Throttle / Controller |

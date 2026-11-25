@@ -1,7 +1,7 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
 **Firmware Version:** 4.0.15  
-**Platform:** ESP32 PMT device family: Throttle, Module, and Turbine
+**Platform:** ESP32 PMT device family: Throttle / Controller, Module, and Turbine
 
 ---
 
@@ -27,13 +27,14 @@ Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and func
 
 PMT firmware 4.0.15 uses a shared protocol foundation across more than one device type.
 
-| Device type | Purpose | Protocol scope |
+| Device type / mode | Purpose | Protocol scope |
 |---|---|---|
-| **Poor Man's Throttle** | Locomotive motor controller | Full throttle/motion protocol, function outputs, shared script management, shared configuration, schedule, INA219 telemetry/protection, and throttle audio diagnostics |
+| **Poor Man's Throttle** | `PoorMansThrottle` locomotive operating mode (`CV19=1`) | Full throttle/motion protocol, function outputs, shared script management, shared configuration, schedule, INA219 telemetry/protection, and PoorMansThrottle audio commands/diagnostics |
+| **Poor Man's Controller** | `PoorMansThrottle` Controller operating mode (`CV19=2`) | Uses the same PoorMansThrottle command parser but rejects locomotive motion/brake/Force Lights commands. Function outputs, direct custom audio, audio diagnostics, sound `.set` commands, CV handling, FTP maintenance, and supported S3 OTA remain available. Unsolicited locomotive `A:HW-*` state streaming is suppressed. |
 | **Poor Man's Module** | General PMT module foundation | Shared identity, BLE, Wi-Fi/WebSocket, script management, schedule, INA219, debug, and configuration protocol |
 | **Poor Man's Turbine** | ESC-style turbine / fan / blower controller | Turbine output protocol, shared script management, shared configuration, schedule, and INA219 telemetry/protection |
 
-Commands in this document are marked as **Shared**, **Throttle-only**, or **Turbine-only** where needed.
+Controller is an operating mode of the `PoorMansThrottle` firmware, not a separate firmware image. Commands in this document are marked as **Shared**, **Throttle-only**, **Throttle / Controller**, or **Turbine-only** where needed.
 
 ---
 
@@ -55,42 +56,46 @@ Command characteristics:
 * Leading/trailing whitespace and CR/LF are ignored.
 * Numeric throttle/output values are generally clamped or validated in the `0..100` domain, depending on the command.
 * CV commands require authorization first.
-* Persist-only CV staging commands, shared script-management commands, and throttle audio diagnostic commands require authorization in normal external use.
+* Persist-only CV staging commands, shared script-management commands, and PoorMansThrottle audio diagnostic commands require authorization in normal external use.
 
 ---
 
 # Device Availability Summary
 
-| Command family | Throttle | Module | Turbine |
-|---|---:|---:|---:|
-| Identity / authorization | Yes | Yes | Yes |
-| Version queries (`V` / `VV`) | Yes | Yes | Yes |
-| PX/1 bulk-transfer capability (`XFER?`) | Yes | Yes | Yes |
-| Wi-Fi scan diagnostic (`WIFI?`) | Yes | Yes | Yes |
-| ESP-NOW identity / relay (`MAC?` / `RY=`) | Yes | Yes | Yes |
-| Connection status | Yes | Yes | Yes |
-| IP query | Yes | Yes | Yes |
-| Time query / set | Yes | Yes | Yes |
-| Debug control / newest-log retrieval (`D0` / `D1` / `D2` / `D00` / `D00*`) | Yes | Yes | Yes |
-| Async state notify control | Yes | Yes | Yes |
-| OTA capability/update (`OTA?` / `OTA`) | S3 throttle only | No | No |
-| FTP SD maintenance (`FTP?` / `FTP1` / `FTP0`) | Yes** | No | No |
-| Grace shutdown runtime override | Yes | Yes | Yes |
-| Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes |
-| Shared script record/playback/delete/timing adjustment (`SR` / `SR0` / `SRX` / `SP...` / `SS?` / `SD=` / `SA=`) | Yes* | Yes* | Yes* |
-| Throttle motion commands | Yes | No | No |
-| Direct app-owned custom audio (`AC` / `ACR`) | Yes | No | No |
-| Hardware/stored throttle state query | Yes | No | No |
-| Periodic throttle debug commands | Yes | No | No |
-| Function output commands | Yes | No | No |
-| Audio analysis / diagnostic commands | Yes | No | No |
-| Sound `.set` get/set (`ST`) | Yes | No | No |
-| Turbine output commands | No | No | Yes |
-| Shared CV commands | Yes | Yes | Yes |
-| Throttle CV commands | Yes | No | No |
-| Turbine CV commands | No | No | Yes |
+| Command family | Throttle | Controller | Module | Turbine |
+|---|---:|---:|---:|---:|
+| Identity / authorization | Yes | Yes | Yes | Yes |
+| Version queries (`V` / `VV`) | Yes | Yes | Yes | Yes |
+| PX/1 bulk-transfer capability (`XFER?`) | Yes | Yes | Yes | Yes |
+| Wi-Fi scan diagnostic (`WIFI?`) | Yes | Yes | Yes | Yes |
+| ESP-NOW identity / relay (`MAC?` / `RY=`) | Yes | Yes | Yes | Yes |
+| Connection status | Yes | Yes | Yes | Yes |
+| IP query | Yes | Yes | Yes | Yes |
+| Time query / set | Yes | Yes | Yes | Yes |
+| Debug control / newest-log retrieval (`D0` / `D1` / `D2` / `D00` / `D00*`) | Yes | Yes | Yes | Yes |
+| Async state notify control | Yes | Yes† | Yes | Yes |
+| OTA capability/update (`OTA?` / `OTA`) | S3 only | S3 only | No | No |
+| FTP SD maintenance (`FTP?` / `FTP1` / `FTP0`) | Yes** | Yes** | No | No |
+| Grace shutdown runtime override | Yes | Yes | Yes | Yes |
+| Persist-only CV staging (`PS?` / `PS1` / `PS0`) | Yes | Yes | Yes | Yes |
+| Shared script record/playback/delete/timing adjustment (`SR` / `SR0` / `SRX` / `SP...` / `SS?` / `SD=` / `SA=`) | Yes* | Partial*‡ | Yes* | Yes* |
+| Throttle motion commands | Yes | No | No | No |
+| Direct app-owned custom audio (`AC` / `ACR`) | Yes | Yes | No | No |
+| Hardware/stored state query (`?` / `??`) | Yes | Yes† | No | No |
+| Periodic PoorMansThrottle debug commands | Yes | Yes | No | No |
+| Function output commands | Yes | Yes | No | No |
+| Audio analysis / diagnostic commands | Yes | Yes | No | No |
+| Sound `.set` get/set (`ST`) | Yes | Yes | No | No |
+| Turbine output commands | No | No | No | Yes |
+| Shared CV commands | Yes | Yes | Yes | Yes |
+| PoorMansThrottle CV commands | Yes | Yes | No | No |
+| Turbine CV commands | No | No | No | Yes |
 
 `*` The shared script-management command family is present in all three firmware images, but SD-backed operations require an **active PMT SD filesystem**. The set of device-specific recordable controls varies by firmware image. `RY=<10-character-mac><command>` is a shared recordable relay control; the generic Module image still has no module-specific physical recordable controls.
+
+`†` Controller mode accepts `A0` / `A1` and direct `?` / `??` queries, but it suppresses unsolicited locomotive `A:HW-*` state notifications because Controller mode has no locomotive motor state to stream.
+
+`‡` In the current supplied `PoorMansThrottle` source, Controller mode rejects `SS?` at the Controller command gate. The other shared script-management commands are not rejected solely because Controller mode is active.
 
 `**` FTP maintenance is implemented by the **PoorMansThrottle firmware** and therefore applies to both Throttle and Controller operating modes of that firmware. It is not implemented in the Module or Turbine firmware images. FTP control commands are accepted only over the basic BLE command transport.
 
@@ -962,7 +967,7 @@ Notes:
 * While automation remains active, grace expiry cannot proceed. The automation is not stopped by grace because grace is being held off.
 * As soon as automation is no longer running, CV50 becomes irrelevant and normal grace decisions resume.
 * `CV50=0` disables this automation-specific protection and allows the normal grace rules to apply while a script is running.
-* On Throttle firmware, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
+* In Throttle mode, `CV49` sets the control-loss grace duration. Its default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
 * `G0` disables grace shutdown and clears any active grace countdown. It does **not** stop an active script.
 * These commands are shared across supported firmware images, but the visible shutdown effect depends on the device's disconnect behavior.
 
@@ -1320,6 +1325,8 @@ ERR:STATE
 
 ## Script Status
 
+**Controller mode note:** In the current supplied `PoorMansThrottle` source, the Controller command gate rejects `SS?`. Throttle, Module, and Turbine behavior remains as documented below.
+
 ```text
 SS?
 ```
@@ -1385,7 +1392,7 @@ Firmware `.pmt` playback is **not** the same as the app's general-purpose termin
 
 ### Throttle
 
-The current throttle classifier accepts:
+The current PoorMansThrottle classifier accepts:
 
 ```text
 S
@@ -1397,6 +1404,19 @@ FQ0..100
 RQ0..100
 N
 FX1..12=0/1
+AC1..9999=0/1
+ACR1..9999=0/1
+RY=<10-character-mac><command>
+```
+
+### Controller
+
+Controller mode uses the same PoorMansThrottle recording classifier, but its command gate rejects the locomotive motion/brake/Neutral commands before they can execute as Controller controls. The recordable controls that remain available in Controller mode are:
+
+```text
+FX1..12=0/1
+AC1..9999=0/1
+ACR1..9999=0/1
 RY=<10-character-mac><command>
 ```
 
@@ -1485,15 +1505,17 @@ Shared script-management commands follow the normal externally authorized comman
 
 ---
 
-# Throttle-Only Commands
+# PoorMansThrottle Commands
 
-These commands apply to **Poor Man's Throttle** locomotive firmware.
+These commands are implemented by the **PoorMansThrottle** firmware. Availability differs by operating mode. Controller mode (`CV19=2`) explicitly rejects locomotive motion, brake, Neutral, and Force Lights commands, while the function-output, audio, direct state-query, periodic-debug, CV, FTP, and supported S3 OTA paths remain available as noted below.
 
 ---
 
 ## ESP32-S3 OTA Capability and Firmware Update
 
-These OTA commands apply to supported **Poor Man's Throttle ESP32-S3 N16R8 and N8R8** firmware. OTA is not available on the Classic ESP32-WROOM throttle.
+**Availability:** Throttle / Controller on supported ESP32-S3 N16R8 and N8R8 boards.
+
+These OTA commands are implemented by **PoorMansThrottle** firmware in both Throttle and Controller operating modes. OTA is not available on the Classic ESP32-WROOM build.
 
 Both commands require the normal authorization handshake.
 
@@ -1509,21 +1531,21 @@ Responses:
 ACK:OTA
 ```
 
-Supported S3 throttle with Wi-Fi connected.
+Supported S3 PoorMansThrottle device, in Throttle or Controller mode, with Wi-Fi connected.
 
 ```text
 ERR:NO WIFI
 ```
 
-Supported S3 throttle without an active Wi-Fi connection.
+Supported S3 PoorMansThrottle device, in Throttle or Controller mode, without an active Wi-Fi connection.
 
 ```text
 ERR:NS
 ```
 
-Classic ESP32 throttle; OTA is not supported.
+Classic ESP32 PoorMansThrottle build; OTA is not supported.
 
-`OTA?` is a query only. It does not stop the throttle, enter the OTA LED state, fetch the manifest, or start an update.
+`OTA?` is a query only. It does not invoke the internal safe-stop path, enter the OTA LED state, fetch the manifest, or start an update.
 
 ### Start OTA
 
@@ -1531,13 +1553,13 @@ Classic ESP32 throttle; OTA is not supported.
 OTA
 ```
 
-On an authorized supported S3 throttle with Wi-Fi connected, the command is accepted with:
+On an authorized supported S3 PoorMansThrottle device, in either Throttle or Controller mode, with Wi-Fi connected, the command is accepted with:
 
 ```text
 ACK:OTA
 ```
 
-The firmware then invokes the existing `S` stop behavior, waits until the throttle is fully stopped, obtains private OTA validation time, reads the firmware catalog, selects the exact S3 board target, and installs that target's `latest` firmware image.
+The firmware then invokes its internal safe-stop behavior, waits until the propulsion state is safe, obtains private OTA validation time, reads the firmware catalog, selects the exact S3 board target, and installs that target's `latest` firmware image.
 
 OTA does not accept a requested firmware version. The catalog `versions[]` list and `dropdownDefault` value are for USB installer selection and are not OTA version selectors.
 
@@ -1588,6 +1610,8 @@ While OTA is active, motion commands are prevented from restarting motion. On su
 
 
 ## Motion Commands
+
+**Availability:** Throttle only. Controller mode rejects these locomotive motion commands.
 
 Throttle values range from `0..100`.
 
@@ -1672,6 +1696,8 @@ Notes:
 
 ## Stop and Brake
 
+**Availability:** Throttle only. Controller mode rejects `S`, `B`, and `B<n>` locomotive stop/brake commands.
+
 Quick stop:
 
 ```text
@@ -1723,6 +1749,8 @@ Notes:
 
 ## Force Lights
 
+**Availability:** Throttle only. Controller mode rejects `FL...` commands.
+
 Enable Force Lights:
 
 ```text
@@ -1767,6 +1795,10 @@ Notes:
 
 ## Hardware State Query
 
+**Availability:** Throttle / Controller.
+
+Controller mode accepts the direct `?` query. Controller mode separately suppresses unsolicited locomotive `A:HW-*` state streaming, so this command remains a direct diagnostic query rather than an async motor-state feed.
+
 ```text
 ?
 ```
@@ -1794,6 +1826,10 @@ Fields:
 
 ## Stored State Query
 
+**Availability:** Throttle / Controller.
+
+Controller mode accepts the direct `??` query even though locomotive motion commands are disabled.
+
 ```text
 ??
 ```
@@ -1809,6 +1845,8 @@ This reports the stored/logical state rather than direct hardware state.
 ---
 
 ## Periodic Debug Logging
+
+**Availability:** Throttle / Controller. The commands are accepted in Controller mode; locomotive-motion debug content is naturally limited because Controller mode does not run locomotive motion commands.
 
 Print only mismatches:
 
@@ -1833,7 +1871,9 @@ ACK:P1
 
 ## Function Output Commands
 
-The throttle firmware supports 12 configurable function outputs.
+**Availability:** Throttle / Controller.
+
+The `PoorMansThrottle` firmware supports 12 configurable function outputs in both operating modes. Controller mode does not reject `FX<n>=0/1`.
 
 ```text
 FX<n>=0
@@ -1875,7 +1915,9 @@ Notes:
 
 ## Direct App-Owned Custom Audio Commands
 
-Firmware 4.0.1 adds throttle-only direct custom-audio commands used by the app-owned **App Audio Custom** and **App Audio Custom Replay** Output Controls. These commands do not consume or modify FX1-FX12.
+**Availability:** Throttle / Controller.
+
+Firmware 4.0.1 adds direct custom-audio commands to `PoorMansThrottle` firmware for the app-owned **App Audio Custom** and **App Audio Custom Replay** Output Controls. Controller mode does not reject these commands. They do not consume or modify FX1-FX12.
 
 ### One-shot custom audio
 
@@ -1927,14 +1969,14 @@ Notes:
 * The firmware accepts numeric track text and validates the resulting value as `1..9999`.
 * App 4.3.2 canonicalizes leading zeroes before persistence and transmission (`0007` becomes `7`).
 * `AC` and `ACR` are mode-specific. `AC7=0` stops the matching one-shot request for track 7; `ACR7=0` stops the matching replay request.
-* These direct commands use the active throttle audio service and the custom-audio track lookup behavior; they are separate from firmware FX patterns `103` and `104`.
-* These commands are not part of the firmware script-recording control-command rule set.
+* These direct commands use the active PoorMansThrottle audio service and the custom-audio track lookup behavior; they are separate from firmware FX patterns `103` and `104`.
+* `AC` and `ACR` are part of the current PoorMansThrottle firmware script-recording control-command rule set in both Throttle and Controller modes.
 
 ---
 
 ## Audio Track-Length Analysis
 
-These commands require authorization and are available only on Throttle firmware.
+**Availability:** Throttle / Controller. These commands require authorization in both modes.
 
 ### Analyze the default audio manifest
 
@@ -1990,6 +2032,8 @@ Other verified failure reasons include `BUSY`, `BUSY-PIN`, `FORMAT`, and `START`
 
 ## Audio Diagnostic Marker
 
+**Availability:** Throttle / Controller.
+
 Long form:
 
 ```text
@@ -2018,6 +2062,8 @@ Behavior:
 ---
 
 ## Sound `.set` Field Get / Set (`ST`)
+
+**Availability:** Throttle / Controller.
 
 The implemented `ST` command reads or writes one field in a sound `.set` file.
 
@@ -2360,7 +2406,8 @@ Notes:
 
 * Controlled by `A1` / `A0`.
 * Disabled by default on boot.
-* Throttle firmware uses `CV6` and `CV7` for steady/changing state intervals.
+* Throttle mode uses `CV6` and `CV7` for steady/changing locomotive state intervals.
+* Controller mode accepts `A1` / `A0` but suppresses unsolicited locomotive `A:HW-*` notifications.
 
 ---
 
@@ -2495,10 +2542,10 @@ The following CVs remain here only because they directly change command behavior
 | `CV47` | Throttle | Selects the `B1..B100` feather-brake model: `0` = Simple, `1` = Realistic. |
 | `CV48` | Throttle | Sets the full-scale `QUICKSTOP` duration used by `S` and by the forced quick-stop after control-loss grace expires. |
 | `CV49` | Throttle | Sets the control-loss grace duration before the forced quick-stop path begins; `0` disables control-loss grace shutdown and cannot be overridden by `G1`. |
-| `CV150–CV231` | Throttle | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
+| `CV150–CV231` | Throttle / Controller | Configure the 12 function outputs controlled by `FX<n>=0/1`. See the CV appendix for exact implemented positions and patterns. |
 | `CV2`, `CV3`, `CV5` | Turbine | Affect turbine output mapping and the `FQ100` quick-output value. |
 | `CV300–CV305` | Shared | Configure autonomous schedule operation and the commands executed at ON/OFF boundaries. |
-| `CV400` | Audio / Throttle behavior | Audio must be enabled for Throttle `A?` track-length analysis. |
+| `CV400` | Audio / Throttle / Controller | Audio must be enabled for `A?` track-length analysis in either PoorMansThrottle operating mode. |
 
 ---
 
@@ -2524,7 +2571,7 @@ Autonomous behavior:
 * Replies are suppressed for internally scheduled command execution.
 * Internally scheduled commands execute through the normal command pipeline.
 * If script playback is active, scheduled commands that classify as recordable controls are suppressed until playback stops.
-* Device-specific commands must match the firmware image. For example, throttle firmware can schedule `F40` or `S`; turbine firmware can schedule `F50` or `F0`.
+* Device-specific commands must match the firmware image and operating mode. For example, Throttle mode can schedule locomotive `F40` or `S`; Controller mode rejects those locomotive commands; Turbine firmware can schedule `F50` or `F0`.
 * While autonomous mode is active, the configured schedule's exact ON/OFF command strings can be allowed through the command gate even without a completed external handshake.
 
 ---
@@ -2565,98 +2612,24 @@ Priority behavior:
 
 The shared firmware foundation includes disconnect and recovery behavior intended to keep PMT devices predictable after communication loss.
 
-For throttle firmware, this is especially important because the controller may be driving a locomotive.
+For Throttle mode, this is especially important because the device may be driving a locomotive.
 
 Typical behavior:
 
 1. A qualifying disconnect can start a grace period.
-2. On Throttle firmware, `CV49` sets that control-loss grace duration. The default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
+2. In Throttle mode, `CV49` sets that control-loss grace duration. The default is `15000 ms`; `CV49=0` disables control-loss grace shutdown.
 3. If no control connection returns before grace expires, the Throttle begins its forced `QUICKSTOP`; `CV48` sets the full-scale quick-stop duration and defaults to `3000 ms`.
 4. BLE advertising recovery is attempted automatically.
 5. When needed, hard recovery is deferred until safe conditions are reached.
 6. Active WebSocket control can suppress BLE-only hard recovery paths.
 7. Autonomous schedule mode can suppress disconnect grace behavior while scheduled operation is active.
 
-For Throttle firmware, when CV49 is non-zero and grace shutdown is enabled, the configured stop timing is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. Setting both CVs to `1000` can therefore approach two seconds of commanded stop timing from full throttle. `CV49=0` disables this control-loss grace shutdown path.
+In Throttle mode, when CV49 is non-zero and grace shutdown is enabled, the configured stop timing is sequential: **CV49 grace first, then the applicable CV48 quick-stop ramp**. Setting both CVs to `1000` can therefore approach two seconds of commanded stop timing from full throttle. `CV49=0` disables this control-loss grace shutdown path.
 
 Runtime override:
 
 * `G1` enables grace shutdown for the current runtime only when the configured grace duration is non-zero. On Throttle firmware, `CV49=0` wins and `G1` leaves grace disabled.
 * `G0` disables grace shutdown for the current runtime.
-
----
-
-# Command Summary
-
-| Command | Availability | Purpose |
-|---|---|---|
-| `I` | Shared | Identity reply |
-| `I?` | Shared | Authorization status |
-| `I,<token>` | Shared | Authorize normal connection |
-| `IB,<token>` | Shared | Authorize backup socket connection |
-| `V` | Shared | Firmware semantic version |
-| `VV` | Shared | Full firmware build identifier |
-| `NVS?` | Shared | Query the persistent 32-bit CV/NVS configuration revision; replies `A:NVS=<revision>` |
-| `XFER?` | Shared | Query PX/1 bulk-transfer capability; supported firmware replies `A:XFER=1` |
-| `WIFI?` | Shared | Scan nearby Wi-Fi networks and return versioned JSON using PX `WifiInfo` resource `4` |
-| `MAC?` | Shared | Return the local compact 10-character Base36 ESP-NOW routing address |
-| `RY=<mac><command>` | Shared | Relay one ordinary PMT command to the specified ESP-NOW device; the MAC is exactly 10 characters with no separator before the command |
-| `C?` | Shared | Connection status |
-| `IP?` | Shared | IP address query |
-| `T?` | Shared | Current adjusted firmware time query |
-| `T=<unix>` | Shared | Set time from UTC source epoch and apply CV14 offset |
-| `D1` | Shared | Enable and persist debug startup override |
-| `D2` | Shared | Enable debug and request persistent SD logging |
-| `D0` | Shared | Disable debug/logging and clear persistence |
-| `A1` | Shared | Enable async `A:` state updates |
-| `A0` | Shared | Disable async `A:` state updates |
-| `OTA?` | S3 Throttle | Query OTA capability/readiness |
-| `OTA` | S3 Throttle | Stop safely and install the board target's catalog `latest` firmware |
-| `G1` | Shared | Enable grace shutdown for this boot when the configured grace duration is non-zero; Throttle `CV49=0` wins |
-| `G0` | Shared | Disable grace shutdown for this boot |
-| `PS?` | Shared | Query persist-only CV staging mode |
-| `PS1` | Shared | Enable persist-only CV staging |
-| `PS0` | Shared | Leave persist-only CV staging |
-| `SR` | Shared* | Start SD-backed control-command recording |
-| `SR0` | Shared* | Stop recording and hold it in `SAVE` state for naming |
-| `SRX` | Shared* | Discard the pending unsaved recording while in `SAVE` |
-| `SR=<name>` | Shared* | Save the pending recording, or directly stop-and-save an active recording, as `/scripts/<name>.pmt` |
-| `SP1=<name>` | Shared* | Play a saved firmware script once |
-| `SPR=<name>` | Shared* | Repeat a saved firmware script |
-| `SP0` | Shared | Stop active script playback |
-| `SS?` | Shared | Query script state |
-| `SD=<name>` | Shared* | Delete a saved firmware script |
-| `SA=<name>,+<ms>` / `SA=<name>,-<ms>` | Shared* | Lengthen or shorten total pause time in a named script and save the adjusted script |
-| `SA=+<ms>` / `SA=-<ms>` | Shared* | Lengthen or shorten the currently playing script; repeating playback uses the adjusted script at the next repeat boundary |
-| `F<n>` | Throttle | Forward momentum ramp |
-| `R<n>` | Throttle | Reverse momentum ramp |
-| `FQ<n>` | Throttle | Forward quick ramp |
-| `RQ<n>` | Throttle | Reverse quick ramp |
-| `N` | Throttle | Toggle latched Neutral; coast traction to zero while retaining deferred throttle/direction demand |
-| `S` | Throttle | Quick stop |
-| `B` | Throttle | Brake stop |
-| `B<n>` | Throttle | Variable brake |
-| `FL1` / `FL0` | Throttle | Enable / disable Force Lights stopped PWM |
-| `?` | Throttle | Hardware state query |
-| `??` | Throttle | Stored state query |
-| `P0` | Throttle | Periodic mismatch debug only |
-| `P1` | Throttle | Periodic debug always |
-| `FX<n>=0/1` | Throttle | Function output off/on |
-| `AC<track>=0/1` | Throttle | Start/retrigger or explicitly stop app-owned custom one-shot audio without using an FX slot |
-| `ACR<track>=0/1` | Throttle | Start/retrigger or explicitly stop app-owned custom replay/loop audio without using an FX slot |
-| `A?` | Throttle | Analyze default audio track manifest |
-| `A? N=<tracks>` | Throttle | Analyze explicit audio track list |
-| `AudioMark` / `AM` | Throttle | Emit manual audio diagnostic marker |
-| `ST<set-id>.<field-id>=<value>` | Throttle | Set and persist a sound `.set` field |
-| `ST<set-id>.<field-id>?` | Throttle | Query an in-memory sound `.set` field |
-| `F?` | Turbine | Requested turbine output query |
-| `F<n>` | Turbine | Ramp turbine output |
-| `F<n>*` | Turbine | Immediate turbine output |
-| `FQ100` | Turbine | Temporary quick turbine output |
-| `CV<n>?` | Device-specific | Query CV |
-| `CV<n>=<value>` | Device-specific | Set CV |
-
-`*` SD-backed script operations require an active PMT SD filesystem.
 
 ---
 
@@ -2709,15 +2682,15 @@ Commands are listed alphabetically. When a command has different meanings on dif
 
 | Command | Description | Section where to get more information |
 | --- | --- | --- |
-| `?` | Read actual throttle hardware state and output. | [Hardware State Query](#hardware-state-query) |
-| `??` | Read stored/logical throttle state. | [Stored State Query](#stored-state-query) |
+| `?` | Read the direct PoorMansThrottle hardware-state diagnostic reply; accepted in Throttle and Controller modes. | [Hardware State Query](#hardware-state-query) |
+| `??` | Read stored/logical PoorMansThrottle state; accepted in Throttle and Controller modes. | [Stored State Query](#stored-state-query) |
 | `A0` | Disable asynchronous state notifications. | [Async State Notify Control](#async-state-notify-control) |
 | `A1` | Enable asynchronous state notifications. | [Async State Notify Control](#async-state-notify-control) |
-| `A?` | Analyze the default audio track manifest. | [Analyze the default audio manifest](#analyze-the-default-audio-manifest) |
-| `A? N=<tracks>` | Analyze specified audio tracks. | [Analyze an explicit track list](#analyze-an-explicit-track-list) |
-| `AC<track>=0` / `AC<track>=1` | Stop / start or retrigger app-owned custom one-shot audio. | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
-| `ACR<track>=0` / `ACR<track>=1` | Stop / start or retrigger app-owned custom replay audio. | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
-| `AM` / `AudioMark` | Insert a manual audio diagnostic marker. | [Audio Diagnostic Marker](#audio-diagnostic-marker) |
+| `A?` | Analyze the default audio track manifest (Throttle / Controller). | [Analyze the default audio manifest](#analyze-the-default-audio-manifest) |
+| `A? N=<tracks>` | Analyze specified audio tracks (Throttle / Controller). | [Analyze an explicit track list](#analyze-an-explicit-track-list) |
+| `AC<track>=0` / `AC<track>=1` | Stop / start or retrigger app-owned custom one-shot audio (Throttle / Controller). | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
+| `ACR<track>=0` / `ACR<track>=1` | Stop / start or retrigger app-owned custom replay audio (Throttle / Controller). | [Direct App-Owned Custom Audio Commands](#direct-app-owned-custom-audio-commands) |
+| `AM` / `AudioMark` | Insert a manual audio diagnostic marker (Throttle / Controller). | [Audio Diagnostic Marker](#audio-diagnostic-marker) |
 | `B` | Apply normal brake stop (Throttle). | [Stop and Brake](#stop-and-brake) |
 | `B0` | Release variable braking (Throttle). | [Stop and Brake](#stop-and-brake) |
 | `B<n>` | Apply variable feather brake, 1–100 (Throttle). | [Stop and Brake](#stop-and-brake) |
@@ -2743,7 +2716,7 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `FL1` | Enable stopped-locomotive Force Lights PWM (Throttle). | [Force Lights](#force-lights) |
 | `FQ100` (Turbine) | Run turbine quick-output pulse. | [Turbine Quick Output](#turbine-quick-output) |
 | `FQ<n>` | Quick-ramp forward throttle, 0–100. | [Motion Commands](#motion-commands) |
-| `FX<n>=0` / `FX<n>=1` | Turn throttle function output 1–12 off/on. | [Function Output Commands](#function-output-commands) |
+| `FX<n>=0` / `FX<n>=1` | Turn PoorMansThrottle function output 1–12 off/on in Throttle or Controller mode. | [Function Output Commands](#function-output-commands) |
 | `G0` | Disable runtime grace shutdown. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
 | `G1` | Enable runtime grace shutdown when the configured grace duration is non-zero; Throttle `CV49=0` wins. | [Grace Shutdown Runtime Override](#grace-shutdown-runtime-override) |
 | `I` | Request device identity. | [Request Device Identity](#request-device-identity) |
@@ -2754,10 +2727,10 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `MAC?` | Query the compact 10-character Base36 ESP-NOW routing address. | [ESP-NOW Device Address](#esp-now-device-address) |
 | `N` | Toggle Throttle Neutral. While active, traction coasts/remains at zero while F/R/FQ/RQ update the deferred propulsion request; send `N` again to release. | [Motion Commands](#motion-commands) |
 | `NVS?` | Query the persistent 32-bit CV/NVS configuration revision. | [NVS Configuration Revision](#nvs-configuration-revision) |
-| `OTA` | Start supported ESP32-S3 Throttle firmware update. | [Start OTA](#start-ota) |
-| `OTA?` | Query supported ESP32-S3 Throttle OTA readiness. | [Query OTA capability](#query-ota-capability) |
-| `P0` | Report periodic throttle debug mismatches only. | [Periodic Debug Logging](#periodic-debug-logging) |
-| `P1` | Report throttle debug state every period. | [Periodic Debug Logging](#periodic-debug-logging) |
+| `OTA` | Start a supported ESP32-S3 PoorMansThrottle firmware update in Throttle or Controller mode. | [Start OTA](#start-ota) |
+| `OTA?` | Query supported ESP32-S3 PoorMansThrottle OTA readiness in Throttle or Controller mode. | [Query OTA capability](#query-ota-capability) |
+| `P0` | Report periodic PoorMansThrottle debug mismatches only; command is accepted in Throttle and Controller modes. | [Periodic Debug Logging](#periodic-debug-logging) |
+| `P1` | Report PoorMansThrottle debug state every period; command is accepted in Throttle and Controller modes. | [Periodic Debug Logging](#periodic-debug-logging) |
 | `PIN:<pin>` | Validate the shared connection PIN. When Require PIN is active, PIN must pass before `I,<token>` / `IB,<token>`; after connection it is verification-only. | [Optional PIN Factor](#optional-pin-factor) |
 | `PS0` | Exit persist-only CV staging. | [Leave persist-only staging](#leave-persist-only-staging) |
 | `PS1` | Enable persist-only CV staging. | [Enable persist-only staging](#enable-persist-only-staging) |
@@ -2776,9 +2749,9 @@ Commands are listed alphabetically. When a command has different meanings on dif
 | `SR0` | Stop script recording and await save/discard. | [Stop Recording and Wait for a Name](#stop-recording-and-wait-for-a-name) |
 | `SR=<name>` | Save a recorded script under a name. | [Save the Recording](#save-the-recording) |
 | `SRX` | Discard a pending unsaved recording. | [Discard a Pending Recording](#discard-a-pending-recording) |
-| `SS?` | Query script recording/playback status. | [Script Status](#script-status) |
-| `ST<set-id>.<field-id>=<value>` | Write and persist a sound `.set` field. | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
-| `ST<set-id>.<field-id>?` | Read a sound `.set` field. | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
+| `SS?` | Query script recording/playback status; the current Controller command gate rejects this query. | [Script Status](#script-status) |
+| `ST<set-id>.<field-id>=<value>` | Write and persist a sound `.set` field (Throttle / Controller). | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
+| `ST<set-id>.<field-id>?` | Read a sound `.set` field (Throttle / Controller). | [Sound `.set` Field Get / Set (`ST`)](#sound-set-field-get--set-st) |
 | `T=<unix-time>` | Set firmware time from a Unix UTC timestamp. | [Manual Time Set](#manual-time-set) |
 | `T?` | Query CV14-adjusted firmware clock. | [Current Time Query](#current-time-query) |
 | `V` | Query semantic firmware version. | [Firmware Version](#firmware-version) |
