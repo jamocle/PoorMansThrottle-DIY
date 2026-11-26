@@ -3,9 +3,12 @@
 ## Firmware:
 
 ### Version 4.0.17
+* **Added Branching in Scripts**. Added the ability for branching logic in automation scripts.
+* **Misc refinements and bug squashing** The code monkey has been busy (me).
+
+### Version 4.0.17
 * **Event Automation Scripts** Added automation capability for Prime Mover Start/Stop and Locomotive Start/Stop.
 * **Added 'audio' folder** Now custom audio files may be placed in a folder called 'audio' and dont need to be duplicated between diesel and steam.
-* **Misc refinements and bug squashing** The code monkey has been busy (me).
 
 ### Version 4.0.15
 * Added new Neutral Command
