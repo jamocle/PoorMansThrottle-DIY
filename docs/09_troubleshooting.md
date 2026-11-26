@@ -175,7 +175,7 @@ Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR0`, `SRX`, `SR
 | SD availability | Confirm the device has an active PMT SD filesystem; SD-backed script operations return `ERR:SD` when storage is unavailable |
 | Script name | Use 1–16 base-name characters from `a-z`, `0-9`, `_`, or `-`; `.pmt` is optional in the command |
 | File location | Firmware scripts are stored as `/scripts/<name>.pmt` |
-| Playback content | Firmware `.pmt` files may contain only valid recordable device-control commands, blank lines, and `PAUSE` lines |
+| Playback content | Firmware `.pmt` files may contain valid recordable device-control commands, blank lines, `PAUSE` lines, and—on supported ESP32-S3 PoorMansThrottle firmware 4.0.18+—`IF` / `ELSE IF` / `ELSE` / `END` conditional blocks |
 | App vs firmware scripts | The app's Run Script page is a separate app-side scripting mechanism; app-only directives are not valid firmware `.pmt` lines |
 
 ### Common Script Errors
@@ -191,7 +191,18 @@ Firmware 3.3 adds SD-backed recording and playback using `SR`, `SR0`, `SRX`, `SR
 | `ERR:READ` | The script file could not be read completely. Check card/filesystem integrity. |
 | `ERR:SIZE` | The `.pmt` file is larger than the 32 KiB playback limit. |
 | `ERR:EMPTY` | The saved script contains no executable content. Record at least one eligible control command before saving. |
-| `ERR:SCRIPT` | A line in the `.pmt` file is not a valid `PAUSE` or recordable control command for that firmware image. |
+| `ERR:SCRIPT` | The `.pmt` file contains invalid script syntax for that firmware image. This includes an invalid `PAUSE` or recordable control command and, on firmware with conditional branching, malformed `IF` / `ELSE IF` / `ELSE` / `END` structure, an invalid boolean expression/token/operator, unbalanced parentheses, or nesting deeper than 16 `IF` levels. |
+
+For firmware 4.0.18 conditional scripts, also check:
+
+* Conditional keywords, boolean tokens, and operators are case-insensitive.
+* Valid boolean tokens are `FORWARD`, `REVERSE`, `NEUTRAL`, and `MOVING`.
+* Valid operators are `NOT`, `AND`, and `OR`; parentheses are supported.
+* Every `IF` must have a matching `END`.
+* A block may have zero or more `ELSE IF` clauses and at most one final `ELSE`.
+* `ELSE IF` cannot appear after `ELSE`.
+* Conditional blocks may nest to 16 `IF` levels.
+* Conditions may be used by both Throttle and Non-Throttle scripts. Merely reading a throttle-state boolean does not classify a script as Throttle; a throttle-control command anywhere in the script does.
 | `ERR:MEM` | Firmware could not reserve the required script buffer memory. Reboot and retry; if it repeats, investigate memory pressure. |
 | `ERR:BUSY` | Recording, pending save (`SAVE`), or playback is active. Use `SS?`; stop playback with `SP0`, or resolve `SAVE` with `SR=<name>` / `SRX`, before starting/deleting another script. |
 | `ERR:STATE` | The requested state transition is invalid, such as `SP0` while idle, `SR0` when not recording, `SRX` when not in `SAVE`, or `SR=<name>` when neither recording nor `SAVE` is active. |

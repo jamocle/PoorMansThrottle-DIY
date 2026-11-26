@@ -7079,6 +7079,81 @@ D00*</code></pre>
 
             <p class="note">
               They are line-oriented and may contain supported firmware control commands together with <code>PAUSE</code> commands.
+              On supported ESP32-S3 PoorMansThrottle firmware 4.0.18+, both Throttle and Non-Throttle scripts may also contain nested conditional branches.
+            </p>
+
+            <p class="note">
+              <strong>Firmware conditional branching</strong>
+            </p>
+
+            <pre><code>IF &lt;boolean expression&gt;
+  ...
+ELSE IF &lt;boolean expression&gt;
+  ...
+ELSE
+  ...
+END</code></pre>
+
+            <p class="note">
+              <code>ELSE IF</code> and <code>ELSE</code> are optional, and conditional blocks may nest to 16 <code>IF</code> levels.
+              Conditional keywords, boolean tokens, and operators are case-insensitive.
+            </p>
+
+            <div class="faq-table-container">
+              <div class="faq-table-scrollbar">
+                <input class="faq-table-scroll-range" type="range" min="0" step="1" value="0"
+                  aria-label="Scroll table horizontally" />
+              </div>
+              <div class="faq-table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Boolean token</th>
+                      <th>Meaning</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><code>FORWARD</code></td>
+                      <td>The last direction in which positive locomotive motion was actually applied is forward. It remains forward while stopped and while a reverse request is pending but has not yet produced reverse motion. Before any direction has ever been applied after boot, this is true.</td>
+                    </tr>
+                    <tr>
+                      <td><code>REVERSE</code></td>
+                      <td>The last direction in which positive locomotive motion was actually applied is reverse. It remains reverse while stopped and while a forward request is pending but has not yet produced forward motion. Before any direction has ever been applied after boot, this is false.</td>
+                    </tr>
+                    <tr>
+                      <td><code>NEUTRAL</code></td>
+                      <td>Neutral is currently latched.</td>
+                    </tr>
+                    <tr>
+                      <td><code>MOVING</code></td>
+                      <td>Applied throttle is greater than zero and the currently applied direction is forward or reverse.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <p class="note">
+              Boolean expressions support <code>NOT</code>, <code>AND</code>, <code>OR</code>, and parentheses.
+              Precedence is parentheses first, then <code>NOT</code>, then <code>AND</code>, then <code>OR</code>.
+            </p>
+
+            <pre><code>IF MOVING AND FORWARD
+  FX3=1
+ELSE IF REVERSE AND NOT NEUTRAL
+  FX3=0
+ELSE
+  PAUSE 250
+END</code></pre>
+
+            <p class="note">
+              Using <code>FORWARD</code>, <code>REVERSE</code>, <code>NEUTRAL</code>, or <code>MOVING</code> in a condition does not by itself make a script a Throttle script.
+              Classification is static: if any command anywhere in the script is a throttle-control command, even inside a branch that may not execute, the complete script is classified as Throttle. Otherwise it may remain Non-Throttle.
+            </p>
+
+            <p class="note">
+              Each concurrently running Non-Throttle script keeps its own conditional nesting state. Invalid structures or expressions—such as a missing or unmatched <code>END</code>, duplicate <code>ELSE</code>, <code>ELSE IF</code> after <code>ELSE</code>, unknown tokens/operators, unbalanced parentheses, or more than 16 nested <code>IF</code> levels—are rejected as <code>ERR:SCRIPT</code>.
             </p>
 
             <p class="note">
@@ -7220,7 +7295,7 @@ S</code></pre>
             </p>
 
             <p class="note">
-              If any command in a script affects locomotive movement, the complete script is treated as a Throttle script. <code>PAUSE</code> commands do not affect the classification.
+              If any command in a script affects locomotive movement, the complete script is treated as a Throttle script. <code>PAUSE</code> and conditional-control lines do not affect the classification, and boolean state tests are allowed in Non-Throttle scripts.
             </p>
 
             <p class="note">
@@ -7342,7 +7417,7 @@ locstop.pmt</code></pre>
             </p>
 
             <p class="note">
-              They can use supported Non-Throttle commands and <code>PAUSE</code> syntax, for example:
+              They can use supported Non-Throttle commands, <code>PAUSE</code> syntax, and—on firmware 4.0.18+—the same conditional branching and boolean state tests described above, for example:
             </p>
 
             <pre><code>FX3=1

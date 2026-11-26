@@ -281,10 +281,24 @@
               Speed the overall routine up or slow it down by adjusting its timing in milliseconds. Repeating scripts pick up the updated timing on the next cycle.
             </p>
           </article>
+
+          <article class="card">
+            <span class="label">BRANCH</span>
+            <h3>Make decisions while the script runs</h3>
+            <p>
+              Firmware 4.0.18 adds nested <code>IF</code> / <code>ELSE IF</code> / <code>ELSE</code> / <code>END</code> branching on supported ESP32-S3 PoorMansThrottle firmware. Conditions can test <code>FORWARD</code>, <code>REVERSE</code>, <code>NEUTRAL</code>, and <code>MOVING</code> using <code>NOT</code>, <code>AND</code>, <code>OR</code>, and parentheses.
+            </p>
+          </article>
         </div>
 
         <div class="callout">
           PMT turns a one-time operating sequence into a repeatable railroad behavior — without forcing you to hand-code every move from scratch.
+        </div>
+
+        <div class="callout">
+          <strong>Conditional example:</strong>
+          <code>IF MOVING AND FORWARD</code> can select actions only while forward motion is actually applied.
+          The same condition syntax is available in both Throttle and Non-Throttle firmware scripts; reading a state token alone does not make a script a Throttle script.
         </div>
       </div>
     </section>
@@ -550,7 +564,7 @@
         </div>
 
         <div class="version">
-          App 4.4.2 • Firmware 4.0.17
+          App 4.4.2 • Firmware 4.0.18
         </div>
       </div>
     </section>

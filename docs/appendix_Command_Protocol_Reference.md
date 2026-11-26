@@ -1,6 +1,6 @@
 # Poor Man's Throttle (PMT) – Command Protocol Reference
 
-**Firmware Version:** 4.0.17  
+**Firmware Version:** 4.0.18  
 **Platform:** ESP32 PMT device family: Throttle / Controller, Module, and Turbine
 
 ---
@@ -25,7 +25,7 @@ Detailed CV definitions, ranges, defaults, GPIO mappings, audio tuning, and func
 
 # Device Types Covered
 
-PMT firmware 4.0.17 uses a shared protocol foundation across more than one device type.
+PMT firmware 4.0.18 uses a shared protocol foundation across more than one device type.
 
 | Device type / mode | Purpose | Protocol scope |
 |---|---|---|
@@ -1391,7 +1391,55 @@ is also accepted and means 1000 ms.
 
 The maximum single parsed pause value is `2147483647` ms. Very long recorded intervals can be split across multiple `PAUSE` lines.
 
-Firmware `.pmt` playback is **not** the same as the app's general-purpose terminal script runner. App-only script directives are not accepted in firmware `.pmt` files. A firmware script must contain only blank lines, valid `PAUSE` lines, and commands classified as recordable controls by the active firmware image.
+On supported ESP32-S3 PoorMansThrottle firmware, firmware 4.0.18 adds conditional branching to both Throttle and Non-Throttle `.pmt` scripts:
+
+```text
+IF <boolean expression>
+  ...
+ELSE IF <boolean expression>
+  ...
+ELSE
+  ...
+END
+```
+
+`ELSE IF` and `ELSE` are optional. Conditional blocks may be nested to 16 `IF` levels. The conditional keywords, boolean tokens, and boolean operators are case-insensitive.
+
+Supported boolean tokens are:
+
+| Token | Meaning |
+|---|---|
+| `FORWARD` | The last direction in which positive locomotive motion was actually applied is forward. This state remains forward while stopped and while a reverse request is pending but has not yet produced reverse motion. Before any direction has ever been applied after boot, `FORWARD` is true. |
+| `REVERSE` | The last direction in which positive locomotive motion was actually applied is reverse. This state remains reverse while stopped and while a forward request is pending but has not yet produced forward motion. Before any direction has ever been applied after boot, `REVERSE` is false. |
+| `NEUTRAL` | The locomotive Neutral latch is currently active. |
+| `MOVING` | Applied throttle is greater than zero and the currently applied direction is forward or reverse. |
+
+Supported boolean operators are `NOT`, `AND`, and `OR`, plus parentheses. Evaluation precedence is:
+
+1. Parentheses
+2. `NOT`
+3. `AND`
+4. `OR`
+
+Example:
+
+```text
+IF MOVING AND FORWARD
+  FX3=1
+ELSE IF REVERSE AND NOT NEUTRAL
+  FX3=0
+ELSE
+  PAUSE 250
+END
+```
+
+Conditional expressions are state tests only. Referencing `FORWARD`, `REVERSE`, `NEUTRAL`, or `MOVING` does not by itself make a script a Throttle script. Script classification remains static: if any recordable command anywhere in the script is a throttle-control command, even inside a conditional branch, the complete script is classified as Throttle. Otherwise it may run as Non-Throttle. Each concurrent Non-Throttle playback instance maintains its own conditional nesting state.
+
+A malformed conditional structure or boolean expression is rejected as `ERR:SCRIPT`. Examples include an unmatched or missing `END`, `ELSE` without a matching `IF`, more than one `ELSE` in the same block, `ELSE IF` after `ELSE`, an unknown boolean token/operator, unbalanced parentheses, or conditional nesting deeper than 16 levels.
+
+`SA` timing adjustment continues to operate on the saved script's `PAUSE` positions. Conditional branching does not make `SA` path-sensitive; the saved pause lines are adjusted regardless of which branch may execute on a particular playback pass.
+
+Firmware `.pmt` playback is **not** the same as the app's general-purpose terminal script runner. App-only script directives are not accepted in firmware `.pmt` files. A firmware script may contain blank lines, valid `PAUSE` lines, commands classified as recordable controls by the active firmware image, and—where supported—the conditional control lines described above.
 
 ## Recordable Commands by Device
 

@@ -424,8 +424,9 @@
         <div class="callout">
           <strong>Two different script systems:</strong>
           the app's Run Script page and firmware-resident <code>.pmt</code> playback are related tools, but they are not the same
-          scripting engine. Firmware <code>.pmt</code> files use recordable device-control commands plus
-          <code>PAUSE &lt;milliseconds&gt;</code>.
+          scripting engine. Firmware <code>.pmt</code> files use recordable device-control commands and
+          <code>PAUSE &lt;milliseconds&gt;</code>; supported ESP32-S3 PoorMansThrottle firmware 4.0.18+ also supports
+          nested conditional branching.
         </div>
 
         <div class="command-grid">
@@ -471,6 +472,31 @@
             positive milliseconds lengthen it. The no-name form targets the currently playing script.
           </div>
         </div>
+
+        <h2 style="font-size:1.3rem; margin-top:26px;">Conditional branching in firmware scripts</h2>
+        <p>
+          On supported ESP32-S3 PoorMansThrottle firmware 4.0.18+, both Throttle and Non-Throttle
+          <code>.pmt</code> scripts can make decisions while they run. Conditional keywords, boolean tokens,
+          and operators are case-insensitive.
+        </p>
+        <pre><code>IF MOVING AND FORWARD
+  FX3=1
+ELSE IF REVERSE AND NOT NEUTRAL
+  FX3=0
+ELSE
+  PAUSE 250
+END</code></pre>
+        <ul class="rule-list">
+          <li><code>IF</code>, <code>ELSE IF</code>, <code>ELSE</code>, and <code>END</code> provide branching. <code>ELSE IF</code> and <code>ELSE</code> are optional.</li>
+          <li>Conditional blocks can be nested to 16 <code>IF</code> levels.</li>
+          <li>Boolean tokens are <code>FORWARD</code>, <code>REVERSE</code>, <code>NEUTRAL</code>, and <code>MOVING</code>.</li>
+          <li>Operators are <code>NOT</code>, <code>AND</code>, and <code>OR</code>, with parentheses supported. Precedence is parentheses, then <code>NOT</code>, then <code>AND</code>, then <code>OR</code>.</li>
+          <li><code>FORWARD</code> and <code>REVERSE</code> describe the last direction in which positive motion was actually applied, not whether the locomotive is moving now. The state persists while stopped and does not change early because an opposite-direction command is pending. At boot, before any direction has been applied, <code>FORWARD</code> is true and <code>REVERSE</code> is false.</li>
+          <li><code>NEUTRAL</code> is true while the Neutral latch is active. <code>MOVING</code> is true while applied throttle is greater than zero in an applied forward or reverse direction.</li>
+          <li>Reading these boolean states does not make a script a Throttle script. A script is classified as Throttle only when it contains a throttle-control command somewhere in the script, including inside a conditional branch.</li>
+          <li>Different concurrent Non-Throttle scripts keep independent conditional nesting state.</li>
+          <li>Malformed conditional structures or boolean expressions are rejected as <code>ERR:SCRIPT</code>.</li>
+        </ul>
 
         <h2 style="font-size:1.3rem; margin-top:26px;">Event-based automation scripts</h2>
         <p>

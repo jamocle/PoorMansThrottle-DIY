@@ -19,7 +19,7 @@ Most CV values are persisted in ESP32 non-volatile storage, so they survive powe
 
 # Device Scope
 
-PMT firmware 4.0.17 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image or operating mode.
+PMT firmware 4.0.18 is shared across more than one device type. Some CVs are shared, while others only apply to a specific firmware image or operating mode.
 
 `PoorMansThrottle` supports two persisted operating modes selected by `CV19`: **Throttle** (`CV19=1`) and **Controller** (`CV19=2`). Controller mode uses the same PoorMansThrottle CV command namespace and the same normal app CV Backup profile. It does not provide locomotive motor-control runtime behavior: locomotive motor commands are rejected and unsolicited locomotive hardware-state notifications are suppressed.
 
